@@ -31,6 +31,7 @@
     <script src="{{ asset('assets/js/app-calendar.js') }}"></script>
 @endsection
 
+
 @section('content')
     <div class="card">
         <livewire:all-lab />
