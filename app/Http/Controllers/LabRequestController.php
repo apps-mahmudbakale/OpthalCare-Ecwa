@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Laboratory;
 use App\Models\LabRequest;
+use App\Models\LabResult;
 use Illuminate\Http\Request;
 use App\Services\ServiceRequestHandler;
 
@@ -40,9 +41,10 @@ class LabRequestController extends Controller
   /**
    * Display the specified resource.
    */
-  public function show(LabRequest $labRequest)
+  public function show($id)
   {
-    //
+    $request = LabRequest::where('id', $id)->first();
+    return view('laboratory.result', compact('request'));
   }
 
   public function specimen($labRequest)
@@ -59,6 +61,12 @@ class LabRequestController extends Controller
       // dd("Service Has Not Been Paid");
       return redirect()->back()->with('error', 'Service Has Not Been Paid For Yet');
     }
+  }
+
+  public function addResult(Request $request){
+    $result = LabResult::create($request->all());
+    $update = LabRequest::where('id', $result->lab_id)->update(['status' => 'Result Ready']);
+    return redirect()->back()->with('success', 'Result Collected!');
   }
 
   /**

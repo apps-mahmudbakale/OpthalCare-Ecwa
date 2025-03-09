@@ -114,6 +114,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::post('drugs-category/{category}', [DrugController::class, 'updateCategory'])->name('drugs-category.update');
   Route::resource('lab', LabRequestController::class);
   Route::get('lab/specimen/{lab}', [LabRequestController::class, 'specimen'])->name('lab.specimen');
+  Route::post('lab/add-result', [LabRequestController::class, 'addResult'])->name('lab.add.result');
   Route::resource('vitals', VitalsController::class);
   Route::resource('vision-acuity', VisionAcuityController::class);
   Route::resource('iop', IOPController::class);

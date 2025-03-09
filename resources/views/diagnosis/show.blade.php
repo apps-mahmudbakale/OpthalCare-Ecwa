@@ -17,7 +17,9 @@
                         class="fas fa-file"></span></a>
             </div>
             <div class="list-group-item-body">
+              <h6>history</h6>
                 {!! $diagnosis->comments !!}
+                <h6>Examination</h6>
                 {{-- <p><strong><u>ABDOMINO-PELVIC USS</u></strong></p>
                 <p>The urinary bladder is moderately distended with urine containing mobile internal echoes and shows
                     increased wall thickness. No calculus noted.</p>
