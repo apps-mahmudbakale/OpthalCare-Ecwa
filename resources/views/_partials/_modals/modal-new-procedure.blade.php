@@ -24,20 +24,20 @@
                     </div>
                     <div class="col-6 col-md-6">
                         <label class="form-label"> Procedure Cost</label>
-                        <input type="text" name="procedure_cost" class="form-control" placeholder="Procedure Cost" />
+                        <input type="number" name="procedure_cost" class="form-control" placeholder="Procedure Cost" />
                     </div>
                     <div class="col-6 col-md-6">
                         <label class="form-label"> Theatre Cost</label>
-                        <input type="text" name="theatre_cost" class="form-control" placeholder="Theatre Cost" />
+                        <input type="number" name="theatre_cost" class="form-control" placeholder="Theatre Cost" />
                     </div>
                     <div class="col-6 col-md-6">
-                        <label class="form-label">Anaesthesia Name</label>
-                        <input type="text" name="anaesthesia_cost" class="form-control"
-                            placeholder="Anaesthesia Name" />
+                        <label class="form-label">Anaesthesia Cost</label>
+                        <input type="number" name="anaesthesia_cost" class="form-control"
+                            placeholder="Anaesthesia Cost" />
                     </div>
                     <div class="col-6 col-md-6">
                         <label class="form-label"> Surgeon Cost</label>
-                        <input type="text" name="surgeon_fee" class="form-control" placeholder="Surgeon Cost" />
+                        <input type="number" name="surgeon_fee" class="form-control" placeholder="Surgeon Cost" />
                     </div>
                     <div class="col-12 col-md-12">
 
