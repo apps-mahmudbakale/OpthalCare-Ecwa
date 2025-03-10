@@ -13,27 +13,27 @@
     <label class="form-label" for="middlename">Middle Name</label>
     <input type="text" name="middle_name" id="middlename" class="form-control" placeholder="Middle Name">
   </div>
-  <div class="col-md-4">
-    <label class="form-label" for="email">Email <span class="text-danger">*</span></label>
-    <input type="email" name="email" id="email" class="form-control" placeholder="Email">
-  </div>
-  <div class="col-md-4">
-    <label class="form-label" for="phone">Phone <span class="text-danger">*</span></label>
-    <input type="text" id="phone" name="phone" class="form-control" placeholder="Phone">
-  </div>
-  <div class="col-md-4">
-    <label class="form-label" for="gender">Gender <span class="text-danger">*</span></label>
-    <select name="gender" id="" class="form-control">
-      <option value="" selected>Select Gender...</option>
-      <option value="Male">Male</option>
-      <option value="Female">Female</option>
-      <option value="Other">Other</option>
-    </select>
-  </div>
-  <div class="col-md-12">
-    <label for="date_of_birth" class="form-label"> Date of Birth <span class="text-danger">*</span></label>
-    <input type="date" name="date_of_birth" class="form-control">
-  </div>
+<!--  <div class="col-md-4">-->
+<!--    <label class="form-label" for="email">Email <span class="text-danger">*</span></label>-->
+<!--    <input type="email" name="email" id="email" class="form-control" placeholder="Email">-->
+<!--  </div>-->
+<!--  <div class="col-md-4">-->
+<!--    <label class="form-label" for="phone">Phone <span class="text-danger">*</span></label>-->
+<!--    <input type="text" id="phone" name="phone" class="form-control" placeholder="Phone">-->
+<!--  </div>-->
+<!--  <div class="col-md-4">-->
+<!--    <label class="form-label" for="gender">Gender <span class="text-danger">*</span></label>-->
+<!--    <select name="gender" id="" class="form-control">-->
+<!--      <option value="" selected>Select Gender...</option>-->
+<!--      <option value="Male">Male</option>-->
+<!--      <option value="Female">Female</option>-->
+<!--      <option value="Other">Other</option>-->
+<!--    </select>-->
+<!--  </div>-->
+<!--  <div class="col-md-12">-->
+<!--    <label for="date_of_birth" class="form-label"> Date of Birth <span class="text-danger">*</span></label>-->
+<!--    <input type="date" name="date_of_birth" class="form-control">-->
+<!--  </div>-->
   <div class="col-12 text-center">
     <br>
     <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>

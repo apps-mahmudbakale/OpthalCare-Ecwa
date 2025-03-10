@@ -24,6 +24,9 @@ class RadiologyRequestController extends Controller
   {
     //
   }
+   public function addFindings(){
+
+   }
 
   /**
    * Store a newly created resource in storage.
@@ -50,7 +53,7 @@ class RadiologyRequestController extends Controller
    */
   public function edit(RadiologyRequest $radiologyRequest)
   {
-    //
+    return view('radiology.result', compact('radiologyRequest'));
   }
 
   /**

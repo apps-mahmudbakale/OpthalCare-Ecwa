@@ -66,7 +66,7 @@
       showLoaderOnConfirm: true,
       preConfirm: async (accessCode) => {
         try {
-          const apiUrl = `/api/billservices/${accessCode}`;
+          const apiUrl = `/api/billservices/0/enrollment/${accessCode}`;
           const response = await fetch(apiUrl);
 
           if (!response.ok) {

@@ -14,10 +14,10 @@ class TempPatient extends Model
       'first_name',
       'last_name',
       'middle_name',
-      'email',
-      'phone',
-      'gender',
-      'date_of_birth',
+//      'email',
+//      'phone',
+//      'gender',
+//      'date_of_birth',
       'accesscode'
     ];
 }

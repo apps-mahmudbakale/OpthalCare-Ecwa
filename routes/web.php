@@ -115,6 +115,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::resource('lab', LabRequestController::class);
   Route::get('lab/specimen/{lab}', [LabRequestController::class, 'specimen'])->name('lab.specimen');
   Route::post('lab/add-result', [LabRequestController::class, 'addResult'])->name('lab.add.result');
+  Route::get('lab/result/{lab}', [LabRequestController::class, 'showResult'])->name('lab.print.result');
   Route::resource('vitals', VitalsController::class);
   Route::resource('vision-acuity', VisionAcuityController::class);
   Route::resource('iop', IOPController::class);
@@ -137,6 +138,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
 
   // **** Radiology Routes
   Route::resource('radiology', RadiologyRequestController::class);
+  Route::get('radiology-add-notes', [RadiologyRequestController::class, 'addFindings'])->name('radiology.requests.notes.add');
   Route::post('radiology-category', [RadiologyController::class, 'storeCategory'])->name('radiology-category.store');
   Route::post('radiology-category/{category}', [RadiologyController::class, 'updateCategory'])->name('radiology-category.update');
   Route::post('radiology-template', [RadiologyController::class, 'storeTemplate'])->name('radiology-template.store');

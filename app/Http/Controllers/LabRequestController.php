@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Laboratory;
 use App\Models\LabRequest;
 use App\Models\LabResult;
+use App\Models\Patient;
 use Illuminate\Http\Request;
 use App\Services\ServiceRequestHandler;
 
@@ -67,6 +68,13 @@ class LabRequestController extends Controller
     $result = LabResult::create($request->all());
     $update = LabRequest::where('id', $result->lab_id)->update(['status' => 'Result Ready']);
     return redirect()->back()->with('success', 'Result Collected!');
+  }
+
+  public function showResult($id){
+    $lab = LabRequest::where('id', $id)->first();
+    $result = LabResult::where('lab_id', $id)->first();
+    $patient = Patient::where('id', $lab->patient_id)->first();
+    return view('laboratory.print', compact('lab', 'result', 'patient'));
   }
 
   /**

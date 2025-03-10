@@ -42,8 +42,7 @@
             @if ($labRequest->status == 'Specimen Collected')
             <li><button class="dropdown-item" data-request-url="{{ route('app.lab.show', $labRequest->id) }}">Add Result</button></li>
             @elseif ($labRequest->status == 'Result Ready')
-            <li><a class="dropdown-item" href="{{ route('app.lab.specimen', $labRequest->id) }}">Print</a></li>
-            <li><a class="dropdown-item" href="{{ route('app.lab.specimen', $labRequest->id) }}">Details</a></li>
+            <li><a class="dropdown-item" target="_blank" href="{{ route('app.lab.print.result', $labRequest->id) }}">Print</a></li>
             @else
             <li><a href="{{ route('app.lab.specimen', $labRequest->id) }}"
                    class="dropdown-item" href="javascript:void(0);">Receive Specimens</a></li>

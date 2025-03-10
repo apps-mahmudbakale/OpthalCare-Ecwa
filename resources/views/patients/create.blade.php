@@ -31,7 +31,7 @@
                 <div class="card-body">
                     <form action="{{ route('app.patients.store') }}" method="POST">
                         @csrf
-                      <input type="text" name="temp_id" value="{{$data->id}}">
+                      <input type="hidden" name="temp_id" value="{{$data->id}}">
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label class="form-label" for="firstname">First Name <span
