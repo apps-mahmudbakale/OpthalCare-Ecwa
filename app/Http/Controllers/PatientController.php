@@ -66,56 +66,47 @@ class PatientController extends Controller
    */
   public function store(Request $request)
   {
-    // Validation rules for all fields
+    // Validation rules for required fields
     $rules = [
       'firstname' => 'required|string|max:255',
       'lastname' => 'required|string|max:255',
-      // 'email' => 'required|email|unique:users,email',
       'phone' => 'required|string|max:20',
       'date_of_birth' => 'required|date',
-      'gender' => 'required|in:Male,Female,Other',
-       'religion_id' => 'required|integer',
-      // 'next_of_kin_name' => 'required|string|max:255',
-      // 'next_of_kin_relation' => 'required|string|max:255',
-      // 'next_of_kin_phone' => 'required|string|max:20',
-      // 'next_of_kin_address' => 'required|string|max:255',
-      'marital_status' => 'required|string',
-      'tribe' => 'required|string',
-//      'occupation' => 'required|string',
-//      'state_of_residence' => 'required|string',
-//      'lga_of_residence' => 'required|string',
-      // 'state_of_origin' => 'required|string',
-      // 'lga_of_origin' => 'required|string',
-//      'residential_address' => 'required|string',
-
-      // Add more validation rules as needed
+      'email' => 'nullable|email|max:255|unique:users,email',
     ];
+
+    // Optional fields (no 'required' rule)
+    $optionalRules = [
+      'gender' => 'nullable|in:Male,Female,Other',
+      'religion_id' => 'nullable|integer',
+      'next_of_kin_name' => 'nullable|string|max:255',
+      'next_of_kin_relation' => 'nullable|string|max:255',
+      'next_of_kin_phone' => 'nullable|string|max:20',
+      'next_of_kin_address' => 'nullable|string|max:255',
+      'marital_status' => 'nullable|string',
+      'tribe' => 'nullable|string',
+      'occupation' => 'nullable|string',
+      'state_of_residence' => 'nullable|string',
+      'lga_of_residence' => 'nullable|string',
+      'state_of_origin' => 'nullable|string',
+      'lga_of_origin' => 'nullable|string',
+      'residential_address' => 'nullable|string',
+    ];
+
+    // Merge required and optional rules
+    $rules = array_merge($rules, $optionalRules);
 
     // Custom validation messages
     $messages = [
-      // Custom messages for each field
       'firstname.required' => 'The First Name field is required.',
       'lastname.required' => 'The Last Name field is required.',
-      'email.required' => 'The email field is required.',
-      'email.email' => 'The email must be a valid email address.',
-      'email.unique' => 'The email has already been taken.',
       'phone.required' => 'The phone field is required.',
       'date_of_birth.required' => 'The date of birth field is required.',
-      'gender.required' => 'The gender field is required.',
-      // 'religion_id.required' => 'The religion field is required.',
-      'next_of_kin_name.required' => 'The next of kin name field is required.',
-      'next_of_kin_relation.required' => 'The next of kin relation field is required.',
-      'next_of_kin_phone.required' => 'The next of kin phone field is required.',
-      'next_of_kin_address.required' => 'The next of kin address field is required.',
-      'marital_status.required' => 'The marital status field is required.',
-      'occupation.required' => 'The occupation field is required.',
-      'state_of_residence.required' => 'The state of residence field is required.',
-      'lga_of_residence.required' => 'The lga of residence field is required.',
-      'state_of_origin.required' => 'The state of origin field is required.',
-      'lga_of_origin.required' => 'The lga of origin field is required.',
-      'residential_address.required' => 'The residential address field is required.',
-      // Add more custom messages as needed
+      'email.email' => 'The email must be a valid email address.',
+      'email.unique' => 'The email has already been taken.',
     ];
+
+    // Validate the request
     $validator = Validator::make($request->all(), $rules, $messages);
 
     // Check if validation fails
@@ -124,15 +115,62 @@ class PatientController extends Controller
         ->withErrors($validator)
         ->withInput();
     }
-    $user = User::create(array_merge($request->except(['date_of_birth', 'gender', 'password']), ['password' => bcrypt($request->password)]));
+
+    // Set a default email if none is provided
+    $email = $request->input('email') ?: 'no-email-' . uniqid() . '@example.com';
+
+    // Create the user
+    $user = User::create(array_merge(
+      $request->except(['date_of_birth', 'gender', 'password', 'email']),
+      [
+        'email' => $email,
+        'password' => bcrypt($request->password ?: 'default_password'),
+      ]
+    ));
+
+    // Assign the 'patient' role to the user
     $user->assignRole('patient');
-    $hospital_no = UniqueIdGenerator::generate(['table' => 'patients', 'length' => 4,]);
-    $patient = Patient::create(array_merge($request->except(['password', 'next_of_kin_name', 'next_of_kin_relation', 'next_of_kin_phone', 'next_of_kin_address']), ['hospital_no' => $hospital_no, 'user_id' => $user->id]));
-    $next_of_kin = NextOfKin::create(array_merge($request->only(['next_of_kin_name', 'next_of_kin_relation', 'next_of_kin_phone', 'next_of_kin_address']), ['patient_id' => $patient->id]));
+
+    // Generate a unique hospital number
+    $hospital_no = UniqueIdGenerator::generate(['table' => 'patients', 'length' => 4]);
+
+    // Create the patient record
+    $patient = Patient::create(array_merge(
+      $request->except(['password', 'next_of_kin_name', 'next_of_kin_relation', 'next_of_kin_phone', 'next_of_kin_address']),
+      ['hospital_no' => $hospital_no, 'user_id' => $user->id]
+    ));
+
+    // Create the next of kin record
+    $next_of_kin = NextOfKin::create(array_merge(
+      $request->only(['next_of_kin_name', 'next_of_kin_relation', 'next_of_kin_phone', 'next_of_kin_address']),
+      ['patient_id' => $patient->id]
+    ));
+
+    // Update billing and delete temporary patient record
     $billUpdate = Billing::where('user_id', $request->temp_id)->update(['user_id' => $patient->id]);
     $deleteTemp = TempPatient::where('id', $request->temp_id)->delete();
-    $visit = Visit::create(['patient_id' => $patient->id, 'speciality' => 'Enrollement', 'status' => 'Concluded']);
-    return redirect()->route('app.patients.index')->with('success', 'Patient Created Successfully');
+
+    // Create a visit record
+    $visit = Visit::create([
+      'patient_id' => $patient->id,
+      'speciality' => 'Enrollment',
+      'status' => 'Concluded'
+    ]);
+
+    // Check in the patient after creation
+    $checkInService = new CheckInService();
+    if ($checkInService->hasCheckedInToday($patient->id)) {
+      // If already checked in (unlikely for a new patient), log it or handle silently
+      \Log::warning("Patient {$patient->id} already checked in today.");
+    } else {
+      CheckIn::create([
+        'patient_id' => $patient->id,
+        'check_in_date' => now()->toDateString(),
+      ]);
+    }
+
+    // Redirect with success message
+    return redirect()->route('app.patients.index')->with('success', 'Patient Created and Checked In Successfully');
   }
 
 
