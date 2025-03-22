@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Http\Liveware\Pharmacy;
+use App\Http\Livewire\Pharmacy;
 use App\Models\Antenatal;
 use App\Models\Bed;
 use App\Models\Drug;
