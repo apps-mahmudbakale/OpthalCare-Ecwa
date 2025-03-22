@@ -6,7 +6,7 @@
 
 @extends('layouts/layoutMaster')
 
-@section('title', 'Vital Care Auth')
+@section('title', 'OphthalCare Auth')
 
 @section('vendor-style')
     <!-- Vendor -->
@@ -48,15 +48,14 @@
                     <!-- Logo -->
                     <div class="app-brand mb-4">
                         <a href="{{ url('/') }}" class="app-brand-link gap-2">
-                            <span class="app-brand-logo demo"><img
-                                    src="{{ !empty(app(App\Settings\SystemSettings::class)->logo) ? asset('storage/system/' . app(App\Settings\SystemSettings::class)->logo) : asset('assets/img/logo.png') }}"
-                                    style="width: 130%; height:120%;">
-                                {{ app(App\Settings\SystemSettings::class)->clinic_name ?: 'Clinic' }}
+                            <span class="app-brand-logo demo">
+                             <img src="{{asset('hhh.png') }}"
+                                  style="width: 130%; height:120%;">
                             </span>
                         </a>
                     </div>
                     <!-- /Logo -->
-                    <h3 class=" mb-1 fw-bold">Welcome to Opthal Care! 👋</h3>
+                    <h3 class=" mb-1 fw-bold">Welcome to Ophthal Care! 👋</h3>
                     <p class="mb-4">Please sign-in to your account and start the adventure</p>
 
                     <form id="formAuthentication" class="mb-3" action="{{ route('login') }}" method="POST">
