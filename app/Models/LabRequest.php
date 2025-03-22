@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Http\Livewire\Laboratories;
+use App\Http\Liveware\Laboratories;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
