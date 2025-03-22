@@ -319,9 +319,12 @@ class PatientController extends Controller
       'next_of_kin_phone',
       'next_of_kin_address'
     ]);
+//
+//    if($request->has('next_of_kin_name') && !empty($request->next_of_kin_name)){
+//      $nextOfKin = NextOfKin::where('user_id', $userId)->firstOrFail();
+//      $nextOfKin->update($nextOfKinUpdateData);
+//    }
 
-//    $nextOfKin = NextOfKin::where('user_id', $userId)->firstOrFail();
-//    $nextOfKin->update($nextOfKinUpdateData);
     return redirect()->route('app.patients.index')->with('success', 'Patient Updated Successfully');
   }
 
