@@ -278,7 +278,7 @@
         </thead>
         <tbody>
             <tr>
-                <td width=30%">RIGHT</td>
+                <td width=10%">RIGHT</td>
                 <td><input type="text" name="sph_glass_right" class="form-control"></td>
                 <td><input type="text" name="cyl_glass_right" class="form-control"></td>
                 <td><input type="text" name="axis_glass_right" class="form-control"></td>
@@ -289,7 +289,7 @@
                 <td><input type="text" name="va2_glass_right" class="form-control"></td>
             </tr>
             <tr>
-                <td width="30%">LEFT</td>
+                <td width="10%">LEFT</td>
                 <td><input type="text" name="sph_glass_left" class="form-control"></td>
                 <td><input type="text" name="cyl_glass_left" class="form-control"></td>
                 <td><input type="text" name="axis_glass_left" class="form-control"></td>
@@ -362,7 +362,7 @@
     </thead>
     <tbody>
     <tr>
-      <td width="30%">RIGHT</td>
+      <td width="10%">RIGHT</td>
       <td><input type="text" name="sph_subj_right" class="form-control"></td>
       <td><input type="text" name="cyl_subj_right" class="form-control"></td>
       <td><input type="text" name="axis_subj_right" class="form-control"></td>
@@ -373,7 +373,7 @@
       <td><input type="text" name="va2_subj_right" class="form-control"></td>
     </tr>
     <tr>
-      <td width="30%">LEFT</td>
+      <td width="10%">LEFT</td>
       <td><input type="text" name="sph_subj_left" class="form-control"></td>
       <td><input type="text" name="cyl_subj_left" class="form-control"></td>
       <td><input type="text" name="axis_subj_left" class="form-control"></td>

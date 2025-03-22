@@ -30,8 +30,8 @@
     @foreach($symptoms as $key => $label)
     <tr>
       <td>{{ $label }}</td>
-      <td>{{ $refraction->{$key . '_right'} ?? 'N/A' }}</td>
-      <td>{{ $refraction->{$key . '_left'} ?? 'N/A' }}</td>
+      <td>{{ $refraction->{$key . '_right'} ?? ' ' }}</td>
+      <td>{{ $refraction->{$key . '_left'} ?? ' ' }}</td>
     </tr>
     @endforeach
     </tbody>
@@ -52,19 +52,19 @@
     <tbody>
     <tr>
       <td>ADNEXA</td>
-      <td>{{ $refraction->adnexa_right ?? 'N/A' }}</td>
-      <td>{{ $refraction->adnexa_left ?? 'N/A' }}</td>
+      <td>{{ $refraction->adnexa_right ?? ' ' }}</td>
+      <td>{{ $refraction->adnexa_left ?? ' ' }}</td>
     </tr>
     <tr>
       <td>CONJUNCTIVA</td>
-      <td>{{ $refraction->conjuctiva_right ?? 'N/A' }}</td>
-      <td>{{ $refraction->conjuctiva_left ?? 'N/A' }}</td>
+      <td>{{ $refraction->conjuctiva_right ?? ' ' }}</td>
+      <td>{{ $refraction->conjuctiva_left ?? ' ' }}</td>
     </tr>
     @foreach(['sclera', 'pupil', 'palpebra', 'cornea'] as $part)
     <tr>
       <td>{{ strtoupper($part) }}</td>
-      <td>{{ $refraction->{$part . '_right'} ?? 'N/A' }}</td>
-      <td>{{ $refraction->{$part . '_left'} ?? 'N/A' }}</td>
+      <td>{{ $refraction->{$part . '_right'} ?? ' ' }}</td>
+      <td>{{ $refraction->{$part . '_left'} ?? ' ' }}</td>
     </tr>
     @endforeach
     </tbody>
@@ -85,13 +85,13 @@
         <tbody>
         <tr>
           <td>RIGHT</td>
-          <td>{{ $refraction->distance_right ?? 'N/A' }}</td>
-          <td>{{ $refraction->ph_right ?? 'N/A' }}</td>
+          <td>{{ $refraction->distance_right ?? ' ' }}</td>
+          <td>{{ $refraction->ph_right ?? ' ' }}</td>
         </tr>
         <tr>
           <td>LEFT</td>
-          <td>{{ $refraction->distance_left ?? 'N/A' }}</td>
-          <td>{{ $refraction->ph_left ?? 'N/A' }}</td>
+          <td>{{ $refraction->distance_left ?? ' ' }}</td>
+          <td>{{ $refraction->ph_left ?? ' ' }}</td>
         </tr>
         </tbody>
       </table>
@@ -108,7 +108,7 @@
         @foreach(['right', 'left'] as $side)
         <tr>
           <td>{{ strtoupper($side) }}</td>
-          <td>{{ $refraction->{"near_{$side}"} ?? 'N/A' }}</td>
+          <td>{{ $refraction->{"near_{$side}"} ?? ' ' }}</td>
         </tr>
         @endforeach
         </tbody>
@@ -137,7 +137,7 @@
     <tr>
       <td>{{ strtoupper($side) }}</td>
       @foreach(['sph_glass', 'cyl_glass', 'axis_glass', 'prism_glass', 'base_glass', 'va_glass', 'add_glass', 'va2_glass'] as $field)
-      <td>{{ $refraction->{"{$field}_{$side}"} ?? 'N/A' }}</td>
+      <td>{{ $refraction->{"{$field}_{$side}"} ?? ' ' }}</td>
       @endforeach
     </tr>
     @endforeach
@@ -158,8 +158,8 @@
     @foreach(['right', 'left'] as $side)
     <tr>
       <td>{{ strtoupper($side) }}</td>
-      <td>{{ $refraction->{"auto_refraction_{$side}"} ?? 'N/A' }}</td>
-      <td>{{ $refraction->{"va_auto_{$side}"} ?? 'N/A' }}</td>
+      <td>{{ $refraction->{"auto_refraction_{$side}"} ?? ' ' }}</td>
+      <td>{{ $refraction->{"va_auto_{$side}"} ?? ' ' }}</td>
     </tr>
     @endforeach
     </tbody>
@@ -181,10 +181,10 @@
     @foreach(['right', 'left'] as $side)
     <tr>
       <td>{{ strtoupper($side) }}</td>
-      <td>{{ $refraction->{"sph_retino_{$side}"} ?? 'N/A' }}</td>
-      <td>{{ $refraction->{"cyl_retino_{$side}"} ?? 'N/A' }}</td>
-      <td>{{ $refraction->{"axis_retino_{$side}"} ?? 'N/A' }}</td>
-      <td>{{ $refraction->{"va_retino_{$side}"} ?? 'N/A' }}</td>
+      <td>{{ $refraction->{"sph_retino_{$side}"} ?? ' ' }}</td>
+      <td>{{ $refraction->{"cyl_retino_{$side}"} ?? ' ' }}</td>
+      <td>{{ $refraction->{"axis_retino_{$side}"} ?? ' ' }}</td>
+      <td>{{ $refraction->{"va_retino_{$side}"} ?? ' ' }}</td>
     </tr>
     @endforeach
     </tbody>
@@ -211,7 +211,7 @@
     <tr>
       <td>{{ strtoupper($side) }}</td>
       @foreach(['sph_subj', 'cyl_subj', 'axis_subj', 'prism_subj', 'base_subj', 'va_subj', 'add_subj', 'va2_subj'] as $field)
-      <td>{{ $refraction->{"{$field}_{$side}"} ?? 'N/A' }}</td>
+      <td>{{ $refraction->{"{$field}_{$side}"} ?? ' ' }}</td>
       @endforeach
     </tr>
     @endforeach
@@ -222,11 +222,11 @@
   <div class="row mt-4">
     <div class="col-12 mb-3">
       <label for="diagnosis" class="form-label">Diagnosis</label>
-      <div>{{ $refraction->diagnosis ?? 'N/A' }}</div>
+      <div>{{ $refraction->diagnosis ?? ' ' }}</div>
     </div>
     <div class="col-12">
       <label for="additional_info" class="form-label">Additional Information</label>
-      <div>{{ $refraction->additional_info ?? 'N/A' }}</div>
+      <div>{{ $refraction->additional_info ?? ' ' }}</div>
     </div>
   </div>
 </div>
