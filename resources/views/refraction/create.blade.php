@@ -312,12 +312,12 @@
             <tr>
                 <td width="50%">RIGHT</td>
                 <td><input type="text" name="auto_refraction_right" class="form-control"></td>
-                <td><input type="text" name="va_right" class="form-control"></td>
+                <td><input type="text" name="va_auto_right" class="form-control"></td>
             </tr>
             <tr>
                 <td width="50%">LEFT</td>
                 <td><input type="text" name="auto_refraction_left" class="form-control"></td>
-                <td><input type="text" name="va_left" class="form-control"></td>
+                <td><input type="text" name="va_auto_left" class="form-control"></td>
             </tr>
         </tbody>
     </table>
@@ -336,14 +336,14 @@
       <td><input type="text" name="sph_retino_right" class="form-control form-control-lg"></td>
       <td><input type="text" name="cyl_retino_right" class="form-control"></td>
       <td><input type="text" name="axis_retino_right" class="form-control"></td>
-      <td><input type="text" name="rva_retino_right" class="form-control"></td>
+      <td><input type="text" name="va_retino_right" class="form-control"></td>
     </tr>
     <tr>
       <td width="50%">LEFT</td>
       <td><input type="text" name="sph_retino_left" class="form-control"></td>
       <td><input type="text" name="cyl_retino_left" class="form-control"></td>
       <td><input type="text" name="axis_retino_left" class="form-control"></td>
-      <td><input type="text" name="rva_retino_left" class="form-control"></td>
+      <td><input type="text" name="va_retino_left" class="form-control"></td>
     </tr>
     </tbody>
   </table>
@@ -391,7 +391,7 @@
   </div>
   <div class="col-12">
     <label for="">Additional Information</label>
-    <textarea name="diagnosis" id="" cols="5" rows="3" class="form-control"></textarea>
+    <textarea name="additional_info" id="" cols="5" rows="3" class="form-control"></textarea>
   </div>
     <div class="col-12 text-center">
         <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>

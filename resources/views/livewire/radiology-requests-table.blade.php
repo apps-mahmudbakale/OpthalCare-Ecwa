@@ -29,7 +29,7 @@
         {{ $radiologyRequest->created_at->diffForHumans() }}
       </td>
       <td class="align-middle">
-        <a target="_blank" href="/app/patient/{{ $radiologyRequest->patient->id }}">
+        <a target="_blank" href="/app/patients/{{ $radiologyRequest->patient->id }}">
           {{ $radiologyRequest->patient->user->firstname }}
           {{ $radiologyRequest->patient->user->lastname }}
           [HRN {{ $radiologyRequest->patient->hospital_no }}]
@@ -49,6 +49,9 @@
             <i class="fa fa-ellipsis-v"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end" style="">
+            @if ($radiologyRequest->status == 'Result Ready')
+            <li><a class="dropdown-item" target="_blank" href="{{ route('app.radiology.print.result', $radiologyRequest->id) }}">Print</a></li>
+            @else
             <li>
               <button class="dropdown-item add-notes-btn"
                       data-request-url="{{ route('app.radiology.edit', $radiologyRequest->id) }}"
@@ -56,6 +59,7 @@
                 Add Findings/Notes
               </button>
             </li>
+            @endif
             <li>
               <a class="dropdown-item cancel-request text-bg-danger"
                  wire:click="cancelRequest({{ $radiologyRequest->id }})"

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Liveware;
+namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\LabTemplate as ModelTemplate;

@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LabRequest;
+use App\Models\LabResult;
+use App\Models\Patient;
 use App\Models\Radiology;
+use App\Models\RadiologyResult;
 use Illuminate\Http\Request;
 use App\Models\RadiologyRequest;
 use App\Services\ServiceRequestHandler;
@@ -40,6 +44,19 @@ class RadiologyRequestController extends Controller
     return redirect()->back()->with('success', 'Imaging Requested!');
   }
 
+  public function addResult(Request $request){
+    $result = RadiologyResult::create($request->all());
+    $update = RadiologyRequest::where('id', $result->imaging_id)->update(['status' => 'Result Ready']);
+    return redirect()->back()->with('success', 'Result Collected!');
+  }
+
+  public function showResult($id){
+    $image = RadiologyRequest::where('id', $id)->first();
+    $result = RadiologyResult::where('imaging_id', $id)->first();
+    $patient = Patient::where('id', $image->patient_id)->first();
+    return view('radiology.print', compact('image', 'result', 'patient'));
+  }
+
   /**
    * Display the specified resource.
    */
@@ -51,9 +68,10 @@ class RadiologyRequestController extends Controller
   /**
    * Show the form for editing the specified resource.
    */
-  public function edit(RadiologyRequest $radiologyRequest)
+  public function edit($id)
   {
-    return view('radiology.result', compact('radiologyRequest'));
+    $request = RadiologyRequest::where('id', $id)->first();
+    return view('radiology.result', compact('request'));
   }
 
   /**

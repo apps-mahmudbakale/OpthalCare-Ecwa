@@ -139,6 +139,8 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   // **** Radiology Routes
   Route::resource('radiology', RadiologyRequestController::class);
   Route::get('radiology-add-notes', [RadiologyRequestController::class, 'addFindings'])->name('radiology.requests.notes.add');
+  Route::post('radiology-add-result', [RadiologyRequestController::class, 'addResult'])->name('radiology.add.result');
+  Route::get('radiology/result/{lab}', [RadiologyRequestController::class, 'showResult'])->name('radiology.print.result');
   Route::post('radiology-category', [RadiologyController::class, 'storeCategory'])->name('radiology-category.store');
   Route::post('radiology-category/{category}', [RadiologyController::class, 'updateCategory'])->name('radiology-category.update');
   Route::post('radiology-template', [RadiologyController::class, 'storeTemplate'])->name('radiology-template.store');
