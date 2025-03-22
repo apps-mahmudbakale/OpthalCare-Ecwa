@@ -320,8 +320,8 @@ class PatientController extends Controller
       'next_of_kin_address'
     ]);
 
-    $nextOfKin = NextOfKin::where('user_id', $userId)->firstOrFail();
-    $nextOfKin->update($nextOfKinUpdateData);
+//    $nextOfKin = NextOfKin::where('user_id', $userId)->firstOrFail();
+//    $nextOfKin->update($nextOfKinUpdateData);
     return redirect()->route('app.patients.index')->with('success', 'Patient Updated Successfully');
   }
 

@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 <div class="text-center mb-4">
                     <h3 class="mb-2">New Lab for
-                        {{ \App\Models\Patient::find(request()->route()->patient->id)->user->firstname }}
+                        {{ \App\Models\Patient::find(request()->route()->patient->id)->user->firstname }} {{ \App\Models\Patient::find(request()->route()->patient->id)->user->lastname }}
                     </h3>
                 </div>
                 <form action="{{ route('app.lab.store') }}" method="POST" class="row g-3">
