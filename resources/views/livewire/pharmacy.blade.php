@@ -32,15 +32,17 @@
                             <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
                                     data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
                                 <ul class="dropdown-menu dropdown-menu-end m-0">
-                                    <li> <a href="pharmacy/request/{{ $request->id }}" class="dropdown-item"
-                                            target="_blank">
-                                            Print
-                                        </a></li>
                                     <li> <button class="dropdown-item"
                                             data-request-url="{{ route('app.pharmacy.show', $request->id) }}"
                                             data-toggle="modal" data-target="#global-modal" type="button">
                                             Details
                                         </button></li>
+                                  <?php
+                                  $serviceHandler = new App\Services\ServiceRequestHandler();
+                                  $service = "Pharmacy:" . \App\Models\Drug::where('id', $request->drug->id)->first()->name;
+                                  $isPaid = $serviceHandler->isBilled($request->drug->id, $service); // Returns 1 or 0
+                                  ?>
+                                  @if($isPaid)
                                     @if($request->status != 'Filled')
                                     <li> <button class="dropdown-item" data-toggle="modal"
                                             data-request-url="{{ route('app.pharmacy.edit', $request->id) }}"
@@ -48,6 +50,7 @@
                                             Fill
                                         </button>
                                     </li>
+                                  @endif
                                   @endif
                                     <div class="dropdown-divider"></div>
                                     <li>

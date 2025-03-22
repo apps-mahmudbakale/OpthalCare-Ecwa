@@ -78,11 +78,21 @@ class PaymentController extends Controller
         }
       }
 
-      return redirect()->route('app.payment.print')->with(['success' => 'Payment added successfully.']);
+      return view('billing.print', compact('billing', 'payment'))->with(['success' => 'Payment added successfully.']);
 
     }
 
+public function newMethod()
+{
+  return view('payments.new-method');
+}
 
+  public function saveMethod(Request $request)
+  {
+    $method = PaymentMethod::create($request->all());
+
+    return redirect()->back()->with(['success' => 'Payment Method added successfully.']);
+  }
 
 
   public function storeEnroll(Request $request)

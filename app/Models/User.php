@@ -60,4 +60,31 @@ class User extends Authenticatable
   {
     return $this->hasOne(NextOfKin::class, 'patient_id');
   }
+  protected $appends = ['last_message', 'last_message_time'];
+
+  public function getLastMessageAttribute()
+  {
+    $message = Message::where(function ($query) {
+      $query->where('sender_id', $this->id)
+        ->where('receiver_id', auth()->id());
+    })->orWhere(function ($query) {
+      $query->where('sender_id', auth()->id())
+        ->where('receiver_id', $this->id);
+    })->latest()->first();
+
+    return $message ? $message->content : null;
+  }
+
+  public function getLastMessageTimeAttribute()
+  {
+    $message = Message::where(function ($query) {
+      $query->where('sender_id', $this->id)
+        ->where('receiver_id', auth()->id());
+    })->orWhere(function ($query) {
+      $query->where('sender_id', auth()->id())
+        ->where('receiver_id', $this->id);
+    })->latest()->first();
+
+    return $message ? $message->created_at->diffForHumans() : null;
+  }
 }

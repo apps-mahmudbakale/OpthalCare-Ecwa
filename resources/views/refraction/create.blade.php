@@ -279,25 +279,25 @@
         <tbody>
             <tr>
                 <td width=30%">RIGHT</td>
-                <td><input type="text" name="sph_right" class="form-control"></td>
-                <td><input type="text" name="cyl_right" class="form-control"></td>
-                <td><input type="text" name="axis_right" class="form-control"></td>
-                <td><input type="text" name="prism_right" class="form-control"></td>
-                <td><input type="text" name="base_right" class="form-control"></td>
-                <td><input type="text" name="va_right" class="form-control"></td>
-                <td><input type="text" name="add_right" class="form-control"></td>
-                <td><input type="text" name="va2_right" class="form-control"></td>
+                <td><input type="text" name="sph_glass_right" class="form-control"></td>
+                <td><input type="text" name="cyl_glass_right" class="form-control"></td>
+                <td><input type="text" name="axis_glass_right" class="form-control"></td>
+                <td><input type="text" name="prism_glass_right" class="form-control"></td>
+                <td><input type="text" name="base_glass_right" class="form-control"></td>
+                <td><input type="text" name="va_glass_right" class="form-control"></td>
+                <td><input type="text" name="add_glass_right" class="form-control"></td>
+                <td><input type="text" name="va2_glass_right" class="form-control"></td>
             </tr>
             <tr>
                 <td width="30%">LEFT</td>
-                <td><input type="text" name="sph_left" class="form-control"></td>
-                <td><input type="text" name="cyl_left" class="form-control"></td>
-                <td><input type="text" name="axis_left" class="form-control"></td>
-                <td><input type="text" name="prism_left" class="form-control"></td>
-                <td><input type="text" name="base_left" class="form-control"></td>
-                <td><input type="text" name="va_left" class="form-control"></td>
-                <td><input type="text" name="add_left" class="form-control"></td>
-                <td><input type="text" name="va2_left" class="form-control"></td>
+                <td><input type="text" name="sph_glass_left" class="form-control"></td>
+                <td><input type="text" name="cyl_glass_left" class="form-control"></td>
+                <td><input type="text" name="axis_glass_left" class="form-control"></td>
+                <td><input type="text" name="prism_glass_left" class="form-control"></td>
+                <td><input type="text" name="base_glass_left" class="form-control"></td>
+                <td><input type="text" name="va_glass_left" class="form-control"></td>
+                <td><input type="text" name="add_glass_left" class="form-control"></td>
+                <td><input type="text" name="va2_glass_left" class="form-control"></td>
             </tr>
         </tbody>
     </table>
@@ -333,17 +333,17 @@
     <tbody>
     <tr>
       <td width="50%">RIGHT</td>
-      <td><input type="text" name="sph_right" class="form-control form-control-lg"></td>
-      <td><input type="text" name="cyl_right" class="form-control"></td>
-      <td><input type="text" name="axis_right" class="form-control"></td>
-      <td><input type="text" name="rva_right" class="form-control"></td>
+      <td><input type="text" name="sph_retino_right" class="form-control form-control-lg"></td>
+      <td><input type="text" name="cyl_retino_right" class="form-control"></td>
+      <td><input type="text" name="axis_retino_right" class="form-control"></td>
+      <td><input type="text" name="rva_retino_right" class="form-control"></td>
     </tr>
     <tr>
       <td width="50%">LEFT</td>
-      <td><input type="text" name="sph_left" class="form-control"></td>
-      <td><input type="text" name="cyl_left" class="form-control"></td>
-      <td><input type="text" name="axis_left" class="form-control"></td>
-      <td><input type="text" name="rva_left" class="form-control"></td>
+      <td><input type="text" name="sph_retino_left" class="form-control"></td>
+      <td><input type="text" name="cyl_retino_left" class="form-control"></td>
+      <td><input type="text" name="axis_retino_left" class="form-control"></td>
+      <td><input type="text" name="rva_retino_left" class="form-control"></td>
     </tr>
     </tbody>
   </table>
@@ -363,25 +363,25 @@
     <tbody>
     <tr>
       <td width="30%">RIGHT</td>
-      <td><input type="text" name="sph_right" class="form-control"></td>
-      <td><input type="text" name="cyl_right" class="form-control"></td>
-      <td><input type="text" name="axis_right" class="form-control"></td>
-      <td><input type="text" name="prism_right" class="form-control"></td>
-      <td><input type="text" name="base_right" class="form-control"></td>
-      <td><input type="text" name="va_right" class="form-control"></td>
-      <td><input type="text" name="add_right" class="form-control"></td>
-      <td><input type="text" name="va2_right" class="form-control"></td>
+      <td><input type="text" name="sph_subj_right" class="form-control"></td>
+      <td><input type="text" name="cyl_subj_right" class="form-control"></td>
+      <td><input type="text" name="axis_subj_right" class="form-control"></td>
+      <td><input type="text" name="prism_subj_right" class="form-control"></td>
+      <td><input type="text" name="base_subj_right" class="form-control"></td>
+      <td><input type="text" name="va_subj_right" class="form-control"></td>
+      <td><input type="text" name="add_subj_right" class="form-control"></td>
+      <td><input type="text" name="va2_subj_right" class="form-control"></td>
     </tr>
     <tr>
       <td width="30%">LEFT</td>
-      <td><input type="text" name="sph_left" class="form-control"></td>
-      <td><input type="text" name="cyl_left" class="form-control"></td>
-      <td><input type="text" name="axis_left" class="form-control"></td>
-      <td><input type="text" name="prism_left" class="form-control"></td>
-      <td><input type="text" name="base_left" class="form-control"></td>
-      <td><input type="text" name="va_left" class="form-control"></td>
-      <td><input type="text" name="add_left" class="form-control"></td>
-      <td><input type="text" name="va2_left" class="form-control"></td>
+      <td><input type="text" name="sph_subj_left" class="form-control"></td>
+      <td><input type="text" name="cyl_subj_left" class="form-control"></td>
+      <td><input type="text" name="axis_subj_left" class="form-control"></td>
+      <td><input type="text" name="prism_subj_left" class="form-control"></td>
+      <td><input type="text" name="base_subj_left" class="form-control"></td>
+      <td><input type="text" name="va_subj_left" class="form-control"></td>
+      <td><input type="text" name="add_subj_left" class="form-control"></td>
+      <td><input type="text" name="va2_subj_left" class="form-control"></td>
     </tr>
     </tbody>
   </table>

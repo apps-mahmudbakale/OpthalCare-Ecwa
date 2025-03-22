@@ -8,7 +8,7 @@
         <span class="alert-icon text-primary me-2">
             <i class="ti ti-user ti-xs"></i>
         </span>
-      <p class="mt-3 ml-5">{{$request->request_note}</p>
+      <p class="mt-3 ml-5">{{$request->request_note}}</p>
     </div>
     <label class="form-label"> Result</label>
     <input type="hidden" name="patient_id" value="{{$request->patient_id}}">

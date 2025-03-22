@@ -186,7 +186,9 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::post('cashpoints/bill-patient', [CashPointController::class, 'billPatient'])->name('cashpoints.bill-patient');
   Route::resource('payments', PaymentController::class);
   Route::post('payments/new-enroll', [PaymentController::class, 'storeEnroll'])->name('payments.new-enroll');
-  Route::post('payments/new-enroll-pay', [PaymentController::class, 'payEnroll'])->name('payments.new-enroll-pay');
+  Route::post('payments/new-enroll', [PaymentController::class, 'storeEnroll'])->name('payments.new-enroll');
+  Route::get('payment/new-method', [PaymentController::class, 'newMethod'])->name('payments.new-method');
+  Route::post('payment/new-method', [PaymentController::class, 'saveMethod'])->name('payments.save-method');
   Route::get('payment/print', function (){
     return view('billing.print');
   })->name('payment.print');

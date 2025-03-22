@@ -47,8 +47,8 @@ class PatientSeeder extends Seeder
       ]);
 
 
-      $nextOfKinData = NextOfKin::factory()->make()->toArray();
-      $next_of_kin = $patient->nextOfKin()->create($nextOfKinData);
+//      $nextOfKinData = NextOfKin::factory()->make()->toArray();
+//      $next_of_kin = $patient->nextOfKin()->create($nextOfKinData);
     }
   }
 }

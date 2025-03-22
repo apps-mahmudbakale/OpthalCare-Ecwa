@@ -21,21 +21,13 @@
 
     td.description,
     th.description {
-      width: 75px;
-      max-width: 75px;
+      width: 150px;
+      max-width: 500px;
     }
-
-    td.quantity,
-    th.quantity {
-      width: 40px;
-      max-width: 40px;
-      word-break: break-all;
-    }
-
     td.price,
     th.price {
-      width: 40px;
-      max-width: 40px;
+      width: 200px;
+      max-width: 500px;
       word-break: break-all;
     }
 
@@ -64,41 +56,32 @@
 </head>
 <body>
 <div class="ticket">
-  <img src="./logo.png" alt="Logo">
-  <p class="centered">RECEIPT EXAMPLE
-    <br>Address line 1
-    <br>Address line 2</p>
+  <img src="{{ !empty(app(App\Settings\SystemSettings::class)->logo) ? asset('storage/system/' . app(App\Settings\SystemSettings::class)->logo) : asset('assets/img/logo.png') }}"
+       style="width: 130%; height:120%;">
+  <p class="centered">Payment Receipt
+    <br>
+    {{ !empty(app(App\Settings\SystemSettings::class)->address) ? app(App\Settings\SystemSettings::class)->address : 'Address' }}
+    </p>
   <table>
     <thead>
     <tr>
-      <th class="quantity">Q.</th>
       <th class="description">Description</th>
-      <th class="price">$$</th>
+      <th class="price">N</th>
     </tr>
     </thead>
     <tbody>
     <tr>
-      <td class="quantity">1.00</td>
-      <td class="description">ARDUINO UNO R3</td>
-      <td class="price">$25.00</td>
+      <td class="description">{{\App\Models\Billing::where('id', $payment->billing_id)->first()->service}}</td>
+      <td class="price">N {{$payment->paying_amount}}</td>
     </tr>
     <tr>
-      <td class="quantity">2.00</td>
-      <td class="description">JAVASCRIPT BOOK</td>
-      <td class="price">$10.00</td>
-    </tr>
-    <tr>
-      <td class="quantity">1.00</td>
-      <td class="description">STICKER PACK</td>
-      <td class="price">$10.00</td>
-    </tr>
-    <tr>
-      <td class="quantity"></td>
       <td class="description">TOTAL</td>
-      <td class="price">$55.00</td>
+      <td class="price">{{$payment->paying_amount}}</td>
     </tr>
     </tbody>
   </table>
+  <p class="centered">Payment Receved From
+    <br>{{\App\Models\Patient::where('id',\App\Models\Billing::where('id', $payment->billing_id)->first()->user_id)->first()->user->firstname}}</p>
   <p class="centered">Thanks for your purchase!
     <br>parzibyte.me/blog</p>
 </div>

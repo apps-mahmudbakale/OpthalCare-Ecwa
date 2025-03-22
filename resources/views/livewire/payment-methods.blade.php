@@ -101,7 +101,5 @@
     });
     @endonce
 @endpush
-@include('payment-methods.modals.new')
-@include('payment-methods.modals.edit')
 </div>
 
