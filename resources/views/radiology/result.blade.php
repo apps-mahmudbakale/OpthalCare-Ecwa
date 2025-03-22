@@ -1,5 +1,5 @@
 <div class="text-center mb-4">
-  <h6 class="mb-2">{{ \App\Models\Radiology::where('id', $request->imaging_id)->first()->name }} Result for {{\App\Models\Patient::where('id', $request->imaging_id)->first()->user->firstname }} {{\App\Models\Patient::where('id', $request->imaging_id)->first()->user->lastname }} </h6>
+  <h6 class="mb-2">{{ \App\Models\Radiology::where('id', $request->imaging_id)->first()->name }} Result for {{\App\Models\Patient::where('id', $request->patient_id)->first()->user->firstname }} {{\App\Models\Patient::where('id', $request->patient_id)->first()->user->lastname }} </h6>
 </div>
 <form method="post" action="{{route('app.radiology.add.result')}}" class="row g-3">
   @csrf
