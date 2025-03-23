@@ -1,6 +1,6 @@
 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 <div class="text-center mb-4">
-    <h3 class="mb-2">Vision Acuity For {{ $visionAcuity->patient->user->firstname }}
+    <h3 class="mb-2">Visual Acuity For {{ $visionAcuity->patient->user->firstname }}
         {{ $visionAcuity->patient->user->lastname }}</h3>
     <p>Recorded by {{ $visionAcuity->user->firstname ." ". $visionAcuity->user->lastname }} on {{ $visionAcuity->created_at->format('d M Y h:i A') }}
     <p>

@@ -227,7 +227,7 @@
             </tr>
         </tbody>
     </table>
-    <h4>Vision Acuity Test</h4>
+    <h4>Visual Acuity Test</h4>
     <table class="table table-striped table-bordered">
         <thead class="table-dark">
             <th></th>
