@@ -16,6 +16,7 @@ return new class extends Migration
       $table->integer('patient_id');
       $table->string('right')->nullable();
       $table->string('left')->nullable();
+      $table->integer('user_id')->unsigned()->nullable();
       $table->timestamps();
     });
   }

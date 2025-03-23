@@ -93,7 +93,7 @@
       </td>
     </tr>
     <tr>
-      <td class="price" colspan="2"><em>Two Thousand, Five Hundred Naira</em></td>
+      <td class="price" colspan="2"><em>{{ucfirst(\Rmunate\Utilities\SpellNumber::value($payment->paying_amount)->locale('en')->currency('Naira')->toMoney())}}</em></td>
     </tr>
     <tr><td colspan="2">&nbsp;</td></tr>
     </tbody>
@@ -102,8 +102,9 @@
   <br>
   <div class="centered-">Date:<br> {{$payment->created_at->format('d M Y h:i A')}}</div>
   <br>
+  Thank You
   <br>
-  <p class="centered small">Cashier: Happiness</p>
+  <p class="centered small">Cashier: {{$payment->user->firstname." ".$payment->user->lastname}}</p>
   <p class="centered small">&copy; 2020-{{date('Y')}} - OpthalCare</p>
 </div>
 <button id="btnPrint" class="hidden-print">Print</button>

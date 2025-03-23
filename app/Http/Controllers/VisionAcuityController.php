@@ -28,7 +28,7 @@ class VisionAcuityController extends Controller
    */
   public function store(Request $request)
   {
-    $va = VisionAcuity::create($request->all());
+    $va = VisionAcuity::create(array_merge($request->all(), ['user_id' => auth()->id()]));
     return redirect()->back()->with('success', 'Vision Acuity Recorded!');
   }
 

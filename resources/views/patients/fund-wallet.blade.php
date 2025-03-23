@@ -8,8 +8,6 @@
     <div class="form-label-group">
       <select name="transaction_type" class="custom-select" id="fls0" required="required">
         <option value=""> Choose...</option>
-        <option value="cash">Cash</option>
-        <option value="pos">POS</option>
         <option value="transfer">Bank Transfer</option>
         <option value="card">Card</option>
       </select>

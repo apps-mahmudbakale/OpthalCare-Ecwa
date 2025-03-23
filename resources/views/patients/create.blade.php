@@ -164,8 +164,15 @@
                           <div class="col-md-4">
                             <label for="residential_address" class="form-label">Disability<span
                                 class="text-danger">*</span></label>
-                            <input name="disability" id="residential_address"
-                                   class="form-control @error('residential_address') is-invalid @enderror">
+                            <select name="disability" id="" class="form-control">
+                              <option>Visual</option>
+                              <option>Hearing</option>
+                              <option>Physical</option>
+                              <option>Intellectual</option>
+                              <option>Mental</option>
+                              <option>Multiple</option>
+                              <option>None</option>
+                            </select>
                           </div>
                             <div class="col-md-4">
                                 <label for="" class="form-label">Occupation <span

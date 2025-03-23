@@ -17,6 +17,7 @@ return new class extends Migration
       $table->integer('cashpoint_id')->nullable();
       $table->string('payment_method')->nullable();
       $table->integer('paying_amount');
+      $table->integer('user_id')->unsigned()->nullable();
       $table->timestamps();
     });
   }

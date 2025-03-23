@@ -21,8 +21,11 @@ class Patients extends Base
     if ($this->search) {
       $query->join('users', 'patients.user_id', '=', 'users.id')
         ->where('patients.hospital_no', 'like', '%' . $this->search . '%')
+        ->orWhere('patients.phone', 'like', '%' . $this->search . '%')
+        ->orWhere('patients.date_of_birth', 'like', '%' . $this->search . '%')
         ->orWhere('users.firstname', 'like', '%' . $this->search . '%')
         ->orWhere('users.lastname', 'like', '%' . $this->search . '%')
+        ->orWhere('patients.middlename', 'like', '%' . $this->search . '%')
         ->select('patients.*');  // Select only the patients columns to avoid ambiguity
     }
 

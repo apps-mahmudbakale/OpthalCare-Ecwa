@@ -1,6 +1,7 @@
 <div class="container">
   <div class="text-center mb-4">
     <h3 class="mb-2">Record Refraction for {{ $patient->user->firstname }} {{ $patient->user->lastname }}</h3>
+    <p>Recorded By  {{ $refraction->user->firstname ." ". $refraction->user->lastname }} on {{ $refraction->created_at->format('d M Y h:i A') }}<p>
   </div>
 
   <!-- Case History -->

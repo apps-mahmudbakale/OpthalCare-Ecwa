@@ -49,7 +49,7 @@ return new class extends Migration
       $table->text('assessment')->nullable();
       $table->text('treatment')->nullable();
       $table->integer('icd_id');
-      $table->longText('comments');
+      $table->longText('comments')->nullable();
       $table->longText('sketch')->nullable();
       $table->string('status');
       $table->integer('user_id');

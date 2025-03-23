@@ -102,6 +102,12 @@ class Refraction extends Model
     'va2_subj_left',
     'diagnosis',
     'additional_info',
+    'user_id',
   ];
+
+  public function user()
+  {
+    return $this->belongsTo(User::class);
+  }
 }
 

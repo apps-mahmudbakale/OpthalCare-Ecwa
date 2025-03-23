@@ -47,7 +47,27 @@
                     <td>{{ $request->test->name }}</td>
                     <td>{{ $request->user->firstname . ' ' . $request->user->lastname }}</td>
                     <td>{{ $request->status }}</td>
-                    <td></td>
+                  <td class="align-middle text-right">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-sm btn-icon btn-light waves-effect waves-light"
+                              data-bs-toggle="dropdown" data-boundary="viewport" aria-expanded="false"
+                              aria-haspopup="true">
+                        <i class="fa fa-ellipsis-v"></i>
+                      </button>
+                      <ul class="dropdown-menu" style="">
+                        @if ($request->status == 'Specimen Collected')
+                        <li><button class="dropdown-item" data-request-url="{{ route('app.lab.show', $request->id) }}">Add Result</button></li>
+                        @elseif ($request->status == 'Result Ready')
+                        <li><a class="dropdown-item" target="_blank" href="{{ route('app.lab.print.result', $request->id) }}">Print</a></li>
+                        @else
+                        <li><a href="{{ route('app.lab.specimen', $request->id) }}"
+                               class="dropdown-item" href="javascript:void(0);">Receive Specimens</a></li>
+                        @endif
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-bg-danger" href="javascript:void(0);">Cancel</a></li>
+                      </ul>
+                    </div>
+                  </td>
                 </tr>
             @endforeach
         </tbody>

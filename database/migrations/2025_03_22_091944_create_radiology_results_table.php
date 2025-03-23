@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('patient_id');
             $table->unsignedBigInteger('imaging_id');
             $table->text('result')->nullable();
+            $table->integer('user_id')->unsigned()->nullable();
             $table->timestamps();
         });
     }

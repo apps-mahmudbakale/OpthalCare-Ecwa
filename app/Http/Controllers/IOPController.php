@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\IOP;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class IOPController extends Controller
 {
@@ -28,7 +29,7 @@ class IOPController extends Controller
    */
   public function store(Request $request)
   {
-    $iop = IOP::create($request->all());
+    $iop = IOP::create(array_merge($request->all(), ['user_id' => Auth::id()]));
     return redirect()->back()->with('success', 'IOP Added!');
   }
 

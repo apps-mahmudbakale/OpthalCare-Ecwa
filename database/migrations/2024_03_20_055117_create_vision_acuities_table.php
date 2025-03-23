@@ -21,6 +21,7 @@ return new class extends Migration
       $table->string('right_glasses')->nullable();
       $table->string('left_glasses')->nullable();
       $table->string('disablities')->nullable();
+      $table->integer('user_id')->nullable();
       $table->timestamps();
     });
   }

@@ -18,10 +18,16 @@ class VisionAcuity extends Model
     'left_glasses',
     'right_glasses',
     'disablities',
+    'user_id'
   ];
 
   public function patient()
   {
     return $this->belongsTo(Patient::class);
+  }
+
+  public function user()
+  {
+    return $this->belongsTo(User::class);
   }
 }

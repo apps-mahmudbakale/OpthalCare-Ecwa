@@ -10,7 +10,7 @@
   <div class="col-md-12">
     <div class="list-group list-group-bordered">
       <div class="list-group-header justify-content-between">
-        <div><i class="fas fa-calendar"></i> {{ $diagnosis->created_at->diffForHumans() }}</div>
+        <div><i class="fas fa-calendar"></i> {{ $diagnosis->created_at->format('d M Y h:i A') }}</div>
         <div><i class="fas fa-user"></i> {{ $diagnosis->user->firstname }} {{ $diagnosis->user->lastname }}</div>
       </div>
       <div href="#" class="list-group-item">
@@ -106,6 +106,31 @@
               <td width="70%">VITREOUS</td>
               <td>{{ $diagnosis->vitreous_right ?? '   ' }}</td>
               <td>{{ $diagnosis->vitreous_left ?? '   ' }}</td>
+            </tr>
+            <tr>
+              <td width="70%">DISC</td>
+              <td>{{ $diagnosis->disc_right ?? '   ' }}</td>
+              <td>{{ $diagnosis->disc_left ?? '   ' }}</td>
+            </tr>
+            <tr>
+              <td width="70%">VCDR</td>
+              <td>{{ $diagnosis->vcdr_right ?? '   ' }}</td>
+              <td>{{ $diagnosis->vcdr_left ?? '   ' }}</td>
+            </tr>
+            <tr>
+              <td width="70%">MACULA</td>
+              <td>{{ $diagnosis->macula_right ?? '   ' }}</td>
+              <td>{{ $diagnosis->macula_left ?? '   ' }}</td>
+            </tr>
+            <tr>
+              <td width="70%">RETINA</td>
+              <td>{{ $diagnosis->retnia_right ?? '   ' }}</td>
+              <td>{{ $diagnosis->retina_left ?? '   ' }}</td>
+            </tr>
+            <tr>
+              <td width="70%">VESSELS</td>
+              <td>{{ $diagnosis->vessels_right ?? '   ' }}</td>
+              <td>{{ $diagnosis->vessels_left ?? '   ' }}</td>
             </tr>
             </tbody>
           </table>

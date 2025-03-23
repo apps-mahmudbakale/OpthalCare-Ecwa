@@ -45,12 +45,12 @@
               <figcaption class="figure-caption">
                 <h6 class="figure-title">
                   <a href="{{ route('app.patients.show', $patient->id) }}">
-                    {{ $patient->user->firstname }} {{ $patient->user->middlename }} {{ $patient->user->lastname }}
+                    {{ $patient->user->firstname }} {{ $patient->middlename }} {{ $patient->user->lastname }}
                     [{{ app(App\Settings\SystemSettings::class)->number_prefix ?: 'HRN' }}{{ $patient->hospital_no }}]
                   </a>
                 </h6>
                 <p class="text-muted mb-0">{{ $patient->gender }}, {{ $patient->getAge() }}</p>
-                <p class="text-muted mb-0">{{ $patient->user->phone }}</p>
+                <p class="text-muted mb-0">{{ $patient->phone }}</p>
                 <p class="text-muted mb-0">
                   <span class="badge bg-dark">WALK-IN PATIENT - Self Pay</span>
                 </p>

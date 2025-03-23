@@ -1,4 +1,6 @@
 <!-- Edit User Modal -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <div wire:ignore.self class="modal fade" id="new-diagnosis-modal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-simple modal-edit-user">
     <div class="modal-content p-3 p-md-5">
@@ -132,6 +134,31 @@
                   <td><input type="text" name="vitreous_right" class="form-control"></td>
                   <td><input type="text" name="vitreous_left" class="form-control"></td>
                 </tr>
+                <tr>
+                  <td width="70%">DISC</td>
+                  <td><input type="text" name="disc_right" class="form-control"></td>
+                  <td><input type="text" name="disc_left" class="form-control"></td>
+                </tr>
+                <tr>
+                  <td width="70%">VCDR</td>
+                  <td><input type="text" name="vcdr_right" class="form-control"></td>
+                  <td><input type="text" name="vcdr_left" class="form-control"></td>
+                </tr>
+                <tr>
+                  <td width="70%">MACULA</td>
+                  <td><input type="text" name="macula_right" class="form-control"></td>
+                  <td><input type="text" name="macula_left" class="form-control"></td>
+                <tr>
+                  <td width="70%">RETINA</td>
+                  <td><input type="text" name="retina_right" class="form-control"></td>
+                  <td><input type="text" name="retina_left" class="form-control"></td>
+                </tr>
+                <tr>
+                  <td width="70%">VESSELS</td>
+                  <td><input type="text" name="vessels_right" class="form-control"></td>
+                  <td><input type="text" name="vessels_left" class="form-control"></td>
+                </tr>
+                </tr>
                 </tbody>
               </table>
             </div>
@@ -165,7 +192,7 @@
             <div class="tab-pane fade" id="step4">
               <div class="col-12">
                 <label class="form-label">Case Description</label>
-                <select name="icd_id" class="form-control">
+                <select id="select-icd" name="icd_id" class="form-control">
                   @foreach (\App\Models\ICD10::all() as $icd)
                   <option value="{{ $icd->id }}">({{ $icd->number }}) {{ $icd->name }}</option>
                   @endforeach
@@ -213,8 +240,6 @@
 <!-- Styles (Bootstrap CSS) -->
 <!-- Scripts -->
 <script src="{{ asset('js/jquery.min.js') }}"></script>
-<!-- EasyEditor core JS -->
-<script src="{{ asset('js/jquery.easyeditor.js') }}"></script>
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 <!-- SweetAlert2 -->
@@ -290,6 +315,13 @@
           });
         }
       });
+    });
+  });
+</script>
+<script>
+  $(document).ready(function() {
+    $('#select-icd').select2({
+      dropdownParent: $('#new-diagnosis-modal')
     });
   });
 </script>

@@ -2,7 +2,7 @@
 <div class="text-center mb-4">
     <h3 class="mb-2">Vision Acuity For {{ $visionAcuity->patient->user->firstname }}
         {{ $visionAcuity->patient->user->lastname }}</h3>
-    <p>Recorded on {{ $visionAcuity->created_at->diffForHumans() }}
+    <p>Recorded by {{ $visionAcuity->user->firstname ." ". $visionAcuity->user->lastname }} on {{ $visionAcuity->created_at->format('d M Y h:i A') }}
     <p>
 </div>
 <table class="table table-striped">
@@ -29,3 +29,4 @@
         </tr>
     </tbody>
 </table>
+

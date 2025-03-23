@@ -10,6 +10,7 @@ use App\Models\PaymentMethod;
 use App\Models\TempPatient;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
@@ -55,8 +56,9 @@ class PaymentController extends Controller
       $payment = Payment::create([
         'billing_id' => $request->billing_id,
         'cashpoint_id' => $request->location_id,
-        'payment_method_id' => $payment_method->name,
-        'paying_amount' => $request->amount
+        'payment_method_id' => $request->payment_method_id,
+        'paying_amount' => $request->amount,
+        'user_id' => Auth::user()->id,
       ]);
 
       $billing = Billing::where('id', $request->billing_id)->update([

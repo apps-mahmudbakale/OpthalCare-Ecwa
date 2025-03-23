@@ -91,8 +91,7 @@
     </tr>
   </table>
   <p style="text-align: center"><b>Access Code: <br> {{$access->access_code}} </b></p>
-  <p class="centered">Thanks for your purchase!
-    <br>parzibyte.me/blog</p>
+  <p class="centered">Thanks for your purchase!</p>
 </div>
 <button id="btnPrint" class="hidden-print">Print</button>
 <script src="script.js"></script>

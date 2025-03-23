@@ -12,6 +12,14 @@ class Payment extends Model
       'billing_id',
       'cashpoint_id',
       'payment_method',
-      'paying_amount'
+      'paying_amount',
+      'user_id'
     ];
+
+    public function user()
+
+    {
+      return $this->belongsTo(User::class);
+    }
 }
+

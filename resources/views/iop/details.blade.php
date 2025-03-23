@@ -2,8 +2,7 @@
 <div class="text-center mb-4">
     <h3 class="mb-2">Intra Ocular Pressure Chart for {{ $iOP->patient->user->firstname }}
         {{ $iOP->patient->user->lastname }}</h3>
-    <p>Recorded on {{ $iOP->created_at->diffForHumans() }}
-    <p>
+    <p>Recorded By  {{ $iOP->user->firstname ." ". $iOP->user->lastname }} on {{ $iOP->created_at->format('d M Y h:i A') }}<p>
 </div>
 <table class="table table-striped">
     <thead class="table-light">

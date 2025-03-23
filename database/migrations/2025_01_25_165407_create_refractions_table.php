@@ -105,6 +105,7 @@ return new class extends Migration
         $table->text('va2_subj_left')->nullable();
         $table->longText('diagnosis')->nullable();
         $table->longText('additional_info')->nullable();
+        $table->integer('user_id')->unsigned()->nullable();
         $table->timestamps();
       });
 
