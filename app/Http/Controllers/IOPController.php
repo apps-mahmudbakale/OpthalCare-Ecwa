@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\IOP;
+use App\Models\VisionAcuity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,7 +22,7 @@ class IOPController extends Controller
    */
   public function create()
   {
-    //
+
   }
 
   /**
@@ -46,17 +47,20 @@ class IOPController extends Controller
   /**
    * Show the form for editing the specified resource.
    */
-  public function edit(IOP $iOP)
+  public function edit($iop, $patient)
   {
-    //
+    $iop = IOP::where('id', $iop)->firstOrFail();
+    return view('iop.edit', compact('iop', 'patient'));
   }
 
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, IOP $iOP)
+  public function update(Request $request, $id)
   {
-    //
+    $iop = IOP::where('id', $id)->first();
+    $iop->update($request->all());
+    return redirect()->back()->with('success', 'IOP Updated!');
   }
 
   /**

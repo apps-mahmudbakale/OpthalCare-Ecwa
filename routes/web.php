@@ -120,7 +120,11 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::resource('vision-acuity', VisionAcuityController::class);
   Route::resource('iop', IOPController::class);
   Route::get('vision-acuity/{id}', [VisionAcuityController::class, 'show'])->name('show.va');
+  Route::get('vision-acuity-create/{patient}/', [VisionAcuityController::class, 'create'])->name('create.va');
+  Route::get('vision-acuity/{patient}/{va}', [VisionAcuityController::class, 'edit'])->name('edit.va');
+  Route::delete('vision-acuity/{id}', [VisionAcuityController::class, 'destroy'])->name('delete.va');
   Route::get('iop/{id}', [IOPController::class, 'show'])->name('show.iop');
+  Route::get('iop/{patient}/{iop}', [IOPController::class, 'edit'])->name('edit.iop');
   Route::post('lab-category', [LaboratoryController::class, 'storeCategory'])->name('lab-category.store');
 
   Route::post('consumables-add', [ConsumbleController::class, 'storeConsumables'])->name('consumables-add.store');
@@ -171,7 +175,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::post('settings', [SystemSettingsController::class, 'updateSystemSettings'])->name('update.system.settings');
   Route::post('settings/currency', [SystemSettingsController::class, 'updateStoreCurrency'])->name('update.store.currency');
   Route::get('settings/admission', [SystemSettingsController::class, 'admissionSettings'])->name('settings.admission');
-  Route::get('settings/antenatal', [SystemSettingsController::class, 'antenatalSettings'])->name('settings.antenatal');
+  Route::get('settings/ophthical', [SystemSettingsController::class, 'ophthicalSettings'])->name('settings.ophthical');
   Route::get('settings/consultations', [SystemSettingsController::class, 'consultationSettings'])->name('settings.consultations');
   Route::get('settings/consumables', [SystemSettingsController::class, 'consumablesSettings'])->name('settings.consumables');
   Route::get('settings/pharmacy', [SystemSettingsController::class, 'PharmacySettings'])->name('settings.pharmacy');

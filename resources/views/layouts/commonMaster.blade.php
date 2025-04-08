@@ -25,6 +25,7 @@
   <link rel="canonical" href="{{ config('variables.productPage') ? config('variables.productPage') : '' }}">
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/10.16.11/sweetalert2.css" integrity="sha512-IThEP8v8WRHuDqEKg3D6V0jROeRcQXGu/02HzCudtHKlLSzl6F6EycdHw34M3gsBA5zsUyR4ynW6j5vS1qE4wQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     .checked-in{
       border: 2px solid darkgreen;
@@ -37,6 +38,7 @@
 
   <!-- Include Scripts for customizer, helper, analytics, config -->
   @include('layouts/sections/scriptsIncludes')
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/10.16.11/sweetalert2.all.js" integrity="sha512-zQu5NZx4gpoe2uy/Qz7/RfcUNSwqfwWXSeWGMZKqBKA0p07pj46Hd9doXX3YmaDx6oensjTS82rw2NSjIKz0jg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>
@@ -137,6 +139,56 @@
   });
   @endif
 </script>
+<script>
+  $(document).ready(function() {
+    $('.dropdown-item2').on('click', function() {
+      var requestUrl = $(this).data('request-url');
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true, // Show the cancel button
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "Cancel"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Using fetch API to send delete request
+          fetch(requestUrl, {
+            method: 'DELETE',
+            headers: {
+              'X-CSRF-TOKEN': '{{ csrf_token() }}',
+              'Accept': 'application/json',
+            },
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                Swal.fire(
+                  'Deleted!',
+                  'The record has been deleted.',
+                  'success'
+                );
+              } else {
+                Swal.fire(
+                  'Error!',
+                  'There was a problem deleting the record.',
+                  'error'
+                );
+              }
+            })
+            .catch(error => {
+              Swal.fire(
+                'Error!',
+                'There was a problem deleting the record.',
+                'error'
+              );
+            });
+        }
+      });
+    });
+  });
+</script>
+
 </body>
 
 </html>

@@ -26,8 +26,7 @@
                    data-toggle="modal" data-target="#global-modal">Details</a>
               </li>
               <li>
-                <a class="dropdown-item" href="javascript:void(0);"
-                   onclick="Livewire.emit('editRefraction', {{ $refraction->id }})">Edit</a>
+                <a class="dropdown-item" href="{{ route('app.refraction.edit', $refraction->id)}}">Edit</a>
               </li>
               <li>
                 <hr class="dropdown-divider">

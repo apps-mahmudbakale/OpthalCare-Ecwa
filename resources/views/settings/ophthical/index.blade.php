@@ -24,7 +24,7 @@
 @endsection
 
 @section('content')
-    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Antenatal Settings</span>
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"Ophthicals Settings</span>
     </h4>
 
     <div class="row">
@@ -33,8 +33,7 @@
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between">
                     <div class="card-title mb-0">
-                        <h5 class="mb-0">Antenatal Packages</h5>
-                        {{-- <small class="text-muted">Average 72% Completed</small> --}}
+                        <h5 class="mb-0">Ophthicals List</h5>
                     </div>
                     <a class="btn btn-label-dark waves-effect" href="javascript:void(0);" data-bs-toggle="modal"
                         data-bs-target="#new-antenatal-modal">New</a>

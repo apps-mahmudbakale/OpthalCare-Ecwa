@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Drug;
 use App\Models\Patient;
 use Illuminate\Http\Request;
 
@@ -18,11 +19,15 @@ class ReportController extends Controller
     // Fetch patients who registered today
     $patientTodayCount = Patient::whereDate('created_at', $today)->count();
     $patientsCount = Patient::count();
+    $expiredDrugs = Drug::where('expiry_date', '<=', $today)->count();
+    $lowStock = Drug::whereColumn('quantity', '<=', 'threshold')->count();
+
+//    dd(compact('patientTodayCount', 'patientsCount', 'expiredDrugsCount', 'lowStockCount'));
 
 
 
 
-    return view('report.index', compact('patientTodayCount', 'patientsCount'));
+    return view('report.index', compact('patientTodayCount', 'patientsCount', 'expiredDrugs', 'lowStock'));
 
   }
 
@@ -34,7 +39,9 @@ class ReportController extends Controller
 
   public function pharmacyReport(Request $request)
   {
-    return view('report.pharmacy');
+    $lowstock = Drug::whereColumn('quantity', '<=', 'threshold')->get();
+    $all = Drug::all();
+    return view('report.pharmacy', compact('lowstock', 'all'));
   }
 
   public function labReport(Request $request)

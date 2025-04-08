@@ -18,7 +18,8 @@ class VisionAcuity extends Model
     'left_glasses',
     'right_glasses',
     'disablities',
-    'user_id'
+    'user_id',
+    'comment'
   ];
 
   public function patient()

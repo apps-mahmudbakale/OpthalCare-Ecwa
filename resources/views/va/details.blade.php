@@ -29,4 +29,6 @@
         </tr>
     </tbody>
 </table>
+<h6>Comments</h6>
+  <p>{{$visionAcuity->comment ?? ""}}</p>
 

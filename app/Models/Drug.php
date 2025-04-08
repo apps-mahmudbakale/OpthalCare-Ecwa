@@ -29,4 +29,9 @@ class Drug extends Model
   {
     return 'drug';
   }
+
+  public function store()
+  {
+    return $this->belongsTo(DrugStore::class, 'store_id',);
+  }
 }

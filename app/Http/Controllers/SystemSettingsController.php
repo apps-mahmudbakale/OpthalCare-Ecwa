@@ -20,9 +20,9 @@ class SystemSettingsController extends Controller
     return view('settings.admission.index');
   }
 
-  public function antenatalSettings()
+  public function ophthicalSettings()
   {
-    return view('settings.antenatal.index');
+    return view('settings.ophthical.index');
   }
 
   public function consultationSettings()

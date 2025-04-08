@@ -36,8 +36,9 @@
                                 <td><input type="text" name="left_glasses" class="form-control"></td>
                             </tr>
                         </tbody>
-                        <input type="hidden" name="disablities" value="{{ request()->route()->patient->id }}">
                     </table>
+                  <label for="comments">Comments</label>
+                  <textarea name="comments" id="" cols="30" rows="10" class="form-control"></textarea>
                     <div class="col-12 text-center">
                         <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
                         <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"

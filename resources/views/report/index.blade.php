@@ -48,14 +48,14 @@
                             <div href="javascript:" class="card-metric- metric metric-bordered align-items-center-">
                                 <h2 class="metric-label">Total Patients </h2>
                                 <p class="metric-value h3"><sub><i class="oi oi-people"></i></sub><span
-                                        class="value ml-2">{{$patientsCount}}</span></p><a href="#" class="text-right">... Details</a>
+                                        class="value ml-2">{{$patientsCount}}</span></p><a href="{{route('app.patients.index')}}" class="text-right">... Details</a>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div href="javascript:" class="card-metric- metric metric-bordered align-items-center-">
                                 <h2 class="metric-label">Expired Drugs</h2>
                                 <p class="metric-value h3"><sub><i class="fa fa-tasks"></i></sub><span
-                                        class="value ml-3">309</span></p><a href="/reports/pharmacy/#expired-drugs"
+                                        class="value ml-3">{{$expiredDrugs}}</span></p><a href="/reports/pharmacy/#expired-drugs"
                                     class="text-right">... Details</a>
                             </div>
                         </div>
@@ -63,7 +63,7 @@
                             <div href="javascript:" class="card-metric- metric metric-bordered align-items-center-">
                                 <h2 class="metric-label">Low Stock Drugs</h2>
                                 <p class="metric-value h3"><sub><i class="fa fa-tasks"></i></sub><span
-                                        class="value ml-3">725</span></p><a href="/reports/pharmacy/#low-stock-drugs"
+                                        class="value ml-3">{{$lowStock}}</span></p><a href="/reports/pharmacy/#low-stock-drugs"
                                     class="text-right">... Details</a>
                             </div>
                         </div>

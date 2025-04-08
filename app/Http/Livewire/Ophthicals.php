@@ -5,7 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\Antenatal;
 use Livewire\Component;
 
-class Antenatals extends Base
+class Ophthicals extends Base
 {
   public $sortBy = 'name';
   public $AntenatalId;

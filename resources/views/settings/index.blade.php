@@ -384,7 +384,7 @@
                 <div class="card-body">
                     <h4 class="mb-2 pb-1">Ophthicals</h4>
                     <p class="small">Manage Ophthical Tariffs, and Other Data</p>
-                    <a href="{{ route('app.settings.antenatal') }}"
+                    <a href="{{ route('app.settings.ophthical') }}"
                         class="btn btn-primary w-100 waves-effect waves-light">Open</a>
                 </div>
             </div>

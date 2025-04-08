@@ -22,6 +22,12 @@ class RefractionController extends Controller
     return view('refraction.create', compact('patient'));
   }
 
+  public function edit($id){
+    $refraction = Refraction::where('id', $id)->first();
+    $patient = Patient::where('id', $refraction->patient_id)->first();
+    return view('refraction.edit', compact('refraction', 'patient'));
+  }
+
   public function show($patient){
     $refraction = Refraction::find($patient);
     $patient = Patient::find($refraction->patient_id);
@@ -32,4 +38,10 @@ class RefractionController extends Controller
     $refraction = Refraction::create(array_merge($request->all(), ['user_id' => Auth::user()->id]));
     return redirect()->route('app.patients.show', $request->patient_id)->with('success', 'Refraction record saved successfully.');
   }
+
+  public function update(Request $request, $id){
+
+  }
+
+  public function destroy($id){}
 }

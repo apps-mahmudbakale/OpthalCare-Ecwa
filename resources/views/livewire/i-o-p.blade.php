@@ -24,7 +24,8 @@
                                     <li><a class="dropdown-item" data-request-url="{{ route('app.show.iop', $iop->id) }}"
                                             data-toggle="modal" data-target="#global-modal">Details </a></li>
                                     <li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);">Edit </a></li>
+                                    <li><a class="dropdown-item" data-request-url="/app/iop/{{$iop->id}}/{{$iop->patient_id}}"
+                                           data-toggle="modal" data-target="#global-modal">Edit </a></li>
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>

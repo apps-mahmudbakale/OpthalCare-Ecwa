@@ -18,9 +18,9 @@ class VisionAcuityController extends Controller
   /**
    * Show the form for creating a new resource.
    */
-  public function create()
+  public function create($patient)
   {
-    //
+    return view('va.create', compact('patient'));
   }
 
   /**
@@ -44,9 +44,10 @@ class VisionAcuityController extends Controller
   /**
    * Show the form for editing the specified resource.
    */
-  public function edit(VisionAcuity $visionAcuity)
+  public function edit($va, $patient)
   {
-    //
+    $va = VisionAcuity::where('id', $va)->firstOrFail();
+    return view('va.edit', compact('va', 'patient'));
   }
 
   /**
@@ -54,7 +55,8 @@ class VisionAcuityController extends Controller
    */
   public function update(Request $request, VisionAcuity $visionAcuity)
   {
-    //
+    $va = $visionAcuity->update(array_merge($request->all(), ['user_id' => auth()->id()]));
+    return redirect()->back()->with('success', 'Visual Acuity Updated!');
   }
 
   /**
@@ -62,6 +64,7 @@ class VisionAcuityController extends Controller
    */
   public function destroy(VisionAcuity $visionAcuity)
   {
-    //
+    $visionAcuity->delete();
+    return response()->json(['success' => true]);
   }
 }
