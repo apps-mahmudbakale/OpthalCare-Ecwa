@@ -39,6 +39,10 @@
   <!-- Include Scripts for customizer, helper, analytics, config -->
   @include('layouts/sections/scriptsIncludes')
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/10.16.11/sweetalert2.all.js" integrity="sha512-zQu5NZx4gpoe2uy/Qz7/RfcUNSwqfwWXSeWGMZKqBKA0p07pj46Hd9doXX3YmaDx6oensjTS82rw2NSjIKz0jg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 </head>
 
 <body>

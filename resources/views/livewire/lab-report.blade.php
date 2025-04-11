@@ -1,9 +1,8 @@
 <div>
   <div class="card">
-    <!-- .card-header -->
+    <!-- Filter Header -->
     <div class="card-header">
-      <form class="filterForm d-flex justify-content-between">
-        <input type="hidden" name="csrfmiddlewaretoken" value="j3cQmVrbruQAyVXWdDbt2X1ZKfgYpbXRucLyrWZeHk1fnN86UIwAJlnBtqtqczVv">
+      <form class="filterForm d-flex justify-content-between align-items-end flex-wrap">
         <div class="form-group flex-fill ml-2">
           <label class="mb-0" for="id_category">Filter By Category</label>
           <select wire:model="category_id" id="id_category" class="custom-select form-control">
@@ -13,82 +12,80 @@
             @endforeach
           </select>
         </div>
+
         <div class="form-group flex-fill ml-2">
           <label class="mb-0" for="id_status">Filter By Request Status</label>
-          <select wire:model="status" id="id_status" name="status" class="custom-select form-control filter">
+          <select wire:model="status" id="id_status" class="custom-select form-control">
             <option value="">- All -</option>
-            <option>Pending</option>
-            <option>Specimen Collected</option>
-            <option>Result Ready</option>
-            <option>Cancelled</option>
-
+            <option value="Pending">Pending</option>
+            <option value="Specimen Collected">Specimen Collected</option>
+            <option value="Result Ready">Result Ready</option>
+            <option value="Cancelled">Cancelled</option>
           </select>
         </div>
+
         <div class="form-group flex-fill ml-2">
-          <input type="hidden" name="start" class="filter sr-only">
-          <input type="hidden" name="stop" class="filter sr-only">
-          <label for="reportrange" class="mb-0">Filter By Request Date</label>
-          <div id="reportrange" class="form-control d-flex custom-select">
-            <i class="mt-1 fa fa-calendar"></i>&nbsp;
-            <span class="text-nowrap">11/24/2024 - 11/24/2024</span>
-          </div>
+          <label class="mb-0">Start Date</label>
+          <input wire:model="startDate" type="date" class="form-control">
         </div>
-        <div class="form-group flex-fill- ml-3 no-label">
-          <button class="btn btn-primary  px-3" style="margin-top: 1.26rem" type="button" id="export-btn">
+
+        <!-- End Date -->
+        <div class="form-group flex-fill ml-2">
+          <label class="mb-0">End Date</label>
+          <input wire:model="endDate" type="date" class="form-control">
+        </div>
+
+        <div class="form-group flex-fill ml-2 no-label">
+          <button wire:click="export" class="btn btn-primary px-3 mt-4" type="button" id="export-btn">
             <i class="fa fa-download"></i>
           </button>
         </div>
       </form>
     </div><!-- /.card-header -->
-    <!-- .table-responsive -->
+
+    <!-- Table -->
     <div class="table-responsive">
-      <!-- .table -->
-      <table class="table table-sm- table-striped">
-        <!-- thead -->
+      <table class="table table-sm table-striped">
         <thead>
         <tr>
-          <th>Investigation</th><th>Category</th><th># of Requests</th>
+          <th>Investigation</th>
+          <th>Category</th>
+          <th># of Requests</th>
         </tr>
         </thead>
         <tbody>
-        <!-- tr -->
-        @foreach($labReports as $report)
+        @forelse($labReports as $report)
         <tr>
-          <td>{{$report->test->name}}</td>
-          <td>{{$report->test->category->name}}</td>
+          <td>{{ $report->test->name }}</td>
+          <td>{{ $report->test->category->name }}</td>
           <td>{{ $report->request_count }}</td>
         </tr>
-        @endforeach
-        </tbody><!-- /tbody -->
-      </table><!-- /.table -->
-      <hr class="my-2">
+        @empty
+        <tr>
+          <td colspan="3" class="text-center">No lab reports found.</td>
+        </tr>
+        @endforelse
+        </tbody>
+      </table>
 
-
-      <div class="d-flex justify-content-around">
-
-        <ul class="pagination">
-
-          <li class="page-item disabled">
-            <a class="page-link" href="javascript:"><span class="oi oi-arrow-left"></span> Previous</a>
-          </li>
-
-
-          <li class="page-item active">
-
-            <span class="page-link" href="javascript:"> 1 - 10 of 623</span>
-          </li>
-
-
-          <li class="page-item">
-            <a class="page-link" href="javascript:" data-page="2" data-href="?page=2">Next <span class="oi oi-arrow-right"></span></a>
-          </li>
-
-        </ul>
-        <input type="hidden" class="sr-only filter" name="page" value="1">
-
+      <!-- Pagination -->
+      <div class="d-flex justify-content-between align-items-center px-3 py-2">
+        <div>
+          Showing {{ $labReports->firstItem() }} to {{ $labReports->lastItem() }} of {{ $labReports->total() }} entries
+        </div>
+        <div>
+          {{ $labReports->links() }}
+        </div>
       </div>
-
-
-    </div><!-- /.table-responsive -->
+    </div>
   </div>
 </div>
+<script>
+  $(function () {
+    $('#daterange').daterangepicker({
+      opens: 'left'
+    }, function (start, end, label) {
+      console.log("Selected date range: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+    });
+  });
+</script>

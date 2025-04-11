@@ -21,5 +21,9 @@ class Payment extends Model
     {
       return $this->belongsTo(User::class);
     }
+  public function cashPoint()
+  {
+    return $this->belongsTo(CashPoint::class);
+  }
 }
 

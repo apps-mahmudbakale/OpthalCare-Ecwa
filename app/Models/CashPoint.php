@@ -13,4 +13,9 @@ class CashPoint extends Model
       'name',
       'location'
     ];
+
+  public function payments()
+  {
+    return $this->hasMany(Payment::class);
+  }
 }

@@ -4,15 +4,10 @@
 
 'use strict';
 
-let isRtl = window.Helpers.isRtl(),
-  isDarkStyle = window.Helpers.isDarkStyle(),
-  menu,
-  animate,
-  isHorizontalLayout = false;
 
-if (document.getElementById('layout-menu')) {
-  isHorizontalLayout = document.getElementById('layout-menu').classList.contains('menu-horizontal');
-}
+// if (document.getElementById('layout-menu')) {
+//   isHorizontalLayout = document.getElementById('layout-menu').classList.contains('menu-horizontal');
+// }
 
 (function () {
   if (typeof Waves !== 'undefined') {
@@ -29,8 +24,8 @@ if (document.getElementById('layout-menu')) {
   let layoutMenuEl = document.querySelectorAll('#layout-menu');
   layoutMenuEl.forEach(function (element) {
     menu = new Menu(element, {
-      orientation: isHorizontalLayout ? 'horizontal' : 'vertical',
-      closeChildren: isHorizontalLayout ? true : false,
+      // orientation: isHorizontalLayout ? 'horizontal' : 'vertical',
+      // closeChildren: isHorizontalLayout ? true : false,
       // ? This option only works with Horizontal menu
       showDropdownOnHover: localStorage.getItem('templateCustomizer-' + templateName + '--ShowDropdownOnHover') // If value(showDropdownOnHover) is set in local storage
         ? localStorage.getItem('templateCustomizer-' + templateName + '--ShowDropdownOnHover') === 'true' // Use the local storage value

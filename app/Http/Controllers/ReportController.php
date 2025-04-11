@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CashPoint;
 use App\Models\Drug;
 use App\Models\Patient;
+use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -13,6 +16,21 @@ class ReportController extends Controller
    */
   public function index()
   {
+    $paymentData = Payment::select(
+      'cash_points.name as cash_point_name',
+      DB::raw('SUM(payments.paying_amount) as total_revenue')
+    )
+      ->join('cash_points', 'payments.cashpoint_id', '=', 'cash_points.id')
+      ->groupBy('cash_points.name')
+      ->orderBy('cash_points.name')
+      ->get();
+
+    // Prepare data for chart
+    $cashPointNames = $paymentData->pluck('cash_point_name')->values()->all();
+
+    $paymentSeries = $paymentData->pluck('total_revenue')->map(function ($item) {
+      return floatval($item);
+    })->all();
 
     $today = now()->toDateString(); // Current date in 'Y-m-d' format
 
@@ -27,7 +45,8 @@ class ReportController extends Controller
 
 
 
-    return view('report.index', compact('patientTodayCount', 'patientsCount', 'expiredDrugs', 'lowStock'));
+    return view('report.index', compact('patientTodayCount', 'patientsCount', 'expiredDrugs', 'lowStock', 'cashPointNames',
+      'paymentSeries'));
 
   }
 

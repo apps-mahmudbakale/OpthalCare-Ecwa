@@ -133,7 +133,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_90_oneOf_1_use_1_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_90_oneOf_1_use_2_node_modules_sass_loader_dist_cjs_js_ruleSet_1_rules_90_oneOf_1_use_3_template_customizer_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[90].oneOf[1].use[1]!../../../../../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[90].oneOf[1].use[2]!../../../../../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[90].oneOf[1].use[3]!./_template-customizer.scss */ "./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[90].oneOf[1].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[90].oneOf[1].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[90].oneOf[1].use[3]!./resources/assets/vendor/js/_template-customizer/_template-customizer.scss");
 
-            
+
 
 var options = {};
 
@@ -431,7 +431,7 @@ module.exports = function (list, options) {
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
-/******/ 	
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
 /******/ 		// Check if module is in cache
@@ -445,14 +445,14 @@ module.exports = function (list, options) {
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
-/******/ 	
+/******/
 /******/ 		// Execute the module function
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/ 	
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-/******/ 	
+/******/
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat get default export */
 /******/ 	!function() {
@@ -465,7 +465,7 @@ module.exports = function (list, options) {
 /******/ 			return getter;
 /******/ 		};
 /******/ 	}();
-/******/ 	
+/******/
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	!function() {
 /******/ 		// define getter functions for harmony exports
@@ -477,12 +477,12 @@ module.exports = function (list, options) {
 /******/ 			}
 /******/ 		};
 /******/ 	}();
-/******/ 	
+/******/
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	!function() {
 /******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
 /******/ 	}();
-/******/ 	
+/******/
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	!function() {
 /******/ 		// define __esModule on exports
@@ -493,7 +493,7 @@ module.exports = function (list, options) {
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 		};
 /******/ 	}();
-/******/ 	
+/******/
 /************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
@@ -565,7 +565,6 @@ var TemplateCustomizer = /*#__PURE__*/function () {
       lang = _ref.lang;
     _classCallCheck(this, TemplateCustomizer);
     if (this._ssr) return;
-    if (!window.Helpers) throw new Error('window.Helpers required.');
     this.settings = {};
     this.settings.cssPath = cssPath;
     this.settings.themesPath = themesPath;
