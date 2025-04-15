@@ -21,7 +21,7 @@
         </div>
         <div class="list-group-item-body">
           <h6>History</h6>
-          {!! $diagnosis->comments !!}
+          {!! $diagnosis->history !!}
           <h6>Examination</h6>
           <table class="table table-striped table-bordered">
             <thead class="table-dark">
