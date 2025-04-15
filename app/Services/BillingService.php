@@ -22,7 +22,7 @@ class BillingService
     return $admissions;
   }
 
-  function antenatal()
+  function ophthicals()
   {
     $antenatal = Antenatal::all();
     return $antenatal;

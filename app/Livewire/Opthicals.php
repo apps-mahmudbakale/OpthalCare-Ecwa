@@ -5,7 +5,7 @@ namespace App\Livewire;
 use App\Models\Antenatal;
 use Livewire\Component;
 
-class Antenatals extends Base
+class Opthicals extends Component
 {
   public $sortBy = 'name';
   public $AntenatalId;
@@ -25,7 +25,7 @@ class Antenatals extends Base
   {
     Antenatal::where('id', $this->AntenatalId)->update(['name' => $this->AntenatalName, 'price' => $this->AntenatalPrice]);
 
-    return redirect()->route('app.settings.ophthical')->with('success', 'Item Updated');
+    return redirect()->route('app.settings.antenatal')->with('success', 'Package Updated');
   }
   public function render()
   {

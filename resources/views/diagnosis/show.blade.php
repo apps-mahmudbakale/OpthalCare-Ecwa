@@ -139,9 +139,9 @@
           <h6>Assessment</h6>
           <p>{{ $diagnosis->assessment ?? 'No assessment provided' }}</p>
           <h6>Treatment Plan</h6>
-          <p>{{ $diagnosis->treatment_plan ?? 'No treatment plan specified' }}</p>
+          <p>{{ $diagnosis->treatment ?? 'No treatment plan specified' }}</p>
           <h6>Additional Note</h6>
-          <p>{{ $diagnosis->additional_note ?? 'No additional notes' }}</p>
+          <p>{{ $diagnosis->comments ?? 'No additional notes' }}</p>
         </div>
       </div>
       <div href="#" class="list-group-item">

@@ -7,7 +7,7 @@
       <select name="service_category" class="custom-select" id="service-category" required="required">
         <option value="">Choose service category...</option>
         <option value="admissions">Admission</option>
-        <option value="antenatal">Antenatal</option>
+        <option value="ophthicals">Ophthicals</option>
         <option value="consultations">Consultation</option>
         <option value="laboratory">Laboratory</option>
         <option value="procedure">Medical Procedure</option>

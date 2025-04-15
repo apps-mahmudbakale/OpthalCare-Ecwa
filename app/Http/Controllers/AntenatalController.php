@@ -16,13 +16,13 @@ class AntenatalController extends Controller
   {
     $antenatal = Antenatal::create($request->all());
 
-    return redirect()->route('app.settings.antenatal')->with('success', 'Package Added');
+    return redirect()->route('app.settings.ophthical')->with('success', 'Item Added');
   }
 
   public function destroy(Antenatal $antenatal)
   {
     $antenatal->delete();
 
-    return redirect()->route('app.settings.antenatal')->with('success', 'Package Deleted');
+    return redirect()->route('app.settings.ophthical')->with('success', 'Item Deleted');
   }
 }

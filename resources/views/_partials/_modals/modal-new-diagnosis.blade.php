@@ -77,7 +77,7 @@
                 <tr>
                   <td width="70%">NEAR VISION</td>
                   <td><input type="text" name="near_vision_right" class="form-control"></td>
-                  <td><input type="text" name="near_vision_far_left" class="form-control"></td>
+                  <td><input type="text" name="near_vision_left" class="form-control"></td>
                 </tr>
                 <tr>
                   <td width="70%">LID</td>
@@ -148,6 +148,7 @@
                   <td width="70%">MACULA</td>
                   <td><input type="text" name="macula_right" class="form-control"></td>
                   <td><input type="text" name="macula_left" class="form-control"></td>
+                </tr>
                 <tr>
                   <td width="70%">RETINA</td>
                   <td><input type="text" name="retina_right" class="form-control"></td>
@@ -157,7 +158,6 @@
                   <td width="70%">VESSELS</td>
                   <td><input type="text" name="vessels_right" class="form-control"></td>
                   <td><input type="text" name="vessels_left" class="form-control"></td>
-                </tr>
                 </tr>
                 </tbody>
               </table>
@@ -220,8 +220,20 @@
             <div class="tab-pane fade" id="step6">
               <input type="hidden" id="sketch" name="sketch">
               <div class="col-12 col-md-12">
-                <iframe id="drawing" class="col-md-12" style="height: 1000px;"
-                        src="{{ route('app.patient.draw', request()->route()->patient->id) }}">Your browser isn't compatible</iframe>
+                <h4>Sketch or Upload</h4>
+                <div class="mb-3">
+                  <label class="form-label">Draw a sketch:</label>
+                  <iframe id="drawing" class="col-md-12" style="height: 500px;"
+                          src="{{ route('app.patient.draw', request()->route()->patient->id) }}">Your browser isn't compatible</iframe>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Or upload an image:</label>
+                  <input type="file" id="sketch-upload" class="form-control" accept="image/*">
+                  <small class="text-muted">Accepted formats: PNG - PNG, JPG, JPEG (Max 5MB)</small>
+                </div>
+                <div id="sketch-preview" class="mt-2" style="display: none;">
+                  <img id="preview-img" src="" alt="Uploaded sketch" style="max-width: 100%; max-height: 300px;">
+                </div>
               </div>
             </div>
           </div>
@@ -254,18 +266,93 @@
       console.error('EasyEditor initialization failed:', e);
     }
 
+    // Handle file upload for sketch
+    $('#sketch-upload').on('change', function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        // Validate file type and size
+        const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+        if (!validTypes.includes(file.type)) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Invalid File',
+            text: 'Please upload a PNG, JPG, or JPEG image.',
+            showConfirmButton: false,
+            timer: 2000
+          });
+          $(this).val('');
+          return;
+        }
+        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+          Swal.fire({
+            icon: 'error',
+            title: 'File Too Large',
+            text: 'Please upload an image smaller than 5MB.',
+            showConfirmButton: false,
+            timer: 2000
+          });
+          $(this).val('');
+          return;
+        }
+
+        // Check for existing sketch
+        if ($('#sketch').val()) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Overwrite Sketch?',
+            text: 'Uploading a file will replace the existing sketch. Continue?',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, upload',
+            cancelButtonText: 'No, keep sketch'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              processFile(file);
+            } else {
+              $(this).val('');
+            }
+          });
+        } else {
+          processFile(file);
+        }
+      }
+    });
+
+    function processFile(file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64Data = e.target.result;
+        $('#sketch').val(base64Data);
+        $('#preview-img').attr('src', base64Data);
+        $('#sketch-preview').show();
+        console.log('Uploaded file converted to base64:', base64Data);
+      };
+      reader.onerror = function() {
+        console.error('Error reading file');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to read the uploaded file.',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+
     // Handle form submission
     $('#diagnosis-form').submit(function(event) {
       event.preventDefault(); // Prevent default form submission
 
-      // Get base64 sketch data from iframe
-      try {
-        var base64 = $('#drawing').contents().find('#sketch').val();
-        $('#sketch').val(base64 || ''); // Default to empty string if undefined
-        console.log('Sketch data:', base64);
-      } catch (e) {
-        console.error('Error retrieving sketch data:', e);
-        $('#sketch').val(''); // Fallback
+      // Get base64 sketch data from iframe if no file was uploaded
+      if (!$('#sketch').val()) {
+        try {
+          var base64 = $('#drawing').contents().find('#sketch').val();
+          $('#sketch').val(base64 || '');
+          console.log('Sketch data:', base64);
+        } catch (e) {
+          console.error('Error retrieving sketch data:', e);
+          $('#sketch').val('');
+        }
       }
 
       var formData = $(this).serialize(); // Serialize form data
