@@ -34,9 +34,10 @@
       <input type="text" id="patient-search" class="form-control" placeholder="Search for patients...">
       <label for="patient-search">Search for Patients</label>
     </div>
-    <button class="btn btn-success float-end mt-2" id="first-timer"
-            data-request-url="{{ route('app.patients.first-timer') }}"
-            data-toggle="modal" data-target="#global-modal">New Bill</button>
+    <div class="d-grid gap-2 col-lg-12 mt-3 mx-auto">
+      <button id="first-timer" data-request-url="{{ route('app.patients.first-timer') }}"
+              data-toggle="modal" data-target="#global-modal" class="btn btn-primary btn-lg waves-effect waves-light" type="button">New Bill</button>
+    </div>
   </div>
 
   <!-- Results Container for Patients -->

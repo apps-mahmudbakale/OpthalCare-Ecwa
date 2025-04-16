@@ -1,15 +1,15 @@
 <h2 class="text-center">Patient First Time</h2>
 <form id="patientForm" method="POST" class="row">
   @csrf
-  <div class="col-md-4">
+  <div class="col-md-12">
     <label for="">First Name</label>
     <input type="text" name="first_name" class="form-control">
   </div>
-  <div class="col-md-4">
+  <div class="col-md-12">
     <label for="">Last Name</label>
     <input type="text" name="last_name" class="form-control">
   </div>
-  <div class="col-md-4">
+  <div class="col-md-12">
     <label class="form-label" for="middlename">Middle Name</label>
     <input type="text" name="middle_name" id="middlename" class="form-control" placeholder="Middle Name">
   </div>
