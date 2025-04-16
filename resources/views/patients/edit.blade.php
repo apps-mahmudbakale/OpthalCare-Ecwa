@@ -82,10 +82,10 @@
                             <div class="col-md-4">
                                 <label class="form-label" for="religion_id">Religion</label>
                                 <select name="religion_id" id="religion_id" class="form-control">
-                                    <option value="{{ $patient->religion->id }}" selected>{{ $patient->religion->name }}
+                                    <option value="{{ $patient->religion->id ?? '' }}" selected>{{ $patient->religion->name ?? '' }}
                                     </option>
                                     @foreach ($religions as $religion)
-                                        <option value="{{ $religion->id }}">{{ $religion->name }}</option>
+                                        <option value="{{ $religion->id ?? '' }}">{{ $religion->name ?? '' }}</option>
                                     @endforeach
                                 </select>
                             </div>
