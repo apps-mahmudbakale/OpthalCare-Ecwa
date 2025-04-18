@@ -299,7 +299,6 @@
                         <a href="" data-bs-toggle="modal" data-bs-target="#new-allergies-modal"
                             class="btn btn-primary mb-2 float-end">New Entry</a>
                         <livewire:allergies :patientId="request()->route()->patient->id" />
-                        {{-- for some reason when i try to access the re --}}
                         @include('_partials._modals.modal-new-allergies')
 
                     </div>
@@ -311,7 +310,7 @@
                     <div class="tab-pane fade" id="navs-pills-justified-lab" role="tabpanel">
                         <a href="" data-bs-toggle="modal" data-bs-target="#new-lab-modal"
                             class="btn btn-primary mb-2 float-end">New Entry</a>
-                        <livewire:lab-requests />
+                        <livewire:lab-requests :patientId="request()->route()->patient->id" />
                         @include('_partials._modals.modal-new-lab')
 
                     </div>
@@ -324,7 +323,7 @@
                     <div class="tab-pane fade" id="navs-pills-justified-imaging" role="tabpanel">
                         <a href="" data-bs-toggle="modal" data-bs-target="#new-imaging-modal"
                             class="btn btn-primary mb-2 float-end">New Entry</a>
-                        <livewire:radiology-request />
+                        <livewire:radiology-request :patientId="request()->route()->patient->id" />
                         @include('_partials._modals.modal-new-imaging')
                     </div>
                     <div class="tab-pane fade" id="navs-pills-justified-procedures" role="tabpanel">
@@ -407,4 +406,45 @@
             });
         });
     });
+</script>
+<script>
+  $(document).ready(function() {
+    $('.dropdown-item3').on('click', function() {
+      var requestUrl = $(this).data('delete-url');
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger"
+        },
+        buttonsStyling: false
+      });
+      swalWithBootstrapButtons.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          swalWithBootstrapButtons.fire({
+            title: "Deleted!",
+            text: "Your file has been deleted.",
+            icon: "success"
+          });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire({
+            title: "Cancelled",
+            text: "Your imaginary file is safe :)",
+            icon: "error"
+          });
+        }
+      });
+
+    });
+  });
 </script>

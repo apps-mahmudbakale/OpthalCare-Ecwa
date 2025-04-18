@@ -93,7 +93,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::resource('beds', BedController::class);
   Route::get('bed-export', [BedController::class, 'export'])->name('bed.export');
   Route::get('bed-import', [BedController::class, 'importView'])->name('bed.import');
-  Route::post('bed-import', [BedController::class, 'import'])->name('bed.import');
+  Route::post('bed-import', [BedController::class, 'import'])->name('beds.import');
   Route::resource('messages', MessageController::class);
   Route::resource('appointments', AppointmentController::class);
   Route::get('appointment/schedule/{patient}', [AppointmentController::class, 'schedule'])->name('appointment.schedule');
