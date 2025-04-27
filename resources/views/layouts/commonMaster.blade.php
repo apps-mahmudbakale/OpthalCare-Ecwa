@@ -155,6 +155,7 @@
         confirmButtonText: "Yes, delete it!",
         cancelButtonText: "Cancel"
       }).then((result) => {
+        console.log(result);
         if (result.isConfirmed) {
           // Using fetch API to send delete request
           fetch(requestUrl, {

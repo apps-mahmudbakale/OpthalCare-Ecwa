@@ -43,5 +43,11 @@ class RefractionController extends Controller
 
   }
 
-  public function destroy($id){}
+  public function destroy($id){
+    $refraction = Refraction::find($id);
+    if($refraction->delete()){
+      return response()->json(['success' => true]);
+    }
+
+  }
 }

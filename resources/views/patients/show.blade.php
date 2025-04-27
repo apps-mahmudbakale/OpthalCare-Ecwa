@@ -290,7 +290,9 @@
                                 <a href="{{ route('app.refraction.create', $patient->id) }}"
                                     class="btn btn-primary link mb-2 float-end">New Entry</a href>
                             </div>
+                              <div class="col-md-12">
                              <livewire:refraction :patientId="$patient->id" />
+                              </div>
 
                         </div>
                         @include('_partials._modals.modal-new-i-o-p')
@@ -302,14 +304,21 @@
                         @include('_partials._modals.modal-new-allergies')
 
                     </div>
-                    <div class="tab-pane fade" id="navs-pills-justified-diagnosis" role="tabpanel">
-                        <a href="" data-bs-toggle="modal" data-bs-target="#new-diagnosis-modal"
-                            class="btn btn-primary mb-2 float-end">New Entry</a>
-                        <livewire:diagnoses :patientId="request()->route()->patient->id" />
+                  <div class="tab-pane fade" id="navs-pills-justified-diagnosis" role="tabpanel">
+                    <!-- Button to trigger new diagnosis modal -->
+                    <button type="button" class="btn btn-primary mb-2 float-end" data-bs-toggle="modal" data-bs-target="#new-diagnosis-modal">
+                      New Entry
+                    </button>
+                    <table class="table"></table>
+                    <!-- Verify if col-md-12 is necessary; remove if not part of a larger grid -->
+                    <div class="col-md-12">
+                      <livewire:diagnoses :patientId="request()->route()->patient->id" />
                     </div>
+                  </div>
                     <div class="tab-pane fade" id="navs-pills-justified-lab" role="tabpanel">
                         <a href="" data-bs-toggle="modal" data-bs-target="#new-lab-modal"
                             class="btn btn-primary mb-2 float-end">New Entry</a>
+                      <table class="table"></table>
                         <livewire:lab-requests :patientId="request()->route()->patient->id" />
                         @include('_partials._modals.modal-new-lab')
 
@@ -427,19 +436,47 @@
         cancelButtonText: "No, cancel!",
         reverseButtons: true
       }).then((result) => {
+        console.log(result);
         if (result.isConfirmed) {
-          swalWithBootstrapButtons.fire({
-            title: "Deleted!",
-            text: "Your file has been deleted.",
-            icon: "success"
-          });
+          fetch(requestUrl, {
+            method: 'DELETE',
+            headers: {
+              'X-CSRF-TOKEN': '{{ csrf_token() }}',
+              'Accept': 'application/json',
+            },
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                swalWithBootstrapButtons.fire({
+                  title: "Deleted!",
+                  text: "Your file has been deleted.",
+                  icon: "success"
+                });
+                window.location.reload();
+              } else {
+                Swal.fire(
+                  'Error!',
+                  'There was a problem deleting the record.',
+                  'error'
+                );
+              }
+            })
+            .catch(error => {
+              swalWithBootstrapButtons.fire({
+                title: "Error",
+                text: "Fail to Delete",
+                icon: "error"
+              });
+            });
+
         } else if (
           /* Read more about handling dismissals below */
           result.dismiss === Swal.DismissReason.cancel
         ) {
           swalWithBootstrapButtons.fire({
             title: "Cancelled",
-            text: "Your imaginary file is safe :)",
+            text: "Your record is safe :)",
             icon: "error"
           });
         }

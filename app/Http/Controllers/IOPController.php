@@ -66,8 +66,11 @@ class IOPController extends Controller
   /**
    * Remove the specified resource from storage.
    */
-  public function destroy(IOP $iOP)
+  public function destroy($id)
   {
-    //
+    $iOP = IOP::find($id);
+    if($iOP->delete()) {
+      return response()->json(['success' => true]);
+    }
   }
 }

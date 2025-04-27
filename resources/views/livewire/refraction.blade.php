@@ -13,14 +13,13 @@
               <i class="fa fa-ellipsis-v"></i>
             </button>
             <ul class="dropdown-menu" style="">
-              <li><button class="dropdown-item"
-                          data-request-url="" data-toggle="modal"
-                          data-target="#global-modal">Edit </button></li>
+              <li><a href="{{route('app.refraction.edit', $refraction->id)}}" class="dropdown-item"
+                         >Edit </a></li>
               <li>
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <l><button class="dropdown-item3 text-bg-danger" id="delete" data-delete-url="">Delete</button></l>
+              <l><button class="dropdown-item3 text-bg-danger" id="delete" data-delete-url="{{route('app.refraction.destroy', $refraction->id)}}">Delete</button></l>
             </ul>
           </div>
         </div>
@@ -185,7 +184,8 @@
           </div>
         </div>
       </div>
-      @endforeach
+    </details>
+    @endforeach
   </div>
 </div>
 

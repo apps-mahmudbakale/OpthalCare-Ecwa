@@ -125,6 +125,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::delete('vision-acuity/{id}', [VisionAcuityController::class, 'destroy'])->name('delete.va');
   Route::get('iop/{id}', [IOPController::class, 'show'])->name('show.iop');
   Route::get('iop/{patient}/{iop}', [IOPController::class, 'edit'])->name('edit.iop');
+  Route::delete('iop/{id}', [IOPController::class, 'destroy'])->name('delete.iop');
   Route::post('lab-category', [LaboratoryController::class, 'storeCategory'])->name('lab-category.store');
 
   Route::post('consumables-add', [ConsumbleController::class, 'storeConsumables'])->name('consumables-add.store');

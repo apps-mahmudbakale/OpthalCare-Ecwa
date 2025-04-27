@@ -33,8 +33,10 @@ class LabRequest extends Model
   {
     return $this->belongsTo(User::class);
   }
-  public function user_details()
+  public function findings()
   {
-    return $this->patient->user();
+    return $this->hasOne(LabResult::class, 'lab_id');
   }
+
+
 }

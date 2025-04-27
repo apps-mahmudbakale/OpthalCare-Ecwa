@@ -47,24 +47,30 @@ class DiagnosisController extends Controller
   /**
    * Show the form for editing the specified resource.
    */
-  public function edit(Diagnosis $diagnosis)
+  public function edit($diagnosis)
   {
-    //
+    $diagnosis = Diagnosis::findOrFail($diagnosis);
+    return view('diagnosis.edit', compact('diagnosis'));
   }
 
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, Diagnosis $diagnosis)
+  public function update(Request $request, $id)
   {
-    //
+    $diagnosis = Diagnosis::findOrFail($id);
+    $diagnosis->update($request->except('status'));
+    return $diagnosis;
   }
 
   /**
    * Remove the specified resource from storage.
    */
-  public function destroy(Diagnosis $diagnosis)
+  public function destroy($id)
   {
-    //
+    $diagnosis = Diagnosis::findOrFail($id);
+    if($diagnosis->delete()){
+      return response()->json(['success' => true]);
+    }
   }
 }

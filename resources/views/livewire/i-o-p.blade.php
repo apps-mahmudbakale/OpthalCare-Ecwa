@@ -131,7 +131,7 @@
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <l><button class="dropdown-item3 text-bg-danger" id="delete" data-delete-url="">Delete</button></l>
+              <l><button class="dropdown-item3 text-bg-danger" id="delete" data-delete-url="{{route('app.delete.iop', $iop->id)}}">Delete</button></l>
             </ul>
           </div>
         </div>

@@ -64,7 +64,8 @@ class VisionAcuityController extends Controller
    */
   public function destroy(VisionAcuity $visionAcuity)
   {
-    $visionAcuity->delete();
+    if($visionAcuity->delete()){
     return response()->json(['success' => true]);
+    }
   }
 }

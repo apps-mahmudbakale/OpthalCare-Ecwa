@@ -1,88 +1,141 @@
-<!-- Edit User Modal -->
+<!-- New Drugs Modal -->
 <div wire:ignore.self class="modal fade" id="new-drugs-modal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-simple modal-edit-user">
-        <div class="modal-content p-3 p-md-5">
-            <div class="modal-body">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                <div class="text-center mb-4">
-                    <h3 class="mb-2">New Drugs for
-                        {{ \App\Models\Patient::find(request()->route()->patient->id)->user->firstname . ' ' . \App\Models\Patient::find(request()->route()->patient->id)->user->lastname }}
-                    </h3>
-                </div>
-                <form action="{{ route('app.pharmacy.store') }}" method="POST" class="row g-3">
-                    @csrf
-                    <input type="hidden" name="patient_id" value="{{ request()->route()->patient->id }}">
-                    <div class="col-12 col-md-12">
-                        <label class="form-label"> Store</label>
-                        <select name="store_id" id="store" class="form-control">
-                            <option value="" selected>Select Store...</option>
-                            @foreach (\App\Models\DrugStore::all() as $drugStore)
-                                <option value="{{ $drugStore->id }}">{{ $drugStore->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-12 col-md-12">
-                        <label class="form-label" for="category_id">Drug Category</label>
-                        <select name="category_id" id="category" class="form-control">
-                            <option value="" selected>Select Category...</option>
-                            @foreach (\App\Models\DrugCategory::all() as $drugCategory)
-                                <option value="{{ $drugCategory->id }}">{{ $drugCategory->name }}</option>
-                            @endforeach
-
-                        </select>
-                    </div>
-                    <div class="col-12 col-md-12">
-                        <label class="form-label"> Drug</label>
-                        <select name="drug_id" id="drug" class="form-control">
-
-                        </select>
-
-                    </div>
-                    <div class="col-12 col-md-12">
-                        <label class="form-label" for="category_id">Dose</label>
-                        <input type="text" name="dose" class="form-control" placeholder="Dose">
-                    </div>
-
-                    <div class="col-12 text-center">
-                        <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
-                        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </form>
-            </div>
+  <div class="modal-dialog modal-lg modal-simple">
+    <div class="modal-content p-3 p-md-5">
+      <div class="modal-body">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="text-center mb-4">
+          <h3 class="mb-2">
+            New Drugs for
+            <span data-patient-name>
+              {{ \App\Models\Patient::find(request()->route()->patient->id)->user->firstname . ' ' . \App\Models\Patient::find(request()->route()->patient->id)->user->lastname }}
+            </span>
+          </h3>
         </div>
+        <form action="{{ route('app.pharmacy.store') }}" method="POST" class="row g-3" id="drugForm">
+          @csrf
+          <input type="hidden" name="patient_id" value="{{ request()->route()->patient->id }}">
+          <table class="table table-striped" id="drugRequestTable">
+            <thead>
+            <tr>
+              <th>Store</th>
+              <th>Category</th>
+              <th>Drug</th>
+              <th>Qty</th>
+              <th>Dose</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="drugTableBody"></tbody>
+          </table>
+          <div class="col-12">
+            <button type="button" class="btn btn-primary mt-2" id="addDrugRow">Add Drug</button>
+          </div>
+          <div class="col-12 text-center mt-4">
+            <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+            <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
-<!--/ Edit User Modal -->
 
 <script>
-    var store = document.getElementById('store'),
-        category = document.getElementById('category'),
-        drugs = document.getElementById('drug');
+  document.addEventListener('DOMContentLoaded', () => {
+    const drugTableBody = document.getElementById('drugTableBody');
+    const addDrugRowBtn = document.getElementById('addDrugRow');
+    const form = document.getElementById('drugForm');
+    const stores = @json(\App\Models\DrugStore::pluck('name', 'id'));
+    const categories = @json(\App\Models\DrugCategory::pluck('name', 'id'));
 
-    category.addEventListener('change', (() => {
-        // alert(store.value);
-        fetch('/getDrugsbyStore', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Add this line if you're using CSRF protection
-                },
-                body: JSON.stringify({
-                    store: store.value,
-                    category: category.value
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                drugs.innerHTML = '';
+    const createSelectOptions = (data, placeholder) => {
+      return `<option value="" selected>${placeholder}</option>` +
+        Object.entries(data).map(([id, name]) =>
+          `<option value="${id}">${name}</option>`
+        ).join('');
+    };
 
-                data.forEach(drug => {
-                    var option = document.createElement('option');
-                    option.value = drug.id;
-                    option.text = drug.name; // Assuming 'name' is the display name of the drug
-                    drugs.appendChild(option);
-                });
+    const addDrugRow = () => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+            <td>
+                <select name="drugs[][store_id]" class="form-select store-select" required>
+                    ${createSelectOptions(stores, 'Select Store...')}
+                </select>
+            </td>
+            <td>
+                <select name="drugs[][category_id]" class="form-select category-select" required>
+                    ${createSelectOptions(categories, 'Select Category...')}
+                </select>
+            </td>
+            <td>
+                <select name="drugs[][drug_id]" class="form-select drug-select" required>
+                    <option value="" selected>Select Drug...</option>
+                </select>
+            </td>
+            <td>
+                <input type="number" name="drugs[][qty]" class="form-control" placeholder="Quantity" min="1" required>
+            </td>
+            <td>
+                <input type="text" name="drugs[][dose]" class="form-control" placeholder="Dose" required>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm delete-row">×</button>
+            </td>
+        `;
+      drugTableBody.appendChild(row);
+      attachRowListeners(row);
+    };
+
+    const attachRowListeners = (row) => {
+      const storeSelect = row.querySelector('.store-select');
+      const categorySelect = row.querySelector('.category-select');
+      const drugSelect = row.querySelector('.drug-select');
+      const deleteBtn = row.querySelector('.delete-row');
+
+      const updateDrugs = async () => {
+        if (!storeSelect.value || !categorySelect.value) return;
+
+        try {
+          const response = await fetch('/getDrugsbyStore', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+              store: storeSelect.value,
+              category: categorySelect.value
             })
-            .catch(error => console.error('Error:', error));
-    }))
+          });
+
+          const drugs = await response.json();
+          drugSelect.innerHTML = createSelectOptions(
+            drugs.reduce((acc, drug) => ({ ...acc, [drug.id]: drug.name }), {}),
+            'Select Drug...'
+          );
+        } catch (error) {
+          console.error('Error fetching drugs:', error);
+        }
+      };
+
+      storeSelect.addEventListener('change', updateDrugs);
+      categorySelect.addEventListener('change', updateDrugs);
+      deleteBtn.addEventListener('click', () => row.remove());
+    };
+
+    addDrugRowBtn.addEventListener('click', addDrugRow);
+
+    // Add initial row
+    addDrugRow();
+
+    // Form validation
+    form.addEventListener('submit', (e) => {
+      if (!form.checkValidity()) {
+        e.preventDefault();
+        form.reportValidity();
+      }
+    });
+  });
 </script>
