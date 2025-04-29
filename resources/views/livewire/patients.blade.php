@@ -24,6 +24,7 @@
                   </button>
                   <div class="dropdown-menu dropdown-menu-end custom-dropdown">
                     <a class="dropdown-item" href="{{ route('app.patients.show', $patient->id) }}">Open Profile</a>
+                    <button class="dropdown-item" data-request-url="{{route('app.patients.tag', $patient->id)}}" data-toggle="modal" data-target="#global-modal">Add Tag</button>
                     <a class="dropdown-item" href="{{ route('app.patients.edit', $patient->id) }}">Edit Profile</a>
                     @if(!$patient->lastVisitMoreThanFiveDays())
                     <a class="dropdown-item" href="{{route('app.patient.checkIn', $patient->id)}}">
@@ -53,6 +54,9 @@
                 <p class="text-muted mb-0">{{ $patient->phone }}</p>
                 <p class="text-muted mb-0">
                   <span class="badge bg-dark">WALK-IN PATIENT - Self Pay</span>
+                  @if($patient->tag)
+                  <span class="badge bg-{{ $patient->tag->color }} bg-glow">{{$patient->tag->name}}</span>
+                  @endif
                 </p>
               </figcaption>
             </figure>
@@ -74,7 +78,9 @@
     </div>
   </div>
 </div>
-
+@include('_partials._modals.global-modal')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     document.body.addEventListener("click", function (event) {
@@ -161,6 +167,30 @@
     });
   });
 </script>
+<script>
+  $(document).ready(function() {
+    $(document).on('click', '.dropdown-item[data-request-url]', function(e) {
+      e.preventDefault(); // Prevent default if needed
+
+      var requestUrl = $(this).data('request-url');
+
+      if (requestUrl) {
+        $.ajax({
+          url: requestUrl,
+          type: 'GET',
+          success: function(response) {
+            $('#global-modal .modal-body').html(response);
+            $('#global-modal').modal('show');
+          },
+          error: function(xhr, status, error) {
+            console.error(error);
+          }
+        });
+      }
+    });
+  });
+</script>
+
 <style>
   .custom-dropdown {
     max-height: 200px; /* Limit dropdown height */

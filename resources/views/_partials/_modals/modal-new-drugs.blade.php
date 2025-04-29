@@ -60,25 +60,25 @@
       const row = document.createElement('tr');
       row.innerHTML = `
             <td>
-                <select name="drugs[][store_id]" class="form-select store-select" required>
+                <select name="store_id[]" class="form-select store-select" required>
                     ${createSelectOptions(stores, 'Select Store...')}
                 </select>
             </td>
             <td>
-                <select name="drugs[][category_id]" class="form-select category-select" required>
+                <select name="category_id[]" class="form-select category-select" required>
                     ${createSelectOptions(categories, 'Select Category...')}
                 </select>
             </td>
             <td>
-                <select name="drugs[][drug_id]" class="form-select drug-select" required>
+                <select name="drug_id[]" class="form-select drug-select" required>
                     <option value="" selected>Select Drug...</option>
                 </select>
             </td>
             <td>
-                <input type="number" name="drugs[][qty]" class="form-control" placeholder="Quantity" min="1" required>
+                <input type="number" name="qty[]" class="form-control" placeholder="Quantity" min="1" required>
             </td>
             <td>
-                <input type="text" name="drugs[][dose]" class="form-control" placeholder="Dose" required>
+                <input type="text" name="dose[]" class="form-control" placeholder="Dose" required>
             </td>
             <td>
                 <button type="button" class="btn btn-danger btn-sm delete-row">×</button>

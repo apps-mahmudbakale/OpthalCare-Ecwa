@@ -51,6 +51,15 @@
                                     value="{{ old('lastname', isset($patient) ? $patient->user->lastname : '') }}"
                                     placeholder="Last Name">
                             </div>
+                          <div class="col-md-12">
+                            <label class="form-label" for="tag_id">Patient Tag</label>
+                             <select name="tag_id" id="" class="form-control">
+                               <option value="{{$patient->tag->id}}" selected>{{ $patient->tag->name }}</option>
+                               @foreach(\App\Models\Tag::all() as $tag)
+                               <option value="{{$tag->id}}">{{ $tag->name }}</option>
+                               @endforeach
+                             </select>
+                          </div>
                             <div class="col-md-4">
 
                                 <label class="form-label" for="email">Email</label>
@@ -61,7 +70,7 @@
                             <div class="col-md-4">
                                 <label class="form-label" for="phone">Phone</label>
                                 <input type="text" id="phone" name="phone" class="form-control"
-                                    value="{{ old('phone', isset($patient) ? $patient->user->phone : '') }}"
+                                    value="{{ old('phone', isset($patient) ? $patient->phone : '') }}"
                                     placeholder="Phone">
                             </div>
                             <div class="col-md-4">

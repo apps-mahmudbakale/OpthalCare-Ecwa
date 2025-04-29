@@ -77,6 +77,8 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::get('diagnosis/{id}', [DiagnosisController::class, 'show'])->name('show.diagnosis');
   Route::resource('roles', RoleController::class);
   Route::resource('patients', PatientController::class);
+  Route::get('patient-tag/{patient}', [PatientController::class, 'tag'])->name('patients.tag');
+  Route::post('patient/tag', [PatientController::class, 'addTag'])->name('patients.tag.post');
   Route::get('patient/draw/{id}', [PatientController::class, 'draw'])->name('patient.draw');
   Route::get('patient/check-in/{id}', [PatientController::class, 'checkIn'])->name('patient.checkIn');
   Route::get('patient/fund-wallet/{id}', [PatientController::class, 'fundWalletView'])->name('patient.fund.wallet');

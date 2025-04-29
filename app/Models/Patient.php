@@ -29,6 +29,7 @@ class Patient extends Model
     'hmo_id',
     'dependent',
     'principal_id',
+    'tag_id',
   ];
 
   public function user()
@@ -55,6 +56,11 @@ class Patient extends Model
   public function state()
   {
     return $this->belongsTo(State::class);
+  }
+
+  public function tag()
+  {
+    return $this->belongsTo(Tag::class, 'tag_id');
   }
 
   public function isCheckedInToday()

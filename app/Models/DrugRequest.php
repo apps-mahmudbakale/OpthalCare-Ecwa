@@ -16,6 +16,8 @@ class DrugRequest extends Model
     'patient_id',
     'user_id',
     'drug_id',
+    'qty',
+    'store_id',
     'dose',
     'collected_by',
     'status'

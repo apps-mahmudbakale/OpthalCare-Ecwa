@@ -17,10 +17,22 @@ class PharmacyController extends Controller
 
   public function store(Request $request)
   {
-    $drugs = DrugRequest::create(array_merge($request->except('status'), ['status' => 'Pending', 'user_id' => auth()->user()->id]));
-    $drug = Drug::find($request->drug_id);
-    $serviceHandler = new ServiceRequestHandler();
-    $billingRecord = $serviceHandler->handleServiceRequest($drug->name, $request->patient_id, 'Pharmacy');
+//    dd($request->all());
+    foreach ($request->drug_id as $index => $testId) {
+      DrugRequest::create([
+                'patient_id' => $request->patient_id,
+                'store_id' => $request->store_id[$index],
+                'category_id' => $request->category_id[$index],
+                'drug_id' => $request->drug_id[$index],
+                'quantity' => $request->qty[$index],
+                'dose' => $request->dose[$index],
+                'user_id' => auth()->user()->id,
+                'status' => 'Pending'
+      ]);
+      $drug = Drug::find($request->drug_id[$index]);
+      $serviceHandler = new ServiceRequestHandler();
+      $billingRecord = $serviceHandler->handleServiceRequest($drug->name, $request->patient_id, 'Pharmacy');
+    }
     return redirect()->back()->with('success', 'Drugs Requested!');
   }
 

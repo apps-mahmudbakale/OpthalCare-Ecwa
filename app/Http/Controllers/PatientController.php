@@ -239,6 +239,28 @@ class PatientController extends Controller
     return view('patients.draw');
   }
 
+  public function tag($patient){
+    $patient = Patient::find($patient);
+    return view('patients.add_tag', compact('patient'));
+  }
+
+  public function addTag(Request $request)
+  {
+    $validated = $request->validate([
+      'patient_id' => 'required|exists:patients,id',
+      'tag_id' => 'required|exists:tags,id', // Assuming you have a tags table
+    ]);
+
+    Patient::where('id', $validated['patient_id'])->update([
+      'tag_id' => $validated['tag_id'],
+    ]);
+
+    return redirect()
+      ->route('app.patients.index')
+      ->with('success', 'Tag added successfully.');
+  }
+
+
   public function fundWalletView($patient)
   {
     $patient = Patient::find($patient);
