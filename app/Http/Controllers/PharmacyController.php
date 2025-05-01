@@ -18,16 +18,18 @@ class PharmacyController extends Controller
   public function store(Request $request)
   {
 //    dd($request->all());
+    $request_ref = str()->random(6);
     foreach ($request->drug_id as $index => $testId) {
       DrugRequest::create([
                 'patient_id' => $request->patient_id,
                 'store_id' => $request->store_id[$index],
                 'category_id' => $request->category_id[$index],
                 'drug_id' => $request->drug_id[$index],
-                'quantity' => $request->qty[$index],
+                'qty' => $request->qty[$index],
                 'dose' => $request->dose[$index],
                 'user_id' => auth()->user()->id,
-                'status' => 'Pending'
+                'status' => 'Pending',
+                'request_ref' => $request_ref,
       ]);
       $drug = Drug::find($request->drug_id[$index]);
       $serviceHandler = new ServiceRequestHandler();

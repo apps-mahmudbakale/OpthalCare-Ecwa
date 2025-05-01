@@ -11,23 +11,27 @@ class Pharmacy extends Base
 
   public function render()
   {
-    if ($this->search) {
-      $requests = DrugRequest::query()
-        ->where('status', 'like', '%' . $this->search . '%')
-        ->paginate(10);
+    $query = DrugRequest::with(['drug', 'patient.user', 'user'])
+      ->orderBy($this->sortBy, $this->sortDirection);
 
-      return view(
-        'livewire.pharmacy',
-        ['requests' => $requests]
-      );
-    } else {
-      $requests = DrugRequest::query()
-        ->orderBy($this->sortBy, $this->sortDirection)
-        ->paginate($this->perPage);
-      return view(
-        'livewire.pharmacy',
-        ['requests' => $requests]
-      );
+    if ($this->search) {
+      $query->where('status', 'like', '%' . $this->search . '%');
     }
+
+    $paginated = $query->paginate($this->perPage);
+
+    // Group the paginated collection by request_ref
+    $grouped = $paginated->getCollection()->groupBy('request_ref');
+
+    // Create a new paginator instance with the grouped data
+    $requests = new \Illuminate\Pagination\LengthAwarePaginator(
+      $grouped,
+      $paginated->total(),
+      $paginated->perPage(),
+      $paginated->currentPage(),
+      ['path' => request()->url(), 'query' => request()->query()]
+    );
+
+    return view('livewire.pharmacy', ['requests' => $requests]);
   }
 }

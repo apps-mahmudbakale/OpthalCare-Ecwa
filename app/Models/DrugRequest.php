@@ -19,6 +19,7 @@ class DrugRequest extends Model
     'qty',
     'store_id',
     'dose',
+    'request_ref',
     'collected_by',
     'status'
   ];
