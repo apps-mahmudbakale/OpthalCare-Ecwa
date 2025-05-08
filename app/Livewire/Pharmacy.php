@@ -12,6 +12,7 @@ class Pharmacy extends Base
   public function render()
   {
     $query = DrugRequest::with(['drug', 'patient.user', 'user'])
+      ->where('status', 'Pending')
       ->orderBy($this->sortBy, $this->sortDirection);
 
     if ($this->search) {

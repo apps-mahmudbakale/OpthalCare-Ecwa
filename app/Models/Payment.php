@@ -23,7 +23,13 @@ class Payment extends Model
     }
   public function cashPoint()
   {
-    return $this->belongsTo(CashPoint::class);
+    return $this->belongsTo(CashPoint::class, 'cashpoint_id');
+  }
+  public function paymentMethod(){
+      return $this->belongsTo(PaymentMethod::class);
+  }
+  public function billing(){
+      return $this->belongsTo(Billing::class, 'billing_id');
   }
 }
 

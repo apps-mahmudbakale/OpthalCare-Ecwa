@@ -12,16 +12,25 @@ class AllBillings extends Base
 
   public function render()
   {
-    $query = Billing::query();
+    $query = Billing::query()->where('status', 0);
 
     if ($this->search) {
       $query->where('status', 'like', '%' . $this->search . '%');
     }
 
-    $billings = $query->where('status', false)->select('id','status', 'user_id', DB::raw('SUM(amount) as total_amount'))
-      ->orderBy($this->sortBy, $this->sortDirection)
-      ->groupBy('id','status', 'user_id')
-      ->paginate($this->perPage);
+    $paginated = $query->paginate($this->perPage);
+
+    // Group the paginated collection by request_ref
+    $grouped = $paginated->getCollection()->groupBy('bill_ref');
+
+    // Create a new paginator instance with the grouped data
+    $billings = new \Illuminate\Pagination\LengthAwarePaginator(
+      $grouped,
+      $paginated->total(),
+      $paginated->perPage(),
+      $paginated->currentPage(),
+      ['path' => request()->url(), 'query' => request()->query()]
+    );
 
     return view('livewire.all-billings', ['billings' => $billings]);
   }

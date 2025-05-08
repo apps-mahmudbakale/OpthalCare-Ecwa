@@ -33,25 +33,30 @@ class PharmacyController extends Controller
       ]);
       $drug = Drug::find($request->drug_id[$index]);
       $serviceHandler = new ServiceRequestHandler();
-      $billingRecord = $serviceHandler->handleServiceRequest($drug->name, $request->patient_id, 'Pharmacy');
+      $billingRecord = $serviceHandler->handleServiceRequest($drug->name, $request->patient_id, 'Pharmacy', $request_ref, $request->qty[$index]);
     }
     return redirect()->back()->with('success', 'Drugs Requested!');
   }
 
   public function show($id)
   {
-    $request = DrugRequest::find($id);
-    // dd($request);
-    return view('pharmacy.details', compact('request'));
+    $requests = DrugRequest::with(['patient.user', 'drug'])
+      ->where('request_ref', $id)
+      ->get()
+      ->filter(fn($item) => is_object($item));
+
+    return view('pharmacy.details', compact('requests'));
   }
 
 
   public function edit($id)
   {
 
-    $request = DrugRequest::find($id);
-    // dd($request);
-    return view('pharmacy.fill', compact('request'));
+    $requests = DrugRequest::with(['patient.user', 'drug'])
+      ->where('request_ref', $id)
+      ->get()
+      ->filter(fn($item) => is_object($item));
+    return view('pharmacy.fill', compact('requests'));
   }
 
   public function print($id)
@@ -63,20 +68,32 @@ class PharmacyController extends Controller
 
   public function update(Request $request, $id)
   {
-    $pharmacy = DrugRequest::find($id);
-    // dd($pharmacy);
-    $serviceHandler = new ServiceRequestHandler();
-    $service = "Pharmacy:" . $pharmacy->drug->name;
-    $paid = $serviceHandler->isBilled($pharmacy->drug->id, $service);
+    $collectedBys = $request->collected_by;
+    $qtys = $request->qty;
 
-    if ($paid) {
-      $pharmacy->update(['collected_by' => $request->collected_by, 'status' => 'Filled']);
-      return redirect()->back()->with('success', 'Drugs Filled');
-    } else {
-      // dd("Service Has Not Been Paid");
-      return redirect()->back()->with('error', 'Service Has Not Been Paid For Yet');
+    $requests = DrugRequest::where('request_ref', $id)->get();
+
+    foreach ($requests as $index => $drugRequest) {
+      $drug = optional($drugRequest->drug);
+      $service = "Pharmacy:" . $drug->name;
+
+      $serviceHandler = new ServiceRequestHandler();
+      $paid = $serviceHandler->isBilled($drug->id, $service);
+
+      if ($paid) {
+        $drugRequest->update([
+          'collected_by' => $collectedBys[$index],
+          'status' => 'Filled'
+        ]);
+
+        if ($drug->id) {
+          Drug::where('id', $drug->id)->decrement('quantity', $qtys[$index]);
+        }
+      } else {
+        return redirect()->back()->with('error', "Service for {$drug->name} has not been paid.");
+      }
     }
 
-    // return view('pharmacy.fill', compact('request'));
+    return redirect()->back()->with('success', 'All drugs filled successfully.');
   }
 }

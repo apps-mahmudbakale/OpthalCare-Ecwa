@@ -1,6 +1,6 @@
 @extends('layouts/layoutMaster')
 
-@section('title', 'Radiology Report')
+@section('title', 'Revenue Report')
 
 @section('vendor-style')
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/fullcalendar/fullcalendar.css') }}" />
@@ -57,10 +57,10 @@
       </ul>
       <div class="tab-content">
         <div class="tab-pane fade active show" id="navs-justified-revenue" role="tabpanel">
-          Revenue
+          <livewire:revenue-report />
         </div>
         <div class="tab-pane fade" id="navs-justified-cashpoints" role="tabpanel">
-          Cashpoints
+         <livewire:cashpoint-report />
         </div>
         <div class="tab-pane fade" id="navs-justified-cashier" role="tabpanel">
           Cashier

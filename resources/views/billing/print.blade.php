@@ -13,12 +13,11 @@
     td, th, tr, table, .bordered {
       border-top: 1px solid black;
       border-collapse: collapse;
-      width: 100%
+      width: 100%;
     }
 
     td.description, th.description {
       text-align: left;
-
     }
 
     td.quantity, th.quantity {
@@ -27,7 +26,6 @@
 
     td.price, th.price {
       text-align: right;
-
     }
 
     .centered {
@@ -59,23 +57,32 @@
 </head>
 <body>
 <div class="ticket">
-  <p style="text-align: center">
-    <img
-      src="
-			{{ !empty(app(App\Settings\SystemSettings::class)->logo) ? asset('storage/system/' . app(App\Settings\SystemSettings::class)->logo) : asset('assets/img/logo.png') }}"
-      style="width:80%;margin:0 auto"
-      alt="Logo">
+  <p class="centered">
+    <img src="{{ !empty(app(App\Settings\SystemSettings::class)->logo)
+        ? asset('storage/system/' . app(App\Settings\SystemSettings::class)->logo)
+        : asset('assets/img/logo.png') }}"
+         style="width:80%; margin:0 auto"
+         alt="Logo">
   </p>
+
   <div class="centered">
     <div>
-      {{ !empty(app(App\Settings\SystemSettings::class)->clinic_name) ? app(App\Settings\SystemSettings::class)->clinic_name : 'OphthalCare' }}
-      <br>
-      {{ !empty(app(App\Settings\SystemSettings::class)->address) ? app(App\Settings\SystemSettings::class)->address : 'Address' }}
+      {{ app(App\Settings\SystemSettings::class)->clinic_name ?? 'OphthalCare' }}<br>
+      {{ app(App\Settings\SystemSettings::class)->address ?? 'Address' }}
     </div>
   </div>
+
   <br>
   <strong class="centered">PAYMENT RECEIPT</strong>
   <br>
+
+  @php
+  $bills = \App\Models\Billing::where('bill_ref', $bill_ref)->get();
+  $total = $bills->sum('amount');
+  $firstBill = $bills->first();
+  $patient = optional(optional($firstBill)->user)->patient;
+  @endphp
+
   <table>
     <thead>
     <tr>
@@ -84,37 +91,51 @@
     </tr>
     </thead>
     <tbody>
+    @foreach($bills as $bill)
     <tr>
-      <td class="description">
-        {{\App\Models\Billing::where('id', $payment->billing_id)->first()->service}}
-      </td>
-      <td class="price">
-        {{number_format($payment->paying_amount)}}
-      </td>
+      <td class="description">{{ $bill->service }}</td>
+      <td class="price">{{ number_format($bill->amount) }}</td>
+    </tr>
+    @endforeach
+    <tr>
+      <td class="description"><strong>Total</strong></td>
+      <td class="price"><strong>{{ number_format($total) }}</strong></td>
     </tr>
     <tr>
-      <td class="price" colspan="2"><em>{{ucfirst(\Rmunate\Utilities\SpellNumber::value($payment->paying_amount)->locale('en')->currency('Naira')->toMoney())}}</em></td>
+      <td class="price" colspan="2">
+        <em>{{ ucfirst(\Rmunate\Utilities\SpellNumber::value($total)->locale('en')->currency('Naira')->toMoney()) }}</em>
+      </td>
     </tr>
     <tr><td colspan="2">&nbsp;</td></tr>
     </tbody>
   </table>
-  <div class="centered- bordered-">Received From:<br>{{\App\Models\Patient::where('id',\App\Models\Billing::where('id', $payment->billing_id)->first()->user_id)->first()->user->firstname}}, {{\App\Models\Patient::where('id',\App\Models\Billing::where('id', $payment->billing_id)->first()->user_id)->first()->user->lastname}} [{{ app(App\Settings\SystemSettings::class)->number_prefix ?: 'HRN' }}{{\App\Models\Patient::where('id',\App\Models\Billing::where('id', $payment->billing_id)->first()->user_id)->first()->hospital_no}}]</div>
+
+  <div class="centered">
+    Received From:<br>
+    {{\App\Models\Patient::where('id',\App\Models\Billing::where('id', $payment->billing_id)->first()->user_id)->first()->user->firstname}}, {{\App\Models\Patient::where('id',\App\Models\Billing::where('id', $payment->billing_id)->first()->user_id)->first()->user->lastname}} [{{ app(App\Settings\SystemSettings::class)->number_prefix ?: 'HRN' }}{{\App\Models\Patient::where('id',\App\Models\Billing::where('id', $payment->billing_id)->first()->user_id)->first()->hospital_no}}]
+  </div>
+
   <br>
-  <div class="centered-">Date:<br> {{$payment->created_at->format('d M Y h:i A')}}</div>
-  <br>
-  Thank You
-  <br>
-  <p class="centered small">Cashier: {{$payment->user->firstname." ".$payment->user->lastname}}</p>
-  <p class="centered small">&copy; 2020-{{date('Y')}} - OpthalCare</p>
+  <div class="centered">
+    Date:<br> {{ $payment->created_at->format('d M Y h:i A') }}
+  </div>
+
+  <br>Thank You<br>
+  <p class="centered small">
+    Cashier: {{ $payment->user->firstname . ' ' . $payment->user->lastname }}
+  </p>
+  <p class="centered small">&copy; 2020 - {{ date('Y') }} - OphthalCare</p>
 </div>
+
 <button id="btnPrint" class="hidden-print">Print</button>
-<script src="{{asset('jquery.min.js')}}"></script>
+
+<script src="{{ asset('jquery.min.js') }}"></script>
 <script type="text/javascript">
   $(document).ready(function () {
     window.print();
   });
-  const $btnPrint = document.querySelector("#btnPrint");
-  $btnPrint.addEventListener("click", () => {
+
+  document.querySelector("#btnPrint").addEventListener("click", function () {
     window.print();
   });
 </script>

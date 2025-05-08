@@ -50,6 +50,7 @@ class CashPointController extends Controller
   public function billPatient(Request $request)
   {
 //    dd($request->all());
+    $request_ref = str()->random(6);
     $serviceHandler = new ServiceRequestHandler();
     $class = 'App\Services\BillingService';
 
@@ -59,7 +60,7 @@ class CashPointController extends Controller
       if (method_exists($billserviceInstance, $request->service_category)) {
         $result = $billserviceInstance->{$request->service_category."Services"}($request->service_id);
 
-        $billingRecord = $serviceHandler->handleServiceRequest($result->name, $request->patient_id, ucfirst($request->service_category));
+        $billingRecord = $serviceHandler->handleServiceRequest($result->name, $request->patient_id, ucfirst($request->service_category), $request_ref, 1);
         return  view('billing.new-enroll-pay', compact('billingRecord'));
 
       } else {

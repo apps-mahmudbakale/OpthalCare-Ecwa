@@ -5,7 +5,7 @@
 <form action="{{route('app.payments.store')}}" method="POST">
     @csrf
     <div class="form-group">
-      <input type="hidden" name="billing_id" value="{{$billing->id}}">
+      <input type="hidden" name="billing_id" value="{{$ref}}">
       <input type="hidden" name="patient_id" value="{{$billing->user_id}}">
         <div class="form-label-group">
             <select name="location_id" class="custom-select" id="fls0" required="required">
@@ -31,7 +31,7 @@
     <div class="row">
         <div class="form-group col-md-6">
             <div class="form-label-group">
-                <input value="{{ $billing->amount }}" name="amount" required="required"
+                <input value="{{ $amount }}" name="amount" required="required"
                     autocomplete="off" type="text" class="form-control form-control-lg -text-right"
                   >
                 <label for="fls2">Paying Amount</label>

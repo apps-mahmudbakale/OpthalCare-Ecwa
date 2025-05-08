@@ -8,169 +8,182 @@ use App\Models\Patient;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
 use App\Models\TempPatient;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
+  /**
+   * Process wallet payment and validate balance
+   */
+  private function processWalletPayment(Patient $patient, float $amount): bool
+  {
+    if ($patient->wallet_balance < $amount) {
+      return false;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+    $patient->wallet_balance -= $amount;
+    $patient->save();
+    return true;
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-//      dd($request->all());
-      $payment_method = PaymentMethod::find($request->payment_method_id);
+  /**
+   * Create payment and update billing status
+   */
+  private function createPaymentAndUpdateBilling(array $paymentData, int $billingId): Payment
+  {
+    $payment = Payment::create($paymentData);
+    Billing::where('id', $billingId)->update(['status' => true]);
+    return $payment;
+  }
 
-      if ($payment_method && $payment_method->name == 'Wallet') {
-        $patient = Patient::find($request->patient_id);
-        $wallet_balance = $patient->wallet_balance;
-        $required_amount = $request->amount; // assuming the amount is passed in the request
+  /**
+   * Store a newly created payment resource
+   */
+  public function store(Request $request)
+  {
+    $request->validate([
+      'patient_id' => 'required|exists:patients,id',
+      'billing_id' => 'required|string', // Allow string for bill_ref like 64N2yT
+      'payment_method_id' => 'required|exists:payment_methods,id',
+      'amount' => 'required|numeric|min:0',
+    ]);
 
-        if ($wallet_balance < $required_amount) {
-          return redirect()->route('app.patients.show', $patient->id)->with(['error', 'insufficient balance']);
+    try {
+      return DB::transaction(function () use ($request) {
+        $paymentMethod = PaymentMethod::findOrFail($request->payment_method_id);
+        $patient = Patient::findOrFail($request->patient_id);
+
+        // Find billings by bill_ref
+        $billings = Billing::where('bill_ref', $request->billing_id)
+          ->where('user_id', $patient->id) // Ensure billing belongs to patient
+          ->get();
+
+        if ($billings->isEmpty()) {
+          Log::warning("No billing found for bill_ref: {$request->billing_id}");
+          return redirect()->back()->with(['error' => 'Invalid or non-existent billing reference']);
         }
 
-        // Deduct the amount from the user's wallet
-        $patient->wallet_balance -= $required_amount;
+        // Handle wallet payment
+        if ($paymentMethod->name === 'Wallet' && !$this->processWalletPayment($patient, $request->amount)) {
+          return redirect()->route('app.patients.show', $patient->id)
+            ->with(['error' => 'Insufficient balance']);
+        }
 
-      }
+        $paymentData = [
+          'cashpoint_id' => $request->location_id,
+          'payment_method_id' => $request->payment_method_id,
+          'user_id' => Auth::id(),
+        ];
 
-      $payment = Payment::create([
-        'billing_id' => $request->billing_id,
-        'cashpoint_id' => $request->location_id,
-        'payment_method_id' => $request->payment_method_id,
-        'paying_amount' => $request->amount,
-        'user_id' => Auth::user()->id,
-      ]);
+        $payment = null;
+        // Process multiple billings if they exist
+        if ($billings->count() > 1) {
+          foreach ($billings as $billing) {
+            $paymentData['billing_id'] = $billing->id;
+            $paymentData['paying_amount'] = $billing->amount;
+            $payment = $this->createPaymentAndUpdateBilling($paymentData, $billing->id);
+          }
+        } else {
+          // Single billing
+          $billing = $billings->first();
+          $paymentData['billing_id'] = $billing->id;
+          $paymentData['paying_amount'] = $request->amount;
+          $payment = $this->createPaymentAndUpdateBilling($paymentData, $billing->id);
+        }
 
-      $billing = Billing::where('id', $request->billing_id)->update([
-        'status' => true
-      ]);
+        $service = $billings->first(); // Use first billing for service check
 
-      $service = Billing::where('id', $request->billing_id)->first();
+        // Handle follow-up consultation
+        if ($service->service === 'consultations:Follow-Up') {
+          $accessCode = 'OPC-' . substr(rand(100000, 999999) . time(), 0, 6);
+          $access = FollowUp::create([
+            'patient_id' => $service->user_id,
+            'access_code' => $accessCode,
+          ]);
 
-      if ($service->service == 'consultations:Follow-Up'){
-//        dd($service);
-        $accessCode = 'OPC-' . substr(rand(100000, 999999) . time(), 0, 6);
-        $access = FollowUp::create([
-          'patient_id' => $service->user_id,
-          'access_code' => $accessCode,
-        ]);
-        $patient = Patient::where('id', $service->user_id)->first();
-        if ($access) {
           return view('billing.print-follow', compact('access', 'patient'));
         }
-      }
 
-      return view('billing.print', compact('billing', 'payment'))->with(['success' => 'Payment added successfully.']);
-
+        return view('billing.print', [
+          'billing' => $service,
+          'payment' => $payment,
+          'bill_ref' => $request->billing_id
+        ])->with(['success' => 'Payment added successfully']);
+      });
+    } catch (\Exception $e) {
+      Log::error('Payment processing failed: ' . $e->getMessage(), [
+        'bill_ref' => $request->billing_id,
+        'patient_id' => $request->patient_id
+      ]);
+      return redirect()->back()->with(['error' => 'Payment processing failed: Invalid billing reference or server error']);
     }
+  }
 
-public function newMethod()
-{
-  return view('payments.new-method');
-}
+  /**
+   * Show form for creating new payment method
+   */
+  public function newMethod()
+  {
+    return view('payments.new-method');
+  }
 
+  /**
+   * Save new payment method
+   */
   public function saveMethod(Request $request)
   {
-    $method = PaymentMethod::create($request->all());
+    $request->validate([
+      'name' => 'required|string|max:255|unique:payment_methods',
+    ]);
 
-    return redirect()->back()->with(['success' => 'Payment Method added successfully.']);
+    try {
+      PaymentMethod::create($request->only(['name']));
+      return redirect()->back()->with(['success' => 'Payment Method added successfully']);
+    } catch (\Exception $e) {
+      Log::error('Payment method creation failed: ' . $e->getMessage());
+      return redirect()->back()->with(['error' => 'Failed to add payment method']);
+    }
   }
 
-
+  /**
+   * Store payment for enrollment
+   */
   public function storeEnroll(Request $request)
   {
-    $payment_method = PaymentMethod::find($request->payment_method_id);
+    try {
+      return DB::transaction(function () use ($request) {
+        $paymentMethod = PaymentMethod::findOrFail($request->payment_method_id);
+        $tempPatient = TempPatient::findOrFail($request->patient_id);
 
-    if ($payment_method && $payment_method->name == 'Wallet') {
-      $patient = Patient::find($request->patient_id);
-      $wallet_balance = $patient->wallet_balance;
-      $required_amount = $request->amount; // assuming the amount is passed in the request
+        // Handle wallet payment
+        if ($paymentMethod->name === 'Wallet') {
+          $patient = Patient::findOrFail($request->patient_id);
+          if (!$this->processWalletPayment($patient, $request->amount)) {
+            return redirect()->back()->with(['error' => 'Insufficient balance']);
+          }
+        }
 
-      if ($wallet_balance < $required_amount) {
-        return redirect()->back()->with(['error', 'insufficient balance']);
-      }
+        // Create payment
+        $payment = $this->createPaymentAndUpdateBilling([
+          'billing_id' => $request->billing_id,
+          'cashpoint_id' => $request->location_id,
+          'payment_method_id' => $request->payment_method_id,
+          'paying_amount' => $request->amount,
+          'user_id' => Auth::id(),
+        ], $request->billing_id);
 
-      // Deduct the amount from the user's wallet
-      $patient->wallet_balance -= $required_amount;
+        // Update temp patient with access code
+        $accessCode = 'OPC-' . substr(rand(100000, 999999) . time(), 0, 6);
+        $tempPatient->update(['accesscode' => $accessCode]);
 
+        return view('billing.print-new', compact('tempPatient'));
+      });
+    } catch (\Exception $e) {
+      Log::error('Enrollment payment processing failed: ' . $e->getMessage());
+      return redirect()->back()->with(['error' => 'Enrollment payment processing failed']);
     }
-
-    $payment = Payment::create([
-      'billing_id' => $request->billing_id,
-      'cashpoint_id' => $request->location_id,
-      'payment_method_id' => $payment_method->name,
-      'paying_amount' => $request->amount
-    ]);
-
-    $billing = Billing::where('id', $request->billing_id)->update([
-      'status' => true
-    ]);
-
-    $accessCode = 'OPC-' . substr(rand(100000, 999999) . time(), 0, 6);
-
-    $tempPatient = TempPatient::find($request->patient_id);
-    $tempPatient->accesscode = $accessCode;
-    $tempPatient->save();
-//    $tempPatient = DB::table('temp_patients')->where('id', $request->patient_id)->update(['accesscode' => $accessCode]);
-if ($tempPatient){
-//  dd($tempPatient);
-  return view('billing.print-new', compact('tempPatient', ));
-}
-
-
-
-//
-
   }
-    /**
-     * Display the specified resource.
-     */
-    public function show(Payment $payment)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Payment $payment)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Payment $payment)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Payment $payment)
-    {
-        //
-    }
 }

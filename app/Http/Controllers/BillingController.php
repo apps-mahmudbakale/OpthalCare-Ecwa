@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Billing;
+use App\Models\DrugRequest;
 use App\Models\Laboratory;
 use App\Models\Speciality;
 use App\Services\ServiceRequestHandler;
@@ -31,13 +32,12 @@ class BillingController extends Controller
    */
   public function store(Request $request)
   {
-
-
+    $request_ref = str()->random(6);
     if ($request->service_category == 'consultations') {
       $consult = Speciality::find($request->service_id);
 //      dd($request->all());
       $serviceHandler = new ServiceRequestHandler();
-      $billingRecord = $serviceHandler->handleServiceRequest($consult->name, $request->patient_id, 'consultations');
+      $billingRecord = $serviceHandler->handleServiceRequest($consult->name, $request->patient_id, 'consultations', $request_ref, 1);
       // Generate unique access code
 //      $accessCode = 'FU-' . strtoupper(Str::random(6));
 
@@ -49,9 +49,13 @@ class BillingController extends Controller
   /**
    * Display the specified resource.
    */
-  public function show(Billing $billing)
+  public function show($ref)
   {
-    return view('billing.show', compact('billing'));
+    $amount = Billing::where('bill_ref', $ref)
+      ->sum('amount');
+    $billing = Billing::with('patient')->where('bill_ref', $ref)->first();
+
+    return view('billing.show', compact('amount', 'ref', 'billing'));
   }
 
   /**

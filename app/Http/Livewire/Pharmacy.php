@@ -21,7 +21,7 @@ class Pharmacy extends Base
         ['requests' => $requests]
       );
     } else {
-      $requests = DrugRequest::query()
+      $requests = DrugRequest::query()->where('status', 'Pending')
         ->orderBy($this->sortBy, $this->sortDirection)
         ->paginate($this->perPage);
       return view(

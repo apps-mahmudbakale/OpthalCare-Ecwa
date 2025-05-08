@@ -35,7 +35,7 @@
             <ul class="dropdown-menu dropdown-menu-end m-0">
               <li>
                 <button class="dropdown-item"
-                        data-request-url="{{ route('app.pharmacy.show', $request->id) }}"
+                        data-request-url="{{ route('app.pharmacy.show', $request->request_ref) }}"
                         data-toggle="modal" data-target="#global-modal" type="button">
                   Details
                 </button>
@@ -50,7 +50,7 @@
               @if ($isPaid && $request->status != 'Filled')
               <li>
                 <button class="dropdown-item" data-toggle="modal"
-                        data-request-url="{{ route('app.pharmacy.edit', $request->id) }}"
+                        data-request-url="{{ route('app.pharmacy.edit',$request->request_ref) }}"
                         data-target="#global-modal-lg" type="button">
                   Fill
                 </button>
