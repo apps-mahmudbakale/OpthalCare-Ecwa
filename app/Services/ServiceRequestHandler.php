@@ -68,10 +68,11 @@ class ServiceRequestHandler
     return ($service->price ?? 0) * $qty;
   }
 
-  public function isBilled($serviceId, $serviceName)
+  public function isBilled($serviceId, $serviceName, $ref)
   {
     $billing = Billing::where('service_id', $serviceId)
       ->where('service', $serviceName)
+      ->where('bill_ref', $ref)
       ->first();
 
     return $billing ? $billing->status : null;

@@ -15,6 +15,7 @@ class LabRequest extends Model
     'user_id',
     'test_id',
     'request_note',
+    'request_ref',
     'priority',
     'status'
   ];

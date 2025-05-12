@@ -22,7 +22,7 @@ class Laboratory extends Model
   }
   public function template()
   {
-    return $this->hasOne(LabTemplate::class, 'template_id');
+    return $this->belongsTo(LabTemplate::class, 'template_id');
   }
 
   public static function getServiceType()

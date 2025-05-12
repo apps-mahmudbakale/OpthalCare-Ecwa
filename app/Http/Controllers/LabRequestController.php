@@ -32,11 +32,14 @@ class LabRequestController extends Controller
    */
   public function store(Request $request)
   {
+//    dd($request->all());
+    $request_ref = str()->random(6);
     foreach ($request->test_id as $index => $testId) {
       LabRequest::create([
         'test_id' => $testId,
         'priority' => $request->priority[$index],
         'request_note' => $request->request_note[$index],
+        'request_ref' => $request_ref,
         'patient_id' => $request->patient_id,
         'user_id' => $request->user_id,
         'status' => 'Pending'
@@ -48,7 +51,9 @@ class LabRequestController extends Controller
         $billingRecord = $serviceHandler->handleServiceRequest(
           $lab->name,
           $request->patient_id,
-          'Laboratory'
+          'Laboratory',
+          $request_ref,
+          1
         );
       }
     }
@@ -71,7 +76,7 @@ class LabRequestController extends Controller
     $lab = LabRequest::find($labRequest);
     $serviceHandler = new ServiceRequestHandler();
     $service = "Laboratory:" . $lab->test->name;
-    $paid = $serviceHandler->isBilled($lab->test_id, $service);
+    $paid = $serviceHandler->isBilled($lab->test_id, $service, $lab->request_ref);
 
     if ($paid) {
       $lab->update(['status' => 'Specimen Collected']);

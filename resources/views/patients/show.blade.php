@@ -101,16 +101,18 @@
             </div>
         </div>
         <div class="col-lg-6 col-6 mb-4">
+          <a href="{{route('app.billing.index')}}">
             <div class="card h-100">
-                <div class="card-body text-center">
-                    <div class="badge rounded-pill p-2 bg-label-danger mb-2">
-                        <i class="ti ti-briefcase ti-sm"></i>
-                    </div>
-                    <h5 class="card-title mb-2">{{ number_format($outstanding_balance) }}</h5>
-                    <small>Outstanding Balance</small>
-
+              <div class="card-body text-center">
+                <div class="badge rounded-pill p-2 bg-label-danger mb-2">
+                  <i class="ti ti-briefcase ti-sm"></i>
                 </div>
+                <h5 class="card-title mb-2">{{ number_format($outstanding_balance) }}</h5>
+                <small>Outstanding Balance</small>
+
+              </div>
             </div>
+          </a>
         </div>
     </div>
     <div class="row">

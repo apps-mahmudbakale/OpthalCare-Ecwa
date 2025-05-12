@@ -44,7 +44,7 @@
               @php
               $serviceHandler = new \App\Services\ServiceRequestHandler();
               $service = "Pharmacy:" . $request->drug->name;
-              $isPaid = $serviceHandler->isBilled($request->drug->id, $service);
+              $isPaid = $serviceHandler->isBilled($request->drug->id, $service, $request->request_ref);
               @endphp
 
               @if ($isPaid && $request->status != 'Filled')

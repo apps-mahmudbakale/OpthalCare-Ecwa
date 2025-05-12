@@ -68,6 +68,7 @@ class PharmacyController extends Controller
 
   public function update(Request $request, $id)
   {
+
     $collectedBys = $request->collected_by;
     $qtys = $request->qty;
 
@@ -76,9 +77,8 @@ class PharmacyController extends Controller
     foreach ($requests as $index => $drugRequest) {
       $drug = optional($drugRequest->drug);
       $service = "Pharmacy:" . $drug->name;
-
       $serviceHandler = new ServiceRequestHandler();
-      $paid = $serviceHandler->isBilled($drug->id, $service);
+      $paid = $serviceHandler->isBilled($drug->id, $service, $drugRequest->request_ref);
 
       if ($paid) {
         $drugRequest->update([

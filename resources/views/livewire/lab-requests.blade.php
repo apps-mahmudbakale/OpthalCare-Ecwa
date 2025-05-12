@@ -233,32 +233,7 @@
       </div>
       <p class="text-muted">Recorded By  {{ $request->user->firstname ." ". $request->user->lastname }} on {{ $request->created_at->format('d M Y h:i A') }}</p>
       <div class="invoice-box">
-      <table>
-        <tr class="information item">
-          <td></td>
-          <td colspan="2">
-            <div class="spacer"></div>
-            {{ $request->patient->user->firstname }} {{ $request->patient->user->firstname }}
-            [{{ app(App\Settings\SystemSettings::class)->number_prefix ?: 'HRN' }}{{ $request->patient->hospital_no }}]<br>
-            PRIVATE - Self Pay<br>
-            <br>
-            <div class="spacer"></div>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="2">
-            <div style="font-weight: bold; font-size: larger">Lab Investigation  Result</div>
-          </td>
-          <td>Date: {{ optional($request->findings)->created_at ? $request->findings->created_at->diffForHumans() : 'N/A' }} </td>
-        </tr>
-        <tr class="item">
-          <td>
-            <h5>Findings</h5>
-          {{$request->findings->result ?? ''}}
-
-          </td>
-        </tr>
-      </table>
+      {!! $request->findings->result ?? '' !!}
       <div class="spacer"></div>
       </div>
     </div>
