@@ -15,7 +15,7 @@
             <?php
             $serviceHandler = new App\Services\ServiceRequestHandler();
             $service = "Radiology:" . \App\Models\Radiology::where('id', $request->imaging_id)->first()->name;
-            $isPaid = $serviceHandler->isBilled($request->imaging_id, $service); // Returns 1 or 0
+            $isPaid = $serviceHandler->isBilled($request->imaging_id, $service, 'hjfjhj'); // Returns 1 or 0
             ?>
                 <tr>
                     <td>
