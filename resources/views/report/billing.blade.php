@@ -63,7 +63,7 @@
          <livewire:cashpoint-report />
         </div>
         <div class="tab-pane fade" id="navs-justified-cashier" role="tabpanel">
-          Cashier
+          <livewire:end-day-report />
         </div>
       </div>
     </div>

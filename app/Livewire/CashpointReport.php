@@ -24,22 +24,25 @@ class CashpointReport extends Component
 
   public function getRevenueProperty()
   {
-    return Payment::with(['billing', 'cashPoint'])
+    return Payment::selectRaw('cashpoint_id, SUM(paying_amount) as total_revenue')
       ->when($this->cashier, fn($q) => $q->where('user_id', $this->cashier))
       ->when($this->cashpoint, fn($q) => $q->where('cashpoint_id', $this->cashpoint))
       ->when($this->Date, fn($q) => $q->whereDate('created_at', $this->Date))
-      ->latest()
-      ->paginate(15);
+      ->groupBy('cashpoint_id')
+      ->with('cashPoint')
+      ->get();
   }
+
 
   public function export()
   {
-    $query = Payment::with(['billing', 'cashPoint'])
+    $data = Payment::selectRaw('cashpoint_id, SUM(paying_amount) as total_revenue')
       ->when($this->cashier, fn($q) => $q->where('user_id', $this->cashier))
-      ->when($this->cashpoint, fn($q) => $q->where('cash_point_id', $this->cashpoint))
-      ->when($this->Date, fn($q) => $q->whereDate('created_at', $this->Date));
-
-    $data = $query->get();
+      ->when($this->cashpoint, fn($q) => $q->where('cashpoint_id', $this->cashpoint))
+      ->when($this->Date, fn($q) => $q->whereDate('created_at', $this->Date))
+      ->groupBy('cashpoint_id')
+      ->with('cashPoint')
+      ->get();
 
     return Excel::download(new CashpointExport($data), 'cashpoint-report.xlsx');
   }

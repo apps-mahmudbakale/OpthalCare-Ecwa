@@ -33,7 +33,7 @@ class RevenueReport extends Component
           $query->whereRaw("LOWER(SUBSTRING_INDEX(service, ':', 1)) = ?", [strtolower($this->service)]);
         });
       })
-      ->when($this->cashpoint, fn($q) => $q->where('cash_point_id', $this->cashpoint))
+      ->when($this->cashpoint, fn($q) => $q->where('cashpoint_id', $this->cashpoint))
       ->when($this->method, fn($q) => $q->where('payment_method', $this->method))
       ->when($this->Date, fn($q) => $q->whereDate('created_at', $this->Date));
 

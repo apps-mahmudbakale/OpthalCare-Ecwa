@@ -42,53 +42,31 @@
 
     <!-- Table Content -->
     <div class="table-responsive">
-      <table class="table table-sm table-striped">
-        <thead>
-        <tr>
-          <th>Date</th>
-          <th>Service</th>
-          <th>Cash Point</th>
-          <th>Payment Method</th>
-          <th>Amount</th>
-        </tr>
-        </thead>
-        <tbody>
-        @php $total = 0; @endphp
-        @forelse($revenue as $item)
-        @php $total += $item->paying_amount; @endphp
-        <tr>
-          <td>{{ $item->created_at->format('d M Y h:i A') }}</td>
-          <td>{{ $item->billing->service ?? '-' }}</td>
-          <td>{{ strtoupper($item->cashPoint->name ?? '-') }}</td>
-          <td>{{ ucfirst($item->payment_method ?? 'Cash') }}</td>
-          <td>{{ number_format($item->paying_amount, 2) }}</td>
-        </tr>
-        @empty
-        <tr>
-          <td colspan="5" class="text-center">No records found.</td>
-        </tr>
-        @endforelse
-        </tbody>
-
-        @if($revenue->count())
-        <tfoot>
-        <tr>
-          <th colspan="4" class="text-right">Total</th>
-          <th>{{ number_format($total, 2) }}</th>
-        </tr>
-        </tfoot>
-        @endif
-      </table>
-
-      <!-- Pagination -->
-      <div class="d-flex justify-content-between align-items-center px-3 py-2">
-        <div>
-          Showing {{ $revenue->firstItem() }} to {{ $revenue->lastItem() }} of {{ $revenue->total() }} entries
-        </div>
-        <div>
-          {{ $revenue->links('pagination::bootstrap-4') }}
-        </div>
+      <!-- Grouped Revenue Table -->
+      <div class="table-responsive">
+        <table class="table table-sm table-striped">
+          <thead>
+          <tr>
+            <th>Cash Point</th>
+            <th>Total Revenue (₦)</th>
+          </tr>
+          </thead>
+          <tbody>
+          @forelse($revenue as $row)
+          <tr>
+            <td>{{ strtoupper($row->cashPoint->name ?? 'N/A') }}</td>
+            <td>{{ number_format($row->total_revenue, 2) }}</td>
+          </tr>
+          @empty
+          <tr>
+            <td colspan="2" class="text-center">No records found.</td>
+          </tr>
+          @endforelse
+          </tbody>
+        </table>
       </div>
+      <!-- Pagination -->
+
     </div>
   </div>
 </div>
