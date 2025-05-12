@@ -1,0 +1,50 @@
+<form id="result-templ">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Result</h3>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <label>Date & Time Taken</label>
+          <input
+            type="datetime-local"
+            class="form-control"
+            name="test_taken_at"
+          />
+        </div>
+        <div class="col-md-4">
+          <label>Collection Time</label>
+          <input type="time" class="form-control" name="collection_time" />
+        </div>
+        <div class="col-md-4">
+          <label>Sample No.</label>
+          <input type="text" class="form-control" name="sample_no" />
+        </div>
+        <div class="col-md-4">
+          <label>RBS Result</label>
+          <input type="text" class="form-control" name="rbs_result" />
+        </div>
+        <div class="col-md-4">
+          <p></p>
+          <select name="unit" class="form-control">
+            <option value="mmol/L">mmol/L</option>
+          </select>
+        </div>
+        <div class="col-md-12">
+          <label>Additional Notes</label>
+          <textarea name="notes" class="form-control"></textarea>
+        </div>
+      </div>
+
+      <label>
+        <input type="checkbox" name="notify_patient" value="1" /> Notify patient
+        via SMS & Email alert
+      </label>
+      <div class="col-md-12">
+        <label>Referral Hospital</label>
+      <input type="text" class="form-control" name="referral_hospital" />
+      </div>
+    </div>
+  </div>
+</form>
