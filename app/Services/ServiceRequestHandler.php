@@ -42,6 +42,7 @@ class ServiceRequestHandler
       'Laboratory' => \App\Models\Laboratory::class,
       'Radiology'  => \App\Models\Radiology::class,
       'Procedure'  => \App\Models\Procedure::class,
+      'Bed' => \App\Models\Bed::class,
       // Add more models here as needed
     ];
 

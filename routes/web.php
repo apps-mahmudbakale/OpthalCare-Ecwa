@@ -146,6 +146,8 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::resource('procedure-requests', ProcedureRequestController::class);
   Route::get('procedure-prepare/{id}', [ProcedureRequestController::class, 'prepare'])->name('procedure.prepare');
 
+  Route::post('/getBedsByWard', [WardController::class, 'getBedsByWard'])->name('getBedsByWard');
+
 
   // **** Radiology Routes
   Route::resource('radiology', RadiologyRequestController::class);

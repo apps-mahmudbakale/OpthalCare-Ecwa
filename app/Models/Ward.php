@@ -12,4 +12,9 @@ class Ward extends Model
   protected $fillable = [
     'name'
   ];
+
+  public function beds()
+  {
+    return $this->hasMany(Bed::class);
+  }
 }
