@@ -33,7 +33,7 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $test->name }}</td>
                         <td>{{ $test->category->name }}</td>
-                        <td>{{ $test->procedure_cost }}</td>
+                        <td>{{ $test->price }}</td>
                         <td>
                             <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
                                     data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
