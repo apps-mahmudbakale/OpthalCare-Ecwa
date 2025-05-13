@@ -11,12 +11,8 @@ class Procedure extends Model
 
   protected $fillable = [
     'name',
-    'procedure_cost',
-    'theatre_cost',
-    'anaesthesia_cost',
-    'surgeon_fee',
+    'price_cost',
     'category_id',
-    'in_theather'
   ];
 
   public function category()

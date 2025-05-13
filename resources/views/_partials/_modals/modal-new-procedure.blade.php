@@ -9,11 +9,11 @@
                 </div>
                 <form action="{{ route('app.procedure.store') }}" method="POST" class="row g-3">
                     @csrf
-                    <div class="col-6 col-md-6">
+                    <div class="col-12 col-md-12">
                         <label class="form-label"> Name</label>
                         <input type="text" name="name" class="form-control" placeholder="Name" />
                     </div>
-                    <div class="col-6 col-md-6">
+                    <div class="col-12 col-md-12">
                         <label class="form-label">Category</label>
                         <select name="category_id" id="" class="form-control">
                             <option value="">----</option>
@@ -22,33 +22,10 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-6 col-md-6">
-                        <label class="form-label"> Procedure Cost</label>
-                        <input type="number" name="procedure_cost" class="form-control" placeholder="Procedure Cost" />
-                    </div>
-                    <div class="col-6 col-md-6">
-                        <label class="form-label"> Theatre Cost</label>
-                        <input type="number" name="theatre_cost" class="form-control" placeholder="Theatre Cost" />
-                    </div>
-                    <div class="col-6 col-md-6">
-                        <label class="form-label">Anaesthesia Cost</label>
-                        <input type="number" name="anaesthesia_cost" class="form-control"
-                            placeholder="Anaesthesia Cost" />
-                    </div>
-                    <div class="col-6 col-md-6">
-                        <label class="form-label"> Surgeon Cost</label>
-                        <input type="number" name="surgeon_fee" class="form-control" placeholder="Surgeon Cost" />
-                    </div>
                     <div class="col-12 col-md-12">
-
-                        <input class="form-check-input input-filter" type="checkbox" id="select-active"
-                            data-value="active" checked>
-                        <label class="form-check-label" for="select-active">Enable Theatre</label>
-                        <div>
-                            <small>Procedure is done in the Theatre.</small>
-                        </div>
+                        <label class="form-label"> Procedure Cost</label>
+                        <input type="number" name="price" class="form-control" placeholder="Procedure Cost" />
                     </div>
-
 
                     <div class="col-12 text-center">
                         <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
