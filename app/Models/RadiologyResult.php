@@ -12,6 +12,8 @@ class RadiologyResult extends Model
   protected $fillable = [
     'imaging_id',
     'patient_id',
-    'result'
+    'result',
+    'image',
+    'user_id'
   ];
 }

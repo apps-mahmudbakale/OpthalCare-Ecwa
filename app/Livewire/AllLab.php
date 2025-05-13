@@ -17,7 +17,7 @@ class AllLab extends Component
 
     public function render()
     {
-        $labRequests = LabRequest::query()
+      $labRequests = LabRequest::query()->where('status', '!=', 'Result Ready')
             ->when($this->patientId, function ($query) {
                 $query->where('patient_id', $this->patientId);
             })

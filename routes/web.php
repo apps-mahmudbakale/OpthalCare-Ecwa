@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProcedureRequestController;
 use App\Models\Consumble;
 use App\Models\Appointment;
 use Illuminate\Support\Facades\URL;
@@ -142,6 +143,9 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::post('procedures-category', [ProcedureController::class, 'storeCategory'])->name('procedures-category.store');
   Route::post('procedures-category/{category}', [ProcedureController::class, 'updateCategory'])->name('procedures-category.update');
 
+  Route::resource('procedure-requests', ProcedureRequestController::class);
+  Route::get('procedure-prepare/{id}', [ProcedureRequestController::class, 'prepare'])->name('procedure.prepare');
+
 
   // **** Radiology Routes
   Route::resource('radiology', RadiologyRequestController::class);
@@ -161,6 +165,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::post('/import-icd10', [ICD10Controller::class, 'import'])->name('import-icd10');
   Route::resource('tags', TagController::class);
   Route::resource('admissions', AdmissionController::class);
+  Route::get('admissions/request/{id}', [AdmissionController::class, 'requestAdmission'])->name('admissions.request');
   Route::resource('billing', BillingController::class);
   Route::resource('antenatals', AntenatalController::class);
   Route::resource('specialities', SpecialityController::class);

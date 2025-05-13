@@ -58,10 +58,6 @@ class Patient extends Model
     return $this->belongsTo(State::class);
   }
 
-  public function tag()
-  {
-    return $this->belongsTo(Tag::class, 'tag_id');
-  }
 
   public function isCheckedInToday()
   {
@@ -109,5 +105,6 @@ class Patient extends Model
 
     return now()->diffInDays($lastVisit->created_at) > 5;
   }
+
 
 }

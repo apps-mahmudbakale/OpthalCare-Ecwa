@@ -84,7 +84,7 @@
       }
     });
 
-    // Handle form submission
+// Handle form submission
     $('#lab-result-form').submit(function(event) {
       event.preventDefault();
 
@@ -94,7 +94,9 @@
         const $el = $(this);
         const value = $el.val();
 
-        if ($el.is(':checkbox') || $el.is(':radio')) {
+        if ($el.is('textarea')) {
+          $el.text(value); // ✅ set content inside <textarea></textarea>
+        } else if ($el.is(':checkbox') || $el.is(':radio')) {
           if ($el.prop('checked')) {
             $el.attr('checked', 'checked');
           } else {
@@ -132,5 +134,7 @@
         }
       });
     });
+
   });
 </script>
+

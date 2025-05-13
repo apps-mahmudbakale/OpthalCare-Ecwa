@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PatientTags;
 use App\Models\TempPatient;
 use App\Models\Wallet;
 use App\Settings\SystemSettings;
@@ -246,12 +247,28 @@ class PatientController extends Controller
 
   public function addTag(Request $request)
   {
+    // Validate the incoming request data
     $validated = $request->validate([
       'patient_id' => 'required|exists:patients,id',
-      'tag_id' => 'required|exists:tags,id', // Assuming you have a tags table
+      'tag_id' => 'required|exists:tags,id', // Ensure tag exists in the tags table
     ]);
 
-    Patient::where('id', $validated['patient_id'])->update([
+    // Check if the tag already exists for this patient
+    $existingTag = PatientTags::where('patient_id', $validated['patient_id'])
+      ->where('tag_id', $validated['tag_id'])
+      ->first();
+
+    if ($existingTag) {
+      // If the tag exists, you can choose to update or ignore it
+      // For now, we are just ignoring the tag addition if it already exists
+      return redirect()
+        ->route('app.patients.index')
+        ->with('info', 'Tag already assigned to the patient.');
+    }
+
+    // If the tag doesn't exist, add the new tag
+    PatientTags::create([
+      'patient_id' => $validated['patient_id'],
       'tag_id' => $validated['tag_id'],
     ]);
 
@@ -259,6 +276,7 @@ class PatientController extends Controller
       ->route('app.patients.index')
       ->with('success', 'Tag added successfully.');
   }
+
 
 
   public function fundWalletView($patient)

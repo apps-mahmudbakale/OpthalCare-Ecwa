@@ -61,7 +61,7 @@
 </form>
 <script>
   var patient = document.getElementById('new-patient');
-  patient.addEventListener('click', function () {
+  patient?.addEventListener('click', function () {
     Swal.fire({
       title: "Provide Access Code",
       input: "text",

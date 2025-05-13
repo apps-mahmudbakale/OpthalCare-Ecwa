@@ -88,7 +88,7 @@ class LabRequestController extends Controller
   }
 
   public function addResult(Request $request){
-    $result = LabResult::create($request->all());
+    $result = LabResult::create(array_merge($request->all(), ['user_id' => auth()->user()->id]));
     $update = LabRequest::where('id', $result->lab_id)->update(['status' => 'Result Ready']);
     return redirect()->back()->with('success', 'Result Collected!');
   }

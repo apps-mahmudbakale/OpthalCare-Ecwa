@@ -37,15 +37,16 @@ class RadiologyRequestController extends Controller
    */
   public function store(Request $request)
   {
-    $imagingrequest = RadiologyRequest::create(array_merge($request->except('status'), ['status' => 'Pending']));
+    $request_ref = str()->random(6);
+    $imagingrequest = RadiologyRequest::create(array_merge($request->except('status'), ['status' => 'Pending', 'request_ref' => $request_ref]));
     $imaging = Radiology::find($request->imaging_id);
     $serviceHandler = new ServiceRequestHandler();
-    $billingRecord = $serviceHandler->handleServiceRequest($imaging->name, $request->patient_id, 'Radiology');
+    $billingRecord = $serviceHandler->handleServiceRequest($imaging->name, $request->patient_id, 'Radiology', $request_ref, 1);
     return redirect()->back()->with('success', 'Imaging Requested!');
   }
 
   public function addResult(Request $request){
-    $result = RadiologyResult::create($request->all());
+    $result = RadiologyResult::create(array_merge($request->all(), ['user_id' => auth()->user()->id]));
     $update = RadiologyRequest::where('id', $result->imaging_id)->update(['status' => 'Result Ready']);
     return redirect()->back()->with('success', 'Result Collected!');
   }

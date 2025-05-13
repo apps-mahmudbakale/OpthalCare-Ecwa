@@ -14,6 +14,7 @@
       <th>Patient</th>
       <th>Investigation</th>
       <th>Requester</th>
+      <th>Status</th>
       <th></th>
     </tr>
     </thead>
@@ -22,7 +23,7 @@
     <?php
     $serviceHandler = new App\Services\ServiceRequestHandler();
     $service = "Radiology:" . \App\Models\Radiology::where('id', $radiologyRequest->imaging_id)->first()->name;
-    $isPaid = $serviceHandler->isBilled($radiologyRequest->imaging_id, $service); // Returns 1 or 0
+    $isPaid = $serviceHandler->isBilled($radiologyRequest->imaging_id, $service, $radiologyRequest->request_ref); // Returns 1 or 0
     ?>
     <tr>
       <td class="align-middle">
@@ -36,11 +37,12 @@
         </a>
       </td>
       <td class="align-middle">
-        {{ $radiologyRequest->request_note }}
+        {{ $radiologyRequest->test->name }}
       </td>
       <td class="align-middle">
         {{ $radiologyRequest->user->firstname }} {{ $radiologyRequest->user->lastname }}
       </td>
+      <td>{{$radiologyRequest->status}}</td>
       <td class="align-middle text-right">
         <div class="btn-group">
           <button type="button" class="btn btn-sm btn-icon btn-light waves-effect waves-light"

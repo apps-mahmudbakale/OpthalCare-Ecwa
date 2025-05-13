@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admission;
+use App\Models\Patient;
 use Illuminate\Http\Request;
 
 class AdmissionController extends Controller
@@ -20,7 +21,12 @@ class AdmissionController extends Controller
    */
   public function create()
   {
-    //
+
+  }
+
+  public function requestAdmission($id){
+    $patient = Patient::find($id);
+    return view('admission.create', compact('patient'));
   }
 
   /**

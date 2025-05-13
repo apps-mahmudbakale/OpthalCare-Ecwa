@@ -37,4 +37,8 @@ class DrugRequest extends Model
   {
     return $this->belongsTo(Patient::class);
   }
+  public function store()
+  {
+    return $this->belongsTo(DrugStore::class);
+  }
 }

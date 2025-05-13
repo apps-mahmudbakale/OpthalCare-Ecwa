@@ -14,6 +14,7 @@ class RadiologyRequest extends Model
     'user_id',
     'imaging_id',
     'request_note',
+    'request_ref',
     'priority',
     'status'
   ];
@@ -31,5 +32,9 @@ class RadiologyRequest extends Model
   public function user()
   {
     return $this->belongsTo(User::class);
+  }
+
+  public function findings(){
+    return $this->hasOne(RadiologyResult::class, 'imaging_id');
   }
 }
