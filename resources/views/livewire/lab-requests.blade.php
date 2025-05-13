@@ -106,6 +106,7 @@
     margin: 0;
     flex-grow: 1;
   }
+
   .invoice-box {
     max-width: 800px;
     margin: auto;
@@ -131,7 +132,8 @@
     text-align: right;
   }
 
-  .invoice-box table tr.top table td {}
+  .invoice-box table tr.top table td {
+  }
 
   .invoice-box table tr.top table td.title {
     font-size: 45px;
@@ -139,7 +141,8 @@
     color: #333;
   }
 
-  .invoice-box table tr.information table td {}
+  .invoice-box table tr.information table td {
+  }
 
   .invoice-box table tr.heading td {
     background: #eee;
@@ -212,31 +215,43 @@
     <summary class="accordion-btn">{{ $request->created_at->format('d M Y h:i A') }}</summary>
     <div class="accordion-content p-2">
       <div class="accordion-header mb-3">
-        <h3 class="mb-2">Lab Investigation for {{ \App\Models\Patient::find($request->patient_id)->user->firstname }} {{ \App\Models\Patient::find($request->patient_id)->user->lastname }}</h3>
-          <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-icon btn-light waves-effect waves-light"
-                    data-bs-toggle="dropdown" data-boundary="viewport" aria-expanded="false"
-                    aria-haspopup="true">
-              <i class="fa fa-ellipsis-v"></i>
-            </button>
-            <ul class="dropdown-menu" style="">
-              <li><button class="dropdown-item" data-request-url="{{route('app.lab.edit', $request->id)}}" data-toggle="modal"
-                          data-target="#global-modal"
-                >Edit </button></li>
-              <li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <l><button class="dropdown-item3 text-bg-danger" id="delete" data-delete-url="{{route('app.lab.destroy', $request->id)}}">Delete</button></l>
-            </ul>
-          </div>
+        <h3 class="mb-2">Lab Investigation for {{ \App\Models\Patient::find($request->patient_id)->user->firstname }} {{
+          \App\Models\Patient::find($request->patient_id)->user->lastname }}</h3>
+        <div class="btn-group">
+          <button type="button" class="btn btn-sm btn-icon btn-light waves-effect waves-light"
+                  data-bs-toggle="dropdown" data-boundary="viewport" aria-expanded="false"
+                  aria-haspopup="true">
+            <i class="fa fa-ellipsis-v"></i>
+          </button>
+          <ul class="dropdown-menu" style="">
+            <li>
+              <button class="dropdown-item" data-request-url="{{route('app.lab.edit', $request->id)}}"
+                      data-toggle="modal"
+                      data-target="#global-modal"
+              >Edit
+              </button>
+            </li>
+            <li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <l>
+              <button class="dropdown-item3 text-bg-danger" id="delete"
+                      data-delete-url="{{route('app.lab.destroy', $request->id)}}">Delete
+              </button>
+            </l>
+          </ul>
+        </div>
       </div>
-      <p class="text-muted">Recorded By  {{ $request->user->firstname ." ". $request->user->lastname }} on {{ $request->created_at->format('d M Y h:i A') }}</p>
+      <p class="text-muted">Recorded By {{ $request->user->firstname ." ". $request->user->lastname }} on {{
+        $request->created_at->format('d M Y h:i A') }}</p>
       <div class="invoice-box">
-      {!! $request->findings->result ?? '' !!}
-      <div class="spacer"></div>
+        {!! $request->findings->result ?? '' !!}
+        <div class="spacer"></div>
+        @if($request->findings)
         @if($request->findings->image)
         <img src="{{$request->findings->image}}" alt="">
+        @endif
         @endif
       </div>
     </div>
@@ -245,7 +260,7 @@
 </div>
 
 <script>
-  window.addEventListener('DOMContentLoaded', function () {
+  window.addEventListener('DOMContentLoaded', function() {
     // Select all relevant inputs, textareas, selects, and checkboxes
     const inputs = document.querySelectorAll('.row input, .row textarea, .row select, input[name="notify_patient"], input[name="referral_hospital"]');
 
