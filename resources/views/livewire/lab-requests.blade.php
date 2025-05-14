@@ -259,25 +259,25 @@
   @endforeach
 </div>
 
-<script>
-  window.addEventListener('DOMContentLoaded', function() {
-    // Select all relevant inputs, textareas, selects, and checkboxes
-    const inputs = document.querySelectorAll('.row input, .row textarea, .row select, input[name="notify_patient"], input[name="referral_hospital"]');
-
-    inputs.forEach(el => {
-      // Apply 'readonly' where applicable
-      if (
-        el.tagName === 'INPUT' &&
-        ['text', 'datetime-local', 'time'].includes(el.type)
-      ) {
-        el.readOnly = true;
-      } else if (el.tagName === 'TEXTAREA') {
-        el.readOnly = true;
-      } else {
-        // For select, checkbox, others — use 'disabled'
-        el.disabled = true;
-      }
-    });
-  });
-</script>
+<!--<script>-->
+<!--  window.addEventListener('DOMContentLoaded', function() {-->
+<!--    // Select all relevant inputs, textareas, selects, and checkboxes-->
+<!--    const inputs = document.querySelectorAll('.row input, .row textarea, .row select, input[name="notify_patient"], input[name="referral_hospital"]');-->
+<!---->
+<!--    inputs.forEach(el => {-->
+<!--      // Apply 'readonly' where applicable-->
+<!--      if (-->
+<!--        el.tagName === 'INPUT' &&-->
+<!--        ['text', 'datetime-local', 'time'].includes(el.type)-->
+<!--      ) {-->
+<!--        el.readOnly = true;-->
+<!--      } else if (el.tagName === 'TEXTAREA') {-->
+<!--        el.readOnly = true;-->
+<!--      } else {-->
+<!--        // For select, checkbox, others — use 'disabled'-->
+<!--        el.disabled = true;-->
+<!--      }-->
+<!--    });-->
+<!--  });-->
+<!--</script>-->
 

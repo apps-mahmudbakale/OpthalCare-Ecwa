@@ -9,6 +9,7 @@ use App\Models\DrugRequest;
 use App\Models\Laboratory;
 use App\Models\LabRequest;
 use App\Models\Patient;
+use App\Models\ProcedureRequest;
 use App\Services\ServiceRequestHandler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -54,12 +55,15 @@ class AdmissionController extends Controller
       ]);
 
       // Update Bed Status
-      Bed::find($request->bed_id)->update(['is_occupied' => true]);
+      Bed::find($request->bed_id)->update(['available' => false]);
       $bed = Bed::find($request->bed_id)->first();
       $request_ref = $request->request_ref;
 
       $serviceHandler = new ServiceRequestHandler();
-      $billingRecord = $serviceHandler->handleServiceRequest($bed->name, $request->patient_id, 'Admission', $request_ref, 1);
+//      dd($bed);
+      $billingRecord = $serviceHandler->handleServiceRequest($bed->name, $request->patient_id, 'Bed', $request_ref, 1);
+
+//      dd($billingRecord);
 
       // Save Drug Requests
       if ($request->has('drugs')) {
@@ -90,6 +94,7 @@ class AdmissionController extends Controller
             'request_note' => $request->labs['request_note'][$index],
             'user_id' => auth()->user()->id,
             'status' => 'Pending',
+            'request_ref' => $request_ref,
           ]);
           $lab = Laboratory::find($testId); // fix: find by single $testId, not full array
           if ($lab) { // always good to check if lab exists
@@ -106,6 +111,8 @@ class AdmissionController extends Controller
       }
 
       DB::commit();
+      $proceed = ProcedureRequest::where('request_ref', $request_ref)->first();
+      $proceed = ProcedureRequest::find($proceed->id)->update(['status' => 'Bill Prepared']);
       return redirect()->route('app.admissions.index')->with('success', 'Admission created successfully.');
     } catch (\Exception $e) {
       DB::rollBack();
