@@ -38,8 +38,8 @@
                             <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
                                     data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
                                 <ul class="dropdown-menu dropdown-menu-end m-0">
-                                    <li><a href="" wire:click.prevent="selectStore({{ $tag->id }})"
-                                            class="dropdown-item">Edit</a></li>
+                                    <li><button data-request-url="{{ route('app.tags.edit', $tag->id) }}"
+                                           data-toggle="modal" data-target="#global-modal" class="dropdown-item">Edit</button></li>
                                     <div class="dropdown-divider"></div>
                                     <li><a id="dele{{ $tag->id }}" data-value="{{ $tag->id }}"
                                             class="dropdown-item text-danger delete-record">Delete</a></li>
@@ -90,10 +90,27 @@
             </div>
         </div>
     </div>
-    {{-- <script>
-  window.addEventListener('ConsultingRoomEditModal', function() {
-      $('#edit-consulting-room-modal').modal('show');
-  });
-</script> --}}
+
 </div>
-{{-- @include('_partials._modals.modal-new-drugs-tag') --}}
+@include('_partials._modals.global-modal')
+<script>
+  $(document).ready(function() {
+    $('.dropdown-item').on('click', function() {
+      var requestUrl = $(this).data('request-url');
+
+      $.ajax({
+        url: requestUrl,
+        type: 'GET',
+        success: function(response) {
+          // Assuming the response contains the HTML for the modal content
+          $('#global-modal .modal-body').html(response);
+          $('#global-modal').modal('show');
+        },
+        error: function(xhr, status, error) {
+          // Handle errors
+          console.error(error);
+        }
+      });
+    });
+  });
+</script>

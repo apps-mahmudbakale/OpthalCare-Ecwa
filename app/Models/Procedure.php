@@ -11,7 +11,7 @@ class Procedure extends Model
 
   protected $fillable = [
     'name',
-    'price_cost',
+    'price',
     'category_id',
   ];
 

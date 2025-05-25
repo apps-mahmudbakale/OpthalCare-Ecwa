@@ -16,17 +16,14 @@
 @section('vendor-script')
 <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
-
 <script src="{{ asset('assets/vendor/libs/cleavejs/cleave.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/cleavejs/cleave-phone.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/swiper/swiper.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/moment/moment.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/quill/katex.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/quill/quill.js') }}"></script>
 @endsection
-
 
 @section('content')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -38,7 +35,6 @@
   <script src="https://code.highcharts.com/highcharts.js"></script>
   <div class="col-12">
     <div class="card mb-4">
-
       <div class="user-profile-header d-flex flex-column flex-sm-row text-sm-start text-center mb-4">
         <div class="flex-shrink-0 mt-n2 mx-sm-0 mx-auto user-avatar user-avatar-xl">
           <img
@@ -53,7 +49,6 @@
               <ul
                 class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-2">
                 <li class="list-inline-item d-flex gap-1">
-
                   <span class="badge bg-primary">{{ $patient->gender }}</span>
                   <span class="badge bg-primary">{{ $patient->getAge() }}</span>
                   <span class="badge bg-primary">Next Appointment: </span>
@@ -111,7 +106,6 @@
           </div>
           <h5 class="card-title mb-2">{{ number_format($outstanding_balance) }}</h5>
           <small>Outstanding Balance</small>
-
         </div>
       </div>
     </a>
@@ -119,8 +113,11 @@
 </div>
 <div class="row">
   <div class="col-md-12">
-    <div class="nav-scroller">
-      <ul class="nav nav-pills flex-column flex-sm-row mb-4" role="tablist" style="overflow-x:scroll;">
+    <div class="nav-scroller position-relative">
+      <button class="nav-scroller-arrow nav-scroller-arrow-left btn btn-sm btn-icon btn-light" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); z-index: 10;">
+        <i class="ti ti-chevron-left"></i>
+      </button>
+      <ul class="nav nav-pills flex-column flex-sm-row mb-4" role="tablist" style="overflow-x: auto; white-space: nowrap; padding: 0 40px;">
         <li class="nav-item" role="presentation">
           <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
                   data-bs-target="#navs-pills-justified-visits" aria-controls="navs-pills-justified-visits"
@@ -198,7 +195,6 @@
             <i class="tf-icons ti ti-first-aid-kit ti-xs me-1"></i> Procedures
           </button>
         </li>
-
         <li class="nav-item" role="presentation">
           <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                   data-bs-target="#navs-pills-justified-documents"
@@ -214,6 +210,9 @@
           </button>
         </li>
       </ul>
+      <button class="nav-scroller-arrow nav-scroller-arrow-right btn btn-sm btn-icon btn-light" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); z-index: 10;">
+        <i class="ti ti-chevron-right"></i>
+      </button>
     </div>
     <div class="card">
       <div class="tab-content">
@@ -240,9 +239,6 @@
                 <div class="card-body">
                   {!! $pulse->container() !!}
                 </div>
-                {{--
-                <script src="{{ $pulse->cdn() }}"></script>
-                --}}
                 {{ $pulse->script() }}
               </div>
             </div>
@@ -251,9 +247,6 @@
                 <div class="card-body">
                   {!! $temperature->container() !!}
                 </div>
-                {{--
-                <script src="{{ $temperature->cdn() }}"></script>
-                --}}
                 {{ $temperature->script() }}
               </div>
             </div>
@@ -262,15 +255,11 @@
                 <div class="card-body">
                   {!! $weight->container() !!}
                 </div>
-                {{--
-                <script src="{{ $weight->cdn() }}"></script>
-                --}}
                 {{ $weight->script() }}
               </div>
             </div>
           </div>
           @include('_partials._modals.modal-new-vitals')
-
         </div>
         <div class="tab-pane fade" id="navs-pills-justified-va" role="tabpanel">
           <div class="row">
@@ -279,7 +268,6 @@
                  class="btn btn-primary mb-2 float-end">New Entry</a>
             </div>
             <livewire:vision-acuity :patientId="$patient->id" />
-
           </div>
           @include('_partials._modals.modal-new-va')
         </div>
@@ -290,7 +278,6 @@
                  class="btn btn-primary mb-2 float-end">New Entry</a>
             </div>
             <livewire:i-o-p :patientId="$patient->id" />
-
           </div>
           @include('_partials._modals.modal-new-i-o-p')
         </div>
@@ -298,12 +285,11 @@
           <div class="row">
             <div class="col-md-12">
               <a href="{{ route('app.refraction.create', $patient->id) }}"
-                 class="btn btn-primary link mb-2 float-end">New Entry</a href>
+                 class="btn btn-primary link mb-2 float-end">New Entry</a>
             </div>
             <div class="col-md-12">
               <livewire:refraction :patientId="$patient->id" />
             </div>
-
           </div>
           @include('_partials._modals.modal-new-i-o-p')
         </div>
@@ -312,16 +298,13 @@
              class="btn btn-primary mb-2 float-end">New Entry</a>
           <livewire:allergies :patientId="request()->route()->patient->id" />
           @include('_partials._modals.modal-new-allergies')
-
         </div>
         <div class="tab-pane fade" id="navs-pills-justified-diagnosis" role="tabpanel">
-          <!-- Button to trigger new diagnosis modal -->
           <button type="button" class="btn btn-primary mb-2 float-end" data-bs-toggle="modal"
                   data-bs-target="#new-diagnosis-modal">
             New Entry
           </button>
           <table class="table"></table>
-          <!-- Verify if col-md-12 is necessary; remove if not part of a larger grid -->
           <div class="col-md-12">
             <livewire:diagnoses :patientId="request()->route()->patient->id" />
           </div>
@@ -332,7 +315,6 @@
           <table class="table"></table>
           <livewire:lab-requests :patientId="request()->route()->patient->id" />
           @include('_partials._modals.modal-new-lab')
-
         </div>
         <div class="tab-pane fade" id="navs-pills-justified-drugs" role="tabpanel">
           <a href="" data-bs-toggle="modal" data-bs-target="#new-drugs-modal"
@@ -354,10 +336,9 @@
           @include('_partials._modals.modal-new-procedures')
         </div>
         <div class="tab-pane fade" id="navs-pills-justified-documents" role="tabpanel">
-          <a href="" data-bs-toggle="modal" data-bs-target="#new-diagnosis-modal"
+          <a href="" data-bs-toggle="modal" data-bs-target="#new-documents-modal"
              class="btn btn-primary mb-2 float-end">New Entry</a>
           <table class="table">
-
             <thead class="thead-light">
             <tr>
               <th>Date</th>
@@ -367,10 +348,7 @@
               <th></th>
             </tr>
             </thead>
-            <tbody>
-
-            </tbody>
-
+            <tbody></tbody>
           </table>
           @include('_partials._modals.modal-new-documents')
         </div>
@@ -379,9 +357,57 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>
+
+<style>
+  .nav-scroller {
+    position: relative;
+    overflow: hidden;
+  }
+  .nav-scroller-arrow {
+    display: none;
+  }
+  .nav-scroller:hover .nav-scroller-arrow {
+    display: block;
+  }
+  .nav-scroller-arrow:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>
+
+<script>
+  $(document).ready(function() {
+    const navScroller = $('.nav-scroller ul');
+    const arrowLeft = $('.nav-scroller-arrow-left');
+    const arrowRight = $('.nav-scroller-arrow-right');
+    const scrollAmount = 200; // Pixels to scroll per click
+
+    function updateArrows() {
+      const scrollLeft = navScroller.scrollLeft();
+      const maxScroll = navScroller[0].scrollWidth - navScroller[0].clientWidth;
+      arrowLeft.prop('disabled', scrollLeft <= 0);
+      arrowRight.prop('disabled', scrollLeft >= maxScroll);
+    }
+
+    navScroller.on('scroll', updateArrows);
+    $(window).on('resize', updateArrows);
+    updateArrows();
+
+    arrowLeft.on('click', function() {
+      if (!$(this).prop('disabled')) {
+        navScroller.animate({ scrollLeft: navScroller.scrollLeft() - scrollAmount }, 300);
+      }
+    });
+
+    arrowRight.on('click', function() {
+      if (!$(this).prop('disabled')) {
+        navScroller.animate({ scrollLeft: navScroller.scrollLeft() + scrollAmount }, 300);
+      }
+    });
+  });
+</script>
 @endsection
 @include('_partials._modals.global-modal')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -390,17 +416,14 @@
   $(document).ready(function() {
     $('.dropdown-item').on('click', function() {
       var requestUrl = $(this).data('request-url');
-
       $.ajax({
         url: requestUrl,
         type: 'GET',
         success: function(response) {
-          // Assuming the response contains the HTML for the modal content
           $('#global-modal .modal-body').html(response);
           $('#global-modal').modal('show');
         },
         error: function(xhr, status, error) {
-          // Handle errors
           console.error(error);
         }
       });
@@ -411,17 +434,14 @@
   $(document).ready(function() {
     $('.link').on('click', function() {
       var requestUrl = $(this).data('request-url');
-
       $.ajax({
         url: requestUrl,
         type: 'GET',
         success: function(response) {
-          // Assuming the response contains the HTML for the modal content
           $('#global-modal .modal-body').html(response);
           $('#global-modal').modal('show');
         },
         error: function(xhr, status, error) {
-          // Handle errors
           console.error(error);
         }
       });
@@ -448,7 +468,6 @@
         cancelButtonText: 'No, cancel!',
         reverseButtons: true
       }).then((result) => {
-        console.log(result);
         if (result.isConfirmed) {
           fetch(requestUrl, {
             method: 'DELETE',
@@ -481,11 +500,7 @@
                 icon: 'error'
               });
             });
-
-        } else if (
-          /* Read more about handling dismissals below */
-          result.dismiss === Swal.DismissReason.cancel
-        ) {
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
           swalWithBootstrapButtons.fire({
             title: 'Cancelled',
             text: 'Your record is safe :)',
@@ -493,7 +508,6 @@
           });
         }
       });
-
     });
   });
 </script>

@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Admission;
 use App\Models\Bed;
+use App\Models\Billing;
 use App\Models\Drug;
 use App\Models\DrugRequest;
 use App\Models\Laboratory;
 use App\Models\LabRequest;
 use App\Models\Patient;
+use App\Models\Procedure;
 use App\Models\ProcedureRequest;
 use App\Services\ServiceRequestHandler;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class AdmissionController extends Controller
@@ -42,7 +45,6 @@ class AdmissionController extends Controller
    */
   public function store(Request $request)
   {
-//    dd($request->all());
 
     DB::beginTransaction();
     try {
@@ -58,12 +60,38 @@ class AdmissionController extends Controller
       Bed::find($request->bed_id)->update(['available' => false]);
       $bed = Bed::find($request->bed_id)->first();
       $request_ref = $request->request_ref;
+      $proceed = ProcedureRequest::where('request_ref', $request_ref)->first();
+      $procedure = Procedure::where('id', $proceed->procedure_id)->first();
+
 
       $serviceHandler = new ServiceRequestHandler();
 //      dd($bed);
       $billingRecord = $serviceHandler->handleServiceRequest($bed->name, $request->patient_id, 'Bed', $request_ref, 1);
 
-//      dd($billingRecord);
+      if ($billingRecord) {
+
+      } else{
+        Billing::create([
+          'service'    => 'Bed:' . $bed->name,
+          'service_id' => $bed->id,
+          'user_id'    => $request->patient_id,
+          'quantity'   => 1,
+          'amount'     => $bed->price,
+          'bill_ref'   => $request_ref,
+          'payer_id'   => Auth::id(),
+          'status'     => 0,
+        ]);
+        Billing::create([
+          'service'    => 'Procedure:' . $procedure->name,
+          'service_id' => $procedure->id,
+          'user_id'    => $request->patient_id,
+          'quantity'   => 1,
+          'amount'     => $procedure->price,
+          'bill_ref'   => $request_ref,
+          'payer_id'   => Auth::id(),
+          'status'     => 0,
+        ]);
+      }
 
       // Save Drug Requests
       if ($request->has('drugs')) {
@@ -111,7 +139,6 @@ class AdmissionController extends Controller
       }
 
       DB::commit();
-      $proceed = ProcedureRequest::where('request_ref', $request_ref)->first();
       $proceed = ProcedureRequest::find($proceed->id)->update(['status' => 'Bill Prepared']);
       return redirect()->route('app.admissions.index')->with('success', 'Admission created successfully.');
     } catch (\Exception $e) {
