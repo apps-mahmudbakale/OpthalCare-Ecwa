@@ -54,7 +54,8 @@ class TagController extends Controller
    */
   public function update(Request $request, Tag $tag)
   {
-    //
+    $tag->update($request->all());
+    return redirect()->back()->with('success', 'Tag Updated!');
   }
 
   /**
