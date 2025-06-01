@@ -280,8 +280,8 @@
                             <i class="ti ti-dots-vertical ti-sm text-muted"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="employeeList">
-                            <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
-                                data-bs-target="#modal-new-cash-point">New Cash Point</a>
+                            <button class="dropdown-item" data-bs-toggle="modal"
+                                data-bs-target="#modal-new-cash-point">New Cash Point</button>
                         </div>
                     </div>
                 </div>

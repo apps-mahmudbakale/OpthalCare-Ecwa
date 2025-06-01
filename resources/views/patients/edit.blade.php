@@ -54,7 +54,7 @@
                           <div class="col-md-12">
                             <label class="form-label" for="tag_id">Patient Tag</label>
                              <select name="tag_id" id="" class="form-control">
-                               <option value="{{$patient->tag->id}}" selected>{{ $patient->tag->name }}</option>
+                               <option value="{{$patient->tag->id ?? ''}}" selected>{{ $patient->tag->name ?? '' }}</option>
                                @foreach(\App\Models\Tag::all() as $tag)
                                <option value="{{$tag->id}}">{{ $tag->name }}</option>
                                @endforeach
