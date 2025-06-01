@@ -39,7 +39,7 @@ class BillingServiceController extends Controller
 
   public function verifyAccessCode($patient, $type, $accessCode)
   {
-    if ($type == 'follow-up'){
+    if (strtolower($type) == 'follow-up'){
       $follow = FollowUp::where('access_code', $accessCode)->first();
       if ($follow) {
         return response()->json([

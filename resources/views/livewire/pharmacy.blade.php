@@ -35,7 +35,7 @@
             <ul class="dropdown-menu dropdown-menu-end m-0">
               <li>
                 <button class="dropdown-item"
-                        data-request-url="{{ route('app.pharmacy.show', $request->request_ref) }}"
+                        data-request-url="{{ $request->request_ref ? route('app.pharmacy.show', $request->request_ref) : '#' }}"
                         data-toggle="modal" data-target="#global-modal" type="button">
                   Details
                 </button>
