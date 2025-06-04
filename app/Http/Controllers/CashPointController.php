@@ -22,7 +22,7 @@ class CashPointController extends Controller
    */
   public function create()
   {
-    //
+    return view('cashpoint.create');
   }
 
   /**

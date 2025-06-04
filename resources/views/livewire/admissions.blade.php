@@ -60,13 +60,12 @@
         <tbody>
         <!-- tr -->
 
+        @foreach($admissions as $admission)
         <tr>
-          <td class="align-middle">Oct. 30, 2023, 12:30 p.m.</td>
-          <td class="align-middle">
-            <a href="/admissions/requests/32">Alh, Umar Majo [CID020106]</a>
-          </td>
-          <td class="align-middle">MALE WARD</td>
-          <td class="align-middle">- -</td>
+          <td class="align-middle">{{ $admission->created_at ?? 'N/A' }}</td>
+          <td class="align-middle">{{ $admission->patient->user->firstname .' '. $admission->patient->user->lastname ?? 'N/A' }}</td>
+          <td class="align-middle">{{ $admission->ward->name ?? 'N/A' }}</td>
+          <td class="align-middle">{{ $admission->bed->name ?? 'N/A' }}</td>
           <td class="align-middle text-right">
             <div class="dropdown">
               <button type="button" class="btn btn-sm btn-icon btn-light" data-toggle="dropdown"
@@ -85,7 +84,7 @@
 
           </td>
         </tr>
-
+        @endforeach
         </tbody><!-- /tbody -->
       </table><!-- /.table -->
       <hr class="my-2">

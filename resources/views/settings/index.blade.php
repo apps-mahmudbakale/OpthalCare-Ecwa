@@ -280,14 +280,14 @@
                             <i class="ti ti-dots-vertical ti-sm text-muted"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="employeeList">
-                            <button class="dropdown-item" data-bs-toggle="modal"
-                                data-bs-target="#modal-new-cash-point">New Cash Point</button>
+                          <a class="dropdown-item" href="javascript:void(0);" id="add-payment-method"
+                             data-request-url="{{ route('app.cashpoints.create') }}">New Cash Point</a>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
                     <livewire:cashpoints />
-                    @include('_partials._modals.modal-new-cash-point')
+<!--                    @include('_partials._modals.modal-new-cash-point')-->
                 </div>
             </div>
         </div>

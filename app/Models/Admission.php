@@ -20,4 +20,19 @@ class Admission extends Model
   {
     return 'admission';
   }
+
+  public function patient()
+  {
+    return $this->belongsTo(Patient::class, 'patient_id');
+  }
+
+  public function ward()
+  {
+    return $this->belongsTo(Ward::class, 'ward_id');
+  }
+
+  public function bed()
+  {
+    return $this->belongsTo(Bed::class, 'bed_id');
+  }
 }

@@ -8,9 +8,12 @@ use Livewire\Component;
 
 class Admissions extends Component
 {
-    public function render()
-    {
-        $admissiions = Admission::all();
-        return view('livewire.admissions', compact('admissions'));
-    }
+  public function render()
+  {
+    $admissions = Admission::with(['patient', 'ward', 'bed'])
+      ->where('status', 'active')
+      ->get();
+
+    return view('livewire.admissions', compact('admissions'));
+  }
 }

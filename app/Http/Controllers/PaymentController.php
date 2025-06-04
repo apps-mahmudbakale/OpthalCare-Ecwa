@@ -97,7 +97,7 @@ class PaymentController extends Controller
         $service = $billings->first(); // Use first billing for service check
 
         // Handle follow-up consultation
-        if ($service->service === 'consultations:Follow-Up') {
+        if (strtolower($service->service) === strtolower('consultations:Follow-Up')) {
           $accessCode = 'OPC-' . substr(rand(100000, 999999) . time(), 0, 6);
           $access = FollowUp::create([
             'patient_id' => $service->user_id,
