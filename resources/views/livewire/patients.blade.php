@@ -50,15 +50,11 @@
                             data-toggle="modal" data-target="#global-modal">Add Tag
                     </button>
                     <a class="dropdown-item" href="{{ route('app.patients.edit', $patient->id) }}">Edit Profile</a>
-                    @if(!$patient->lastVisitMoreThanFiveDays())
+
                     <a class="dropdown-item" href="{{route('app.patient.checkIn', $patient->id)}}">
                       Check In
                     </a>
-                    @else
-                    <a class="dropdown-item check-in-btn" data-id="{{ $patient->id }}" href="#">
-                      Check In
-                    </a>
-                    @endif
+
                     <a class="dropdown-item" data-bs-toggle="modal"
                        data-bs-target="#schedule-appointment{{ $patient->id }}">
                       Schedule Appointment
