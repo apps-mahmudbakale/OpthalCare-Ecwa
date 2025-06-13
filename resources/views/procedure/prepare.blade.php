@@ -93,26 +93,26 @@
         <button type="button" class="btn btn-primary mt-2" id="addLabRow">More Lab Test</button>
       </div>
     </div>
-    <hr>
-    <div class="card h-100  card-border-shadow-primary p-4">
-      <!-- Admission Room -->
-      <h5>Admission Room</h5>
-      <div class="col-md-12">
-        <label for="ward_id">Ward</label>
-        <select name="ward_id" id="ward_id" class="form-control" required>
-          <option value="">Select Ward...</option>
-          @foreach(\App\Models\Ward::all() as $ward)
-          <option value="{{ $ward->id }}">{{ $ward->name }}</option>
-          @endforeach
-        </select>
-      </div>
-      <div class="col-md-12">
-        <label for="bed_id">Bed</label>
-        <select name="bed_id" id="bed_id" class="form-control" required>
-          <option value="">Select Bed...</option>
-        </select>
-      </div>
-    </div>
+<!--    <hr>-->
+<!--    <div class="card h-100  card-border-shadow-primary p-4">-->
+<!--      <!-- Admission Room -->-->
+<!--      <h5>Admission Room</h5>-->
+<!--      <div class="col-md-12">-->
+<!--        <label for="ward_id">Ward</label>-->
+<!--        <select name="ward_id" id="ward_id" class="form-control" required>-->
+<!--          <option value="">Select Ward...</option>-->
+<!--          @foreach(\App\Models\Ward::all() as $ward)-->
+<!--          <option value="{{ $ward->id }}">{{ $ward->name }}</option>-->
+<!--          @endforeach-->
+<!--        </select>-->
+<!--      </div>-->
+<!--      <div class="col-md-12">-->
+<!--        <label for="bed_id">Bed</label>-->
+<!--        <select name="bed_id" id="bed_id" class="form-control" required>-->
+<!--          <option value="">Select Bed...</option>-->
+<!--        </select>-->
+<!--      </div>-->
+<!--    </div>-->
 
 
     <!-- Submit Button -->
