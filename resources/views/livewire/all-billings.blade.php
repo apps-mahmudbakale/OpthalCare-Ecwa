@@ -14,6 +14,7 @@
       <tr>
         <th>Patient</th>
         <th>Primary Insurance Plan</th>
+        <th>Service</th>
         <th class="text-right">Outstanding Amount</th>
         <th class="text-right">*</th>
       </tr>
@@ -24,6 +25,7 @@
       $first = $group->first();
       $patient = $first->patient;
       $user = $patient->user ?? null;
+      $service = $first->service;
       $fullName = collect([$user->firstname ?? '', $user->middlename ?? '', $user->lastname ?? ''])
       ->filter()
       ->implode(' ');
@@ -31,7 +33,6 @@
       $insurancePlan = $patient->hmo->name ?? 'Patient Self Pay';
       $formattedAmount = number_format($group->sum('amount'));
       @endphp
-
       <tr>
         <td class="align-middle">
           <a href="#">
@@ -39,6 +40,7 @@
           </a>
         </td>
         <td>{{ $insurancePlan }}</td>
+        <td>{{ $service }}</td>
         <td class="text-right">{{ $formattedAmount }}</td>
         <td class="align-middle text-right">
           <div class="btn-group">
