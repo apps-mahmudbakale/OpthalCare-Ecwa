@@ -381,8 +381,8 @@
 
             <div class="card h-100">
                 <div class="card-body">
-                    <h4 class="mb-2 pb-1">Ophthicals</h4>
-                    <p class="small">Manage Ophthical Tariffs, and Other Data</p>
+                    <h4 class="mb-2 pb-1">Opticals</h4>
+                    <p class="small">Manage Optical Tariffs, and Other Data</p>
                     <a href="{{ route('app.settings.ophthical') }}"
                         class="btn btn-primary w-100 waves-effect waves-light">Open</a>
                 </div>

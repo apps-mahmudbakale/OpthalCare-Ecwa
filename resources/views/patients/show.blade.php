@@ -190,13 +190,6 @@
         </li>
         <li class="nav-item" role="presentation">
           <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
-                  data-bs-target="#navs-pills-justified-procedures"
-                  aria-controls="navs-pills-justified-procedures" aria-selected="false" tabindex="-1">
-            <i class="tf-icons ti ti-first-aid-kit ti-xs me-1"></i> Procedures
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                   data-bs-target="#navs-pills-justified-documents"
                   aria-controls="navs-pills-justified-documents" aria-selected="false" tabindex="-1">
             <i class="tf-icons ti ti-file-text ti-xs me-1"></i> Documents
@@ -328,9 +321,6 @@
           <table class="table"></table>
           <livewire:radiology-request :patientId="request()->route()->patient->id" />
           @include('_partials._modals.modal-new-imaging')
-        </div>
-        <div class="tab-pane fade" id="navs-pills-justified-procedures" role="tabpanel">
-          <livewire:procedure-requests :patientId="$patient->id" />
         </div>
         <div class="tab-pane fade" id="navs-pills-justified-documents" role="tabpanel">
           <a href="" data-bs-toggle="modal" data-bs-target="#new-documents-modal"

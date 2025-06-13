@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OpticalController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProcedureRequestController;
 use App\Models\Consumble;
@@ -86,6 +87,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::post('patient/fund-wallet', [PatientController::class, 'fundWalletSave'])->name('patient.fund.wallet.save');
   Route::get('patient/schedule-appointment/{id}', [PatientController::class, 'scheduleAppointment'])->name('patient.schedule.appointment');
   Route::resource('hmos', HmoGroupController::class);
+  Route::resource('opticals', OpticalController::class);
   Route::resource('departments', DepartmentController::class);
   Route::resource('documents', DocumentController::class);
   Route::resource('payment-methods', PaymentMethodController::class);

@@ -20,13 +20,13 @@ class PaymentController extends Controller
    */
   private function processWalletPayment(Patient $patient, float $amount): bool
   {
-
     if ($patient->wallet->balance < $amount) {
       return false;
     }
 
     $patient->wallet->balance -= $amount;
-    $patient->save();
+    $patient->wallet->save(); // Save the updated wallet balance
+
     return true;
   }
 
