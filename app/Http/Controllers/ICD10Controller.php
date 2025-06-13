@@ -18,6 +18,11 @@ class ICD10Controller extends Controller
     //
   }
 
+  public function single()
+  {
+    return view('icd.single');
+  }
+
   /**
    * Show the form for creating a new resource.
    */

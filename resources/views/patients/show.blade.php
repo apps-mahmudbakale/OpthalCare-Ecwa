@@ -330,10 +330,7 @@
           @include('_partials._modals.modal-new-imaging')
         </div>
         <div class="tab-pane fade" id="navs-pills-justified-procedures" role="tabpanel">
-          <a href="" data-bs-toggle="modal" data-bs-target="#new-procedures-modal"
-             class="btn btn-primary mb-2 float-end">New Entry</a>
           <livewire:procedure-requests :patientId="$patient->id" />
-          @include('_partials._modals.modal-new-procedures')
         </div>
         <div class="tab-pane fade" id="navs-pills-justified-documents" role="tabpanel">
           <a href="" data-bs-toggle="modal" data-bs-target="#new-documents-modal"

@@ -26,7 +26,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles = Role::all();
+        $roles = Role::whereNotIn('name', ['patient'])->get();
         return view('users.create', compact('roles'));
     }
 
@@ -63,7 +63,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $roles = Role::all();
+        $roles = Role::whereNotIn('name', ['patient'])->get();
         return view('users.edit', compact('user', 'roles'));
     }
 

@@ -139,8 +139,8 @@
                             <i class="ti ti-dots-vertical ti-sm text-muted"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="earningReports">
-                            <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
-                                data-bs-target="#newDepartment">New Department</a>
+                            <a class="dropdown-item" href="javascript:void(0);" id="import-icd" data-request-url="{{ route('app.departments.create') }}"
+                               data-toggle="modal" data-target="#global-modal">New Department</a>
                         </div>
                     </div>
                 </div>
@@ -164,8 +164,8 @@
                             <i class="ti ti-dots-vertical ti-sm text-muted"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="employeeList">
-                            <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
-                                data-bs-target="#newDocument">New Document</a>
+                            <a class="dropdown-item" href="javascript:void(0);" id="import-icd" data-request-url="{{ route('app.documents.create') }}"
+                               data-toggle="modal" data-target="#global-modal">New Document</a>
                         </div>
                     </div>
                 </div>
@@ -186,8 +186,8 @@
                             <i class="ti ti-dots-vertical ti-sm text-muted"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="employeeList">
-                            <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
-                                data-bs-target="#new-icd-modal">New ICD</a>
+                            <a class="dropdown-item" href="javascript:void(0);" id="import-icd" data-request-url="{{ route('app.create.single') }}"
+                               data-toggle="modal" data-target="#global-modal">New ICD</a>
                           <a class="dropdown-item" href="javascript:void(0);" id="import-icd" data-request-url="{{ route('app.icd.create') }}"
                              data-toggle="modal" data-target="#global-modal">Import ICD</a>
                         </div>
@@ -211,8 +211,8 @@
                             <i class="ti ti-dots-vertical ti-sm text-muted"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="employeeList">
-                            <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
-                                data-bs-target="#modal-new-tag">New Tag</a>
+                            <a class="dropdown-item" href="javascript:void(0);" id="add-payment-method"
+                               data-request-url="{{ route('app.tags.create') }}">New Tag</a>
                         </div>
                     </div>
                 </div>
@@ -234,8 +234,8 @@
                             <i class="ti ti-dots-vertical ti-sm text-muted"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="employeeList">
-                            <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
-                                data-bs-target="#modal-new-vital-ref">New Reference</a>
+                            <a class="dropdown-item" href="javascript:void(0);" id="add-payment-method"
+                               data-request-url="{{ route('app.vitalRefs.create') }}">New Reference</a>
                         </div>
                     </div>
                 </div>
@@ -287,7 +287,6 @@
                 </div>
                 <div class="card-body">
                     <livewire:cashpoints />
-<!--                    @include('_partials._modals.modal-new-cash-point')-->
                 </div>
             </div>
         </div>
@@ -306,8 +305,8 @@
                                 <i class="ti ti-dots-vertical ti-sm text-muted"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="salesByCountry">
-                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
-                                    data-bs-target="#newHmoGroup">New Hmo Group</a>
+                                <a class="dropdown-item" href="javascript:void(0);" id="add-payment-method"
+                                   data-request-url="{{ route('app.hmos.create') }}">New Hmo Group</a>
                             </div>
                         </div>
                     </div>
@@ -329,8 +328,8 @@
                                 <i class="ti ti-dots-vertical ti-sm text-muted"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="salesByCountry">
-                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
-                                    data-bs-target="#newHmoGroup">New Hmo Group</a>
+                                <a class="dropdown-item" href="javascript:void(0);" id="add-payment-method"
+                                   data-request-url="{{ route('app.hmos.create') }}">New Hmo Group</a>
                             </div>
                         </div>
                     </div>
@@ -353,8 +352,8 @@
                             <i class="ti ti-dots-vertical ti-sm text-muted"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="salesByCountry">
-                            <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
-                                data-bs-target="#new-religion-modal">New Religion</a>
+                            <a class="dropdown-item" href="javascript:void(0);" id="add-payment-method"
+                               data-request-url="{{ route('app.religions.create') }}">New Religion</a>
                         </div>
                     </div>
                 </div>

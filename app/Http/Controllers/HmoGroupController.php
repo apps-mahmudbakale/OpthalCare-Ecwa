@@ -14,7 +14,7 @@ class HmoGroupController extends Controller
      */
     public function index()
     {
-        
+
     }
 
     /**
@@ -24,7 +24,7 @@ class HmoGroupController extends Controller
      */
     public function create()
     {
-        //
+         return  view('hmo.create');
     }
 
     /**
@@ -82,7 +82,7 @@ class HmoGroupController extends Controller
     public function destroy($id)
     {
         $hmoGroup = HmoGroup::find($id);
-        
+
         $hmoGroup->delete();
 
         return back()->with('success', 'HMO Deleted');

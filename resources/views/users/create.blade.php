@@ -70,5 +70,12 @@
     </div>
   </div>
 </div>
-
+<script>
+  $(document).ready(function () {
+    $('#formtabs-language').select2({
+      placeholder: 'Select Role',
+      width: '100%'
+    });
+  });
+</script>
 @endsection

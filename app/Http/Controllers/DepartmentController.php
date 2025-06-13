@@ -24,7 +24,7 @@ class DepartmentController extends Controller
      */
     public function create()
     {
-        //
+        return  view('departments.create');
     }
 
     /**
@@ -82,7 +82,7 @@ class DepartmentController extends Controller
      */
     public function destroy(Department $department)
     {
-        
+
         $department->delete();
 
         return back()->with('success', 'Department Deleted');

@@ -26,7 +26,7 @@
   <div class="col-xl">
     <div class="card mb-4">
       <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Update User</h5> 
+        <h5 class="mb-0">Update User</h5>
       </div>
       <div class="card-body">
         <form action="{{route('app.users.update', $user->id)}}" method="POST">
@@ -68,5 +68,12 @@
     </div>
   </div>
 </div>
-
+<script>
+  $(document).ready(function () {
+    $('#formtabs-language').select2({
+      placeholder: 'Select Role',
+      width: '100%'
+    });
+  });
+</script>
 @endsection

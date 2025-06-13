@@ -20,7 +20,7 @@ class VitalRefController extends Controller
    */
   public function create()
   {
-    //
+    return view('vitals.create');
   }
 
   /**

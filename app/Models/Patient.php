@@ -48,6 +48,11 @@ class Patient extends Model
     return $this->belongsTo(Religion::class);
   }
 
+  public function assignedTags()
+  {
+    return $this->hasMany(PatientTags::class);
+  }
+
   public function hmo()
   {
     return $this->hasOne(HmoGroup::class, 'id');

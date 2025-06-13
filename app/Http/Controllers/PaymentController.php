@@ -20,11 +20,12 @@ class PaymentController extends Controller
    */
   private function processWalletPayment(Patient $patient, float $amount): bool
   {
-    if ($patient->wallet_balance < $amount) {
+
+    if ($patient->wallet->balance < $amount) {
       return false;
     }
 
-    $patient->wallet_balance -= $amount;
+    $patient->wallet->balance -= $amount;
     $patient->save();
     return true;
   }
@@ -71,6 +72,8 @@ class PaymentController extends Controller
           return redirect()->route('app.patients.show', $patient->id)
             ->with(['error' => 'Insufficient balance']);
         }
+
+
 
         $paymentData = [
           'cashpoint_id' => $request->location_id,

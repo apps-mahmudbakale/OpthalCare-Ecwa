@@ -26,7 +26,7 @@
   <div class="col-xl">
     <div class="card mb-4">
       <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Create Role</h5> 
+        <h5 class="mb-0">Create Role</h5>
       </div>
       <div class="card-body">
         <form action="{{route('app.roles.store')}}" method="POST">
@@ -36,15 +36,28 @@
             <input type="text" class="form-control" name="name" id="basic-default-fullname" value="{{old('fname', isset($role) ? $role->name : '')}}" />
           </div>
           <div class="mb-3">
-            <label class="form-label" for="formtabs-language">Permissions</label>
-            <select id="formtabs-language" name="permissions[]" class="select2 form-select" multiple>
-                @foreach ($permissions as $permission)
-                <option value="{{ $permission->id }}" {{ (in_array($permission->id, old('permissiions', [])) || isset($role) && $role->permissions->contains($permission->id)) ? 'selected' : '' }}>
-                    {{ $permission->name }}
-                </option>
-                @endforeach
-            </select>
+            <label class="form-label d-block">Permissions</label>
+            <div class="row">
+              @foreach ($permissions as $permission)
+              <div class="col-md-6 mb-2">
+                <label class="switch switch-primary">
+                  <input type="checkbox" class="switch-input" name="permissions[]" value="{{ $permission->id }}"
+                         {{ (in_array($permission->id, old('permissions', [])) || (isset($role) && $role->permissions->contains($permission->id))) ? 'checked' : '' }}>
+                  <span class="switch-toggle-slider">
+            <span class="switch-on">
+              <i class="icon-base ti tabler-check"></i>
+            </span>
+            <span class="switch-off">
+              <i class="icon-base ti tabler-x"></i>
+            </span>
+          </span>
+                  <span class="switch-label">{{ ucfirst($permission->name) }}</span>
+                </label>
+              </div>
+              @endforeach
+            </div>
           </div>
+
           <button type="submit" class="btn btn-primary">Send</button>
         </form>
       </div>

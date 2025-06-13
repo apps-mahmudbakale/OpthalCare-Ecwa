@@ -165,6 +165,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::resource('consumables', ConsumbleController::class);
   Route::resource('icd', ICD10Controller::class);
   Route::post('/import-icd10', [ICD10Controller::class, 'import'])->name('import-icd10');
+  Route::get('add-icd10', [ICD10Controller::class, 'single'])->name('create.single');
   Route::resource('tags', TagController::class);
   Route::resource('admissions', AdmissionController::class);
   Route::get('admissions/request/{id}', [AdmissionController::class, 'requestAdmission'])->name('admissions.request');
