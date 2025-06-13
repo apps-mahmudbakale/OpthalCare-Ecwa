@@ -100,7 +100,7 @@ $configData = Helper::appClasses();
       </a>
     </li>
 
-    <li class="menu-item {{ request()->is('app/admissions*') ? 'active' : '' }}">
+    <li class="menu-item {{ request()->is('app/opticals*') ? 'active' : '' }}">
       <a href="{{ route('app.opticals.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-eyeglass"></i>
         <div>Opticals</div>
