@@ -61,7 +61,7 @@
             </button>
             <ul class="dropdown-menu">
               <li>
-                <a href="{{route('app.procedure.prepare', $request->request_ref)}}" class="dropdown-item"
+                <a href="{{route('app.procedure.prepare', $request->request_ref)}}" id="prepare" class="dropdown-item"
                        >
                   Prepare for Admission
                 </a>
@@ -86,7 +86,7 @@
 <script src="{{ asset('js/jquery.min.js') }}"></script>
 <script>
   $(document).ready(function() {
-    $('.dropdown-item').on('click', function() {
+    $('#prepare').on('click', function() {
       var requestUrl = $(this).data('request-url');
 
       $.ajax({
