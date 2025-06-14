@@ -51,14 +51,14 @@ class AdmissionController extends Controller
       // Create Admission
       $admission = Admission::create([
         'patient_id' => $request->patient_id, // Assuming patient_id is passed or retrieved
-        'ward_id' => $request->ward_id,
-        'bed_id' => $request->bed_id,
+        'ward_id' => $request->ward_id ? $request->ward_id : 1,
+        'bed_id' => $request->bed_id ? $request->bed_id : 1,
         'status' => 'active',
       ]);
 
       // Update Bed Status
-      Bed::find($request->bed_id)->update(['available' => false]);
-      $bed = Bed::find($request->bed_id)->first();
+//      Bed::find(1)->update(['available' => false]);
+//      $bed = Bed::find($request->bed_id)->first();
       $request_ref = $request->request_ref;
       $proceed = ProcedureRequest::where('request_ref', $request_ref)->first();
       $procedure = Procedure::where('id', $proceed->procedure_id)->first();
@@ -66,17 +66,18 @@ class AdmissionController extends Controller
 
       $serviceHandler = new ServiceRequestHandler();
 //      dd($bed);
-      $billingRecord = $serviceHandler->handleServiceRequest($bed->name, $request->patient_id, 'Bed', $request_ref, 1);
+      $bed = 'Bed 1';
+      $billingRecord = $serviceHandler->handleServiceRequest($bed, $request->patient_id, 'Bed', $request_ref, 1);
 
       if ($billingRecord) {
 
       } else{
         Billing::create([
-          'service'    => 'Bed:' . $bed->name,
-          'service_id' => $bed->id,
+          'service'    => 'Bed:' . $bed,
+          'service_id' => 1,
           'user_id'    => $request->patient_id,
           'quantity'   => 1,
-          'amount'     => $bed->price,
+          'amount'     => 20000,
           'bill_ref'   => $request_ref,
           'payer_id'   => Auth::id(),
           'status'     => 0,
