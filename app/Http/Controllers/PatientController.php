@@ -333,7 +333,7 @@ class PatientController extends Controller
     $userId = $patient->user->id;
 
     $userUpdateData = array_merge(
-      $request->except(['date_of_birth', 'gender', 'password']),
+      $request->except(['date_of_birth', 'gender', 'password', 'tags']), // exclude tags
       ['password' => bcrypt($request->password)]
     );
 
@@ -347,26 +347,45 @@ class PatientController extends Controller
       'dependent',
       'next_of_kin_relation',
       'next_of_kin_phone',
-      'next_of_kin_address'
+      'next_of_kin_address',
+      'tags' // exclude tags from patient update
     ]);
 
     $patient = Patient::where('user_id', $userId)->firstOrFail();
     $patient->update($patientUpdateData);
 
+    // Update Next of Kin
     $nextOfKinUpdateData = $request->only([
       'next_of_kin_name',
       'next_of_kin_relation',
       'next_of_kin_phone',
       'next_of_kin_address'
     ]);
-//
-//    if($request->has('next_of_kin_name') && !empty($request->next_of_kin_name)){
-//      $nextOfKin = NextOfKin::where('user_id', $userId)->firstOrFail();
-//      $nextOfKin->update($nextOfKinUpdateData);
-//    }
+
+    // Update or create Next of Kin if any field is provided
+    if (!empty(array_filter($nextOfKinUpdateData))) {
+      NextOfKin::updateOrCreate(
+        ['patient_id' => $patient->id],
+        $nextOfKinUpdateData
+      );
+    }
+
+    // Update patient tags
+    if ($request->has('tag_ids')) {
+      // Detach all current tags and re-attach the new ones
+      PatientTags::where('patient_id', $patient->id)->delete();
+
+      foreach ($request->tag_ids as $tagId) {
+        PatientTags::create([
+          'patient_id' => $patient->id,
+          'tag_id' => $tagId,
+        ]);
+      }
+    }
 
     return redirect()->route('app.patients.index')->with('success', 'Patient Updated Successfully');
   }
+
 
   /**
    * Remove the specified resource from storage.
