@@ -381,6 +381,8 @@ class PatientController extends Controller
           'tag_id' => $tagId,
         ]);
       }
+    } else{
+      PatientTags::where('patient_id', $patient->id)->delete();
     }
 
     return redirect()->route('app.patients.index')->with('success', 'Patient Updated Successfully');
