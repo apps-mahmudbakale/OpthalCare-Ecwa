@@ -67,21 +67,20 @@
           <td class="align-middle">{{ $admission->ward->name ?? 'N/A' }}</td>
           <td class="align-middle">{{ $admission->bed->name ?? 'N/A' }}</td>
           <td class="align-middle text-right">
-            <div class="dropdown">
-              <button type="button" class="btn btn-sm btn-icon btn-light" data-toggle="dropdown"
-                      data-boundary="viewport" aria-expanded="false" aria-haspopup="true">
-                <i class="fa fa-ellipsis-v"></i> <span class="sr-only">Actions</span></button>
-              <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item" href="/admissions/requests/32">Open Instance</a>
-
-                <button class="dropdown-item" data-remote="/admissions/requests/32/assign-bed"
-                        data-toggle="modal" data-target="#blankModal">
-                  Assign Bed
-                </button>
-
-              </div>
+            <div class="btn-group">
+              <button type="button" class="btn btn-sm btn-icon btn-light waves-effect waves-light"
+                      data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-ellipsis-v"></i>
+              </button>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="" id="prepare" class="dropdown-item"
+                  >
+                    Bill for Admission
+                  </a>
+                </li>
+              </ul>
             </div>
-
           </td>
         </tr>
         @endforeach

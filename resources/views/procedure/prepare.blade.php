@@ -93,26 +93,6 @@
         <button type="button" class="btn btn-primary mt-2" id="addLabRow">More Lab Test</button>
       </div>
     </div>
-<!--    <hr>-->
-<!--    <div class="card h-100  card-border-shadow-primary p-4">-->
-<!--      <!-- Admission Room -->-->
-<!--      <h5>Admission Room</h5>-->
-<!--      <div class="col-md-12">-->
-<!--        <label for="ward_id">Ward</label>-->
-<!--        <select name="ward_id" id="ward_id" class="form-control" required>-->
-<!--          <option value="">Select Ward...</option>-->
-<!--          @foreach(\App\Models\Ward::all() as $ward)-->
-<!--          <option value="{{ $ward->id }}">{{ $ward->name }}</option>-->
-<!--          @endforeach-->
-<!--        </select>-->
-<!--      </div>-->
-<!--      <div class="col-md-12">-->
-<!--        <label for="bed_id">Bed</label>-->
-<!--        <select name="bed_id" id="bed_id" class="form-control" required>-->
-<!--          <option value="">Select Bed...</option>-->
-<!--        </select>-->
-<!--      </div>-->
-<!--    </div>-->
 
 
     <!-- Submit Button -->
@@ -247,34 +227,7 @@
       });
 
       // Fetch Beds by Ward
-      document.getElementById('ward_id').addEventListener('change', async function () {
-        const wardId = this.value;
-        const bedSelect = document.getElementById('bed_id');
 
-        if (!wardId) {
-          bedSelect.innerHTML = '<option value="">Select Bed...</option>';
-          return;
-        }
-
-        try {
-          const response = await fetch('/app/getBedsByWard', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ ward_id: wardId })
-          });
-
-          const beds = await response.json();
-          bedSelect.innerHTML = '<option value="">Select Bed...</option>' +
-            Object.entries(beds).map(([id, name]) =>
-              `<option value="${id}">${name}</option>`
-            ).join('');
-        } catch (error) {
-          console.error('Error fetching beds:', error);
-        }
-      });
 
       // Add initial drug row
       addDrugRowBtn.addEventListener('click', addDrugRow);
