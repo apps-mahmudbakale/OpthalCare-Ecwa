@@ -25,6 +25,11 @@ class DatabaseSeeder extends Seeder
 
     foreach ($religions as $religion) {
       Religion::create(['name' => $religion]);
+        $this->call(UsersTableSeeder::class);
+        $this->call(PatientsTableSeeder::class);
+        $this->call(CashPointsTableSeeder::class);
+        $this->call(DepartmentsTableSeeder::class);
+        $this->call(DrugsTableSeeder::class);
     }
   }
 }
