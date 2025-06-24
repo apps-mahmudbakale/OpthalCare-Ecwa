@@ -39,6 +39,24 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <div class="card">
-        <livewire:pharmacy />
+      <div class="nav-align-top nav-tabs-shadow mb-6">
+        <ul class="nav nav-tabs nav-fill" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button type="button" class="nav-link waves-effect active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-justified-expired" aria-controls="navs-justified-expired" aria-selected="true"><span class="d-none d-sm-block"><i class="tf-icons ti ti-calendar ti-sm ti-sm me-1_5"></i> Patients Requests </span><i class="ti ti-calendar ti-sm d-sm-none"></i></button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-justified-low-stock" aria-controls="navs-justified-low-stock" aria-selected="false" tabindex="-1"><span class="d-none d-sm-block"><i class="tf-icons ti ti-clock ti-sm me-1_5"></i> Pharmacy Requests</span><i class="ti ti-clock ti-sm d-sm-none"></i></button>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane fade active show" id="navs-justified-expired" role="tabpanel">
+            <livewire:pharmacy />
+          </div>
+          <div class="tab-pane fade" id="navs-justified-low-stock" role="tabpanel">
+            <livewire:store-request />
+          </div>
+        </div>
+      </div>
+
     </div>
 @endsection

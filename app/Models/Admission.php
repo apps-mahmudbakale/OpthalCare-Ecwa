@@ -13,7 +13,10 @@ class Admission extends Model
     'patient_id',
     'ward_id',
     'bed_id',
-    'status'
+    'procedure_id',
+    'user_id',
+    'status',
+    'ref'
   ];
 
   public static function getServiceType()
@@ -34,5 +37,9 @@ class Admission extends Model
   public function bed()
   {
     return $this->belongsTo(Bed::class, 'bed_id');
+  }
+  public function procedureRequests()
+  {
+    return $this->hasMany(ProcedureRequest::class, 'patient_id', 'patient_id');
   }
 }

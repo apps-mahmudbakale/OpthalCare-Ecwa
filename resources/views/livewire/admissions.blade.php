@@ -1,81 +1,71 @@
 <div>
   <div class="card">
-
-    <!-- .card-header -->
-    <div class="card-header ">
-      <form method="post" class="filterForm d-flex justify-content-between flex-fill">
-        <input type="hidden" name="csrfmiddlewaretoken"
-               value="lnr6cDC6aTnlpOdsTlfsTkDxkrx4LsYuF9PMSCTGoGuOhKrxjApe1RpDI91GCuZu">
-        <div class="form-group flex-fill">
-          <label class="" for="patient_id">Filter By Patient</label>
-          <select name="patient_id" id="patient_id" class="form-control filter select2-hidden-accessible"
-                  title="" data-placeholder="Filter by Patient" data-select2-id="patient_id" tabindex="-1"
-                  aria-hidden="true"></select><span class="select2 select2-container select2-container--default"
-                                                    dir="ltr" data-select2-id="2" style="width: 100%;"><span class="selection"><span
-                class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true"
-                aria-expanded="false" title="" tabindex="0"
-                aria-labelledby="select2-patient_id-container"><span class="select2-selection__rendered"
-                                                                     id="select2-patient_id-container" role="textbox" aria-readonly="true"><span
-                    class="select2-selection__placeholder">Filter by Patient</span></span><span
-                  class="select2-selection__arrow" role="presentation"><b
-                    role="presentation"></b></span></span></span><span class="dropdown-wrapper"
-                                                                       aria-hidden="true"></span></span>
-        </div>
-        <div class="form-group flex-fill ml-2">
-          <label class="" for="ward_id">Filter By Ward</label>
-          <select name="ward_id" id="ward_id" class="custom-select form-control filter">
-            <option value="">- All -</option>
-
-            <option value="3">ACCIDENT &amp; EMERGENCY</option>
-
-            <option value="5">FEMALE AMINITY</option>
-
-            <option value="2">FEMALE WARD</option>
-
-            <option value="6">MALE AMINITY</option>
-
-            <option value="1">MALE WARD</option>
-
-            <option value="4">PEDIATRIC WARD</option>
-
+    <!-- Filter Header -->
+    <div class="card-header">
+      <div class="d-flex justify-content-between flex-wrap">
+        <!-- Patient Filter -->
+        <div class="form-group mr-2 flex-fill">
+          <label for="patient_id">Filter By Patient</label>
+          <select wire:model="patient_id" id="patient_id" class="form-control">
+            <option value="">All Patients</option>
+            @foreach($patients as $patient)
+            <option value="{{ $patient->id }}">
+              {{ $patient->user->firstname }} {{ $patient->user->lastname }}
+            </option>
+            @endforeach
           </select>
         </div>
 
-      </form>
-    </div><!-- /.card-header -->
-    <!-- .table-responsive -->
+        <!-- Ward Filter -->
+        <div class="form-group flex-fill">
+          <label for="ward_id">Filter By Ward</label>
+          <select wire:model="ward_id" id="ward_id" class="form-control">
+            <option value="">All Wards</option>
+            @foreach($wards as $ward)
+            <option value="{{ $ward->id }}">{{ $ward->name }}</option>
+            @endforeach
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
     <div class="table-responsive">
-      <!-- .table -->
-      <table class="table table-striped-">
-        <!-- thead -->
+      <table class="table table-striped">
         <thead>
         <tr>
           <th>Date Admitted</th>
           <th>Patient</th>
+          <th>Procedure</th>
           <th>Ward</th>
           <th>Bed</th>
-          <th class="align-middle text-right">*</th>
+          <th class="text-right">*</th>
         </tr>
         </thead>
         <tbody>
-        <!-- tr -->
-
-        @foreach($admissions as $admission)
+        @forelse($admissions as $admission)
         <tr>
-          <td class="align-middle">{{ $admission->created_at ?? 'N/A' }}</td>
-          <td class="align-middle">{{ $admission->patient->user->firstname .' '. $admission->patient->user->lastname ?? 'N/A' }}</td>
-          <td class="align-middle">{{ $admission->ward->name ?? 'N/A' }}</td>
-          <td class="align-middle">{{ $admission->bed->name ?? 'N/A' }}</td>
-          <td class="align-middle text-right">
+          <td>{{ $admission->created_at->format('Y-m-d') ?? 'N/A' }}</td>
+          <td>{{ $admission->patient->user->firstname ?? '' }} {{ $admission->patient->user->lastname ?? '' }}</td>
+          <td>{{ optional($admission->procedureRequests->first())->procedure->name ?? 'N/A' }}</td>
+          <td>{{ $admission->ward->name ?? 'N/A' }}</td>
+          <td>{{ $admission->bed->name ?? 'N/A' }}</td>
+          <td class="text-right">
             <div class="btn-group">
-              <button type="button" class="btn btn-sm btn-icon btn-light waves-effect waves-light"
-                      data-bs-toggle="dropdown" aria-expanded="false">
+              <button type="button" class="btn btn-sm btn-icon btn-light" data-bs-toggle="dropdown">
                 <i class="fa fa-ellipsis-v"></i>
               </button>
               <ul class="dropdown-menu">
+                @if($admission->status == 'Pending')
                 <li>
-                  <a href="" id="prepare" class="dropdown-item"
+                  <a href="{{route('app.procedure.prepare', $admission->ref)}}" id="prepare" class="dropdown-item"
                   >
+                    Prepare for Admission
+                  </a>
+                </li>
+                @endif
+                <li>
+                  <a wire:click.prevent="prepareBill({{ $admission->id }})" class="dropdown-item">
                     Bill for Admission
                   </a>
                 </li>
@@ -83,38 +73,37 @@
             </div>
           </td>
         </tr>
-        @endforeach
-        </tbody><!-- /tbody -->
-      </table><!-- /.table -->
-      <hr class="my-2">
+        @empty
+        <tr>
+          <td colspan="6" class="text-center">No active admissions found.</td>
+        </tr>
+        @endforelse
+        </tbody>
+      </table>
 
-
-      <div class="d-flex justify-content-around">
-
-        <ul class="pagination">
-
-          <li class="page-item disabled">
-            <a class="page-link" href="javascript:"><span class="oi oi-arrow-left"></span> Previous</a>
-          </li>
-
-
-          <li class="page-item active">
-
-            <span class="page-link" href="javascript:"> 1 - 1 of 1</span>
-          </li>
-
-
-          <li class="page-item disabled">
-            <a class="page-link" href="javascript:">Next <span class="oi oi-arrow-right"></span></a>
-          </li>
-
-        </ul>
-        <input type="hidden" class="sr-only filter" name="page" value="1">
-
+      <!-- Pagination -->
+      <div class="d-flex justify-content-center mt-3">
+        {{ $admissions->links() }}
       </div>
-
-
-    </div><!-- /.table-responsive -->
-
+    </div>
   </div>
+
+  @include('_partials._modals.global-modal')
 </div>
+
+<!-- Modal script -->
+<script>
+  window.addEventListener('show-bill-modal', event => {
+    $.ajax({
+      url: event.detail.url,
+      type: 'GET',
+      success: function(response) {
+        $('#global-modal .modal-body').html(response);
+        $('#global-modal').modal('show');
+      },
+      error: function(error) {
+        console.error(error);
+      }
+    });
+  });
+</script>

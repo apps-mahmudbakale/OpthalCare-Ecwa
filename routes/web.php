@@ -3,6 +3,7 @@
 use App\Http\Controllers\OpticalController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProcedureRequestController;
+use App\Http\Controllers\StoreRequestController;
 use App\Models\Consumble;
 use App\Models\Appointment;
 use Illuminate\Support\Facades\URL;
@@ -118,6 +119,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::post('drugs-category', [DrugController::class, 'storeCategory'])->name('drugs-category.store');
   Route::post('drugs-category/{category}', [DrugController::class, 'updateCategory'])->name('drugs-category.update');
   Route::resource('lab', LabRequestController::class);
+  Route::resource('store-request', StoreRequestController::class);
   Route::get('lab/specimen/{lab}', [LabRequestController::class, 'specimen'])->name('lab.specimen');
   Route::post('lab/add-result', [LabRequestController::class, 'addResult'])->name('lab.add.result');
   Route::get('lab/result/{lab}', [LabRequestController::class, 'showResult'])->name('lab.print.result');
@@ -171,6 +173,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::resource('tags', TagController::class);
   Route::resource('admissions', AdmissionController::class);
   Route::get('admissions/request/{id}', [AdmissionController::class, 'requestAdmission'])->name('admissions.request');
+  Route::get('admission/bill', [AdmissionController::class, 'bill'])->name('admissions.bill');
   Route::resource('billing', BillingController::class);
   Route::resource('antenatals', AntenatalController::class);
   Route::resource('specialities', SpecialityController::class);

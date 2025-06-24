@@ -45,54 +45,13 @@ class AdmissionController extends Controller
    */
   public function store(Request $request)
   {
-
+//    dd($request->all());
     DB::beginTransaction();
     try {
-      // Create Admission
-      $admission = Admission::create([
-        'patient_id' => $request->patient_id, // Assuming patient_id is passed or retrieved
-        'ward_id' => $request->ward_id ? $request->ward_id : 1,
-        'bed_id' => $request->bed_id ? $request->bed_id : 1,
-        'status' => 'active',
-      ]);
-
-      // Update Bed Status
-//      Bed::find(1)->update(['available' => false]);
-//      $bed = Bed::find($request->bed_id)->first();
       $request_ref = $request->request_ref;
-      $proceed = ProcedureRequest::where('request_ref', $request_ref)->first();
-      $procedure = Procedure::where('id', $proceed->procedure_id)->first();
-
-
-      $serviceHandler = new ServiceRequestHandler();
-//      dd($bed);
-      $bed = 'Bed 1';
-      $billingRecord = $serviceHandler->handleServiceRequest($bed, $request->patient_id, 'Bed', $request_ref, 1);
-
-      if ($billingRecord) {
-
-      } else{
-        Billing::create([
-          'service'    => 'Bed:' . $bed,
-          'service_id' => 1,
-          'user_id'    => $request->patient_id,
-          'quantity'   => 1,
-          'amount'     => 20000,
-          'bill_ref'   => $request_ref,
-          'payer_id'   => Auth::id(),
-          'status'     => 0,
-        ]);
-        Billing::create([
-          'service'    => 'Procedure:' . $procedure->name,
-          'service_id' => $procedure->id,
-          'user_id'    => $request->patient_id,
-          'quantity'   => 1,
-          'amount'     => $procedure->price,
-          'bill_ref'   => $request_ref,
-          'payer_id'   => Auth::id(),
-          'status'     => 0,
-        ]);
-      }
+      $admission = Admission::where('ref', $request_ref)->update([
+        'status' => 'prepared'
+      ]);
 
       // Save Drug Requests
       if ($request->has('drugs')) {
@@ -140,12 +99,15 @@ class AdmissionController extends Controller
       }
 
       DB::commit();
-      $proceed = ProcedureRequest::find($proceed->id)->update(['status' => 'Bill Prepared']);
       return redirect()->route('app.admissions.index')->with('success', 'Admission created successfully.');
     } catch (\Exception $e) {
       DB::rollBack();
        dd($e->getMessage());
     }
+  }
+
+  public function bill(){
+    return view('admission.bill');
   }
 
   /**

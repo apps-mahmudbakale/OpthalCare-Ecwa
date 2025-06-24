@@ -27,7 +27,7 @@
   <form action="{{route('app.admissions.store')}}" method="POST" class="row g-3" id="admissionForm">
     @csrf
     <input type="hidden" name="patient_id" value="{{$procedure->patient_id}}">
-    <input type="hidden" name="request_ref" value="{{$procedure->request_ref}}">
+    <input type="hidden" name="request_ref" value="{{$procedure->ref}}">
     <div class="card p-4">
       <!-- Admission Drugs -->
       <h5>Admission Drugs</h5>

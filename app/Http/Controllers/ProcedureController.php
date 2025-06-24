@@ -21,6 +21,7 @@ class ProcedureController extends Controller
 
   public function store(Request $request)
   {
+    dd($request->all());
     $request = ProceudreRequest::create(array_merge($request->except('status'), ['status' => 'Pending']));
     $procedure = Procedure::find($request->procedure_id);
     $serviceHandler = new ServiceRequestHandler();

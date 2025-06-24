@@ -1,8 +1,10 @@
 <div>
+
   <div class="card-header">
+    <a href="{{ route('app.store-request.create') }}" id="add-payment-method"
+       class="btn btn-primary mb-2 float-end">New Request</a>
     <input type="text" wire:model.debounce.500ms="search" placeholder="Search by status..." class="form-control">
   </div>
-
   <div class="table-responsive">
     <table class="table">
       <thead>
@@ -21,7 +23,7 @@
         <td class="align-middle">{{ $group->first()->patient->user->firstname }} {{ $group->first()->patient->user->lastname }}</td>
         <td class="align-middle">
           @foreach ($group as $request)
-                                <span class="badge badge-lg bg-primary mb-1">
+          <span class="badge badge-lg bg-primary mb-1">
                                     {{ $request->drug->name }}
                                 </span>
           @endforeach
@@ -89,7 +91,7 @@
 
 <script>
   $(document).ready(function () {
-    $('.dropdown-item').on('click', function () {
+    $('.').on('click', function () {
       var requestUrl = $(this).data('request-url');
       $.ajax({
         url: requestUrl,

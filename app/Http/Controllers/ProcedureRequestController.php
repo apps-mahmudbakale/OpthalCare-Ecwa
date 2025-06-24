@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admission;
 use App\Models\Procedure;
 use App\Models\ProcedureRequest;
 use Illuminate\Http\Request;
@@ -25,7 +26,7 @@ class ProcedureRequestController extends Controller
     }
 
     public function prepare($ref){
-      $procedure = ProcedureRequest::where('request_ref', $ref)->first();
+      $procedure = Admission::where('ref', $ref)->first();
 
       return view('procedure.prepare', compact('procedure'));
     }
@@ -35,8 +36,10 @@ class ProcedureRequestController extends Controller
      */
     public function store(Request $request)
     {
+//      dd($request->all());
         $request_ref = str()->random(6);
-        $request = ProcedureRequest::create(array_merge($request->all(), ['user_id' => auth()->user()->id, 'request_ref' => $request_ref, 'status' => 'Pending']));
+        $request = Admission::create(array_merge($request->all(), ['ref' => $request_ref, 'status' => 'Pending', 'user_id' => auth()->user()->id]));
+//        $request = ProcedureRequest::create(array_merge($request->all(), ['user_id' => auth()->user()->id, 'request_ref' => $request_ref, 'status' => 'Pending']));
 
         return back()->with('success', 'Procedure request created successfully.');
     }
