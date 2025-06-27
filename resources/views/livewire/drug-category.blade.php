@@ -29,7 +29,7 @@
                 @foreach ($categories as $category)
                     <tr class="odd">
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $category->name }}</td>
+                        <td>{{ $category->name ?? ''}}</td>
                         <td>
                             <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
                                     data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
