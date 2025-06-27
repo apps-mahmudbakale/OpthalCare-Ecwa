@@ -40,7 +40,7 @@ class RolesAndPermissionsSeeder extends Seeder
       'report',
       'admission',
       'appointments',
-      'patents',
+      'patients',
       'opticals',
       'settings',
     ];
