@@ -16,13 +16,18 @@ class Admissions extends Component
   {
     $admissions = Admission::with(['patient', 'ward', 'bed', 'procedureRequests'])
       ->where('status', 'pending')
-      ->where('status', 'prepared')
+      ->orWhere('status', 'prepared')
+      ->orWhere('status', 'billed')
+      ->orWhere('status', 'active')
       ->paginate('10');
 
 
     if ($this->patient_id) {
       $admissions = Admission::with(['patient', 'ward', 'bed', 'procedureRequests'])
         ->where('status', 'pending')
+        ->orWhere('status', 'prepared')
+        ->orWhere('status', 'billed')
+        ->orWhere('status', 'active')
         ->where('admissions.patient_id', $this->patient_id)
         ->paginate('10');
 
@@ -31,6 +36,9 @@ class Admissions extends Component
     if ($this->ward_id) {
       $admissions = Admission::with(['patient', 'ward', 'bed', 'procedureRequests'])
         ->where('status', 'pending')
+        ->orWhere('status', 'prepared')
+        ->orWhere('status', 'billed')
+        ->orWhere('status', 'active')
         ->where('admissions.ward_id', $this->ward_id)
         ->paginate('10');
     }

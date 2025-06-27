@@ -102,12 +102,34 @@ class AdmissionController extends Controller
       return redirect()->route('app.admissions.index')->with('success', 'Admission created successfully.');
     } catch (\Exception $e) {
       DB::rollBack();
-       dd($e->getMessage());
+       $e->getMessage();
     }
   }
 
-  public function bill(){
-    return view('admission.bill');
+  public function bill($admission){
+    $admission = Admission::where('ref', $admission)->first();
+    return view('admission.bill', compact('admission'));
+  }
+
+
+  public function billAdmission(Request $request){
+    $procedure = Procedure::where('id', $request->procedure_id)->first();
+    $billAdmission = Billing::create([
+      'service'    => 'Admission:'.$procedure->name,
+      'service_id' => $procedure->id,
+      'user_id'    => $request->patient_id,
+      'quantity'   => 1,
+      'amount'     => $request->amount,
+      'bill_ref'   => $request->ref,
+      'payer_id'   => Auth::id(),
+      'status'     => 0,
+    ]);
+
+    $admission = Admission::where('ref', $request->ref)->update([
+      'status' => 'billed'
+    ]);
+
+    return redirect()->route('app.admissions.index')->with('success', 'Admission Billed successfully.');
   }
 
   /**
@@ -116,6 +138,11 @@ class AdmissionController extends Controller
   public function show(Admission $admission)
   {
     //
+  }
+
+  public function assignBed($ref){
+    $admission = Admission::where('ref', $ref)->first();
+    return view('admission.assign-bed', compact('admission'));
   }
 
   /**
@@ -131,7 +158,19 @@ class AdmissionController extends Controller
    */
   public function update(Request $request, Admission $admission)
   {
-    //
+    $billing = Billing::where('bill_ref', $request->ref)->first();
+
+    if ($billing->status == 0){
+      return redirect()->back()->with('error', 'Patient Admission Bill not settled');
+    }
+
+    $admission = Admission::where('ref', $request->ref)->update([
+      'ward_id' => $request->ward_id,
+      'bed_id' =>$request->bed_id,
+      'status' => 'active'
+    ]);
+
+    return redirect()->route('app.admissions.index')->with('success', 'Admission Bed Assigned successfully.');
   }
 
   /**

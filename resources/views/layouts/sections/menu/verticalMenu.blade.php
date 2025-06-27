@@ -53,13 +53,14 @@ $configData = Helper::appClasses();
       </ul>
     </li>
     @endcan
-
+    @can('read-patients')
     <li class="menu-item {{ request()->is('app/patients*') ? 'active' : '' }}">
       <a href="{{ route('app.patients.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-users"></i>
         <div>Patients</div>
       </a>
     </li>
+    @endcan
 
     @can('read-appointments')
     <li class="menu-item {{ request()->is('app/appointments*') ? 'active' : '' }}">
@@ -78,78 +79,82 @@ $configData = Helper::appClasses();
       </a>
     </li>
     @endcan
-
+    @can('read-pharmacy')
     <li class="menu-item {{ request()->is('app/pharmacy*') ? 'active' : '' }}">
       <a href="{{ route('app.pharmacy.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-prescription"></i>
         <div>Pharmacy</div>
       </a>
     </li>
-
+  @endcan
+    @can('read-laboratories')
     <li class="menu-item {{ request()->is('app/lab*') ? 'active' : '' }}">
       <a href="{{ route('app.lab.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-vaccine"></i>
         <div>Laboratory</div>
       </a>
     </li>
-
+@endcan
+    @can('read-radiology')
     <li class="menu-item {{ request()->is('app/radiology*') ? 'active' : '' }}">
       <a href="{{ route('app.radiology.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-photo"></i>
         <div>Radiology</div>
       </a>
     </li>
-
+@endcan
+    @can('read-opticals')
     <li class="menu-item {{ request()->is('app/opticals*') ? 'active' : '' }}">
       <a href="{{ route('app.opticals.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-eyeglass"></i>
         <div>Opticals</div>
       </a>
     </li>
-
-
+@endcan
+@can('read-admission')
     <li class="menu-item {{ request()->is('app/admissions*') ? 'active' : '' }}">
       <a href="{{ route('app.admissions.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-bed"></i>
         <div>Admissions</div>
       </a>
     </li>
-
-    <li class="menu-item {{ request()->is('app/procedures*') ? 'active' : '' }}">
-      <a href="{{ route('app.procedures.index') }}" class="menu-link">
-        <i class="menu-icon tf-icons ti ti-medical-cross"></i>
-        <div>Procedures</div>
-      </a>
-    </li>
-
+@endcan
+<!--    <li class="menu-item {{ request()->is('app/procedures*') ? 'active' : '' }}">-->
+<!--      <a href="{{ route('app.procedures.index') }}" class="menu-link">-->
+<!--        <i class="menu-icon tf-icons ti ti-medical-cross"></i>-->
+<!--        <div>Procedures</div>-->
+<!--      </a>-->
+<!--    </li>-->
+@can('read-billing')
     <li class="menu-item {{ request()->is('app/billing*') ? 'active' : '' }}">
       <a href="{{ route('app.billing.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-report-money"></i>
         <div>Billing</div>
       </a>
     </li>
-
+@endcan
+    @can('read-report')
     <li class="menu-item {{ request()->is('app/reports*') ? 'active' : '' }}">
       <a href="{{ route('app.reports.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-report"></i>
         <div>Reports</div>
       </a>
     </li>
-
+@endcan
     <li class="menu-item {{ request()->is('app/messages*') ? 'active' : '' }}">
       <a href="{{ route('app.messages.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-messages"></i>
         <div>Messages</div>
       </a>
     </li>
-
+@can('read-settings')
     <li class="menu-item {{ request()->is('app/settings*') ? 'active' : '' }}">
       <a href="{{ route('app.settings.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-adjustments"></i>
         <div>Settings</div>
       </a>
     </li>
-
+@endcan
   </ul>
 
 </aside>

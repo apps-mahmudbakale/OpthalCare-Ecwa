@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Antenatal;
 use Illuminate\Http\Request;
 
 class OpticalController extends Controller
@@ -19,7 +20,8 @@ class OpticalController extends Controller
      */
     public function create()
     {
-        //
+        $opticals = Antenatal::all();
+        return view('opticals.create', compact('opticals'));
     }
 
     /**
@@ -27,7 +29,8 @@ class OpticalController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      $request_ref = str()->random(6);
+
     }
 
     /**

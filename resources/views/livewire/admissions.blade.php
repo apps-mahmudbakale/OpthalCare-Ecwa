@@ -63,12 +63,25 @@
                     Prepare for Admission
                   </a>
                 </li>
-                @endif
+                @elseif($admission->status == 'prepared')
                 <li>
-                  <a wire:click.prevent="prepareBill({{ $admission->id }})" class="dropdown-item">
+                  <button class="dropdown-item" data-toggle="modal"
+                     data-request-url="{{ route('app.admissions.bill', $admission->ref) }}"
+                     data-target="#global-modal-lg"
+                  >
                     Bill for Admission
-                  </a>
+                  </button>
                 </li>
+                @elseif($admission->status == 'billed')
+                <li>
+                  <button class="dropdown-item" data-toggle="modal"
+                          data-request-url="{{ route('app.admissions.bed', $admission->ref) }}"
+                          data-target="#global-modal-lg"
+                  >
+                    Assign Bed
+                  </button>
+                </li>
+                @endif
               </ul>
             </div>
           </td>
@@ -93,17 +106,20 @@
 
 <!-- Modal script -->
 <script>
-  window.addEventListener('show-bill-modal', event => {
-    $.ajax({
-      url: event.detail.url,
-      type: 'GET',
-      success: function(response) {
-        $('#global-modal .modal-body').html(response);
-        $('#global-modal').modal('show');
-      },
-      error: function(error) {
-        console.error(error);
-      }
+  $(document).ready(function () {
+    $('.dropdown-item').on('click', function () {
+      var requestUrl = $(this).data('request-url');
+      $.ajax({
+        url: requestUrl,
+        type: 'GET',
+        success: function (response) {
+          $('#global-modal .modal-body').html(response);
+          $('#global-modal').modal('show');
+        },
+        error: function (xhr, status, error) {
+          console.error(error);
+        }
+      });
     });
   });
 </script>

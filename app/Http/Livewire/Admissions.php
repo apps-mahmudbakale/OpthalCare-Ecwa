@@ -17,7 +17,7 @@ class Admissions extends Component
   {
     $admissions = Admission::with(['patient', 'ward', 'bed', 'procedureRequests'])
     ->where('status', 'pending')
-    ->where('status', 'prepared');
+    ->orWhere('status', 'prepared');
     if ($this->patient_id) {
       $admissions->where('patient_id', $this->patient_id);
     }

@@ -33,7 +33,15 @@ class RolesAndPermissionsSeeder extends Seeder
     $entities = [
       'users',
       'roles',
+      'laboratory',
+      'pharmacy',
+      'radiology',
+      'billing',
+      'report',
+      'admission',
       'appointments',
+      'patents',
+      'opticals',
       'settings',
     ];
 

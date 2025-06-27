@@ -150,7 +150,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::resource('procedure-requests', ProcedureRequestController::class);
   Route::get('procedure-prepare/{id}', [ProcedureRequestController::class, 'prepare'])->name('procedure.prepare');
 
-  Route::post('/getBedsByWard', [WardController::class, 'getBedsByWard'])->name('getBedsByWard');
+  Route::get('/getBedsByWard/{wardId}', [WardController::class, 'getBedsByWard'])->name('getBedsByWard');
 
 
   // **** Radiology Routes
@@ -173,7 +173,9 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::resource('tags', TagController::class);
   Route::resource('admissions', AdmissionController::class);
   Route::get('admissions/request/{id}', [AdmissionController::class, 'requestAdmission'])->name('admissions.request');
-  Route::get('admission/bill', [AdmissionController::class, 'bill'])->name('admissions.bill');
+  Route::get('admission/bill/{admission}', [AdmissionController::class, 'bill'])->name('admissions.bill');
+  Route::post('admission/bill', [AdmissionController::class, 'billAdmission'])->name('admissions.bill.post');
+  Route::get('admission-bed/{ref}', [AdmissionController::class, 'assignBed'])->name('admissions.bed');
   Route::resource('billing', BillingController::class);
   Route::resource('antenatals', AntenatalController::class);
   Route::resource('specialities', SpecialityController::class);

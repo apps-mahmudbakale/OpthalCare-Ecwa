@@ -31,5 +31,7 @@
 @endsection
 
 @section('content')
+<div class="card">
 <livewire:opticals />
+</div>
 @endsection

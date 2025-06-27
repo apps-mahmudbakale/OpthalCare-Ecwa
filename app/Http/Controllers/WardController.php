@@ -33,11 +33,11 @@ class WardController extends Controller
     return redirect()->route('app.settings.admission')->with('success', 'Ward Added');
   }
 
-  public function getBedsByWard(Request $request)
+  public function getBedsByWard($wardId)
   {
-    $wardId = $request->input('ward_id');
-    $beds = Ward::find($wardId)->beds()->where('available', true)->pluck('name', 'id');
-    return response()->json($beds);
+//    $wardId = $request->input('ward_id');
+    $beds = Ward::find($wardId)->beds()->where('available', true)->get();
+    return $beds;
   }
 
   /**
