@@ -87,7 +87,7 @@ $configData = Helper::appClasses();
       </a>
     </li>
   @endcan
-    @can('read-laboratories')
+    @can('read-laboratory')
     <li class="menu-item {{ request()->is('app/lab*') ? 'active' : '' }}">
       <a href="{{ route('app.lab.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-vaccine"></i>
