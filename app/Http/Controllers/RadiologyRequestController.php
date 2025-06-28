@@ -37,13 +37,46 @@ class RadiologyRequestController extends Controller
    */
   public function store(Request $request)
   {
-    $request_ref = str()->random(6);
-    $imagingrequest = RadiologyRequest::create(array_merge($request->except('status'), ['status' => 'Pending', 'request_ref' => $request_ref]));
-    $imaging = Radiology::find($request->imaging_id);
+    $request->validate([
+      'patient_id' => 'required|exists:patients,id',
+      'user_id' => 'required|exists:users,id',
+      'imaging_id' => 'required|array',
+      'priority' => 'required|array',
+      'request_note' => 'required|array',
+    ]);
+
+    $request_ref = str()->upper(str()->random(6));
     $serviceHandler = new ServiceRequestHandler();
-    $billingRecord = $serviceHandler->handleServiceRequest($imaging->name, $request->patient_id, 'Radiology', $request_ref, 1);
+
+    foreach ($request->imaging_id as $index => $imagingId) {
+      $imaging = Radiology::find($imagingId);
+
+      if (!$imaging) {
+        continue; // Skip invalid entries
+      }
+
+      RadiologyRequest::create([
+        'patient_id'   => $request->patient_id,
+        'user_id'      => $request->user_id,
+        'imaging_id'   => $imagingId,
+        'priority'     => $request->priority[$index],
+        'request_note' => $request->request_note[$index],
+        'status'       => 'Pending',
+        'request_ref'  => $request_ref,
+      ]);
+
+      $serviceHandler->handleServiceRequest(
+        $imaging->name,
+        $request->patient_id,
+        'Radiology',
+        $request_ref,
+        1
+      );
+    }
+
     return redirect()->back()->with('success', 'Imaging Requested!');
   }
+
 
   public function addResult(Request $request){
     $result = RadiologyResult::create(array_merge($request->all(), ['user_id' => auth()->user()->id]));

@@ -10,9 +10,10 @@
       <thead>
       <tr>
         <th>Date</th>
-        <th>Patient</th>
-        <th>Drug/Generic</th>
+        <th>Drugs</th>
+        <th>Store</th>
         <th>Requester</th>
+        <th>Status</th>
         <th></th>
       </tr>
       </thead>
@@ -20,7 +21,6 @@
       @foreach ($requests as $requestRef => $group)
       <tr>
         <td class="align-middle text-nowrap">{{ $group->first()->created_at->format('d M Y h:i A') }}</td>
-        <td class="align-middle">{{ $group->first()->patient->user->firstname }} {{ $group->first()->patient->user->lastname }}</td>
         <td class="align-middle">
           @foreach ($group as $request)
           <span class="badge badge-lg bg-primary mb-1">
@@ -29,6 +29,8 @@
           @endforeach
         </td>
         <td class="align-middle">{{ $request->user->firstname }} {{ $request->user->lastname }}</td>
+        <td class="align-middle">{{ $request->store->name }}</td>
+        <td class="align-middle">{{ $request->status }}</td>
         <td class="align-middle text-right">
           <div class="d-inline-block">
             <a href="javascript:;" class="dropdown hide-arrow" data-bs-toggle="dropdown">
@@ -36,23 +38,16 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-end m-0">
               <li>
-                <button class="dropdown-item"
-                        data-request-url="{{ $request->request_ref ? route('app.pharmacy.show', $request->request_ref) : '#' }}"
-                        data-toggle="modal" data-target="#global-modal" type="button">
+                <button class="dropdown-item" id="details"
+                        data-request-url="{{ $request->ref ? route('app.store-request.show', $request->ref) : '#' }}"
+                        data-toggle="modal" data-target="#global-modal-lg" type="button">
                   Details
                 </button>
               </li>
-
-              @php
-              $serviceHandler = new \App\Services\ServiceRequestHandler();
-              $service = "Pharmacy:" . $request->drug->name;
-              $isPaid = $serviceHandler->isBilled($request->drug->id, $service, $request->request_ref);
-              @endphp
-
-              @if ($isPaid && $request->status != 'Filled')
+              @if ($request->status == 'pending')
               <li>
                 <button class="dropdown-item" data-toggle="modal"
-                        data-request-url="{{ route('app.pharmacy.edit',$request->request_ref) }}"
+                        data-request-url="{{ route('app.store-request.edit',$request->ref) }}"
                         data-target="#global-modal-lg" type="button">
                   Fill
                 </button>
@@ -87,18 +82,18 @@
   </div>
 </div>
 
-@include('_partials._modals.global-modal')
+@include('_partials._modals.global-modal2')
 
 <script>
   $(document).ready(function () {
-    $('.').on('click', function () {
+    $('#details').on('click', function () {
       var requestUrl = $(this).data('request-url');
       $.ajax({
         url: requestUrl,
         type: 'GET',
         success: function (response) {
-          $('#global-modal .modal-body').html(response);
-          $('#global-modal').modal('show');
+          $('#global-modal2 .modal-body2').html(response);
+          $('#global-modal2').modal('show');
         },
         error: function (xhr, status, error) {
           console.error(error);
@@ -106,4 +101,5 @@
       });
     });
   });
+
 </script>

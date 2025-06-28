@@ -22,7 +22,6 @@ class PharmacyController extends Controller
     foreach ($request->drug_id as $index => $testId) {
       DrugRequest::create([
                 'patient_id' => $request->patient_id,
-                'store_id' => $request->store_id[$index],
                 'category_id' => $request->category_id[$index],
                 'drug_id' => $request->drug_id[$index],
                 'qty' => $request->qty[$index],
@@ -87,7 +86,7 @@ class PharmacyController extends Controller
         ]);
 
         if ($drug->id) {
-          Drug::where('id', $drug->id)->decrement('quantity', $qtys[$index]);
+          Drug::where('id', $drug->id)->decrement('dispense_qty', $qtys[$index]);
         }
       } else {
         return redirect()->back()->with('error', "Service for {$drug->name} has not been paid.");

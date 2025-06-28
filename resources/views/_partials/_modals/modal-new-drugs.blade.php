@@ -18,7 +18,6 @@
           <table class="table table-striped" id="drugRequestTable">
             <thead>
             <tr>
-              <th>Store</th>
               <th>Category</th>
               <th>Drug</th>
               <th>Qty</th>
@@ -46,7 +45,6 @@
     const drugTableBody = document.getElementById('drugTableBody');
     const addDrugRowBtn = document.getElementById('addDrugRow');
     const form = document.getElementById('drugForm');
-    const stores = @json(\App\Models\DrugStore::pluck('name', 'id'));
     const categories = @json(\App\Models\DrugCategory::pluck('name', 'id'));
 
     const createSelectOptions = (data, placeholder) => {
@@ -59,54 +57,47 @@
     const addDrugRow = () => {
       const row = document.createElement('tr');
       row.innerHTML = `
-            <td>
-                <select name="store_id[]" class="form-select store-select" required>
-                    ${createSelectOptions(stores, 'Select Store...')}
-                </select>
-            </td>
-            <td>
-                <select name="category_id[]" class="form-select category-select" required>
-                    ${createSelectOptions(categories, 'Select Category...')}
-                </select>
-            </td>
-            <td>
-                <select name="drug_id[]" class="form-select drug-select" required>
-                    <option value="" selected>Select Drug...</option>
-                </select>
-            </td>
-            <td>
-                <input type="number" name="qty[]" class="form-control" placeholder="Quantity" min="1" required>
-            </td>
-            <td>
-                <input type="text" name="dose[]" class="form-control" placeholder="Dose" required>
-            </td>
-            <td>
-                <button type="button" class="btn btn-danger btn-sm delete-row">×</button>
-            </td>
-        `;
+        <td>
+          <select name="category_id[]" class="form-select category-select" required>
+            ${createSelectOptions(categories, 'Select Category...')}
+          </select>
+        </td>
+        <td>
+          <select name="drug_id[]" class="form-select drug-select" required>
+            <option value="" selected>Select Drug...</option>
+          </select>
+        </td>
+        <td>
+          <input type="number" name="qty[]" class="form-control" placeholder="Quantity" min="1" required>
+        </td>
+        <td>
+          <input type="text" name="dose[]" class="form-control" placeholder="Dose" required>
+        </td>
+        <td>
+          <button type="button" class="btn btn-danger btn-sm delete-row">×</button>
+        </td>
+      `;
       drugTableBody.appendChild(row);
       attachRowListeners(row);
     };
 
     const attachRowListeners = (row) => {
-      const storeSelect = row.querySelector('.store-select');
       const categorySelect = row.querySelector('.category-select');
       const drugSelect = row.querySelector('.drug-select');
       const deleteBtn = row.querySelector('.delete-row');
 
       const updateDrugs = async () => {
-        if (!storeSelect.value || !categorySelect.value) return;
+        if (!categorySelect.value) return;
 
         try {
-          const response = await fetch('/getDrugsbyStore', {
+          const response = await fetch('/getDrugsByCategory', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             body: JSON.stringify({
-              store: storeSelect.value,
-              category: categorySelect.value
+              category_id: categorySelect.value
             })
           });
 
@@ -120,7 +111,6 @@
         }
       };
 
-      storeSelect.addEventListener('change', updateDrugs);
       categorySelect.addEventListener('change', updateDrugs);
       deleteBtn.addEventListener('click', () => row.remove());
     };

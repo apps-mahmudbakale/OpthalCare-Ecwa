@@ -229,7 +229,8 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
 });
 Route::get('getLGA/{state}', [DashboardController::class, 'getLGA']);
 Route::post('getDrugsCategorybyStore', [DrugController::class, 'getDrugsCategorybyStore']);
-Route::post('getDrugsbyStore', [DrugController::class, 'getDrugsbyStore']);
+Route::post('getDrugsbyStore', [DrugController::class, 'getDrugsbyStore'])->name('get.drugs.by.store');
+Route::post('/getDrugsByCategory', [\App\Http\Controllers\DrugController::class, 'getByCategory']);
 
 
 // URL::forceScheme('https');

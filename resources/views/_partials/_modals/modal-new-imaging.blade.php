@@ -1,49 +1,104 @@
-<!-- Edit User Modal -->
+<!-- New Imaging Modal -->
 <div wire:ignore.self class="modal fade" id="new-imaging-modal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-simple modal-edit-user">
-        <div class="modal-content p-3 p-md-5">
-            <div class="modal-body">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                <div class="text-center mb-4">
-                    <h3 class="mb-2">New Imaging for
-                        {{ \App\Models\Patient::find(request()->route()->patient->id)->user->firstname }}
-                    </h3>
-                </div>
-                <form action="{{ route('app.radiology.store') }}" method="POST" class="row g-3">
-                    @csrf
-                    <input type="hidden" name="patient_id" value="{{ request()->route()->patient->id }}">
-                    <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-                    <div class="col-12 col-md-12">
-                        <label class="form-label">Imaging Services</label>
-                        <select name="imaging_id" id="" class="form-control">
-                            <option value="">----</option>
-                            @foreach (\App\Models\Radiology::all() as $imaging)
-                                <option value="{{ $imaging->id }}">{{ $imaging->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-12 col-md-12">
-                        <label class="form-label"> Priority</label>
-                        <select name="priority" id="" class="form-control">
-                            <option value="">---</option>
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="High">High</option>
-                            <option value="Urgent">Urgent</option>
-                        </select>
-                    </div>
-                    <div class="col-12 col-md-12">
-                        <label class="form-label">Request Note</label>
-                        <textarea name="request_note" class="form-control" id="" cols="30" rows="10"></textarea>
-                    </div>
-                    <div class="col-12 text-center">
-                        <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
-                        <button data-bs-dismiss="modal" aria-label="Close"
-                            class="btn btn-label-secondary">Close</button>
-                    </div>
-                </form>
-            </div>
+  <div class="modal-dialog modal-lg modal-simple modal-edit-user">
+    <div class="modal-content p-3 p-md-5">
+      <div class="modal-body">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="text-center mb-4">
+          <h3 class="mb-2">
+            New Imaging for
+            {{ \App\Models\Patient::find(request()->route()->patient->id)->user->firstname }}
+          </h3>
         </div>
+
+        <form action="{{ route('app.radiology.store') }}" method="POST" id="imagingForm">
+          @csrf
+          <input type="hidden" name="patient_id" value="{{ request()->route()->patient->id }}">
+          <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+
+          @php
+          $radiologies = \App\Models\Radiology::all(['id', 'name']);
+
+          $priorities = ['Low', 'Medium', 'High', 'Urgent'];
+          @endphp
+          <table class="table table-bordered" id="imagingTable">
+            <thead>
+            <tr>
+              <th>Imaging Service</th>
+              <th>Priority</th>
+              <th>Request Note</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>
+                <select name="imaging_id[]" class="form-control" required>
+                  <option value="">Select Imaging...</option>
+                  @foreach ($radiologies as $item)
+                  <option value="{{ $item->id }}">{{ $item->name }}</option>
+                  @endforeach
+                </select>
+              </td>
+              <td>
+                <select name="priority[]" class="form-control" required>
+                  <option value="">---</option>
+                  @foreach ($priorities as $p)
+                  <option value="{{ $p }}">{{ $p }}</option>
+                  @endforeach
+                </select>
+              </td>
+              <td>
+                <textarea name="request_note[]" class="form-control" rows="2" required></textarea>
+              </td>
+              <td>
+                <button type="button" class="btn btn-danger btn-sm remove-row">×</button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+
+          <div class="mb-3">
+            <button type="button" class="btn btn-outline-primary" id="addImagingRow">Add Imaging</button>
+          </div>
+
+          <div class="col-12 text-center mt-3">
+            <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+            <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
-<!--/ Edit User Modal -->
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const table = document.getElementById('imagingTable').querySelector('tbody');
+    const addRowBtn = document.getElementById('addImagingRow');
+
+    addRowBtn.addEventListener('click', function () {
+      const firstRow = table.querySelector('tr');
+      const clone = firstRow.cloneNode(true);
+
+      // Clear values
+      clone.querySelectorAll('select, textarea').forEach(input => input.value = '');
+
+      table.appendChild(clone);
+      bindRemoveButtons();
+    });
+
+    function bindRemoveButtons() {
+      document.querySelectorAll('.remove-row').forEach(btn => {
+        btn.onclick = function () {
+          const row = btn.closest('tr');
+          if (document.querySelectorAll('#imagingTable tbody tr').length > 1) {
+            row.remove();
+          }
+        }
+      });
+    }
+
+    bindRemoveButtons(); // For initial row
+  });
+</script>
