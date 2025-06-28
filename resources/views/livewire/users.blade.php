@@ -57,7 +57,7 @@
                         <td>{{ $user->lastname }}</td>
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->phone }}</td>
-                        <td><span class="badge  bg-label-success">{{ $user->roles->first()->name }}</span></td>
+                        <td><span class="badge  bg-label-success">{{ $user->roles->first()->name ?? 'no role' }}</span></td>
                         <td>
                             <div class="d-inline-block"><a href="javascript:;"
                                     class="btn btn-sm btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i
