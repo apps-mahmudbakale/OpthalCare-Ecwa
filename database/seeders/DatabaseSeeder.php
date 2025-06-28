@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
     $this->call(CashPointsTableSeeder::class);
     $this->call(DepartmentsTableSeeder::class);
     $this->call(DrugsTableSeeder::class);
+    $this->call(StaffSeeder::class);
 
     $religions = ['Islam', 'Christianity', 'Others'];
 
