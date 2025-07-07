@@ -17,6 +17,10 @@
                         <label class="form-label"> Price</label>
                         <input type="number" name="price" class="form-control" placeholder="Item Price" />
                     </div>
+                  <div class="col-12 col-md-12">
+                    <label class="form-label"> Quantity</label>
+                    <input type="number" name="qty" class="form-control" placeholder="Quantity" />
+                  </div>
                     <div class="col-12 text-center">
                         <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
                         <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"

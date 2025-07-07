@@ -11,6 +11,8 @@ class Antenatal extends Model
 
     protected $fillable = [
       'name',
-      'price'
+      'price',
+      'qty',
+      'dispense_qty'
     ];
 }

@@ -45,16 +45,16 @@ class AdmissionController extends Controller
    */
   public function store(Request $request)
   {
-//    dd($request->all());
     DB::beginTransaction();
     try {
       $request_ref = $request->request_ref;
-      $admission = Admission::where('ref', $request_ref)->update([
+
+      Admission::where('ref', $request_ref)->update([
         'status' => 'prepared'
       ]);
 
-      // Save Drug Requests
-      if ($request->has('drugs')) {
+      // Save Drug Requests (if any)
+      if ($request->has('drugs') && isset($request->drugs['drug_id'])) {
         foreach ($request->drugs['drug_id'] as $index => $drugId) {
           DrugRequest::create([
             'patient_id' => $request->patient_id,
@@ -63,31 +63,39 @@ class AdmissionController extends Controller
             'drug_id' => $drugId,
             'quantity' => $request->drugs['qty'][$index],
             'dose' => $request->drugs['dose'][$index],
-            'user_id' => auth()->user()->id,
+            'user_id' => auth()->id(),
             'status' => 'Pending',
           ]);
-          $drug = Drug::find($drugId);
-          $serviceHandler = new ServiceRequestHandler();
-          $billingRecord = $serviceHandler->handleServiceRequest($drug->name, $request->patient_id, 'Pharmacy', $request_ref, $request->drugs['qty'][$index]);
+
+          if ($drug = Drug::find($drugId)) {
+            $serviceHandler = new ServiceRequestHandler();
+            $serviceHandler->handleServiceRequest(
+              $drug->name,
+              $request->patient_id,
+              'Pharmacy',
+              $request_ref,
+              $request->drugs['qty'][$index]
+            );
+          }
         }
       }
 
-      // Save Lab Requests
-      if ($request->has('labs')) {
+      // Save Lab Requests (if any)
+      if ($request->has('labs') && isset($request->labs['test_id'])) {
         foreach ($request->labs['test_id'] as $index => $testId) {
           LabRequest::create([
             'patient_id' => $request->patient_id,
             'test_id' => $testId,
             'priority' => $request->labs['priority'][$index],
             'request_note' => $request->labs['request_note'][$index],
-            'user_id' => auth()->user()->id,
+            'user_id' => auth()->id(),
             'status' => 'Pending',
             'request_ref' => $request_ref,
           ]);
-          $lab = Laboratory::find($testId); // fix: find by single $testId, not full array
-          if ($lab) { // always good to check if lab exists
+
+          if ($lab = Laboratory::find($testId)) {
             $serviceHandler = new ServiceRequestHandler();
-            $billingRecord = $serviceHandler->handleServiceRequest(
+            $serviceHandler->handleServiceRequest(
               $lab->name,
               $request->patient_id,
               'Laboratory',
@@ -100,11 +108,13 @@ class AdmissionController extends Controller
 
       DB::commit();
       return redirect()->route('app.admissions.index')->with('success', 'Admission created successfully.');
+
     } catch (\Exception $e) {
       DB::rollBack();
-       $e->getMessage();
+      return back()->with('error', 'Something went wrong: ' . $e->getMessage());
     }
   }
+
 
   public function bill($admission){
     $admission = Admission::where('ref', $admission)->first();

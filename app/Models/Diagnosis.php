@@ -49,7 +49,8 @@ class Diagnosis extends Model
     'vitreous_left',
     'disability',
     'assessment',
-    'treatment'
+    'treatment',
+    'general_examination'
   ];
 
   public function user()

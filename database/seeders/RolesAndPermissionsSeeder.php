@@ -43,11 +43,16 @@ class RolesAndPermissionsSeeder extends Seeder
       'patients',
       'opticals',
       'settings',
+      'check-in'
     ];
 
     foreach ($permissions as $permission) {
       foreach ($entities as $entity) {
-        Permission::create(['name' => $permission . '-' . $entity]);
+        if ($entity != 'check-in') {
+          Permission::create(['name' => $permission . '-' . $entity]);
+        }else{
+          Permission::create(['name' => $entity]);
+        }
       }
     }
 

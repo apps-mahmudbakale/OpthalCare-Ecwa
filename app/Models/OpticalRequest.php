@@ -12,8 +12,16 @@ class OpticalRequest extends Model
     protected $fillable = [
       'patient_id',
       'service_id',
+      'lens',
       'ref',
       'user_id',
+      'comments',
       'status'
     ];
+
+
+    public  function patient()
+    {
+        return $this->belongsTo(Patient::class);
+    }
 }

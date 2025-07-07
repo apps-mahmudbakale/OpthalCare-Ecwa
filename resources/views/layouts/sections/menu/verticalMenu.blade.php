@@ -99,7 +99,7 @@ $configData = Helper::appClasses();
     <li class="menu-item {{ request()->is('app/radiology*') ? 'active' : '' }}">
       <a href="{{ route('app.radiology.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-photo"></i>
-        <div>Radiology</div>
+        <div>Investigations</div>
       </a>
     </li>
 @endcan

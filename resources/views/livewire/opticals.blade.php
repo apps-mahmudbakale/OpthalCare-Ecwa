@@ -1,34 +1,23 @@
 <div>
   <div class="card-header">
-<!--    <div class="filterForm d-flex justify-content-between">-->
-<!--      <div class="form-group flex-fill">-->
-<!--        <label for="patient_id">Filter By Patient</label>-->
-<!--        <select wire:model="patient_id" class="form-control">-->
-<!--          <option value="">- All -</option>-->
-<!--          @foreach($patients as $patient)-->
-<!--          <option value="{{ $patient->id }}">{{ $patient->user->firstname }}</option>-->
-<!--          @endforeach-->
-<!--        </select>-->
-<!--      </div>-->
-<!---->
-<!--      <div class="form-group flex-fill ml-2">-->
-<!--        <label for="category">Filter By Category</label>-->
-<!--        <select wire:model="category_id" class="form-control">-->
-<!--          <option value="">- All -</option>-->
-<!--          @foreach(\App\Models\ProcedureCategory::all() as $category)-->
-<!--          <option value="$category->id">{{$category->name}}</option>-->
-<!--          @endforeach-->
-<!--        </select>-->
-<!--      </div>-->
-<!---->
-<!--      <div class="form-group flex-fill ml-2">-->
-<!--        <label>Filter By Request Date</label>-->
-<!--        <div class="d-flex">-->
-<!--          <input type="date" wire:model="start" class="form-control mr-2">-->
-<!--          <input type="date" wire:model="stop" class="form-control">-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
+    <div class="filterForm d-flex justify-content-between">
+      <div class="form-group flex-fill">
+        <label for="patient_id">Filter By Patient</label>
+        <select wire:model="patient_id" class="form-control">
+          <option value="">- All -</option>
+          @foreach($patients as $patient)
+          <option value="{{ $patient->id }}">{{ $patient->user->firstname }}</option>
+          @endforeach
+        </select>
+      </div>
+      <div class="form-group flex-fill ml-2">
+        <label>Filter By Request Date</label>
+        <div class="d-flex">
+          <input type="date" wire:model="start" class="form-control mr-2">
+          <input type="date" wire:model="stop" class="form-control">
+        </div>
+      </div>
+    </div>
     <button class="btn btn-primary" data-toggle="modal"
        data-request-url="{{ route('app.opticals.create') }}"
        data-target="#global-modal-lg" id="new-request">New Request</button>
@@ -40,14 +29,57 @@
       <tr>
         <th>Request Date</th>
         <th>Patient</th>
-<!--        <th>Procedure</th>-->
-<!--        <th>Category</th>-->
         <th>Status</th>
         <th></th>
       </tr>
       </thead>
       <tbody>
-
+      @foreach ($opticals as $optical)
+      <tr>
+        <td>{{ $optical->created_at }}</td>
+        <td>{{ $optical->patient->user->firstname }} {{ $optical->patient->user->lastname }}</td>
+        <td>{{$optical->status}}</td>
+        <td>
+          <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
+                                         data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
+            <ul class="dropdown-menu dropdown-menu-end m-0">
+              <li><a href=""
+                     class="dropdown-item">Edit</a></li>
+              <div class="dropdown-divider"></div>
+              <li><a id="delet{{ $optical->id }}" data-value="{{ $optical->id }}"
+                     class="dropdown-item text-danger delete-record">Delete</a></li>
+            </ul>
+          </div>
+          <script>
+            document.querySelector('#delet{{ $optical->id }}').addEventListener('click', function(e) {
+              // alert(this.getAttribute('data-value'));
+              Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                customClass: {
+                  confirmButton: 'btn btn-primary me-3',
+                  cancelButton: 'btn btn-label-secondary'
+                },
+                buttonsStyling: false
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  document.getElementById('delet#' + this.getAttribute('data-value')).submit();
+                }
+              })
+            })
+          </script>
+          <form id="delet#{{ $optical->id }}"
+                action="" method="POST"
+                style="display: inline-block;">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+          </form>
+        </td>
+      </tr>
+      @endforeach
       </tbody>
     </table>
     <div class="d-flex justify-content-around mt-2">

@@ -185,7 +185,7 @@
           <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                   data-bs-target="#navs-pills-justified-imaging" aria-controls="navs-pills-justified-imaging"
                   aria-selected="false" tabindex="-1">
-            <i class="tf-icons ti ti-photo ti-xs me-1"></i> Imaging
+            <i class="tf-icons ti ti-photo ti-xs me-1"></i> Investigation
           </button>
         </li>
         <li class="nav-item" role="presentation">

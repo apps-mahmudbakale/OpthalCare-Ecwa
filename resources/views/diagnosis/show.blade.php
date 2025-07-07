@@ -33,107 +33,109 @@
             </thead>
             <tbody>
             <tr>
-              <td width="70%">UNCORRECTED</td>
+              <td width="30%">UNCORRECTED</td>
               <td>{{ $diagnosis->uncorrected_right ?? '   ' }}</td>
               <td>{{ $diagnosis->uncorrected_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">PIN HOLE</td>
+              <td width="30%">PIN HOLE</td>
               <td>{{ $diagnosis->pinhole_right ?? '   ' }}</td>
               <td>{{ $diagnosis->pinhole_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">VA WITH GLASSES</td>
+              <td width="30%">VA WITH GLASSES</td>
               <td>{{ $diagnosis->va_glass_right ?? '   ' }}</td>
               <td>{{ $diagnosis->va_glass_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">NEAR VISION</td>
+              <td width="30%">NEAR VISION</td>
               <td>{{ $diagnosis->near_vision_right ?? '   ' }}</td>
               <td>{{ $diagnosis->near_vision_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">LID</td>
+              <td width="30%">LID</td>
               <td>{{ $diagnosis->lid_right ?? '   ' }}</td>
               <td>{{ $diagnosis->lid_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">GLOBE</td>
+              <td width="30%">GLOBE</td>
               <td>{{ $diagnosis->globe_right ?? '   ' }}</td>
               <td>{{ $diagnosis->globe_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">EOMM</td>
+              <td width="30%">EOMM</td>
               <td>{{ $diagnosis->eomm_right ?? '   ' }}</td>
               <td>{{ $diagnosis->eomm_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">CONJUNCTIVA</td>
+              <td width="30%">CONJUNCTIVA</td>
               <td>{{ $diagnosis->conjuctiva_right ?? '   ' }}</td>
               <td>{{ $diagnosis->conjuctiva_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">CORNEA</td>
+              <td width="30%">CORNEA</td>
               <td>{{ $diagnosis->cornea_right ?? '   ' }}</td>
               <td>{{ $diagnosis->cornea_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">ANTERIOR CHA</td>
+              <td width="30%">ANTERIOR CHA</td>
               <td>{{ $diagnosis->anterior_cha_right ?? '   ' }}</td>
               <td>{{ $diagnosis->anterior_cha_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">IRIS</td>
+              <td width="30%">IRIS</td>
               <td>{{ $diagnosis->iris_right ?? '   ' }}</td>
               <td>{{ $diagnosis->iris_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">PUPIL</td>
+              <td width="30%">PUPIL</td>
               <td>{{ $diagnosis->pupil_right ?? '   ' }}</td>
               <td>{{ $diagnosis->pupil_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">LENS</td>
+              <td width="30%">LENS</td>
               <td>{{ $diagnosis->lens_right ?? '   ' }}</td>
               <td>{{ $diagnosis->lens_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">IOP</td>
+              <td width="30%">IOP</td>
               <td>{{ $diagnosis->iop_right ?? '   ' }}</td>
               <td>{{ $diagnosis->iop_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">VITREOUS</td>
+              <td width="30%">VITREOUS</td>
               <td>{{ $diagnosis->vitreous_right ?? '   ' }}</td>
               <td>{{ $diagnosis->vitreous_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">DISC</td>
+              <td width="30%">DISC</td>
               <td>{{ $diagnosis->disc_right ?? '   ' }}</td>
               <td>{{ $diagnosis->disc_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">VCDR</td>
+              <td width="30%">VCDR</td>
               <td>{{ $diagnosis->vcdr_right ?? '   ' }}</td>
               <td>{{ $diagnosis->vcdr_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">MACULA</td>
+              <td width="30%">MACULA</td>
               <td>{{ $diagnosis->macula_right ?? '   ' }}</td>
               <td>{{ $diagnosis->macula_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">RETINA</td>
+              <td width="30%">RETINA</td>
               <td>{{ $diagnosis->retnia_right ?? '   ' }}</td>
               <td>{{ $diagnosis->retina_left ?? '   ' }}</td>
             </tr>
             <tr>
-              <td width="70%">VESSELS</td>
+              <td width="30%">VESSELS</td>
               <td>{{ $diagnosis->vessels_right ?? '   ' }}</td>
               <td>{{ $diagnosis->vessels_left ?? '   ' }}</td>
             </tr>
             </tbody>
           </table>
+          <h6>General Examination</h6>
+          <p>{{ $diagnosis->general_examination ?? 'No general examination provided' }}</p>
           <h6>Disability</h6>
           <p>{{ $diagnosis->disability ?? 'No disability noted' }}</p>
           <h6>Assessment</h6>

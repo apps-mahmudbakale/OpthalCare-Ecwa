@@ -31,8 +31,20 @@
   </div>
   <div class="form-group">
     <div class="form-label-group">
-      <input type="number" class="form-control" placeholder="Bill Amount">
+      <input type="text" class="form-control" name="lens" placeholder="Lens">
+      <label for="patient-search">Lens</label>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="form-label-group">
+      <input type="number" name="amount" class="form-control" placeholder="Bill Amount">
       <label for="patient-search">Bill Amount</label>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="form-label-group">
+      <textarea rows="5" cols="5" name="comments" class="form-control"></textarea>
+      <label for="patient-search">Comment</label>
     </div>
   </div>
   <!-- Submit and Reset buttons -->

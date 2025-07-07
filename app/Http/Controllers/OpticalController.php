@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Antenatal;
+use App\Models\OpticalRequest;
 use Illuminate\Http\Request;
 
 class OpticalController extends Controller
@@ -30,6 +31,10 @@ class OpticalController extends Controller
     public function store(Request $request)
     {
       $request_ref = str()->random(6);
+
+      $request = OpticalRequest::create(array_merge($request->all(), ['ref' => $request_ref, 'user_id' => auth()->user()->id, 'status' => 'pending']));
+
+     return redirect()->back()->with('success', 'Request Submitted');
 
     }
 
