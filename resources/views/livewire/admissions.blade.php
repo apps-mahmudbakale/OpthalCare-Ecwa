@@ -47,7 +47,7 @@
         <tr>
           <td>{{ $admission->created_at->format('Y-m-d') ?? 'N/A' }}</td>
           <td>{{ $admission->patient->user->firstname ?? '' }} {{ $admission->patient->user->lastname ?? '' }}</td>
-          <td>{{ optional($admission->procedureRequests->first())->procedure->name ?? 'N/A' }}</td>
+          <td>{{ optional($admission->procedure)->name ?? 'N/A' }}</td>
           <td>{{ $admission->ward->name ?? 'N/A' }}</td>
           <td>{{ $admission->bed->name ?? 'N/A' }}</td>
           <td class="text-right">
@@ -80,6 +80,13 @@
                   >
                     Assign Bed
                   </button>
+                </li>
+                @elseif($admission->status == 'active')
+                <li>
+                  <a href="{{route('app.admissions.show', $admission->id)}}" class="dropdown-item"
+                  >
+                    Open Instance
+                  </a>
                 </li>
                 @endif
               </ul>

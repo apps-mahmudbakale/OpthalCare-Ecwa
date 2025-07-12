@@ -101,6 +101,7 @@
             })
           });
 
+          console.log(response.data);
           const drugs = await response.json();
           drugSelect.innerHTML = createSelectOptions(
             drugs.reduce((acc, drug) => ({ ...acc, [drug.id]: drug.name }), {}),

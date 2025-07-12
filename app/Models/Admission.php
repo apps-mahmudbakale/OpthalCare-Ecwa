@@ -38,8 +38,8 @@ class Admission extends Model
   {
     return $this->belongsTo(Bed::class, 'bed_id');
   }
-  public function procedureRequests()
+  public function procedure()
   {
-    return $this->hasMany(ProcedureRequest::class, 'patient_id', 'patient_id');
+    return $this->belongsTo(Procedure::class);
   }
 }

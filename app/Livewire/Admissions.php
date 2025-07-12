@@ -14,7 +14,7 @@ class Admissions extends Component
 
   public function render()
   {
-    $admissions = Admission::with(['patient', 'ward', 'bed', 'procedureRequests'])
+    $admissions = Admission::with(['patient', 'ward', 'bed', 'procedure'])
       ->where('status', 'pending')
       ->orWhere('status', 'prepared')
       ->orWhere('status', 'billed')

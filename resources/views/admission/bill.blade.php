@@ -13,7 +13,7 @@
   <div class="col-12 col-md-12">
     <label class="form-label"> Procedure </label>
     <input type="hidden" name="procedure_id" value="{{$admission->procedure_id}}" class="form-control" />
-    <input type="text" class="form-control" readonly value="{{ optional($admission->procedureRequests->first())->procedure->name ?? 'N/A' }}" />
+    <input type="text" class="form-control" readonly value="{{ optional($admission->procedure)->name ?? 'N/A' }}" />
   </div>
   <div class="col-12 col-md-12">
     <label class="form-label"> Amount</label>

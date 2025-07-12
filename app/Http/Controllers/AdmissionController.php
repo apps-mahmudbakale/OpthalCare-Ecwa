@@ -54,11 +54,10 @@ class AdmissionController extends Controller
       ]);
 
       // Save Drug Requests (if any)
-      if ($request->has('drugs') && isset($request->drugs['drug_id'])) {
+      if ($request->has('drugs') && isset($request->drugs['drug_id']) && empty($request->drugs['drug_id'])) {
         foreach ($request->drugs['drug_id'] as $index => $drugId) {
           DrugRequest::create([
             'patient_id' => $request->patient_id,
-            'store_id' => $request->drugs['store_id'][$index],
             'category_id' => $request->drugs['category_id'][$index],
             'drug_id' => $drugId,
             'quantity' => $request->drugs['qty'][$index],
@@ -147,7 +146,10 @@ class AdmissionController extends Controller
    */
   public function show(Admission $admission)
   {
-    //
+    $patient = Patient::where('id', $admission->patient_id)->first();
+    $wallet_balance = $patient->wallet ? $patient->wallet->balance : 0;
+    $outstanding_balance = Billing::where('user_id', $admission->patient_id)->where('status', 0)->sum('amount');
+    return view('admission.show', compact('admission', 'wallet_balance', 'outstanding_balance', 'patient'));
   }
 
   public function assignBed($ref){
