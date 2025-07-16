@@ -60,24 +60,30 @@ class ICD10Controller extends Controller
   /**
    * Show the form for editing the specified resource.
    */
-  public function edit(ICD10 $iCD10)
+  public function edit($id)
   {
-    //
+    $iCD10 = ICD10::where('id', $id)->first();
+    return view('icd.edit', compact('iCD10'));
   }
 
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, ICD10 $iCD10)
+  public function update(Request $request, $id)
   {
-    //
+    $iCD10 = ICD10::where('id', $id)->first();
+    $iCD10->update($request->all());
+    return back()->with('success', 'ICD10 Updated');
   }
 
   /**
    * Remove the specified resource from storage.
    */
-  public function destroy(ICD10 $iCD10)
+  public function destroy($id)
   {
-    //
+    $iCD10 = ICD10::where('id', $id)->first();
+    $iCD10->delete();
+
+    return back()->with('success', 'ICD10 Deleted');
   }
 }

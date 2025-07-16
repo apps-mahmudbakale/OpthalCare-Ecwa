@@ -213,6 +213,9 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::post('payments/new-enroll', [PaymentController::class, 'storeEnroll'])->name('payments.new-enroll');
   Route::get('payment/new-method', [PaymentController::class, 'newMethod'])->name('payments.new-method');
   Route::post('payment/new-method', [PaymentController::class, 'saveMethod'])->name('payments.save-method');
+  Route::get('payment/edit-method/{id}', [PaymentController::class, 'EditMethod'])->name('payments.edit-method');
+  Route::post('payment/update-method', [PaymentController::class, 'UpdateMethod'])->name('payments.update-method');
+  Route::post('payment/delete-method', [PaymentController::class, 'DeleteMethod'])->name('payments.delete-method');
   Route::get('payment/print', function (){
     return view('billing.print');
   })->name('payment.print');

@@ -59,7 +59,7 @@ class DepartmentController extends Controller
      */
     public function edit(Department $department)
     {
-        //
+      return  view('departments.edit', compact('department'));
     }
 
     /**
@@ -71,7 +71,8 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, Department $department)
     {
-        //
+      $department ->update($request->all());
+      return back()->with('success', 'Department Updated');
     }
 
     /**

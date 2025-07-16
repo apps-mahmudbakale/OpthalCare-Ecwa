@@ -33,49 +33,26 @@
                             <tr>
                             <td>{{$loop->iteration}}</td>
                             <td>{{$method->name}}</td>
-                            <td class="text-right">
-                                <span class="dropdown ml-1">
-                                    <button class="btn btn-default btn-sm dropdown-toggle align-text-top"
-                                        data-boundary="viewport" data-toggle="dropdown">Actions</button>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="" wire:click.prevent="selectMethod({{ $method->id }})">
-                                            Edit
-                                        </a>
-                                        <button class="dropdown-item" id="del{{ $method->id }}" data-value="{{ $method->id }}">
-                                            Delete
-                                        </button>
-                                    </div>
-                                </span>
-                                <script>
-                                    document.querySelector('#del{{ $method->id }}').addEventListener('click', function(e) {
-                                        // alert(this.getAttribute('data-value'));
-                                        Swal.fire({
-                                            title: 'Are you sure?',
-                                            text: "You won't be able to revert this!",
-                                            icon: 'warning',
-                                            showCancelButton: true,
-                                            confirmButtonColor: '#3085d6',
-                                            cancelButtonColor: '#d33',
-                                            confirmButtonText: 'Yes, delete it!'
-                                        }).then((result) => {
-                                            if (result.isConfirmed) {
-                                                document.getElementById('del#'+this.getAttribute('data-value')).submit();
-                                                // Swal.fire(
-                                                //     'Deleted!',
-                                                //     'Your file has been deleted.',
-                                                //     'success'
-                                                // )
-                                            }
-                                        })
-                                    })
-                                </script>
-                                <form id="del#{{ $method->id }}"
-                                    action="{{ route('app.departments.destroy', $method->id) }}" method="POST"
-                                     style="display: inline-block;">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                              <td>
+                                <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
+                                                               data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
+                                  <ul class="dropdown-menu dropdown-menu-end m-0">
+                                    <li><a  data-request-url="{{ route('app.payments.edit-method', $method->id) }}"
+                                           data-toggle="modal" data-target="#global-modal" class="dropdown-item">Edit</a></li>
+                                    <div class="dropdown-divider"></div>
+                                    <li><a href="javascript:void(0);" class="dropdown-item-delete text-danger"
+                                           onclick="submitMethodDeleteForm({{ $method->id }})">Delete</a></li>
+                                  </ul>
+                                </div>
+                                <form id="delete-method-{{ $method->id }}"
+                                      action="{{ route('app.payments.delete-method') }}"
+                                      method="POST"
+                                      style="display: none;"
+                                      wire:ignore>
+                                  <input type="hidden" name="method_id" value="{{$method->id}}">
+                                  @csrf
                                 </form>
-                            </td>
+                              </td>
                         </tr>
                             @endforeach
                     </tbody>
@@ -94,12 +71,15 @@
             </div>
         </div>
     </div>
-    @push('body-scripts')
-    @once
-    window.addEventListener('PaymentMethodEditModal', function() {
-        $('#edit-paymentMethod-modal').modal('show');
-    });
-    @endonce
-@endpush
+  <script>
+    function submitMethodDeleteForm(id) {
+      if (confirm('Are you sure you want to delete this Payment Method?')) {
+        const form = document.getElementById('delete-method-' + id);
+        if (form) {
+          form.submit();
+        }
+      }
+    }
+  </script>
 </div>
 

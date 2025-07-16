@@ -1,3 +1,18 @@
+@php
+use App\Models\Patient;
+use App\Models\Admission;
+
+$patientId = optional(request()->route('patient'))->id;
+
+if (!$patientId && request()->route('admission')) {
+$admission = Admission::find(request()->route('admission')->id);
+$patientId = optional($admission)->patient_id;
+}
+
+$patient = Patient::find($patientId);
+$user = optional($patient)->user;
+@endphp
+
 <!-- New Drugs Modal -->
 <div wire:ignore.self class="modal fade" id="new-drugs-modal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-simple">
@@ -6,15 +21,13 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         <div class="text-center mb-4">
           <h3 class="mb-2">
-            New Drugs for
-            <span data-patient-name>
-              {{ \App\Models\Patient::find(request()->route()->patient->id)->user->firstname . ' ' . \App\Models\Patient::find(request()->route()->patient->id)->user->lastname }}
-            </span>
+            New Drugs for <span>{{ $user->firstname ?? '' }} {{ $user->lastname ?? '' }}</span>
           </h3>
         </div>
+
         <form action="{{ route('app.pharmacy.store') }}" method="POST" class="row g-3" id="drugForm">
           @csrf
-          <input type="hidden" name="patient_id" value="{{ request()->route()->patient->id }}">
+          <input type="hidden" name="patient_id" value="{{ $patientId }}">
           <table class="table table-striped" id="drugRequestTable">
             <thead>
             <tr>
@@ -101,7 +114,6 @@
             })
           });
 
-          console.log(response.data);
           const drugs = await response.json();
           drugSelect.innerHTML = createSelectOptions(
             drugs.reduce((acc, drug) => ({ ...acc, [drug.id]: drug.name }), {}),

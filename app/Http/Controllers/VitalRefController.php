@@ -45,7 +45,7 @@ class VitalRefController extends Controller
    */
   public function edit(VitalRef $vitalRef)
   {
-    //
+    return view('vitals.edit', compact('vitalRef'));
   }
 
   /**
@@ -53,7 +53,9 @@ class VitalRefController extends Controller
    */
   public function update(Request $request, VitalRef $vitalRef)
   {
-    //
+    $vitalRef->update($request->all());
+
+    return redirect()->back()->with('success', 'Vital Reference Updated');
   }
 
   /**
@@ -61,6 +63,7 @@ class VitalRefController extends Controller
    */
   public function destroy(VitalRef $vitalRef)
   {
-    //
+    $vitalRef->delete();
+    return redirect()->back()->with('success', 'Vital Reference Deleted');
   }
 }

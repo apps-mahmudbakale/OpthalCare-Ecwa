@@ -38,40 +38,21 @@
                             <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
                                     data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
                                 <ul class="dropdown-menu dropdown-menu-end m-0">
-                                    <li><a href="" wire:click.prevent="selectStore({{ $ref->id }})"
-                                            class="dropdown-item">Edit</a></li>
+                                    <li><a href="#" data-request-url="{{ route('app.vitalRefs.edit', $ref->id) }}"
+                                           data-toggle="modal" data-target="#global-modal" class="dropdown-item">Edit</a></li>
                                     <div class="dropdown-divider"></div>
-                                    <li><a id="dele{{ $ref->id }}" data-value="{{ $ref->id }}"
-                                            class="dropdown-item text-danger delete-record">Delete</a></li>
+                                    <li><a href="javascript:void(0);" class="dropdown-item-delete text-danger"
+                                           onclick="submitVitalRefDeleteForm({{ $ref->id }})">Delete</a></li>
                                 </ul>
                             </div>
-                            <script>
-                                document.querySelector('#dele{{ $ref->id }}').addEventListener('click', function(e) {
-                                    // alert(this.getAttribute('data-value'));
-                                    Swal.fire({
-                                        title: 'Are you sure?',
-                                        text: "You won't be able to revert this!",
-                                        icon: 'warning',
-                                        showCancelButton: true,
-                                        confirmButtonText: 'Yes, delete it!',
-                                        customClass: {
-                                            confirmButton: 'btn btn-primary me-3',
-                                            cancelButton: 'btn btn-label-secondary'
-                                        },
-                                        buttonsStyling: false
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            document.getElementById('dele#' + this.getAttribute('data-value')).submit();
-                                        }
-                                    })
-                                })
-                            </script>
-                            <form id="dele#{{ $ref->id }}"
-                                action="{{ route('app.consulting-rooms.destroy', $ref->id) }}" method="POST"
-                                style="display: inline-block;">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                            </form>
+                          <form id="delete-vital-{{ $ref->id }}"
+                                action="{{ route('app.vitalRefs.destroy', $ref->id) }}"
+                                method="POST"
+                                style="display: none;"
+                                wire:ignore>
+                            @csrf
+                            @method('DELETE')
+                          </form>
                         </td>
                     </tr>
                 @endforeach
@@ -90,10 +71,15 @@
             </div>
         </div>
     </div>
-    {{-- <script>
-window.addEventListener('ConsultingRoomEditModal', function() {
-    $('#edit-consulting-room-modal').modal('show');
-});
-</script> --}}
+  <script>
+    function submitVitalRefDeleteForm(id) {
+      if (confirm('Are you sure you want to delete this Vital Ref?')) {
+        const form = document.getElementById('delete-vital-' + id);
+        if (form) {
+          form.submit();
+        }
+      }
+    }
+  </script>
 </div>
-{{-- @include('_partials._modals.modal-new-drugs-ref') --}}
+

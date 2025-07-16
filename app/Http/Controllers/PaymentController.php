@@ -151,6 +151,22 @@ class PaymentController extends Controller
     }
   }
 
+  public  function EditMethod($id)
+  {
+    $method = PaymentMethod::where('id', $id)->first();
+    return view('payments.edit-method', compact('method'));
+  }
+
+
+  public  function  UpdateMethod(Request $request)
+  {
+      $method = PaymentMethod::where('id', $request->method_id)->first();
+
+      $method->update(['name' => $request->name]);
+
+      return redirect()->back()->with('success', 'Payment Method Updated');
+  }
+
   /**
    * Store payment for enrollment
    */
@@ -188,5 +204,14 @@ class PaymentController extends Controller
       Log::error('Enrollment payment processing failed: ' . $e->getMessage());
       return redirect()->back()->with(['error' => 'Enrollment payment processing failed']);
     }
+  }
+
+  public function DeleteMethod(Request $request)
+  {
+      $method = PaymentMethod::where('id', $request->method_id)->first();
+
+      $method->delete();
+
+      return redirect()->back()->with('success', 'Payment Method Deleted');
   }
 }

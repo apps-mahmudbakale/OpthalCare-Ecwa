@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Charts\BloodPressureChart;
+use App\Charts\PulseChart;
+use App\Charts\TemperatureChart;
+use App\Charts\WeightChart;
 use App\Models\Admission;
 use App\Models\Bed;
 use App\Models\Billing;
@@ -144,12 +148,21 @@ class AdmissionController extends Controller
   /**
    * Display the specified resource.
    */
-  public function show(Admission $admission)
+  public function show(BloodPressureChart $chart, PulseChart $pulse, TemperatureChart $temperature, WeightChart $weight, Admission $admission)
   {
     $patient = Patient::where('id', $admission->patient_id)->first();
     $wallet_balance = $patient->wallet ? $patient->wallet->balance : 0;
     $outstanding_balance = Billing::where('user_id', $admission->patient_id)->where('status', 0)->sum('amount');
-    return view('admission.show', compact('admission', 'wallet_balance', 'outstanding_balance', 'patient'));
+    return view('admission.show', [
+      'admission' => $admission,
+      'patient' => $patient,
+      'blood_pressure' => $chart->build($patient->id),
+      'pulse' => $pulse->build($patient->id),
+      'temperature' => $temperature->build($patient->id),
+      'weight' => $weight->build($patient->id),
+      'outstanding_balance' => $outstanding_balance,
+      'wallet_balance' => $wallet_balance,
+    ]);
   }
 
   public function assignBed($ref){

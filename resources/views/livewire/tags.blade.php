@@ -41,37 +41,18 @@
                                     <li><button data-request-url="{{ route('app.tags.edit', $tag->id) }}"
                                            data-toggle="modal" data-target="#global-modal" class="dropdown-item">Edit</button></li>
                                     <div class="dropdown-divider"></div>
-                                    <li><a id="dele{{ $tag->id }}" data-value="{{ $tag->id }}"
-                                            class="dropdown-item text-danger delete-record">Delete</a></li>
+                                    <li><a href="javascript:void(0);" class="dropdown-item-delete text-danger"
+                                           onclick="submitTagDeleteForm({{ $tag->id }})">Delete</a></li>
                                 </ul>
                             </div>
-                            <script>
-                                document.querySelector('#dele{{ $tag->id }}').addEventListener('click', function(e) {
-                                    // alert(this.getAttribute('data-value'));
-                                    Swal.fire({
-                                        title: 'Are you sure?',
-                                        text: "You won't be able to revert this!",
-                                        icon: 'warning',
-                                        showCancelButton: true,
-                                        confirmButtonText: 'Yes, delete it!',
-                                        customClass: {
-                                            confirmButton: 'btn btn-primary me-3',
-                                            cancelButton: 'btn btn-label-secondary'
-                                        },
-                                        buttonsStyling: false
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            document.getElementById('dele#' + this.getAttribute('data-value')).submit();
-                                        }
-                                    })
-                                })
-                            </script>
-                            <form id="dele#{{ $tag->id }}"
-                                action="{{ route('app.consulting-rooms.destroy', $tag->id) }}" method="POST"
-                                style="display: inline-block;">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                            </form>
+                          <form id="delete-tag-{{ $tag->id }}"
+                                action="{{ route('app.tags.destroy', $tag->id) }}"
+                                method="POST"
+                                style="display: none;"
+                                wire:ignore>
+                            @csrf
+                            @method('DELETE')
+                          </form>
                         </td>
                     </tr>
                 @endforeach
@@ -113,4 +94,12 @@
       });
     });
   });
+  function submitTagDeleteForm(id) {
+    if (confirm('Are you sure you want to delete this Tag?')) {
+      const form = document.getElementById('delete-tag-' + id);
+      if (form) {
+        form.submit();
+      }
+    }
+  }
 </script>

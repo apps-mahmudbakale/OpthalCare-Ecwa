@@ -59,7 +59,7 @@ class DocumentController extends Controller
      */
     public function edit(Document $document)
     {
-        //
+      return  view('documents.edit', compact('document'));
     }
 
     /**
@@ -71,7 +71,9 @@ class DocumentController extends Controller
      */
     public function update(Request $request, Document $document)
     {
-        //
+        $document->update($request->all());
+
+        return back()->with('success', 'Document Updated');
     }
 
     /**
@@ -82,6 +84,8 @@ class DocumentController extends Controller
      */
     public function destroy(Document $document)
     {
-        //
+        $document->delete();
+
+        return  back()->with('success', 'Document  Deleted');
     }
 }

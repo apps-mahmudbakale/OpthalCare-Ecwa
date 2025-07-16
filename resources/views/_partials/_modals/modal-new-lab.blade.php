@@ -1,3 +1,18 @@
+@php
+use App\Models\Patient;
+use App\Models\Admission;
+
+$patientId = optional(request()->route('patient'))->id;
+
+if (!$patientId && request()->route('admission')) {
+$admission = Admission::find(request()->route('admission')->id);
+$patientId = optional($admission)->patient_id;
+}
+
+$patient = Patient::find($patientId);
+$user = optional($patient)->user;
+@endphp
+
 <!-- Edit User Modal -->
 <div wire:ignore.self class="modal fade" id="new-lab-modal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-simple modal-edit-user">
@@ -5,15 +20,12 @@
       <div class="modal-body">
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         <div class="text-center mb-4">
-          <h3 class="mb-2">New Lab for
-            {{ \App\Models\Patient::find(request()->route()->patient->id)->user->firstname }}
-            {{ \App\Models\Patient::find(request()->route()->patient->id)->user->lastname }}
-          </h3>
+          <h3 class="mb-2">New Lab for {{ $user->firstname ?? '' }} {{ $user->lastname ?? '' }}</h3>
         </div>
 
         <form action="{{ route('app.lab.store') }}" method="POST" class="row g-3">
           @csrf
-          <input type="hidden" name="patient_id" value="{{ request()->route()->patient->id }}">
+          <input type="hidden" name="patient_id" value="{{ $patientId }}">
           <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
 
           <table class="table table-striped" id="labRequestTable">
@@ -73,38 +85,37 @@
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  // Make sure the document is ready before binding events
   $(document).ready(function () {
     $(document).on('click', '#addMoreBtn', function () {
       const newRow = `
-                <tr>
-                    <td>
-                        <select name="test_id[]" class="form-control">
-                            <option value="">----</option>
-                            @foreach (\App\Models\Laboratory::all() as $lab)
-                                <option value="{{ $lab->id }}">{{ $lab->name }}</option>
-                            @endforeach
-                        </select>
-                    </td>
-                    <td>
-                        <select name="priority[]" class="form-control">
-                            <option value="">---</option>
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="High">High</option>
-                            <option value="Urgent">Urgent</option>
-                        </select>
-                    </td>
-                    <td>
-                        <textarea name="request_note[]" class="form-control" cols="10" rows="2"></textarea>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm delete-row">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </td>
-                </tr>
-            `;
+        <tr>
+          <td>
+            <select name="test_id[]" class="form-control">
+              <option value="">----</option>
+              @foreach (\App\Models\Laboratory::all() as $lab)
+                <option value="{{ $lab->id }}">{{ $lab->name }}</option>
+              @endforeach
+            </select>
+          </td>
+          <td>
+            <select name="priority[]" class="form-control">
+              <option value="">---</option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+              <option value="Urgent">Urgent</option>
+            </select>
+          </td>
+          <td>
+            <textarea name="request_note[]" class="form-control" cols="10" rows="2"></textarea>
+          </td>
+          <td>
+            <button type="button" class="btn btn-danger btn-sm delete-row">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </td>
+        </tr>
+      `;
       $('#labRequestTable tbody').append(newRow);
     });
 

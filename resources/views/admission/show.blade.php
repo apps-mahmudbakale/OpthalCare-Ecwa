@@ -119,6 +119,42 @@
       </button>
       <ul class="nav nav-pills flex-column flex-sm-row mb-4" role="tablist" style="overflow-x: auto; white-space: nowrap; padding: 0 40px;">
         <li class="nav-item" role="presentation">
+          <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                  data-bs-target="#navs-pills-justified-visits" aria-controls="navs-pills-justified-visits"
+                  aria-selected="true">
+            <i class="menu-icon tf-icons ti ti-calendar"></i> Visits
+          </button>
+        </li>
+        <!-- New Tabs After Visits -->
+        <li class="nav-item" role="presentation">
+          <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                  data-bs-target="#navs-pills-justified-progress-note"
+                  aria-controls="navs-pills-justified-progress-note" aria-selected="false" tabindex="-1">
+            <i class="tf-icons ti ti-notebook ti-xs me-1"></i> Progress Note
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                  data-bs-target="#navs-pills-justified-nursing-note"
+                  aria-controls="navs-pills-justified-nursing-note" aria-selected="false" tabindex="-1">
+            <i class="tf-icons ti ti-clipboard-heart ti-xs me-1"></i> Nursing Note
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                  data-bs-target="#navs-pills-justified-nursing-task"
+                  aria-controls="navs-pills-justified-nursing-task" aria-selected="false" tabindex="-1">
+            <i class="tf-icons ti ti-clipboard-list ti-xs me-1"></i> Nursing Task
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                  data-bs-target="#navs-pills-justified-vitals" aria-controls="navs-pills-justified-vitals"
+                  aria-selected="false" tabindex="-1">
+            <i class="tf-icons ti ti-activity-heartbeat ti-xs me-1"></i> Vitals
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
           <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                   data-bs-target="#navs-pills-justified-va" aria-controls="navs-pills-justified-va"
                   aria-selected="false" tabindex="-1">
@@ -195,6 +231,89 @@
     </div>
     <div class="card">
       <div class="tab-content">
+        <div class="tab-pane fade active show" id="navs-pills-justified-visits" role="tabpanel">
+          <livewire:visits :patientId="$patient->id" />
+        </div>
+        <div class="tab-pane fade" id="navs-pills-justified-vitals" role="tabpanel">
+          <div class="row">
+            <div class="col-md-12">
+              <a href="" data-bs-toggle="modal" data-bs-target="#new-vitals-modal"
+                 class="btn btn-primary mb-2 float-end">New Entry</a>
+            </div>
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-body">
+                  {!! $blood_pressure->container() !!}
+                </div>
+                <script src="{{ $blood_pressure->cdn() }}"></script>
+                {{ $blood_pressure->script() }}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-body">
+                  {!! $pulse->container() !!}
+                </div>
+                {{ $pulse->script() }}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-body">
+                  {!! $temperature->container() !!}
+                </div>
+                {{ $temperature->script() }}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-body">
+                  {!! $weight->container() !!}
+                </div>
+                {{ $weight->script() }}
+              </div>
+            </div>
+          </div>
+          @include('_partials._modals.modal-new-vitals')
+        </div>
+        <div class="tab-pane fade" id="navs-pills-justified-va" role="tabpanel">
+          <div class="row">
+            <div class="col-md-12">
+              <a href="" data-bs-toggle="modal" data-bs-target="#new-va-modal"
+                 class="btn btn-primary mb-2 float-end">New Entry</a>
+            </div>
+            <livewire:vision-acuity :patientId="$patient->id" />
+          </div>
+          @include('_partials._modals.modal-new-va')
+        </div>
+        <div class="tab-pane fade" id="navs-pills-justified-iop" role="tabpanel">
+          <div class="row">
+            <div class="col-md-12">
+              <a href="" data-bs-toggle="modal" data-bs-target="#new-i-o-p-modal"
+                 class="btn btn-primary mb-2 float-end">New Entry</a>
+            </div>
+            <livewire:i-o-p :patientId="$admission->patient_id" />
+          </div>
+          @include('_partials._modals.modal-new-i-o-p')
+        </div>
+        <div class="tab-pane fade" id="navs-pills-justified-refraction" role="tabpanel">
+          <div class="row">
+            <div class="col-md-12">
+              <a href="{{ route('app.refraction.create', $admission->patient_id) }}"
+                 class="btn btn-primary link mb-2 float-end">New Entry</a>
+            </div>
+            <div class="col-md-12">
+              <livewire:refraction :patientId="$admission->patient_id" />
+            </div>
+          </div>
+          @include('_partials._modals.modal-new-i-o-p')
+        </div>
+        <div class="tab-pane fade" id="navs-pills-justified-allergies" role="tabpanel">
+          <a href="" data-bs-toggle="modal" data-bs-target="#new-allergies-modal"
+             class="btn btn-primary mb-2 float-end">New Entry</a>
+          <livewire:allergies :patientId="$admission->patient_id" />
+          @include('_partials._modals.modal-new-allergies')
+        </div>
         <div class="tab-pane fade" id="navs-pills-justified-diagnosis" role="tabpanel">
           <button type="button" class="btn btn-primary mb-2 float-end" data-bs-toggle="modal"
                   data-bs-target="#new-diagnosis-modal">
@@ -202,25 +321,28 @@
           </button>
           <table class="table"></table>
           <div class="col-md-12">
-
+            <livewire:diagnoses :patientId="$admission->patient_id" />
           </div>
         </div>
         <div class="tab-pane fade" id="navs-pills-justified-lab" role="tabpanel">
           <a href="" data-bs-toggle="modal" data-bs-target="#new-lab-modal"
              class="btn btn-primary mb-2 float-end">New Entry</a>
           <table class="table"></table>
-
+          <livewire:lab-requests :patientId="$admission->patient_id" />
+          @include('_partials._modals.modal-new-lab')
         </div>
         <div class="tab-pane fade" id="navs-pills-justified-drugs" role="tabpanel">
           <a href="" data-bs-toggle="modal" data-bs-target="#new-drugs-modal"
              class="btn btn-primary mb-2 float-end">New Entry</a>
-
+          <livewire:drugs-request :patientId="$admission->patient_id" />
+          @include('_partials._modals.modal-new-drugs')
         </div>
         <div class="tab-pane fade" id="navs-pills-justified-imaging" role="tabpanel">
           <a href="" data-bs-toggle="modal" data-bs-target="#new-imaging-modal"
              class="btn btn-primary mb-2 float-end">New Entry</a>
           <table class="table"></table>
-
+          <livewire:radiology-request :patientId="$admission->patient_id" />
+          @include('_partials._modals.modal-new-imaging')
         </div>
         <div class="tab-pane fade" id="navs-pills-justified-documents" role="tabpanel">
           <a href="" data-bs-toggle="modal" data-bs-target="#new-documents-modal"
@@ -240,6 +362,29 @@
 
         </div>
         <div class="tab-pane fade" id="navs-pills-justified-bills" role="tabpanel">
+          <livewire:billings :patientId="$admission->patient_id" />
+        </div>
+        <!-- Progress Note Tab -->
+        <div class="tab-pane fade" id="navs-pills-justified-progress-note" role="tabpanel">
+          <a href="#" data-bs-toggle="modal" data-bs-target="#new-progress-note-modal"
+             class="btn btn-primary mb-2 float-end">New Entry</a>
+          <livewire:progress-note :patientId="$admission->patient_id" />
+
+        </div>
+
+        <!-- Nursing Note Tab -->
+        <div class="tab-pane fade" id="navs-pills-justified-nursing-note" role="tabpanel">
+          <a href="#" data-bs-toggle="modal" data-bs-target="#new-nursing-note-modal"
+             class="btn btn-primary mb-2 float-end">New Entry</a>
+          <livewire:nursing-note :patientId="$admission->patient_id" />
+
+        </div>
+
+        <!-- Nursing Task Tab -->
+        <div class="tab-pane fade" id="navs-pills-justified-nursing-task" role="tabpanel">
+          <a href="#" data-bs-toggle="modal" data-bs-target="#new-nursing-task-modal"
+             class="btn btn-primary mb-2 float-end">New Entry</a>
+          <livewire:nursing-task :patientId="$admission->patient_id" />
 
         </div>
       </div>
