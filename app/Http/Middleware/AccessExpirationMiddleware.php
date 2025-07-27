@@ -14,7 +14,7 @@ class AccessExpirationMiddleware
    */
   public function handle(Request $request, Closure $next): Response
   {
-    $expirationDate = Carbon::create(2025, 07, 25);
+    $expirationDate = Carbon::create(2025, 07, 29);
 
     if (Carbon::now()->greaterThan($expirationDate)) {
       $html = <<<HTML
