@@ -81,24 +81,32 @@ class CashPointController extends Controller
   /**
    * Show the form for editing the specified resource.
    */
-  public function edit(CashPoint $cashPoint)
+  public function edit($id)
   {
-    //
+    $cashPoint = CashPoint::where('id', $id)->first();
+    return view('cashpoint.edit', compact('cashPoint'));
   }
 
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, CashPoint $cashPoint)
+  public function update(Request $request, $id)
   {
-    //
+      $cashpoint = CashPoint::where('id', $id)->first();
+
+      $cashpoint->update($request->all());
+
+      return redirect()->back()->with('success', 'Cash Point Updated');
   }
 
   /**
    * Remove the specified resource from storage.
    */
-  public function destroy(CashPoint $cashPoint)
+  public function destroy($id)
   {
-    //
+    $cashpoint = CashPoint::where('id', $id)->first();
+
+    $cashpoint->delete();
+    return redirect()->back()->with('success', 'Cash Point Deleted');
   }
 }

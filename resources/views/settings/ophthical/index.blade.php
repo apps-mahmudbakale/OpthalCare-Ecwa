@@ -35,8 +35,14 @@
                     <div class="card-title mb-0">
                         <h5 class="mb-0">Ophthicals List</h5>
                     </div>
-                    <a class="btn btn-label-dark waves-effect" href="javascript:void(0);" data-bs-toggle="modal"
-                        data-bs-target="#new-antenatal-modal">New</a>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <a class="btn btn-label-dark waves-effect" href="javascript:void(0);" data-bs-toggle="modal"
+                            data-bs-target="#new-antenatal-modal">New</a>
+                        <a class="btn btn-label-dark waves-effect" href="{{ route('app.antenatal.export') }}">Download List</a>
+                        <a class="btn btn-label-dark waves-effect" href="javascript:void(0);" id="antenatal-import"
+                           data-request-url="{{ route('app.antenatal.import') }}"
+                           data-toggle="modal" data-target="#global-modal">Import Ophthicals</a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <livewire:antenatals />
@@ -44,4 +50,26 @@
             </div>
         </div>
     </div>
+    <script>
+  $(document).ready(function() {
+    $('#antenatal-import').on('click', function() {
+      var requestUrl = $(this).data('request-url');
+
+      $.ajax({
+        url: requestUrl,
+        type: 'GET',
+        success: function(response) {
+          // Assuming the response contains the HTML for the modal content
+          $('#global-modal .modal-body').html(response);
+          $('#global-modal').modal('show');
+        },
+        error: function(xhr, status, error) {
+          // Handle errors
+          console.error(error);
+        }
+      });
+    });
+  });
+</script>
+
 @endsection

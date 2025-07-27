@@ -73,7 +73,7 @@ Route::get('/', function () {
 Auth::routes();
 
 
-Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], function () {
+Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'access.expiration']], function () {
   Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
   Route::resource('users', UserController::class);
   Route::resource('diagnosis', DiagnosisController::class);
@@ -178,6 +178,9 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::get('admission-bed/{ref}', [AdmissionController::class, 'assignBed'])->name('admissions.bed');
   Route::resource('billing', BillingController::class);
   Route::resource('antenatals', AntenatalController::class);
+  Route::get('antenatal-export', [AntenatalController::class, 'export'])->name('antenatal.export');
+  Route::get('antenatal-import', [AntenatalController::class, 'importView'])->name('antenatal.import');
+  Route::post('antenatal-import', [AntenatalController::class, 'import'])->name('antenatal.import.post');
   Route::resource('specialities', SpecialityController::class);
   Route::resource('reports', ReportController::class);
   Route::get('report/general', [ReportController::class, 'generalReport'])->name('reports.general');
@@ -207,7 +210,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::resource('vitalRefs', VitalRefController::class);
   Route::resource('cashpoints', CashPointController::class);
   Route::get('cashpoints/new-patient/{patient}', [CashPointController::class, 'newPatient'])->name('cashpoints.new-patient');
-  Route::post('cashpoints/bill-patient', [CashPointController::class, 'billPatient'])->name('cashpoints.bill-patient');
+  Route::post('cashpoint/bill-patient', [CashPointController::class, 'billPatient'])->name('cashpoints.bill-patient');
   Route::resource('payments', PaymentController::class);
   Route::post('payments/new-enroll', [PaymentController::class, 'storeEnroll'])->name('payments.new-enroll');
   Route::post('payments/new-enroll', [PaymentController::class, 'storeEnroll'])->name('payments.new-enroll');
@@ -216,17 +219,17 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => 'auth'], functi
   Route::get('payment/edit-method/{id}', [PaymentController::class, 'EditMethod'])->name('payments.edit-method');
   Route::post('payment/update-method', [PaymentController::class, 'UpdateMethod'])->name('payments.update-method');
   Route::post('payment/delete-method', [PaymentController::class, 'DeleteMethod'])->name('payments.delete-method');
-  Route::get('payment/print', function (){
+  Route::get('payment/print', function () {
     return view('billing.print');
   })->name('payment.print');
   Route::get('refraction/create/{patient}', [RefractionController::class, 'create'])->name('refraction.create');
   Route::resource('refraction', RefractionController::class)->only(['index', 'store', 'show', 'edit', 'update', 'destroy']);
 
-  Route::get('bills', function (){
+  Route::get('bills', function () {
     return view('billing.bill-modal');
   })->name('new.bill');
 
-  Route::get('patients-first-timer', function (){
+  Route::get('patients-first-timer', function () {
     return view('patients.first-timer');
   })->name('patients.first-timer');
 });
