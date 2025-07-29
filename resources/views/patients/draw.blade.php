@@ -34,7 +34,7 @@
     <hr />
     <input type="hidden" id="sketch">
     <img id = "imgCapture" alt = "" style = "display:none;border:1px solid #ccc" />
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="https://cdn.rawgit.com/mobomo/sketch.js/master/lib/sketch.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(function() {
