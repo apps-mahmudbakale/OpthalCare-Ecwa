@@ -12,6 +12,7 @@ class ServiceRequestHandler
     // Determine the service type dynamically
     $serviceType = $this->detectServiceType($serviceName);
 
+
     // Fetch the service details
     $service = $serviceType ? $serviceType::where('name', $serviceName)->first() : null;
     if (!$service) {
@@ -20,6 +21,7 @@ class ServiceRequestHandler
 
     // Calculate the cost
     $amount = $this->calculateAmount($serviceType, $service, $qty ?: 1);
+
 
     // Create a billing record
     return Billing::create([
@@ -76,6 +78,6 @@ class ServiceRequestHandler
       ->where('bill_ref', $ref)
       ->first();
 
-    return $billing ? $billing->status : null;
+    return $billing ? $billing->status : "0";
   }
 }

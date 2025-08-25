@@ -23,7 +23,7 @@
     <input type="hidden" name="result" id="result_html">
 
     <div id="result-html">
-      {!! $request->test->template->body !!}
+      {!! $request->test->template->body?? '' !!}
     </div>
   </div>
 

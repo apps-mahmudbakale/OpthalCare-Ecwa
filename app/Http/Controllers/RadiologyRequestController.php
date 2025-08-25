@@ -45,11 +45,14 @@ class RadiologyRequestController extends Controller
       'request_note' => 'required|array',
     ]);
 
+
+
     $request_ref = str()->upper(str()->random(6));
     $serviceHandler = new ServiceRequestHandler();
 
     foreach ($request->imaging_id as $index => $imagingId) {
       $imaging = Radiology::find($imagingId);
+//      dd($imaging);
 
       if (!$imaging) {
         continue; // Skip invalid entries
@@ -58,7 +61,7 @@ class RadiologyRequestController extends Controller
       RadiologyRequest::create([
         'patient_id'   => $request->patient_id,
         'user_id'      => $request->user_id,
-        'imaging_id'   => $imagingId,
+        'imaging_id'   => $imaging->id,
         'priority'     => $request->priority[$index],
         'request_note' => $request->request_note[$index],
         'status'       => 'Pending',

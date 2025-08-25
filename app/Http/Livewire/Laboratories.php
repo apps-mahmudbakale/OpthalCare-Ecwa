@@ -34,6 +34,33 @@ class Laboratories extends Base
 
     redirect()->route('app.settings.index')->with('success', 'Department Updated');
   }
+  public function confirmDelete($id)
+  {
+    $this->dispatchBrowserEvent('confirm-delete', [
+      'type' => 'warning',
+      'title' => 'Are you sure?',
+      'text' => 'You won\'t be able to revert this!',
+      'id' => $id
+    ]);
+  }
+
+  public function deleteLab($id)
+  {
+    try {
+      $lab = Laboratory::findOrFail($id);
+      $lab->delete();
+      $this->dispatchBrowserEvent('alert', [
+        'type' => 'success',
+        'message' => 'Lab test deleted successfully!'
+      ]);
+    } catch (\Exception $e) {
+      $this->dispatchBrowserEvent('alert', [
+        'type' => 'error',
+        'message' => 'Failed to delete lab test!'
+      ]);
+    }
+  }
+
   public function render()
   {
     if ($this->search) {

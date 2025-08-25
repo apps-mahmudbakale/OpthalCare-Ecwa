@@ -112,7 +112,9 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::post('lab-template', [LaboratoryController::class, 'storeTemplate'])->name('lab-template.store');
   Route::post('lab-template/{template}', [LaboratoryController::class, 'updateTemplate'])->name('lab-template.update');
   Route::post('lab-test', [LaboratoryController::class, 'store'])->name('lab-test.store');
-  Route::post('lab-test/{test}', [LaboratoryController::class, 'update'])->name('lab-test.update');
+  Route::get('lab-test/{id}', [LaboratoryController::class, 'edit'])->name('lab-test.edit');
+  Route::post('lab-test/{id}', [LaboratoryController::class, 'destroy'])->name('lab-test.destroy');
+  Route::put('lab-test/{test}', [LaboratoryController::class, 'update'])->name('lab-test.update');
   Route::post('drugs-add', [DrugController::class, 'storeDrugs'])->name('drugs-add.store');
   Route::post('drugs-add/{drugs}', [DrugController::class, 'updateDrugs'])->name('drugs-add.update');
   Route::post('drugs-store', [DrugStoreController::class, 'store'])->name('drugs-store.store');

@@ -23,7 +23,7 @@
     <?php
     $serviceHandler = new App\Services\ServiceRequestHandler();
     $service = "Radiology:" . \App\Models\Radiology::where('id', $radiologyRequest->imaging_id)->first()->name;
-    $isPaid = $serviceHandler->isBilled($radiologyRequest->imaging_id, $service, $radiologyRequest->request_ref); // Returns 1 or 0
+    $isPaid = $serviceHandler->isBilled($radiologyRequest->imaging_id, $service, $radiologyRequest->request_ref); // Explicitly cast to int
     ?>
     <tr>
       <td class="align-middle">
@@ -57,7 +57,7 @@
             <li>
               <button class="dropdown-item add-notes-btn"
                       data-request-url="{{ route('app.radiology.edit', $radiologyRequest->id) }}"
-                      data-paid="{{ $isPaid }}"> <!-- Set 1 or 0 directly -->
+                      data-paid="{{ $isPaid }}">
                 Add Findings/Notes
               </button>
             </li>
@@ -103,6 +103,8 @@
       e.preventDefault();
       var requestUrl = $(this).data('request-url');
       var isPaid = $(this).data('paid'); // Will be 1 or 0
+
+      console.log(isPaid);
 
       if (isPaid != 1) { // Check for 1 explicitly (not equal to 1 means unpaid)
         Swal.fire({

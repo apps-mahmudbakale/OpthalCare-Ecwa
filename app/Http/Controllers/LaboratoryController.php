@@ -12,14 +12,24 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class LaboratoryController extends Controller
 {
+
+  public function edit($id)
+  {
+    $lab = Laboratory::find($id);
+    return view('settings.laboratory.edit', compact('lab'));
+  }
+
   public function store(Request $request)
   {
     $labTest = Laboratory::create($request->all());
     return redirect()->route('app.settings.laboratory')->with('success', 'Lab Test Added !');
   }
 
-  public function update()
+  public function update(Request $request, $id)
   {
+    $lab = Laboratory::find($id);
+    $lab->update($request->all());
+    return redirect()->route('app.settings.laboratory')->with('success', 'Lab Test Updated !');
   }
 
   public function storeCategory(Request $request)
@@ -60,5 +70,12 @@ class LaboratoryController extends Controller
 
   public function deleteTemplate()
   {
+  }
+
+  public function destroy($id)
+  {
+    $lab = Laboratory::find($id);
+    $lab->delete();
+    return redirect()->route('app.settings.laboratory')->with('success', 'Lab Test Deleted !');
   }
 }

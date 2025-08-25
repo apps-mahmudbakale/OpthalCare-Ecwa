@@ -38,38 +38,17 @@
                             <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
                                     data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
                                 <ul class="dropdown-menu dropdown-menu-end m-0">
-                                    <li><a href="" wire:click.prevent="selectTemplate({{ $test->id }})"
+                                    <li><a  data-toggle="modal"
+                                           data-request-url="{{ route('app.lab-test.edit',$test->id) }}"
+                                           data-target="#global-modal-lg"
                                             class="dropdown-item">Edit</a></li>
                                     <div class="dropdown-divider"></div>
-                                    <li><a id="dele{{ $test->id }}" data-value="{{ $test->id }}"
-                                            class="dropdown-item text-danger delete-record">Delete</a></li>
+                                    <li><a href="#" wire:click.prevent="confirmDelete({{ $test->id }})" class="dropdown-item text-danger">Delete</a></li>
                                 </ul>
                             </div>
-                            <script>
-                                document.querySelector('#dele{{ $test->id }}').addEventListener('click', function(e) {
-                                    // alert(this.getAttribute('data-value'));
-                                    Swal.fire({
-                                        title: 'Are you sure?',
-                                        text: "You won't be able to revert this!",
-                                        icon: 'warning',
-                                        showCancelButton: true,
-                                        confirmButtonText: 'Yes, delete it!',
-                                        customClass: {
-                                            confirmButton: 'btn btn-primary me-3',
-                                            cancelButton: 'btn btn-label-secondary'
-                                        },
-                                        buttonsStyling: false
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            document.getElementById('dele#' + this.getAttribute('data-value')).submit();
-                                        }
-                                    })
-                                })
-                            </script>
-                            <form id="dele#{{ $test->id }}" action="" method="POST"
-                                style="display: inline-block;">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <form id="delete-form-{{ $test->id }}" action="{{ route('app.lab-test.destroy', $test->id) }}" method="POST" style="display: none;">
+                                @csrf
+                                @method('DELETE')
                             </form>
                         </td>
                     </tr>
@@ -92,3 +71,59 @@
 </div>
 @include('_partials._modals.modal-new-lab-test')
 @include('_partials._modals.modal-import-lab-test')
+@include('_partials._modals.global-modal')
+
+<script>
+  $(document).ready(function () {
+    // Handle edit modal
+    $('.dropdown-item[data-request-url]').on('click', function () {
+      var requestUrl = $(this).data('request-url');
+      if (!requestUrl) return true; // Skip if no request-url data attribute
+      
+      $.ajax({
+        url: requestUrl,
+        type: 'GET',
+        success: function (response) {
+          $('#global-modal .modal-body').html(response);
+          $('#global-modal').modal('show');
+        },
+        error: function (xhr, status, error) {
+          console.error(error);
+        }
+      });
+      return false;
+    });
+
+    // Handle delete confirmation
+    window.addEventListener('confirm-delete', event => {
+      Swal.fire({
+        title: event.detail.title,
+        text: event.detail.text,
+        icon: event.detail.type,
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          @this.deleteLab(event.detail.id);
+        }
+      });
+    });
+
+    // Handle success/error messages
+    window.addEventListener('alert', event => {
+      Swal.fire({
+        title: event.detail.type === 'success' ? 'Success!' : 'Error!',
+        text: event.detail.message,
+        icon: event.detail.type,
+        confirmButtonText: 'OK'
+      }).then(() => {
+        if (event.detail.type === 'success') {
+          // Reload the page after successful deletion
+          window.location.reload();
+        }
+      });
+    });
+  });
+</script>
