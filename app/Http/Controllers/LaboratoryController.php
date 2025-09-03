@@ -13,6 +13,17 @@ use Maatwebsite\Excel\Facades\Excel;
 class LaboratoryController extends Controller
 {
 
+  public function editCategory($id)
+  {
+    $category = LabCategory::find($id);
+    return view('settings.laboratory.editCategory', compact('category'));
+  }
+
+  public function editTemplate($id){
+    $template = LabTemplate::find($id);
+    return view('settings.laboratory.editTemplate', compact('template'));
+  }
+
   public function edit($id)
   {
     $lab = Laboratory::find($id);
@@ -39,8 +50,11 @@ class LaboratoryController extends Controller
     return redirect()->route('app.settings.laboratory')->with('success', 'Lab Test Category Added !');
   }
 
-  public function UpdateCategory()
+  public function UpdateCategory(Request $request, $id)
   {
+    $category = LabCategory::find($id);
+    $category->update($request->all());
+    return redirect()->route('app.settings.laboratory')->with('success', 'Lab Test Category Updated !');
   }
 
   public function storeTemplate(Request $request)
@@ -60,16 +74,25 @@ class LaboratoryController extends Controller
     return redirect()->back()->with('success', 'ICD10 data imported successfully!');
   }
 
-  public function updateTemplate()
+  public function updateTemplate(Request $request, $id)
   {
+    $template = LabTemplate::find($id);
+    $template->update($request->all());
+    return redirect()->route('app.settings.laboratory')->with('success', 'Lab Test Template Updated !');
   }
 
-  public function deleteCategory()
+  public function deleteCategory($id)
   {
+    $category = LabCategory::find($id);
+    $category->delete();
+    return redirect()->route('app.settings.laboratory')->with('success', 'Lab Test Category Deleted !');
   }
 
-  public function deleteTemplate()
+  public function deleteTemplate($id)
   {
+    $template = LabTemplate::find($id);
+    $template->delete();
+    return redirect()->route('app.settings.laboratory')->with('success', 'Lab Test Template Deleted !');
   }
 
   public function destroy($id)

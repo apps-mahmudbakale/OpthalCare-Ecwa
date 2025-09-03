@@ -43,7 +43,7 @@
                                            data-target="#global-modal-lg"
                                             class="dropdown-item">Edit</a></li>
                                     <div class="dropdown-divider"></div>
-                                    <li><a href="#" wire:click.prevent="confirmDelete({{ $test->id }})" class="dropdown-item text-danger">Delete</a></li>
+                                    <li><a href="#" onclick="submitDeleteForm({{ $test->id }})" class="dropdown-item text-danger">Delete</a></li>
                                 </ul>
                             </div>
                             <form id="delete-form-{{ $test->id }}" action="{{ route('app.lab-test.destroy', $test->id) }}" method="POST" style="display: none;">
@@ -76,54 +76,34 @@
 <script>
   $(document).ready(function () {
     // Handle edit modal
-    $('.dropdown-item[data-request-url]').on('click', function () {
+    $('.dropdown-item[data-request-url]').on('click', function() {
       var requestUrl = $(this).data('request-url');
       if (!requestUrl) return true; // Skip if no request-url data attribute
-      
+
       $.ajax({
         url: requestUrl,
         type: 'GET',
-        success: function (response) {
+        success: function(response) {
           $('#global-modal .modal-body').html(response);
           $('#global-modal').modal('show');
         },
-        error: function (xhr, status, error) {
+        error: function(xhr, status, error) {
           console.error(error);
         }
       });
       return false;
     });
 
-    // Handle delete confirmation
-    window.addEventListener('confirm-delete', event => {
-      Swal.fire({
-        title: event.detail.title,
-        text: event.detail.text,
-        icon: event.detail.type,
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'No, cancel!',
-        reverseButtons: true
-      }).then((result) => {
-        if (result.isConfirmed) {
-          @this.deleteLab(event.detail.id);
-        }
-      });
-    });
-
-    // Handle success/error messages
-    window.addEventListener('alert', event => {
-      Swal.fire({
-        title: event.detail.type === 'success' ? 'Success!' : 'Error!',
-        text: event.detail.message,
-        icon: event.detail.type,
-        confirmButtonText: 'OK'
-      }).then(() => {
-        if (event.detail.type === 'success') {
-          // Reload the page after successful deletion
-          window.location.reload();
-        }
-      });
-    });
   });
+</script>
+{{-- JavaScript for delete confirmation --}}
+<script>
+  function submitDeleteForm(id) {
+    if (confirm('Are you sure you want to delete this Lab Test?')) {
+      const form = document.getElementById('delete-form-' + id);
+      if (form) {
+        form.submit();
+      }
+    }
+  }
 </script>

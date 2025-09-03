@@ -40,7 +40,9 @@ class RefractionController extends Controller
   }
 
   public function update(Request $request, $id){
-
+      $refraction = Refraction::find($id);
+      $refraction->update($request->all());
+      return redirect()->route('app.patients.show', $request->patient_id)->with('success', 'Refraction record updated successfully.');
   }
 
   public function destroy($id){

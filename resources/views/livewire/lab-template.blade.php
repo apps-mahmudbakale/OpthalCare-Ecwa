@@ -30,44 +30,24 @@
                     <tr class="odd">
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $template->name }}</td>
-                        <td>
-                            <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
-                                    data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
-                                <ul class="dropdown-menu dropdown-menu-end m-0">
-                                    <li><a href="" wire:click.prevent="selectTemplate({{ $template->id }})"
-                                            class="dropdown-item">Edit</a></li>
-                                    <div class="dropdown-divider"></div>
-                                    <li><a id="dele{{ $template->id }}" data-value="{{ $template->id }}"
-                                            class="dropdown-item text-danger delete-record">Delete</a></li>
-                                </ul>
-                            </div>
-                            <script>
-                                document.querySelector('#dele{{ $template->id }}').addEventListener('click', function(e) {
-                                    // alert(this.getAttribute('data-value'));
-                                    Swal.fire({
-                                        title: 'Are you sure?',
-                                        text: "You won't be able to revert this!",
-                                        icon: 'warning',
-                                        showCancelButton: true,
-                                        confirmButtonText: 'Yes, delete it!',
-                                        customClass: {
-                                            confirmButton: 'btn btn-primary me-3',
-                                            cancelButton: 'btn btn-label-secondary'
-                                        },
-                                        buttonsStyling: false
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            document.getElementById('dele#' + this.getAttribute('data-value')).submit();
-                                        }
-                                    })
-                                })
-                            </script>
-                            <form id="dele#{{ $template->id }}" action="" method="POST"
-                                style="display: inline-block;">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                            </form>
-                        </td>
+                      <td>
+                        <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
+                                                       data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
+                          <ul class="dropdown-menu dropdown-menu-end m-0">
+                            <li><a href="" data-toggle="modal"
+                                   data-request-url="{{ route('app.lab-template.edit',$template->id) }}"
+                                   data-target="#global-modal-lg"
+                                   class="dropdown-item">Edit</a></li>
+                            <div class="dropdown-divider"></div>
+                            <li><a href="#" onclick="return submitDeleteForm({{ $template->id }});"
+                                   class="dropdown-item text-danger">Delete</a></li>
+                          </ul>
+                        </div>
+                        <form id="delete-form-{{ $template->id }}" action="{{ route('app.lab-template.destroy', $template->id) }}" method="POST" style="display: none;">
+                          @csrf
+                          @method('DELETE')
+                        </form>
+                      </td>
                     </tr>
                 @endforeach
             </tbody>
@@ -87,3 +67,39 @@
     </div>
 </div>
 @include('_partials._modals.modal-new-lab-template')
+@include('_partials._modals.global-modal')
+
+<script>
+  $(document).ready(function () {
+    // Handle edit modal
+    $('.dropdown-item[data-request-url]').on('click', function() {
+      var requestUrl = $(this).data('request-url');
+      if (!requestUrl) return true; // Skip if no request-url data attribute
+
+      $.ajax({
+        url: requestUrl,
+        type: 'GET',
+        success: function(response) {
+          $('#global-modal .modal-body').html(response);
+          $('#global-modal').modal('show');
+        },
+        error: function(xhr, status, error) {
+          console.error(error);
+        }
+      });
+      return false;
+    });
+
+  });
+</script>
+{{-- JavaScript for delete confirmation --}}
+<script>
+  function submitDeleteForms(id) {
+    if (confirm('Are you sure you want to delete this Template?')) {
+      const form = document.getElementById('delete-forms-' + id);
+      if (form) {
+        form.submit();
+      }
+    }
+  }
+</script>
