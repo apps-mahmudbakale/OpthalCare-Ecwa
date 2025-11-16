@@ -23,51 +23,36 @@
                         <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
                                 data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
                             <ul class="dropdown-menu dropdown-menu-end m-0">
-                                <li><a href="" wire:click.prevent="selectAllergy({{ $allergy->id }})"
+                                <li><a href="{{ route('app.allergies.edit', $allergy->id) }}"
                                         class="dropdown-item">Edit</a></li>
                                 <div class="dropdown-divider"></div>
-                                <li><a id="dele{{ $allergy->id }}" data-value="{{ $allergy->id }}"
-                                        class="dropdown-item text-danger delete-record">Delete</a></li>
+                              <li><a href="javascript:void(0);" class="dropdown-item text-danger"
+                                     onclick="submitAllergyDeleteForm({{ $allergy->id }})">Delete</a></li>
                             </ul>
                         </div>
-                        <script>
-                            document.querySelector('#dele{{ $allergy->id }}').addEventListener('click', function(e) {
-                                // alert(this.getAttribute('data-value'));
-                                Swal.fire({
-                                    title: 'Are you sure?',
-                                    text: "You won't be able to revert this!",
-                                    icon: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonText: 'Yes, delete it!',
-                                    customClass: {
-                                        confirmButton: 'btn btn-primary me-3',
-                                        cancelButton: 'btn btn-label-secondary'
-                                    },
-                                    buttonsStyling: false
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        document.getElementById('dele#' + this.getAttribute('data-value')).submit();
-                                    }
-                                })
-                            })
-                        </script>
-                        <form id="dele#{{ $allergy->id }}"
-                            action="{{ route('app.allergies.destroy', ['allergy' => $allergy->id]) }}" method="POST"
-                            style="display: inline-block;">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        </form>
+                      <form id="delete-allergy-{{ $allergy->id }}"
+                            action="{{ route('app.allergies.destroy', $allergy->id) }}"
+                            method="POST"
+                            style="display: none;"
+                            wire:ignore>
+                        @csrf
+                        @method('DELETE')
+                      </form>
                     </td>
                 </tr>
             @endforeach
         </tbody>
 
     </table>
-    <script>
-        window.addEventListener('ShowAllergyEditModal', function() {
-            $('#edit-allergy-modal').modal('show');
-        });
-    </script>
-    @include('_partials._modals.modal-edit-allergies')
+  <script>
+    function submitAllergyDeleteForm(id) {
+      if (confirm('Are you sure you want to delete this Allergy?')) {
+        const form = document.getElementById('delete-allergy-' + id);
+        if (form) {
+          form.submit();
+        }
+      }
+    }
+  </script>
 
 </div>

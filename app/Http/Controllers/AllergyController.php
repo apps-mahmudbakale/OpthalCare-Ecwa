@@ -46,7 +46,8 @@ class AllergyController extends Controller
      */
     public function edit(Allergy $allergy)
     {
-        //
+        $this->allergy = $allergy;
+        return view('allergies.edit', compact('allergy'));
     }
 
     /**
@@ -55,6 +56,7 @@ class AllergyController extends Controller
     public function update(Request $request, Allergy $allergy)
     {
        $allergy->update($request->all());
+       return redirect()->route('app.patients.show', $allergy->patient_id)->with('success', 'Allergy Updated Successfully');
     }
 
     /**

@@ -22,13 +22,13 @@
     <!-- tr -->
     @foreach ($labRequests as $labRequest)
     <tr>
-      <td class="align-middle">{{ $labRequest->test->created_at->diffForHumans() }}</td>
+      <td class="align-middle">{{ $labRequest->test ? $labRequest->test->created_at->diffForHumans() : 'N/A' }}</td>
       <td class="align-middle">
         <a href="patients/{{ $labRequest->patient->id }}" target="_blank">
           {{ $labRequest->patient->user->firstname }} {{ $labRequest->patient->user->lastname }}
         </a>
       </td>
-      <td class="align-middle">{{ $labRequest->test->name }}</td>
+      <td class="align-middle">{{ $labRequest->test ? $labRequest->test->name : 'Test not found' }}</td>
       <td class="align-middle">{{ $labRequest->user->firstname . ' ' . $labRequest->user->lastname }}</td>
       <td class="align-middle">{{ $labRequest->status }}</td>
       <td class="align-middle text-right">

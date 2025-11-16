@@ -11,25 +11,28 @@ class RolesAndPermissionsSeeder extends Seeder
 {
   /**
    * Run the database seeds.
-   *
-   * @return void
    */
   public function run()
   {
-    // Reset cached roles and permissions
+    // Reset cached permissions
     app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
+    // Permission types
     $permissions = [
       'create',
       'read',
       'update',
       'delete',
     ];
+
+    // Role names
     $roles = [
       'admin',
       'user',
       'patient',
     ];
+
+    // Entities requiring CRUD permissions
     $entities = [
       'users',
       'roles',
@@ -43,25 +46,33 @@ class RolesAndPermissionsSeeder extends Seeder
       'patients',
       'opticals',
       'settings',
-      'check-in'
     ];
 
+    // Create CRUD permissions
     foreach ($permissions as $permission) {
       foreach ($entities as $entity) {
-        if ($entity != 'check-in') {
-          Permission::create(['name' => $permission . '-' . $entity]);
-        }else{
-          Permission::create(['name' => $entity]);
-        }
+        Permission::firstOrCreate([
+          'name' => "$permission-$entity",
+        ]);
       }
     }
 
-    foreach ($roles as $role) {
-      Role::create(['name' => $role]);
+    // Create special single permission: check-in
+    Permission::firstOrCreate(['name' => 'check-in']);
+
+    // Create roles
+    foreach ($roles as $roleName) {
+      Role::firstOrCreate(['name' => $roleName]);
     }
 
-    $role = Role::findByName('admin');
-    $role->givePermissionTo(Permission::all());
-    $userRole = User::find(1)->assignRole('admin');
+    // Assign all permissions to admin role
+    $admin = Role::where('name', 'admin')->first();
+    $admin->syncPermissions(Permission::all());
+
+    // Assign admin role to user ID 1 if exists
+    $user = User::find(1);
+    if ($user) {
+      $user->assignRole('admin');
+    }
   }
 }

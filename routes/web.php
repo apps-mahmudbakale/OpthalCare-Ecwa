@@ -75,6 +75,7 @@ Auth::routes();
 
 Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'access.expiration']], function () {
   Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+  Route::resource('allergies', AllergyController::class);
   Route::resource('users', UserController::class);
   Route::resource('diagnosis', DiagnosisController::class);
   Route::get('diagnosis/{id}', [DiagnosisController::class, 'show'])->name('show.diagnosis');
