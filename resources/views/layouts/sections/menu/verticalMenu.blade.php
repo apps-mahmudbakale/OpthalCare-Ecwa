@@ -141,12 +141,6 @@ $configData = Helper::appClasses();
       </a>
     </li>
 @endcan
-    <li class="menu-item {{ request()->is('app/messages*') ? 'active' : '' }}">
-      <a href="{{ route('app.messages.index') }}" class="menu-link">
-        <i class="menu-icon tf-icons ti ti-messages"></i>
-        <div>Messages</div>
-      </a>
-    </li>
 @can('read-settings')
     <li class="menu-item {{ request()->is('app/settings*') ? 'active' : '' }}">
       <a href="{{ route('app.settings.index') }}" class="menu-link">
