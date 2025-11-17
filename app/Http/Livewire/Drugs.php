@@ -32,7 +32,7 @@ class Drugs extends Base
   {
     Drug::where('id', $this->DrugId)->update(['name' => $this->DrugName, 'category_id' => $this->DrugCategory,  'price' => $this->DrugPrice]);
 
-    redirect()->route('app.settings.index')->with('success', 'Drugs Updated');
+    redirect()->route('app.settings.pharmacy')->with('success', 'Drugs Updated');
   }
   public function render()
   {
