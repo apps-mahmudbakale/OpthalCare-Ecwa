@@ -12,8 +12,6 @@ class ServiceRequestHandler
     // Determine the service type dynamically
     $serviceType = $this->detectServiceType($serviceName);
 
-    dd($serviceType);
-
 
     // Fetch the service details
     $service = $serviceType ? $serviceType::where('name', $serviceName)->first() : null;

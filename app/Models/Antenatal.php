@@ -15,4 +15,9 @@ class Antenatal extends Model
       'qty',
       'dispense_qty'
     ];
+
+    public static function getServiceType()
+  {
+    return 'antenatal';
+  }
 }
