@@ -64,7 +64,7 @@
     $(document).ready(function() {
         // Fetch patient data from the API using jQuery
         $.ajax({
-            url: '/patient/api', // Replace with your actual API endpoint
+            url: 'patient/api', // Replace with your actual API endpoint
             type: 'GET',
             dataType: 'json',
             success: function(data) {
@@ -137,7 +137,7 @@
 
             // Send the selected category to the API endpoint
             $.ajax({
-                url: '/billservice', // Replace with your actual API endpoint
+                url: 'billservice', // Replace with your actual API endpoint
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
