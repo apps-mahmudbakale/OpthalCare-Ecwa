@@ -5,14 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LabTemplate extends Model
+class LabParameter extends Model
 {
   use HasFactory;
 
   protected $fillable = ['name'];
 
-
-  public function items()
+  public function templateItems()
   {
     return $this->hasMany(LabTemplateItem::class);
   }

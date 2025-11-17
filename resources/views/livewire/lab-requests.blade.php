@@ -243,16 +243,7 @@
           </ul>
         </div>
       </div>
-      <p class="text-muted">Recorded By {{ $request->user->firstname ." ". $request->user->lastname }} on {{
-        $request->created_at->format('d M Y h:i A') }}</p>
-      <div class="invoice-box">
-        {!! $request->findings->result ?? '' !!}
-        <div class="spacer"></div>
-        @if($request->findings)
-        @if($request->findings->image)
-        <img src="{{$request->findings->image}}" alt="">
-        @endif
-        @endif
+     
       </div>
     </div>
   </details>
@@ -280,4 +271,3 @@
 <!--    });-->
 <!--  });-->
 <!--</script>-->
-

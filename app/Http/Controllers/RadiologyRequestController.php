@@ -28,9 +28,7 @@ class RadiologyRequestController extends Controller
   {
     //
   }
-   public function addFindings(){
-
-   }
+  public function addFindings() {}
 
   /**
    * Store a newly created resource in storage.
@@ -52,7 +50,7 @@ class RadiologyRequestController extends Controller
 
     foreach ($request->imaging_id as $index => $imagingId) {
       $imaging = Radiology::find($imagingId);
-//      dd($imaging);
+      //      dd($imaging);
 
       if (!$imaging) {
         continue; // Skip invalid entries
@@ -81,13 +79,15 @@ class RadiologyRequestController extends Controller
   }
 
 
-  public function addResult(Request $request){
+  public function addResult(Request $request)
+  {
     $result = RadiologyResult::create(array_merge($request->all(), ['user_id' => auth()->user()->id]));
     $update = RadiologyRequest::where('id', $result->imaging_id)->update(['status' => 'Result Ready']);
     return redirect()->back()->with('success', 'Result Collected!');
   }
 
-  public function showResult($id){
+  public function showResult($id)
+  {
     $image = RadiologyRequest::where('id', $id)->first();
     $result = RadiologyResult::where('imaging_id', $id)->first();
     $patient = Patient::where('id', $image->patient_id)->first();

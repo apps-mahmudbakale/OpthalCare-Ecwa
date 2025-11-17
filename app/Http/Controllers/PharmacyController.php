@@ -17,18 +17,18 @@ class PharmacyController extends Controller
 
   public function store(Request $request)
   {
-//    dd($request->all());
+    //    dd($request->all());
     $request_ref = str()->random(6);
     foreach ($request->drug_id as $index => $testId) {
       DrugRequest::create([
-                'patient_id' => $request->patient_id,
-                'category_id' => $request->category_id[$index],
-                'drug_id' => $request->drug_id[$index],
-                'qty' => $request->qty[$index],
-                'dose' => $request->dose[$index],
-                'user_id' => auth()->user()->id,
-                'status' => 'Pending',
-                'request_ref' => $request_ref,
+        'patient_id' => $request->patient_id,
+        'category_id' => $request->category_id[$index],
+        'drug_id' => $request->drug_id[$index],
+        'qty' => $request->qty[$index],
+        'dose' => $request->dose[$index],
+        'user_id' => auth()->user()->id,
+        'status' => 'Pending',
+        'request_ref' => $request_ref,
       ]);
       $drug = Drug::find($request->drug_id[$index]);
       $serviceHandler = new ServiceRequestHandler();
@@ -62,6 +62,26 @@ class PharmacyController extends Controller
   {
     $request = DrugRequest::find($id);
     return view('pharmacy.print', compact('request'));
+  }
+
+
+  public function editDrug($id)
+  {
+    $drug = Drug::find($id);
+    return view('settings.pharmacy.edit', compact('drug'));
+  }
+
+  public function updateDrug(Request $request, $id)
+  {
+    $drug = Drug::find($id);
+    $drug->update([
+      'name' => $request->name,
+      'description' => $request->description,
+      'dispense_qty' => $request->dispense_qty,
+      'active' => $request->has('active') ? 1 : 0,
+    ]);
+
+    return redirect()->route('app.settings.pharmacy.index')->with('success', 'Drug updated successfully.');
   }
 
 

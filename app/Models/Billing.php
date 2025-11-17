@@ -24,5 +24,4 @@ class Billing extends Model
   {
     return $this->belongsTo(Patient::class, 'user_id');
   }
-
 }

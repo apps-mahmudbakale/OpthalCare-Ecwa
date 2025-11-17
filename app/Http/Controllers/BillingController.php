@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Antenatal;
+use App\Models\Drug;
 use App\Models\Billing;
-use App\Models\DrugRequest;
 use App\Models\Laboratory;
 use App\Models\Speciality;
-use App\Services\ServiceRequestHandler;
+use App\Models\DrugRequest;
 use Illuminate\Http\Request;
+use App\Services\ServiceRequestHandler;
 
 class BillingController extends Controller
 {
@@ -32,6 +34,7 @@ class BillingController extends Controller
    */
   public function store(Request $request)
   {
+
     $request_ref = str()->random(6);
     if ($request->service_category == 'consultations') {
       $consult = Speciality::find($request->service_id);
@@ -41,6 +44,19 @@ class BillingController extends Controller
       // Generate unique access code
 //      $accessCode = 'FU-' . strtoupper(Str::random(6));
 
+    } elseif ($request->service_category == 'laboratory') {
+      $lab = Laboratory::find($request->service_id);
+      $serviceHandler = new ServiceRequestHandler();
+      $billingRecord = $serviceHandler->handleServiceRequest($lab->name, $request->patient_id, 'laboratory', $request_ref, 1);
+    } elseif ($request->service_category == 'pharmacy') {
+      $drug = Drug::find($request->service_id);
+      $serviceHandler = new ServiceRequestHandler();
+      $billingRecord = $serviceHandler->handleServiceRequest($drug->name, $request->patient_id, 'pharmacy', $request_ref, 1);
+    }elseif ($request->service_category == 'ophthicals') {
+      //  dd($request->all());
+      $optic = Antenatal::find($request->service_id);
+      $serviceHandler = new ServiceRequestHandler();
+      $billingRecord = $serviceHandler->handleServiceRequest($optic->name, $request->patient_id, 'antenatals', $request_ref, 1);
     }
     return redirect()->back()->with('success', 'Bill Added Successfully!');
 

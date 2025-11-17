@@ -12,6 +12,8 @@ class ServiceRequestHandler
     // Determine the service type dynamically
     $serviceType = $this->detectServiceType($serviceName);
 
+    dd($serviceType);
+
 
     // Fetch the service details
     $service = $serviceType ? $serviceType::where('name', $serviceName)->first() : null;
@@ -45,6 +47,7 @@ class ServiceRequestHandler
       'Radiology'  => \App\Models\Radiology::class,
       'Procedure'  => \App\Models\Procedure::class,
       'Bed' => \App\Models\Bed::class,
+      'Antenatal' => \App\Models\Antenatal::class,
       // Add more models here as needed
     ];
 

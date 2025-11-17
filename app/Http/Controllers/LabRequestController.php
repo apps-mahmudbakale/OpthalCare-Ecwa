@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Patient;
+use App\Models\LabResult;
 use App\Models\Laboratory;
 use App\Models\LabRequest;
-use App\Models\LabResult;
-use App\Models\Patient;
 use Illuminate\Http\Request;
+use App\Models\LabResultItem;
 use App\Services\ServiceRequestHandler;
 
 class LabRequestController extends Controller
@@ -32,7 +33,7 @@ class LabRequestController extends Controller
    */
   public function store(Request $request)
   {
-//    dd($request->all());
+    //    dd($request->all());
     $request_ref = str()->random(6);
     foreach ($request->test_id as $index => $testId) {
       LabRequest::create([
@@ -68,7 +69,15 @@ class LabRequestController extends Controller
   public function show($id)
   {
     $request = LabRequest::where('id', $id)->first();
-    return view('laboratory.result', compact('request'));
+    $labTest = Laboratory::with('template.items.parameter')->findOrFail($request->test_id);
+
+
+    return view('laboratory.result', [
+      'request' => $request,
+      'labTest' => $labTest,
+      'template' => $labTest->template,
+      'parameters' => $labTest->template->items
+    ]);
   }
 
   public function specimen($labRequest)
@@ -87,13 +96,24 @@ class LabRequestController extends Controller
     }
   }
 
-  public function addResult(Request $request){
+  public function addResult(Request $request)
+  {
+    // dd($request->all());
     $result = LabResult::create(array_merge($request->all(), ['user_id' => auth()->user()->id]));
-    $update = LabRequest::where('id', $result->lab_id)->update(['status' => 'Result Ready']);
+
+    foreach ($request->items as $templateItemId => $value) {
+      LabResultItem::create([
+        'lab_result_id' => $result->id,
+        'lab_template_item_id' => $templateItemId,
+        'value' => $value,
+      ]);
+    }
+    $update = LabRequest::where('id', $request->lab_id)->update(['status' => 'Result Ready']);
     return redirect()->back()->with('success', 'Result Collected!');
   }
 
-  public function showResult($id){
+  public function showResult($id)
+  {
     $lab = LabRequest::where('id', $id)->first();
     $result = LabResult::where('lab_id', $id)->first();
     $patient = Patient::where('id', $lab->patient_id)->first();

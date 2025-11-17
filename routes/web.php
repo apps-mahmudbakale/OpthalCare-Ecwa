@@ -1,9 +1,5 @@
 <?php
 
-use App\Http\Controllers\OpticalController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\ProcedureRequestController;
-use App\Http\Controllers\StoreRequestController;
 use App\Models\Consumble;
 use App\Models\Appointment;
 use Illuminate\Support\Facades\URL;
@@ -23,7 +19,9 @@ use App\Http\Controllers\AllergyController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\HmoPlanController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\OpticalController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\HmoGroupController;
 use App\Http\Controllers\PharmacyController;
@@ -45,13 +43,16 @@ use App\Http\Controllers\LabRequestController;
 use App\Http\Controllers\RefractionController;
 use App\Http\Controllers\SpecialityController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\LabTemplateController;
 use App\Http\Controllers\WaitingListController;
+use App\Http\Controllers\StoreRequestController;
 use App\Http\Controllers\VisionAcuityController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ConsultingRoomController;
 use App\Http\Controllers\SystemSettingsController;
 use App\Http\Controllers\AppointmentTypeController;
 use App\Http\Controllers\ServiceCategoryController;
+use App\Http\Controllers\ProcedureRequestController;
 use App\Http\Controllers\RadiologyRequestController;
 use App\Http\Controllers\ConsultingTemplateController;
 
@@ -105,6 +106,9 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::resource('appointments', AppointmentController::class);
   Route::get('appointment/schedule/{patient}', [AppointmentController::class, 'schedule'])->name('appointment.schedule');
   Route::resource('pharmacy', PharmacyController::class);
+  Route::get('settings/pharmacy/edit/{id}', [PharmacyController::class, 'editDrug'])->name('settings.pharmacy.edit');
+  Route::post('settings/pharmacy/update/{id}', [PharmacyController::class, 'updateDrug'])->name('settings.pharmacy.update');
+
   Route::get('pharmacy/request/{id}', [PharmacyController::class, 'print'])->name('pharmacy.request.print');
   Route::post('lab-category', [LaboratoryController::class, 'storeCategory'])->name('lab-category.store');
   Route::get('lab-category/{category}', [LaboratoryController::class, 'editCategory'])->name('lab-category.edit');
@@ -113,7 +117,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::get('lab-export', [LaboratoryController::class, 'Export'])->name('lab.export');
   Route::post('lab-import', [LaboratoryController::class, 'Import'])->name('lab.import');
   Route::post('lab-category/{category}', [LaboratoryController::class, 'updateCategory'])->name('lab-category.update');
-  Route::post('lab-template', [LaboratoryController::class, 'storeTemplate'])->name('lab-template.store');
+  // Route::post('lab-template', [LaboratoryController::class, 'storeTemplate'])->name('lab-template.store');
   Route::delete('lab-template/{template}', [LaboratoryController::class, 'deleteTemplate'])->name('lab-template.destroy');
   Route::get('lab-template/{template}', [LaboratoryController::class, 'editTemplate'])->name('lab-template.edit');
   Route::put('lab-template/{template}', [LaboratoryController::class, 'updateTemplate'])->name('lab-template.update');
@@ -240,6 +244,8 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::get('patients-first-timer', function () {
     return view('patients.first-timer');
   })->name('patients.first-timer');
+  Route::post('lab-template/store', [LabTemplateController::class, 'store'])
+    ->name('lab-template.store');
 });
 Route::get('getLGA/{state}', [DashboardController::class, 'getLGA']);
 Route::post('getDrugsCategorybyStore', [DrugController::class, 'getDrugsCategorybyStore']);
