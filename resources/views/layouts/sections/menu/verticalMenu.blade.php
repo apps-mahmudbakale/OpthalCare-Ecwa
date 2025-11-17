@@ -62,14 +62,14 @@ $configData = Helper::appClasses();
     </li>
     @endcan
 
-    @can('read-appointments')
+    {{-- @can('read-appointments')
     <li class="menu-item {{ request()->is('app/appointments*') ? 'active' : '' }}">
       <a href="{{ route('app.appointments.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-calendar"></i>
         <div>Appointments</div>
       </a>
     </li>
-    @endcan
+    @endcan --}}
 
     @can('waiting-list')
     <li class="menu-item {{ request()->is('app/wait-list*') ? 'active' : '' }}">
