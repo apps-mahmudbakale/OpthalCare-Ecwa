@@ -29,6 +29,12 @@ class ProcedureController extends Controller
     return redirect()->back()->with('success', 'Procedure Requested!');
   }
 
+  public function edit($id)
+  {
+    $procedure = Procedure::findOrFail($id);
+    return view('procedure.edit', compact('procedure'));
+  }
+
 
   public function storeProcedure(Request $request)
   {
@@ -36,9 +42,7 @@ class ProcedureController extends Controller
     return redirect()->route('app.settings.procedures')->with('success', 'Procedure Added !');
   }
 
-  public function updateProcedure()
-  {
-  }
+  public function updateProcedure() {}
 
   public function storeCategory(Request $request)
   {
@@ -47,7 +51,5 @@ class ProcedureController extends Controller
     return redirect()->route('app.settings.procedures')->with('success', 'Procedure Category Added !');
   }
 
-  public function UpdateCategory()
-  {
-  }
+  public function UpdateCategory() {}
 }

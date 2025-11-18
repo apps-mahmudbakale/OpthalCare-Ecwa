@@ -1,93 +1,146 @@
 <div>
     <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
-        <div class="row">
+
+        {{-- Per Page + Search --}}
+        <div class="row mb-3">
             <div class="col-sm-12 col-md-6">
-                <div class="dataTables_length" id="DataTables_Table_0_length"><label> <select wire:model="perPage"
-                            class="form-select form-select-sm">
-                            <option value="7">7</option>
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="75">75</option>
-                            <option value="100">100</option>
-                        </select> </label></div>
+                <label>
+                    <select wire:model="perPage" class="form-select form-select-sm">
+                        <option value="7">7</option>
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="75">75</option>
+                        <option value="100">100</option>
+                    </select>
+                </label>
             </div>
+
             <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end">
-                <div id="DataTables_Table_0_filter" class="dataTables_filter"><label>Search:<input type="search"
-                            class="form-control form-control-sm" wire:model.debounce.300ms='search'></label></div>
+                <label>
+                    Search:
+                    <input type="search" class="form-control form-control-sm" wire:model.debounce.300ms="search">
+                </label>
             </div>
         </div>
-        <table class="table table-striped dataTable no-footer dtr-column" id="DataTables_Table_0">
+
+        {{-- TABLE --}}
+        <table class="table table-striped dataTable no-footer dtr-column">
             <thead>
                 <tr>
-                    <th class="control sorting_disabled dtr-hidden">S/N</th>
-                    <th class="sorting">Name</th>
-                    <th class="sorting">Category</th>
-                    <th class="sorting">Procedure Cost</th>
-                    <th></th>
+                    <th>S/N</th>
+                    <th wire:click="sortByColumn('name')" class="cursor-pointer">Name</th>
+                    <th>Category</th>
+                    <th>Template</th>
+                    <th>Procedure Cost</th>
+                    <th class="text-center">Actions</th>
                 </tr>
             </thead>
+
             <tbody>
-                @foreach ($tests as $test)
-                    <tr class="odd">
+                @forelse ($tests as $test)
+                    <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $test->name }}</td>
                         <td>{{ $test->category->name ?? '' }}</td>
-                        <td>{{ $test->price }}</td>
-                        <td>
-                            <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
-                                    data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
+                        <td>{{ $test->template->name ?? 'N/A' }}</td>
+                        <td>{{ number_format($test->price) }}</td>
+
+                        <td class="text-center">
+
+                            {{-- Actions Dropdown --}}
+                            <div class="d-inline-block">
+                                <a href="javascript:;" class="dropdown hide-arrow" data-bs-toggle="dropdown">
+                                    <i class="text-primary ti ti-dots-vertical"></i>
+                                </a>
+
                                 <ul class="dropdown-menu dropdown-menu-end m-0">
-                                    <li><a href="" wire:click.prevent="selectTemplate({{ $test->id }})"
-                                            class="dropdown-item">Edit</a></li>
+                                    <li>
+                                        <a href="{{route('app.procedures.edit', $test->id)}}"
+                                            class="dropdown-item">
+                                            Edit
+                                        </a>
+                                    </li>
+
                                     <div class="dropdown-divider"></div>
-                                    <li><a id="dele{{ $test->id }}" data-value="{{ $test->id }}"
-                                            class="dropdown-item text-danger delete-record">Delete</a></li>
+
+                                    <li>
+                                        <a class="dropdown-item text-danger delete-record"
+                                            data-value="{{ $test->id }}">
+                                            Delete
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
-                            <script>
-                                document.querySelector('#dele{{ $test->id }}').addEventListener('click', function(e) {
-                                    // alert(this.getAttribute('data-value'));
-                                    Swal.fire({
-                                        title: 'Are you sure?',
-                                        text: "You won't be able to revert this!",
-                                        icon: 'warning',
-                                        showCancelButton: true,
-                                        confirmButtonText: 'Yes, delete it!',
-                                        customClass: {
-                                            confirmButton: 'btn btn-primary me-3',
-                                            cancelButton: 'btn btn-label-secondary'
-                                        },
-                                        buttonsStyling: false
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            document.getElementById('dele#' + this.getAttribute('data-value')).submit();
-                                        }
-                                    })
-                                })
-                            </script>
-                            <form id="dele#{{ $test->id }}" action="" method="POST"
-                                style="display: inline-block;">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+                            {{-- Hidden Delete Form --}}
+                            <form id="deleteForm-{{ $test->id }}" action="" method="POST"
+                                style="display:none;">
+                                @csrf
+                                @method('DELETE')
                             </form>
+
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">No procedures found.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
-        <div class="row">
+
+        {{-- Pagination --}}
+        <div class="row mt-2">
             <div class="col-sm-12 col-md-6">
-                <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">
+                <div>
                     Showing {{ $tests->firstItem() }} to {{ $tests->lastItem() }} of
-                    {{ $tests->total() }} entries</div>
-            </div>
-            <div class="col-sm-12 col-md-6">
-                <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
-                    {{ $tests->links() }}
+                    {{ $tests->total() }} entries
                 </div>
             </div>
+
+            <div class="col-sm-12 col-md-6 d-flex justify-content-end">
+                {{ $tests->links() }}
+            </div>
         </div>
+
     </div>
+
+    {{-- New Procedure Modal --}}
+    @include('_partials._modals.modal-new-procedure')
+
+    {{-- Edit Procedure Modal --}}
+    @include('_partials._modals.modal-edit-procedure')
+
+    {{-- Delete Confirmation Script --}}
+    <script>
+        document.querySelectorAll('.delete-record').forEach(item => {
+            item.addEventListener('click', function() {
+                let id = this.getAttribute('data-value');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    customClass: {
+                        confirmButton: 'btn btn-primary me-3',
+                        cancelButton: 'btn btn-label-secondary'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('deleteForm-' + id).submit();
+                    }
+                });
+            });
+        });
+
+        window.addEventListener('ProceduresTestEditModal', function() {
+            var modal = new bootstrap.Modal(document.getElementById('edit-procedure-modal'));
+            modal.show();
+        });
+    </script>
+
 </div>
-@include('_partials._modals.modal-new-procedure')

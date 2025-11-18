@@ -7,52 +7,51 @@ use Livewire\Component;
 
 class Procedures extends Base
 {
-  public $sortBy = 'name';
-  public $RadiologyTestId;
-  public $RadiologyTestName;
-  public $RadiologyTestCategory;
-  public $RadiologyTestTemplate;
-  public $RadiologyTestPrice;
+    public $sortBy = 'name';
+    public $ProcedureId;
+    public $ProcedureName;
+    public $ProcedureCategory;
+    public $ProcedureTemplate;
+    public $ProcedurePrice;
 
+    public function selectProcedure($id)
+    {
+        $procedure = Procedure::findOrFail($id);
 
-  public function selectRadiologyTest($id)
-  {
-    $test = Procedure::find($id);
+        $this->ProcedureId        = $procedure->id;
+        $this->ProcedureName      = $procedure->name;
+        $this->ProcedureCategory  = $procedure->category_id;
+        $this->ProcedureTemplate  = $procedure->template_id;
+        $this->ProcedurePrice     = $procedure->price;
 
-    $this->RadiologyTestId = $test->id;
-    $this->RadiologyTestName = $test->name;
-    $this->RadiologyTestCategory = $test->category_id;
-    $this->RadiologyTestTemplate = $test->template_id;
-    $this->RadiologyTestPrice = $test->price;
-
-    $this->dispatchBrowserEvent('ProceduresTestEditModal');
-  }
-
-  public function updateRadiologyTest()
-  {
-    Procedure::where('id', $this->RadiologyTestId)->update(['name' => $this->RadiologyTestName, 'category_id' => $this->RadiologyTestCategory, 'template_id' => $this->RadiologyTestTemplate, 'price' => $this->RadiologyTestPrice]);
-
-    redirect()->route('app.settings.index')->with('success', 'Procedures Updated');
-  }
-  public function render()
-  {
-    if ($this->search) {
-      $tests = Procedure::query()
-        ->where('name', 'like', '%' . $this->search . '%')
-        ->paginate(10);
-
-      return view(
-        'livewire.procedure',
-        ['tests' => $tests]
-      );
-    } else {
-      $tests = Procedure::query()
-        ->orderBy($this->sortBy, $this->sortDirection)
-        ->paginate($this->perPage);
-      return view(
-        'livewire.procedures',
-        ['tests' => $tests]
-      );
+        $this->dispatchBrowserEvent('ProceduresTestEditModal');
     }
-  }
+
+    public function updateProcedure()
+    {
+        Procedure::where('id', $this->ProcedureId)->update([
+            'name'        => $this->ProcedureName,
+            'category_id' => $this->ProcedureCategory,
+            'template_id' => $this->ProcedureTemplate,
+            'price'       => $this->ProcedurePrice
+        ]);
+
+        session()->flash('success', 'Procedure updated successfully.');
+
+        return redirect()->route('app.settings.index');
+    }
+
+    public function render()
+    {
+        $tests = Procedure::query()
+            ->when($this->search, fn ($q) =>
+                $q->where('name', 'LIKE', '%' . $this->search . '%')
+            )
+            ->orderBy($this->sortBy, $this->sortDirection)
+            ->paginate($this->perPage);
+
+        return view('livewire.procedures', [
+            'tests' => $tests
+        ]);
+    }
 }
