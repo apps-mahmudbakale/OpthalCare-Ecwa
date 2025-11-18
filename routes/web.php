@@ -256,9 +256,4 @@ Route::post('getDrugsbyStore', [DrugController::class, 'getDrugsbyStore'])->name
 Route::post('/getDrugsByCategory', [\App\Http\Controllers\DrugController::class, 'getByCategory']);
 
 
-Route::get('/users', [ApiUser::class, 'index']);
-Route::get('/patient/api', [ApiPatient::class, 'index']);
-Route::post('patient-first-timer', [ApiPatient::class, 'store']);
-Route::post('/billservice', [BillingServiceController::class, 'index']);
-Route::get('/billservices/{patient}/{type}/{accessCode}', [BillingServiceController::class, 'verifyAccessCode']);
 // URL::forceScheme('https');

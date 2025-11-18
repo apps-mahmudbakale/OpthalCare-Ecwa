@@ -33,7 +33,7 @@
             // AJAX request to submit the form
             $.ajax({
                 type: 'POST',
-                url: 'patient-first-timer', // Replace with your actual route
+                url: '/api/patient-first-timer', // Replace with your actual route
                 data: formData,
                 success: function(response) {
                     // Assuming the response contains patient_id and patient_name
