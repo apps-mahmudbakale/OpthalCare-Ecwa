@@ -159,7 +159,10 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
 
   Route::resource('procedures', ProcedureController::class);
   Route::post('procedure', [ProcedureController::class, 'storeProcedure'])->name('procedure.store');
-  Route::post('procedure/{procedures}', [ProcedureController::class, 'updateProcedure'])->name('procedure.update');
+  Route::get('procedure/editCategory/{id}', [ProcedureController::class, 'editCategory'])->name('procedures.category.edit');
+  Route::put('procedure/{procedures}', [ProcedureController::class, 'updateProcedure'])->name('procedure.update');
+  Route::delete('procedure/category-delete/{id}',[ProcedureController::class, 'deleteCategory'])->name('procedure.delete.category');
+  Route::put('procedure/category/{id}', [ProcedureController::class, 'UpdateCategory'])->name('procedure.update.category');
   Route::post('procedures-category', [ProcedureController::class, 'storeCategory'])->name('procedures-category.store');
   Route::post('procedures-category/{category}', [ProcedureController::class, 'updateCategory'])->name('procedures-category.update');
 

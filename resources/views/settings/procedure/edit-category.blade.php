@@ -1,6 +1,6 @@
 @extends('layouts/layoutMaster')
 
-@section('title', 'Patients - Edit Procedure')
+@section('title', 'Edit Procedure Category')
 
 @section('vendor-style')
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
@@ -29,37 +29,18 @@
         <div class="col-12 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Update Procedure</h5>
+                    <h5 class="mb-0">Update Procedure Category</h5>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('app.procedure.update', $procedure->id) }}" method="POST" class="row g-3">
+                    <form action="{{ route('app.procedure.update.category', $category->id) }}" method="POST" class="row g-3">
                         @csrf
                         @method('PUT')
 
                         <div class="col-12">
                             <label class="form-label">Name</label>
-                            <input type="text" name="name" value="{{ old('name', $procedure->name) }}"
+                            <input type="text" name="name" value="{{ old('name', $category->name) }}"
                                    class="form-control" placeholder="Name" />
                         </div>
-
-                        <div class="col-12">
-                            <label class="form-label">Category</label>
-                            <select name="category_id" class="form-control">
-                                <option value="{{ $procedure->category->id }}" selected>
-                                    {{ $procedure->category->name }}
-                                </option>
-                                @foreach (\App\Models\ProcedureCategory::where('id', '!=', $procedure->category->id)->get() as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-12">
-                            <label class="form-label">Procedure Cost</label>
-                            <input type="number" name="price" value="{{ old('price', $procedure->price) }}"
-                                   class="form-control" placeholder="Procedure Cost" />
-                        </div>
-
                         <div class="col-12 text-center">
                             <button type="submit" class="btn btn-primary me-sm-3 me-1">Update</button>
                             <button type="reset" class="btn btn-label-secondary">Cancel</button>

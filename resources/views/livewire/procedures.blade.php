@@ -31,7 +31,6 @@
                     <th>S/N</th>
                     <th wire:click="sortByColumn('name')" class="cursor-pointer">Name</th>
                     <th>Category</th>
-                    <th>Template</th>
                     <th>Procedure Cost</th>
                     <th class="text-center">Actions</th>
                 </tr>
@@ -43,7 +42,6 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $test->name }}</td>
                         <td>{{ $test->category->name ?? '' }}</td>
-                        <td>{{ $test->template->name ?? 'N/A' }}</td>
                         <td>{{ number_format($test->price) }}</td>
 
                         <td class="text-center">
@@ -56,8 +54,7 @@
 
                                 <ul class="dropdown-menu dropdown-menu-end m-0">
                                     <li>
-                                        <a href="{{route('app.procedures.edit', $test->id)}}"
-                                            class="dropdown-item">
+                                        <a href="{{ route('app.procedures.edit', $test->id) }}" class="dropdown-item">
                                             Edit
                                         </a>
                                     </li>
@@ -74,7 +71,8 @@
                             </div>
 
                             {{-- Hidden Delete Form --}}
-                            <form id="deleteForm-{{ $test->id }}" action="" method="POST"
+                            <form id="deleteForm-{{ $test->id }}"
+                                action="{{ route('app.procedures.destroy', $test->id) }}" method="POST"
                                 style="display:none;">
                                 @csrf
                                 @method('DELETE')

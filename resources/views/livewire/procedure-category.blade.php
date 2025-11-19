@@ -34,7 +34,7 @@
                             <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
                                     data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
                                 <ul class="dropdown-menu dropdown-menu-end m-0">
-                                    <li><a href="" wire:click.prevent="selectConsultingRoom({{ $category->id }})"
+                                    <li><a href="{{ route('app.procedures.category.edit', $category->id) }}"
                                             class="dropdown-item">Edit</a></li>
                                     <div class="dropdown-divider"></div>
                                     <li><a id="dele{{ $category->id }}" data-value="{{ $category->id }}"
@@ -63,7 +63,7 @@
                                 })
                             </script>
                             <form id="dele#{{ $category->id }}"
-                                action="{{ route('app.consulting-rooms.destroy', $category->id) }}" method="POST"
+                                action="{{ route('app.procedure.delete.category', $category->id) }}" method="POST"
                                 style="display: inline-block;">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">

@@ -42,7 +42,12 @@ class ProcedureController extends Controller
     return redirect()->route('app.settings.procedures')->with('success', 'Procedure Added !');
   }
 
-  public function updateProcedure() {}
+  public function updateProcedure(Request $request, $id)
+  {
+    $procedure = Procedure::findOrFail($id);
+    $procedure->update($request->all());
+    return redirect()->route('app.settings.procedures')->with('success', 'Procedure Updated !');
+  }
 
   public function storeCategory(Request $request)
   {
@@ -51,5 +56,29 @@ class ProcedureController extends Controller
     return redirect()->route('app.settings.procedures')->with('success', 'Procedure Category Added !');
   }
 
-  public function UpdateCategory() {}
+  public function editCategory($id)
+  {
+    $category = ProcedureCategory::findOrFail($id);
+    return view('settings.procedure.edit-category', compact('category'));
+  }
+
+  public function UpdateCategory(Request $request, $id) {
+     $category = ProcedureCategory::findOrFail($id);
+     $category->update($request->all());
+     return redirect()->route('app.settings.procedures')->with('success', 'Procedure Category Updated !');
+
+  }
+
+  public function deleteCategory($id){
+    $category = ProcedureCategory::findOrFail($id);
+     $category->delete();
+     return redirect()->route('app.settings.procedures')->with('success', 'Procedure Category Deleted !');
+  }
+
+  public function destroy($id)
+  {
+    $procedure = Procedure::findOrFail($id);
+    $procedure->delete();
+    return redirect()->route('app.settings.procedures')->with('success', 'Procedure Deleted !');
+  }
 }
