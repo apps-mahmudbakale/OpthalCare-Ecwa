@@ -51,7 +51,8 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end m-0">
                                     <li>
-                                        <a href="javascript:void(0);" wire:click="selectDrugs({{ $test->id }})" class="dropdown-item">
+                                        <a href="javascript:void(0);" wire:click="selectDrugs({{ $test->id }})"
+                                            class="dropdown-item">
                                             Edit
                                         </a>
                                     </li>
@@ -59,9 +60,8 @@
                                     <div class="dropdown-divider"></div>
 
                                     <li>
-                                        <a href="javascript:;"
-                                           class="dropdown-item text-danger delete-record"
-                                           data-id="{{ $test->id }}">
+                                        <a href="javascript:;" class="dropdown-item text-danger delete-record"
+                                            data-id="{{ $test->id }}">
                                             Delete
                                         </a>
                                     </li>
@@ -69,9 +69,8 @@
                             </div>
 
                             <!-- Hidden delete form -->
-                            <form id="delete-form-{{ $test->id }}"
-                                  action=""
-                                  method="POST" style="display:none;">
+                            <form id="delete-form-{{ $test->id }}" action="{{ route('app.settings.drugs.destroy', $test->id) }}"
+                                method="POST" style="display:none;">
                                 @method('DELETE')
                                 @csrf
                             </form>

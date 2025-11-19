@@ -17,9 +17,7 @@ class DrugController extends Controller
     return redirect()->route('app.settings.pharmacy')->with('success', 'Drug Added !');
   }
 
-  public function updateDrugs()
-  {
-  }
+  public function updateDrugs() {}
 
   public function storeCategory(Request $request)
   {
@@ -28,17 +26,15 @@ class DrugController extends Controller
     return redirect()->route('app.settings.pharmacy')->with('success', 'Drug Category Added !');
   }
 
-  public function UpdateCategory()
-  {
-  }
+  public function UpdateCategory() {}
 
-//  public function getDrugsbyStore(Request $request)
-//  {
-//    // dd($request->all());
-//    $drugs = Drug::where('store_id', $request->input('store'))->get();
-//
-//    return response()->json($drugs);
-//  }
+  //  public function getDrugsbyStore(Request $request)
+  //  {
+  //    // dd($request->all());
+  //    $drugs = Drug::where('store_id', $request->input('store'))->get();
+  //
+  //    return response()->json($drugs);
+  //  }
 
   public function getByCategory(Request $request)
   {
@@ -70,5 +66,12 @@ class DrugController extends Controller
         'stock' => $drug->quantity,
       ])
     );
+  }
+
+  public function destroy($id)
+  {
+    $drug = Drug::findOrFail($id);
+    $drug->delete();
+    return redirect()->route('app.settings.pharmacy')->with('success', 'Drug Deleted !');
   }
 }

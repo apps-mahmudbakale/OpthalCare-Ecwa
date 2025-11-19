@@ -128,6 +128,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::get('lab-test/{id}', [LaboratoryController::class, 'edit'])->name('lab-test.edit');
   Route::delete('lab-test/{id}', [LaboratoryController::class, 'destroy'])->name('lab-test.destroy');
   Route::put('lab-test/{test}', [LaboratoryController::class, 'update'])->name('lab-test.update');
+  Route::delete('drugs-delete/{id}', [DrugController::class, 'destroy'])->name('settings.drugs.destroy');
   Route::post('drugs-add', [DrugController::class, 'storeDrugs'])->name('drugs-add.store');
   Route::post('drugs-add/{drugs}', [DrugController::class, 'updateDrugs'])->name('drugs-add.update');
   Route::post('drugs-store', [DrugStoreController::class, 'store'])->name('drugs-store.store');
