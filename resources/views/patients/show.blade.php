@@ -261,10 +261,10 @@
                     </div>
                     <div class="tab-pane fade" id="navs-pills-justified-va" role="tabpanel">
                         <div class="row">
-                            <div class="col-md-12">
-                                <a href="" data-bs-toggle="modal" data-bs-target="#new-va-modal"
-                                    class="btn btn-primary mb-2 float-end">New Entry</a>
-                            </div>
+{{--                            <div class="col-md-12">--}}
+{{--                                <a href="" data-bs-toggle="modal" data-bs-target="#new-va-modal"--}}
+{{--                                    class="btn btn-primary mb-2 float-end">New Entry</a>--}}
+{{--                            </div>--}}
                             <livewire:vision-acuity :patientId="$patient->id" />
                         </div>
                         @include('_partials._modals.modal-new-va')

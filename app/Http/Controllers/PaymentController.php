@@ -68,7 +68,9 @@ class PaymentController extends Controller
         }
 
         // Handle wallet payment
-        if ($paymentMethod->name === 'Wallet' && !$this->processWalletPayment($patient, $request->amount)) {
+        if (strcasecmp($paymentMethod->name, 'wallet') === 0
+          && !$this->processWalletPayment($patient, $request->amount)) {
+          dd($patient);
           return redirect()->route('app.patients.show', $patient->id)
             ->with(['error' => 'Insufficient balance']);
         }

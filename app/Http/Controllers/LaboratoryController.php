@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Laboratory;
 use App\Models\LabCategory;
 use App\Models\LabTemplate;
+use App\Models\LabTemplateItem;
 use Illuminate\Http\Request;
 use App\Exports\LabTestExport;
 use App\Imports\LabTestImport;
@@ -78,6 +79,58 @@ class LaboratoryController extends Controller
   {
     $template = LabTemplate::find($id);
     $template->update($request->all());
+//    $request->validate([
+//      'name' => 'required',
+//      'parameters' => 'required|array',
+//      'references' => 'required|array',
+//      'item_ids' => 'array'  // each item may have an ID (existing row)
+//    ]);
+
+    $template = LabTemplate::findOrFail($id);
+
+    // Update template name
+    $template->update([
+      'name' => $request->name,
+    ]);
+
+    // Track IDs we have processed
+    $processedIds = [];
+
+    foreach ($request->parameters as $index => $paramId) {
+
+      if (!$paramId) continue;  // skip empty rows
+
+      $reference = $request->references[$index] ?? null;
+      $itemId = $request->item_ids[$index] ?? null;
+
+      // CASE 1: Update existing item
+      if ($itemId) {
+        $item = LabTemplateItem::find($itemId);
+
+        if ($item) {
+          $item->update([
+            'lab_parameter_id' => $paramId,
+            'reference' => $reference
+          ]);
+          $processedIds[] = $itemId;
+        }
+      }
+      // CASE 2: Insert new item
+      else {
+        $newItem = LabTemplateItem::create([
+          'lab_template_id' => $template->id,
+          'lab_parameter_id' => $paramId,
+          'reference' => $reference
+        ]);
+        $processedIds[] = $newItem->id;
+      }
+    }
+
+    // Delete removed rows
+    LabTemplateItem::where('id', $template->id)
+      ->whereNotIn('id', $processedIds)
+      ->delete();
+
     return redirect()->route('app.settings.laboratory')->with('success', 'Lab Test Template Updated !');
   }
 

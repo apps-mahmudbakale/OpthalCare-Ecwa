@@ -23,7 +23,7 @@
         <option value="{{ $i }}">{{ $i }} years</option>
         @endfor
       </select>
-      <button id="new-patient" class="btn btn-label-primary waves-effect">New Patient</button>
+      <button id="new-patient" class="btn btn-primary waves-effect">New Patient</button>
     </div>
 
     <div class="card-datatable table-responsive pt-0">
@@ -46,18 +46,10 @@
                   </button>
                   <div class="dropdown-menu dropdown-menu-end custom-dropdown">
                     <a class="dropdown-item" href="{{ route('app.patients.show', $patient->id) }}">Open Profile</a>
-                    <button class="dropdown-item" data-request-url="{{route('app.patients.tag', $patient->id)}}"
-                            data-toggle="modal" data-target="#global-modal">Add Tag
-                    </button>
                     <a class="dropdown-item" href="{{ route('app.patients.edit', $patient->id) }}">Edit Profile</a>
 
                     <a class="dropdown-item" href="{{route('app.patient.checkIn', $patient->id)}}">
                       Check In
-                    </a>
-
-                    <a class="dropdown-item" data-bs-toggle="modal"
-                       data-bs-target="#schedule-appointment{{ $patient->id }}">
-                      Schedule Appointment
                     </a>
                     <a class="dropdown-item text-danger" href="javascript:void(0);">Delete Profile</a>
                   </div>

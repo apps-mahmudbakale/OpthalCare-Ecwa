@@ -59,7 +59,7 @@
         </div>
         <!--/ Monthly Campaign State -->
         <!-- Active Projects -->
-        <div class="col-xl-6 col-md-6 mb-4">
+        <div class="col-xl-12 col-md-12 mb-4">
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between">
                     <div class="card-title mb-0">
@@ -71,6 +71,21 @@
                 </div>
                 <div class="card-body">
                     <livewire:lab-category />
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between">
+                    <div class="card-title mb-0">
+                        <h5 class="mb-0">Lab Parameters</h5>
+                        {{-- <small class="text-muted">Average 72% Completed</small> --}}
+                    </div>
+                    <a class="btn btn-label-dark waves-effect" href="javascript:void(0);" data-bs-toggle="modal"
+                        data-bs-target="#new-lab-parameter">New</a>
+                </div>
+                <div class="card-body">
+                    <livewire:lab-parameter />
                 </div>
             </div>
         </div>

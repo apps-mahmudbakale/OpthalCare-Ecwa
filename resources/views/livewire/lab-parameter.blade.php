@@ -26,23 +26,24 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($templates as $template)
+                @foreach ($categories as $category)
                     <tr class="odd">
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $template->name }}</td>
+                        <td>{{ $category->name }}</td>
                         <td>
                             <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
                                     data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
                                 <ul class="dropdown-menu dropdown-menu-end m-0">
-                                    <li><a href="{{ route('app.lab-template.edit', $template->id) }}"
-                                            class="dropdown-item">Edit</a></li>
+                                    <li><a href="" data-toggle="modal"
+                                            data-request-url="{{ route('app.lab-parameter.edit', $category->id) }}"
+                                            data-target="#global-modal-lg" class="dropdown-item">Edit</a></li>
                                     <div class="dropdown-divider"></div>
-                                    <li><a href="#" onclick="return submitDeleteForm({{ $template->id }});"
+                                    <li><a href="#" onclick="return submitDeleteForm({{ $category->id }});"
                                             class="dropdown-item text-danger">Delete</a></li>
                                 </ul>
                             </div>
-                            <form id="delete-form-{{ $template->id }}"
-                                action="{{ route('app.lab-template.destroy', $template->id) }}" method="POST"
+                            <form id="delete-form-{{ $category->id }}"
+                                action="{{ route('app.lab-parameter.destroy', $category->id) }}" method="POST"
                                 style="display: none;">
                                 @csrf
                                 @method('DELETE')
@@ -50,23 +51,35 @@
                         </td>
                     </tr>
                 @endforeach
+
+                @push('scripts')
+                    <script>
+                        function submitDeleteForm(id) {
+                            if (confirm('Are you sure you want to delete this item?')) {
+                                document.getElementById('delete-form-' + id).submit();
+                            }
+                            return false;
+                        }
+                    </script>
+                @endpush
             </tbody>
         </table>
         <div class="row">
             <div class="col-sm-12 col-md-6">
                 <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">
-                    Showing {{ $templates->firstItem() }} to {{ $templates->lastItem() }} of
-                    {{ $templates->total() }} entries</div>
+                    Showing {{ $categories->firstItem() }} to {{ $categories->lastItem() }} of
+                    {{ $categories->total() }} entries</div>
             </div>
             <div class="col-sm-12 col-md-6">
                 <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
-                    {{ $templates->links() }}
+                    {{ $categories->links() }}
                 </div>
             </div>
         </div>
     </div>
+
 </div>
-@include('_partials._modals.modal-new-lab-template')
+@include('_partials._modals.modal-new-lab-parameter')
 @include('_partials._modals.global-modal')
 
 <script>
@@ -94,9 +107,9 @@
 </script>
 {{-- JavaScript for delete confirmation --}}
 <script>
-    function submitDeleteForms(id) {
-        if (confirm('Are you sure you want to delete this Template?')) {
-            const form = document.getElementById('delete-forms-' + id);
+    function submitDeleteFormz(id) {
+        if (confirm('Are you sure you want to delete this Category?')) {
+            const form = document.getElementById('delete-formz-' + id);
             if (form) {
                 form.submit();
             }

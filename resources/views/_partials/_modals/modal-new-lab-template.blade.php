@@ -7,7 +7,18 @@
                 <div class="text-center mb-4">
                     <h3 class="mb-2">New Lab Template</h3>
                 </div>
+              @php
+                function auto_fill() {
+                  $output ='';
+                  $parameters = \App\Models\LabParameter::all();
 
+                  foreach($parameters as $parameter){
+                    $output .= '<option value='.$parameter->id.'>'.$parameter->name.'</option>';
+                  }
+
+                  return $output;
+                }
+              @endphp
                 <form action="{{ route('app.lab-template.store') }}" method="POST" class="row g-3">
                     @csrf
 
@@ -17,42 +28,17 @@
                             required>
                     </div>
 
-                    <!-- REPEATER START -->
-                    <div class="col-12">
-                        <label class="form-label fw-bold">Test Parameters</label>
-
-                        <div id="lab-parameters-wrapper">
-
-                            <!-- Single Row Template -->
-                            <div class="row g-2 mb-2 lab-parameter-row">
-                                <div class="col-md-6">
-                                    <select name="parameters[]" class="form-control">
-                                        <option value="">-- Select Parameter --</option>
-                                        @foreach (\App\Models\LabParameter::all() as $parameter)
-                                            <option value="{{ $parameter->id }}">{{ $parameter->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <div class="col-md-5">
-                                    <input type="text" name="references[]" class="form-control"
-                                        placeholder="Reference (e.g 12 - 16 g/dL)">
-                                </div>
-
-                                <div class="col-md-1 text-start">
-                                    <button type="button" class="btn btn-danger btn-sm remove-row">&times;</button>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <!-- ADD MORE BUTTON -->
-                        <button type="button" id="add-parameter" class="btn btn-primary btn-sm mt-2">
-                            + Add Parameter
-                        </button>
+                    <div class="col-12 table-responsive">
+                      <table class="table table-bordered" id="item_table">
+                        <tr>
+                          <th>Parameter</th>
+                          <th>Reference</th>
+                          <th><button type="button" name="add" class="btn btn-success btn-sm  add">
+                              <i class="fa fa-plus-circle"></i>
+                            </button></th>
+                        </tr>
+                      </table>
                     </div>
-                    <!-- REPEATER END -->
-
                     <div class="col-12 text-center mt-3">
                         <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
                         <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -64,28 +50,19 @@
     </div>
 </div>
 
-<!-- JS For Adding/Removing Rows -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const wrapper = document.getElementById('lab-parameters-wrapper');
-        const addBtn = document.getElementById('add-parameter');
-
-        // Add new row
-        addBtn.addEventListener('click', function() {
-            let newRow = wrapper.querySelector('.lab-parameter-row').cloneNode(true);
-            newRow.querySelectorAll('input').forEach(i => i.value = '');
-            newRow.querySelector('select').value = '';
-            wrapper.appendChild(newRow);
-        });
-
-        // Remove row
-        wrapper.addEventListener('click', function(e) {
-            if (e.target.classList.contains('remove-row')) {
-                let rows = wrapper.querySelectorAll('.lab-parameter-row');
-                if (rows.length > 1) {
-                    e.target.closest('.lab-parameter-row').remove();
-                }
-            }
-        });
+  $(document).ready(function(){
+    $(document).on('click', '.add', function(){
+      var html = '';
+      html +='<tr>';
+      html +='<td><select name="parameters[]" class="form-control parameter"><option value="">Select Parameter...</option><?php echo auto_fill();?></select></td>';
+      html +='<td><input class="form-control reference" type="text" name="references[]" placeholder="Reference"> </td>';
+      html += '<td><button type="button" name="remove" class="btn btn-danger btn-sm  remove"><i class="fa fa-minus-circle"></i></button></td>';
+      $('#item_table').append(html);
     });
+
+    $(document).on('click', '.remove', function(){
+      $(this).closest('tr').remove();
+    });
+  });
 </script>

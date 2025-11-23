@@ -120,7 +120,10 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::get('lab-export', [LaboratoryController::class, 'Export'])->name('lab.export');
   Route::post('lab-import', [LaboratoryController::class, 'Import'])->name('lab.import');
   Route::post('lab-category/{category}', [LaboratoryController::class, 'updateCategory'])->name('lab-category.update');
-  // Route::post('lab-template', [LaboratoryController::class, 'storeTemplate'])->name('lab-template.store');
+  Route::post('lab-parameter', [LabTemplateController::class, 'storeLabParameter'])->name('lab-parameter.store');
+  Route::get('lab-parameter/{id}', [LabTemplateController::class, 'editLabParameter'])->name('lab-parameter.edit');
+  Route::put('lab-parameter/{id}', [LabTemplateController::class, 'updateLabParameter'])->name('lab-parameter.update');
+  Route::delete('lab-parameter/{id}', [LabTemplateController::class, 'deleteLabParameter'])->name('lab-parameter.destroy');
   Route::delete('lab-template/{template}', [LaboratoryController::class, 'deleteTemplate'])->name('lab-template.destroy');
   Route::get('lab-template/{template}', [LaboratoryController::class, 'editTemplate'])->name('lab-template.edit');
   Route::put('lab-template/{template}', [LaboratoryController::class, 'updateTemplate'])->name('lab-template.update');
@@ -161,7 +164,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::post('procedure', [ProcedureController::class, 'storeProcedure'])->name('procedure.store');
   Route::get('procedure/editCategory/{id}', [ProcedureController::class, 'editCategory'])->name('procedures.category.edit');
   Route::put('procedure/{procedures}', [ProcedureController::class, 'updateProcedure'])->name('procedure.update');
-  Route::delete('procedure/category-delete/{id}',[ProcedureController::class, 'deleteCategory'])->name('procedure.delete.category');
+  Route::delete('procedure/category-delete/{id}', [ProcedureController::class, 'deleteCategory'])->name('procedure.delete.category');
   Route::put('procedure/category/{id}', [ProcedureController::class, 'UpdateCategory'])->name('procedure.update.category');
   Route::post('procedures-category', [ProcedureController::class, 'storeCategory'])->name('procedures-category.store');
   Route::post('procedures-category/{category}', [ProcedureController::class, 'updateCategory'])->name('procedures-category.update');
