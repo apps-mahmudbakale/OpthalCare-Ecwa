@@ -61,7 +61,7 @@
                                 data-target="#global-modal"
                         >View </button></li>
                     <li>
-                    <li><button class="dropdown-item" data-request-url="/app/vision-acuity/{{$va->id}}/edit" data-toggle="modal"
+                    <li><button class="dropdown-item" data-request-url="/app/vision-acuity/{{$va->id}}/{{$va->patient_id}}" data-toggle="modal"
                                 data-target="#global-modal"
                       >Edit </button></li>
                     <li>
