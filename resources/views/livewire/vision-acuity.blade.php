@@ -24,14 +24,9 @@
         <div class="ml-auto d-flex">
           <div class="ml-2">
             <a href="" data-bs-toggle="modal" data-bs-target="#new-va-modal"
-                                                class="btn btn-primary mb-2 float-end">New Entry</a>
-{{--            <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#global-modal"--}}
-{{--                    data-remote="/lab/requests/new?patient_id=9772">--}}
-{{--              New Request--}}
-{{--            </button>--}}
+               class="btn btn-primary mb-2 float-end">New Entry</a>
           </div>
         </div>
-
       </div>
       <div class="card-body">
         <table class="table">
@@ -57,18 +52,30 @@
                     <i class="fa fa-ellipsis-v"></i>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-end" style="">
-                    <li><button class="dropdown-item" data-request-url="{{route('app.vision-acuity.show', $va->id)}}" data-toggle="modal"
-                                data-target="#global-modal"
-                        >View </button></li>
                     <li>
-                    <li><button class="dropdown-item" data-request-url="/app/vision-acuity/{{$va->id}}/{{$va->patient_id}}" data-toggle="modal"
-                                data-target="#global-modal"
-                      >Edit </button></li>
+                      <button class="dropdown-item" data-request-url="{{route('app.vision-acuity.show', $va->id)}}"
+                              data-toggle="modal"
+                              data-target="#global-modal"
+                      >View
+                      </button>
+                    </li>
+                    <li>
+                    <li>
+                      <button class="dropdown-item"
+                              data-request-url="/app/vision-acuity/{{$va->id}}/{{$va->patient_id}}" data-toggle="modal"
+                              data-target="#global-modal"
+                      >Edit
+                      </button>
+                    </li>
                     <li>
                     <li>
                       <hr class="dropdown-divider">
                     </li>
-                    <l><button class="dropdown-item3 text-bg-danger" id="delete" data-delete-url="">Delete</button></l>
+                    <l>
+                      <button class="dropdown-item3 text-bg-danger" id="delete"
+                              data-delete-url="{{route('app.vision-acuity.destroy', $va->id)}}">Delete
+                      </button>
+                    </l>
                   </ul>
                 </div>
               </td>
