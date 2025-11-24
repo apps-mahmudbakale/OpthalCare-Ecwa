@@ -59,7 +59,7 @@
           </table>
 
           <label for="comments">Comments</label>
-          <textarea name="comments" id="comments" cols="30" rows="4" class="form-control"></textarea>
+          <textarea name="comment" id="comments" cols="30" rows="4" class="form-control"></textarea>
 
           <div class="col-12 text-center">
             <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>

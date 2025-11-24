@@ -31,7 +31,7 @@
             </tr>
             </tbody>
             <label for="comments">Comments</label>
-            <textarea name="comments" id="" cols="30" rows="10" class="form-control"></textarea>
+            <textarea name="comment" id="" cols="30" rows="10" class="form-control"></textarea>
           </table>
           <div class="col-12 text-center">
             <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>

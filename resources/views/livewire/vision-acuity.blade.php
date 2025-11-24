@@ -57,11 +57,11 @@
                     <i class="fa fa-ellipsis-v"></i>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-end" style="">
-                    <li><button class="dropdown-item" data-request-url="" data-toggle="modal"
+                    <li><button class="dropdown-item" data-request-url="{{route('app.vision-acuity.show', $va->id)}}" data-toggle="modal"
                                 data-target="#global-modal"
                         >View </button></li>
                     <li>
-                    <li><button class="dropdown-item" data-request-url="" data-toggle="modal"
+                    <li><button class="dropdown-item" data-request-url="/app/vision-acuity/{{$va->id}}/edit" data-toggle="modal"
                                 data-target="#global-modal"
                       >Edit </button></li>
                     <li>
