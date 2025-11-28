@@ -196,11 +196,14 @@ class PaymentController extends Controller
           'user_id' => Auth::id(),
         ], $request->billing_id);
 
+        $billing = Billing::where('id', $request->billing_id)->first();
+
+
         // Update temp patient with access code
         $accessCode = 'OPC-' . substr(rand(100000, 999999) . time(), 0, 6);
         $tempPatient->update(['accesscode' => $accessCode]);
 
-        return view('billing.print-new', compact('tempPatient'));
+        return view('billing.print-new', compact('tempPatient', 'billing'));
       });
     } catch (\Exception $e) {
       Log::error('Enrollment payment processing failed: ' . $e->getMessage());

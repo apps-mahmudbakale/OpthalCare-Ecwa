@@ -73,26 +73,18 @@
      <th>Name:</th>
      <td>{{$tempPatient->first_name}} {{$tempPatient->middle_name ?? ''}} {{$tempPatient->last_name}}</td>
    </tr>
-<!--   <tr>-->
-<!--     <th>Age:</th>-->
-<!--     <td>{{$tempPatient->date_of_birth}}</td>-->
-<!--   </tr>-->
-<!--   <tr>-->
-<!--     <th>Gender:</th>-->
-<!--     <td>{{$tempPatient->gender}} </td>-->
-<!--   </tr>-->
-<!--   <tr>-->
-<!--     <th>Email:</th>-->
-<!--     <td>{{$tempPatient->email}}</td>-->
-<!--   </tr>-->
-<!--   <tr>-->
-<!--     <th>Phone:</th>-->
-<!--     <td>{{$tempPatient->phone}}</td>-->
-<!--   </tr>-->
+   <tr>
+     <th>Service:</th>
+     <td>{{$billing->service}}</td>
+   </tr>
+   <tr>
+     <th>Amount:</th>
+     <td>{{$billing->amount}}</td>
+   </tr>
  </table>
   <p style="text-align: center"><b>Access Code: <br> {{$tempPatient->accesscode}} </b></p>
   <p class="centered">Thanks for your purchase!
-    <br>parzibyte.me/blog</p>
+    <br>Reflex Vision & Diagnostic</p>
 </div>
 <button id="btnPrint" class="hidden-print">Print</button>
 <script src="script.js"></script>
