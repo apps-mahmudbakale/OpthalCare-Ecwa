@@ -94,7 +94,7 @@
 
                         // Send the selected category to the API endpoint
                         $.ajax({
-                            url: '/api/billservice', // Replace with your actual API endpoint
+                            url: '{{ route('bill.services') }}', // Replace with your actual API endpoint
                             type: 'POST',
                             contentType: 'application/json',
                             data: JSON.stringify({
