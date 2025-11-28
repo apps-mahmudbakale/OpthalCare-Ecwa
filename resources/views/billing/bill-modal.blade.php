@@ -29,7 +29,6 @@
     </div>
 
     <!-- Search Input for Patients -->
-    <div class="form-group">
         <div class="form-label-group">
             <input type="text" id="patient-search" class="form-control" placeholder="Search for patients...">
             <label for="patient-search">Search for Patients</label>
@@ -41,7 +40,7 @@
         </div>
     </div>
 
-    <!-- Results Container for Patients -->
+    {{-- Results container for patient search --}}
     <div id="patient-results" class="results-container"
         style="border: 1px solid #ccc; max-height: 200px; overflow-y: auto; display: none;">
         <!-- Patient results will be populated here -->
@@ -51,6 +50,7 @@
     <input type="hidden" name="patient_id" id="patient-id">
     <div id="result"></div>
 
+    <br>
     <!-- Submit and Reset buttons -->
     <div class="col-12 text-center">
         <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
@@ -64,7 +64,7 @@
     $(document).ready(function() {
         // Fetch patient data from the API using jQuery
         $.ajax({
-            url: '/getPatients', // Replace with your actual API endpoint
+            url: '{{ route('patients.search') }}',
             type: 'GET',
             dataType: 'json',
             success: function(data) {
@@ -137,7 +137,7 @@
 
             // Send the selected category to the API endpoint
             $.ajax({
-                url: '/billservice', // Replace with your actual API endpoint
+                url: '{{ route('bill.services') }}',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
