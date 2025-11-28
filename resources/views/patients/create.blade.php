@@ -31,12 +31,12 @@
                 <div class="card-body">
                     <form action="{{ route('app.patients.store') }}" method="POST">
                         @csrf
-                      <input type="hidden" name="temp_id" value="{{$data->id}}">
+                      <input type="hidden" name="temp_id" value="{{$data->id ?? ''}}">
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label class="form-label" for="firstname">First Name <span
                                         class="text-danger">*</span></label>
-                                <input type="text" name="firstname" value="{{ old('firstname') ?? $data->first_name }}" id="firstname"
+                                <input type="text" name="firstname" value="{{ old('firstname') ?? $data->first_name ?? '' }}" id="firstname"
                                     class="form-control @error('firstname') is-invalid @enderror" placeholder="First Name">
                                 @if ($errors->has('firstname'))
                                     <div class="text-danger">
@@ -46,13 +46,13 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label" for="middlename">Middle Name</label>
-                                <input type="text" name="middlename" value="{{ old('middlename') ?? $data->middle_name }}" id="middlename"
+                                <input type="text" name="middlename" value="{{ old('middlename') ?? $data->middle_name ?? '' }}" id="middlename"
                                     class="form-control" placeholder="Midddle Name">
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label" for="lastname">Last Name <span
                                         class="text-danger">*</span></label>
-                                <input type="text" name="lastname" value="{{ old('lastname') ??  $data->last_name }}" id="lastname"
+                                <input type="text" name="lastname" value="{{ old('lastname') ??  $data->last_name ?? '' }}" id="lastname"
                                     class="form-control  @error('lastname') is-invalid @enderror" placeholder="Last Name">
                                 @if ($errors->has('lastname'))
                                     <div class="text-danger">
@@ -63,7 +63,7 @@
                             <div class="col-md-4">
 
                                 <label class="form-label" for="email">Email <span class="text-danger">*</span></label>
-                                <input type="email" name="email" value="{{ old('email') ?? $data->email }}" id="email"
+                                <input type="email" name="email" value="{{ old('email') ?? $data->email ?? '' }}" id="email"
                                     class="form-control  @error('email') is-invalid @enderror" placeholder="Email">
                                 @if ($errors->has('email'))
                                     <div class="text-danger">
@@ -73,7 +73,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label" for="phone">Phone <span class="text-danger">*</span></label>
-                                <input type="text" id="phone" name="phone" value="{{ old('phone') ?? $data->phone }}"
+                                <input type="text" id="phone" name="phone" value="{{ old('phone') ?? $data->phone ?? '' }}"
                                     class="form-control @error('phone') is-invalid @enderror"" placeholder="Phone">
                                 @if ($errors->has('phone'))
                                     <div class="text-danger">
@@ -85,7 +85,7 @@
                                 <label class="form-label" for="gender">Gender <span class="text-danger">*</span></label>
                                 <select name="gender" id=""
                                     class="form-control @error('gender') is-invalid @enderror">
-                                  <option value="{{$data->gender}}" selected>{{$data->gender}}</option>
+                                  <option value="{{$data->gender ?? ''}}" selected>{{$data->gender ?? 'Select Gender'}}</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                     <option value="Other">Other</option>
@@ -99,7 +99,7 @@
                             <div class="col-md-4">
                                 <label for="date_of_birth" class="form-label"> Date of Birth <span
                                         class="text-danger">*</span></label>
-                                <input type="date" name="date_of_birth" value="{{ old('date_of_birth') ?? $data->date_of_birth }}"
+                                <input type="date" name="date_of_birth" value="{{ old('date_of_birth') ?? $data->date_of_birth ?? '' }}"
                                     class="form-control @error('date_of_birth') is-invalid @enderror">
                                 @if ($errors->has('date_of_birth'))
                                     <div class="text-danger">

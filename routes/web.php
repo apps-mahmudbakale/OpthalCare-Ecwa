@@ -266,6 +266,6 @@ Route::post('/getDrugsByCategory', [\App\Http\Controllers\DrugController::class,
 Route::get('getPatients', [PatientBillController::class, 'index'])->name('patients.search');
 Route::post('patient-first-timer', [PatientBillController::class, 'store'])->name('patients.first-timer');
 Route::post('/billservice', [BillingServiceController::class, 'index'])->name('bill.services');
-Route::get('/billservices/{patient}/{type}/{accessCode}', [BillingServiceController::class, 'verifyAccessCode'])->name('bill.services.verify');;
+Route::get('/billservices/{patient}/{type}/{accessCode}', [BillingServiceController::class, 'verifyAccessCode'])->name('bill.services.verify');
 
 // URL::forceScheme('https');

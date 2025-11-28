@@ -38,7 +38,7 @@ class BillingServiceController extends Controller
 
   public function verifyAccessCode($patient, $type, $accessCode)
   {
-    if (strtolower($type) == 'follow-up'){
+    if (strtolower($type) == 'follow-up') {
       $follow = FollowUp::where('access_code', $accessCode)->first();
       if ($follow) {
         return response()->json([
@@ -52,21 +52,38 @@ class BillingServiceController extends Controller
           'message' => 'Invalid access code. Please try again.' // Return a failure message
         ], 404);  // Optional: return a 404 status code if the access code is not found
       }
-    }
-    $tempPatient = TempPatient::where('accesscode', $accessCode)->first();
+    } elseif (strtolower($type) == 'enrollment') {
+      $tempPatient = TempPatient::where('accesscode', $accessCode)->first();
 
-    if ($tempPatient) {
-      return response()->json([
-        'success' => true,           // Add a success flag
-        'message' => 'Access code verified successfully.',
-        'data' => $tempPatient        // Include the patient data in the response
-      ]);
-    } else {
-      return response()->json([
-        'success' => false,          // Return failure flag
-        'message' => 'Invalid access code. Please try again.' // Return a failure message
-      ], 404);  // Optional: return a 404 status code if the access code is not found
+      if ($tempPatient || strtolower($accessCode) === 'walkin') {
+        return response()->json([
+          'success' => true,           // Add a success flag
+          'message' => 'Access code verified successfully.',
+          'data' => $tempPatient        // Include the patient data in the response
+        ]);
+      } else {
+        return response()->json([
+          'success' => false,          // Return failure flag
+          'message' => 'Invalid access code. Please try again.' // Return a failure message
+        ], 404);  // Optional: return a 404 status code if the access code is not found
+      }
     }
+    else {
+      $tempPatient = TempPatient::where('accesscode', $accessCode)->first();
 
+      if ($tempPatient) {
+        return response()->json([
+          'success' => true,           // Add a success flag
+          'message' => 'Access code verified successfully.',
+          'data' => $tempPatient        // Include the patient data in the response
+        ]);
+      } else {
+        return response()->json([
+          'success' => false,          // Return failure flag
+          'message' => 'Invalid access code. Please try again.' // Return a failure message
+        ], 404);  // Optional: return a 404 status code if the access code is not found
+      }
+
+    }
   }
 }

@@ -145,7 +145,7 @@
       showLoaderOnConfirm: true,
       preConfirm: async (accessCode) => {
         try {
-          const apiUrl = `/api/billservices/0/create-account/${accessCode}`;
+          const apiUrl = `{{ route('bill.services.verify', ['0', 'create', '']) }}/${accessCode}`;
           const response = await fetch(apiUrl);
 
           if (!response.ok) {
