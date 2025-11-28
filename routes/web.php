@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BillingServiceController;
+use App\Http\Controllers\PatientBillController;
 use App\Models\Consumble;
 use App\Models\Appointment;
 use Illuminate\Support\Facades\URL;
@@ -54,10 +56,7 @@ use App\Http\Controllers\AppointmentTypeController;
 use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\ProcedureRequestController;
 use App\Http\Controllers\RadiologyRequestController;
-use App\Http\Controllers\Api\BillingServiceController;
 use App\Http\Controllers\ConsultingTemplateController;
-use App\Http\Controllers\Api\UserController as ApiUser;
-use App\Http\Controllers\Api\PatientController as ApiPatient;
 
 /*
 |--------------------------------------------------------------------------
@@ -262,5 +261,11 @@ Route::post('getDrugsCategorybyStore', [DrugController::class, 'getDrugsCategory
 Route::post('getDrugsbyStore', [DrugController::class, 'getDrugsbyStore'])->name('get.drugs.by.store');
 Route::post('/getDrugsByCategory', [\App\Http\Controllers\DrugController::class, 'getByCategory']);
 
+
+
+Route::get('/getPatients', [PatientBillController::class, 'index']);
+Route::post('patient-first-timer', [PatientBillController::class, 'store']);
+Route::post('/billservice', [BillingServiceController::class, 'index']);
+Route::get('/billservices/{patient}/{type}/{accessCode}', [BillingServiceController::class, 'verifyAccessCode']);
 
 // URL::forceScheme('https');

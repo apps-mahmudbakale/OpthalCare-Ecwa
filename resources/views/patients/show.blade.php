@@ -274,10 +274,6 @@
                     <div class="tab-pane fade" id="navs-pills-justified-refraction" role="tabpanel">
                         <div class="row">
                             <div class="col-md-12">
-                                <a href="{{ route('app.refraction.create', $patient->id) }}"
-                                    class="btn btn-primary link mb-2 float-end">New Entry</a>
-                            </div>
-                            <div class="col-md-12">
                                 <livewire:refraction :patientId="$patient->id" />
                             </div>
                         </div>
