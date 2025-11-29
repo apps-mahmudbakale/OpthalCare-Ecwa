@@ -16,15 +16,6 @@
                         <input type="text" name="name" class="form-control" placeholder="New Drug " />
                     </div>
                     <div class="col-12 col-md-12">
-
-                        <input class="form-check-input input-filter" type="checkbox" id="select-active"
-                            data-value="active" checked>
-                        <label class="form-check-label" for="select-active">Active</label>
-                        <div>
-                            <small>Allow this drug to be prescribed to patients.</small>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-12">
                         <label class="form-label"> Quantity </label>
                         <input type="number" name="quantity" class="form-control" placeholder="0" />
 
