@@ -128,6 +128,7 @@
     </script>
 
     <!-- Include Edit Drug Modal -->
-    @include('_partials._modals.modal-edit-drug')
+  @include('_partials._modals.modal-edit-drug')
+  @include('_partials._modals.modal-new-add-drugs')
 
 </div>
