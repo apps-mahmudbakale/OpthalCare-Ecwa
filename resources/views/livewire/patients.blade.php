@@ -48,7 +48,7 @@
                     <a class="dropdown-item" href="{{ route('app.patients.show', $patient->id) }}">Open Profile</a>
                     <a class="dropdown-item" href="{{ route('app.patients.edit', $patient->id) }}">Edit Profile</a>
 
-                    <a class="dropdown-item check-in-link" href="#" data-patient-id="{{ $patient->id }}">
+                    <a class="dropdown-item" href="{{ route('app.patient.checkIn', $patient->id) }}">
                       Check In
                     </a>
                     <a class="dropdown-item text-danger" href="javascript:void(0);">Delete Profile</a>
@@ -177,60 +177,12 @@
         const encryptedData = btoa(JSON.stringify(result.value.data));
 
         // Redirect to the patient.create route with encrypted data
-        window.location.href = `/app/patients/create?data=${encodeURIComponent(encryptedData)}`;
-      }
-    });
-  });
-</script>
-<script>
-  // Handle check-in with access code verification
-  document.addEventListener('click', function(event) {
-    if (event.target.closest('.check-in-link')) {
-      event.preventDefault();
-      const patientId = event.target.closest('.check-in-link').getAttribute('data-patient-id');
-      
-      Swal.fire({
-        title: 'Provide Access Code',
-        input: 'text',
-        inputAttributes: {
-          autocapitalize: 'off'
-        },
-        confirmButtonText: 'Verify & Check In',
-        showLoaderOnConfirm: true,
-        preConfirm: async (accessCode) => {
-          try {
-            const apiUrl = `{{ route('bill.services.verify', ['0', 'enrollment', '']) }}/${accessCode}`;
-            const response = await fetch(apiUrl);
-
-            if (!response.ok) {
-              throw new Error('Request failed');
-            }
-
-            const result = await response.json();
-            if (!result.success) {
-              throw new Error(result.message || 'Invalid access code');
-            }
-
-            return result;
-          } catch (error) {
-            Swal.showValidationMessage(`Error: ${error.message}`);
-          }
-        },
-        allowOutsideClick: () => !Swal.isLoading()
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // If access code is verified, redirect to check-in
-          window.location.href = `/app/patient/check-in/${patientId}`;
-        }
-      });
-    }
   });
 </script>
 
 <script>
   $(document).ready(function() {
     $(document).on('click', '.dropdown-item[data-request-url]', function(e) {
-      e.preventDefault(); // Prevent default if needed
 
       var requestUrl = $(this).data('request-url');
 

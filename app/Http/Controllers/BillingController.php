@@ -34,7 +34,7 @@ class BillingController extends Controller
    */
   public function store(Request $request)
   {
-   
+
     $request_ref = str()->random(6);
     if ($request->service_category == 'consultations') {
       $consult = Speciality::find($request->service_id);
