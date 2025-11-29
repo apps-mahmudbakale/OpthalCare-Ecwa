@@ -12,6 +12,7 @@ class Drugs extends Base
   public $DrugName;
   public $DrugCategory;
   public $DrugPrice;
+  public $DrugQuantity;
 
 
   public function selectDrugs($id)
@@ -23,6 +24,7 @@ class Drugs extends Base
     $this->DrugName = $test->name;
     $this->DrugCategory = $test->category_id;
     $this->DrugPrice = $test->price;
+    $this->DrugQuantity = $test->quantity;
 
 
     $this->dispatchBrowserEvent('DrugsEditModal');
@@ -30,7 +32,7 @@ class Drugs extends Base
 
   public function updateDrugs()
   {
-    Drug::where('id', $this->DrugId)->update(['name' => $this->DrugName, 'category_id' => $this->DrugCategory,  'price' => $this->DrugPrice]);
+    Drug::where('id', $this->DrugId)->update(['name' => $this->DrugName, 'category_id' => $this->DrugCategory,  'price' => $this->DrugPrice, 'quantity' => $this->DrugQuantity]);
 
     redirect()->route('app.settings.index')->with('success', 'Drugs Updated');
   }

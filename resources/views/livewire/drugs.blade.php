@@ -31,6 +31,7 @@
                     <th>S/N</th>
                     <th>Name</th>
                     <th>Category</th>
+                    <th>Quantity</th>
                     <th>Price</th>
                     <th></th>
                 </tr>
@@ -42,6 +43,7 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $test->name }}</td>
                         <td>{{ $test->category->name ?? '' }}</td>
+                        <td>{{$test->quantity}}</td>
                         <td>{{ $test->price }}</td>
 
                         <td>

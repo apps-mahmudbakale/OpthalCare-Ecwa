@@ -29,6 +29,11 @@
                         </select>
                     </div>
 
+                  <div class="col-12 col-md-12">
+                    <label class="form-label"> Quantity </label>
+                    <input type="number" name="quantity" wire:model.defer="DrugQuantity" class="form-control" placeholder="0" />
+
+                  </div>
                     <!-- Drug Price -->
                     <div class="col-12">
                         <label class="form-label">Price</label>
