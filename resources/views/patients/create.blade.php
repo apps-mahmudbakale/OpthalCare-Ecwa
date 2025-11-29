@@ -131,7 +131,7 @@
                                     <option value="" selected>Select Marital Status...</option>
                                     <option value="Single">Single</option>
                                     <option value="Married">Married</option>
-                                    <option value="Widow"></option>
+                                    <option value="Widow">Widow</option>
                                     <option value="Divorced">Divorced</option>
                                 </select>
                                 @if ($errors->has('marital_status'))
@@ -242,7 +242,16 @@
                                     class="form-control @error('next_of_kin_relation') is-invalid @enderror">
                                     <option value="Father">Father</option>
                                     <option value="Mother">Mother</option>
-                                    <option value="Husband">Husband</option>
+                                  <option value="Son">Son</option>
+                                  <option value="Daughter">Daughter</option>
+                                  <option value="Brother">Brother</option>
+                                  <option value="Sister">Sister</option>
+                                  <option value="Husband">Husband</option>
+                                  <option value="Wife">Wife</option>
+                                  <option value="Niece">Niece</option>
+                                  <option value="Nephew">Nephew</option>
+                                  <option value="Aunt">Aunt</option>
+                                  <option value="Uncle">Uncle</option>
                                 </select>
                                 @if ($errors->has('next_of_kin_relation'))
                                     <div class="text-danger">
