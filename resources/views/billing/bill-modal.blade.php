@@ -28,6 +28,17 @@
         </div>
     </div>
 
+  <div class="form-group">
+    <div class="form-label-group">
+      <select name="service_type" class="custom-select" id="service-type" required="required">
+        <option value="">Choose service type...</option>
+        <option value="fresh">Fresh</option>
+        <option value="follow-up">follow-up</option>
+      </select>
+      <label for="service-category">Service Type</label>
+    </div>
+  </div>
+
     <!-- Search Input for Patients -->
         <div class="form-label-group">
             <input type="text" id="patient-search" class="form-control" placeholder="Search for patients...">

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ServiceRequestHandler
 {
-  public function handleServiceRequest($serviceName, $patientId, $serviceCategory, $billingRef, $qty)
+  public function handleServiceRequest($serviceName, $patientId, $serviceCategory, $kind, $billingRef, $qty)
   {
     // Determine the service type dynamically
     $serviceType = $this->detectServiceType($serviceName);
@@ -20,7 +20,7 @@ class ServiceRequestHandler
     }
 
     // Calculate the cost
-    $amount = $this->calculateAmount($serviceType, $service, $qty ?: 1);
+    $amount = $this->calculateAmount($serviceType, $kind, $service, $qty ?: 1);
 
 
     // Create a billing record
@@ -60,14 +60,19 @@ class ServiceRequestHandler
     return null;
   }
 
-  private function calculateAmount($serviceType, $service, $qty)
+  private function calculateAmount($serviceType, $kind, $service, $qty)
   {
+
     if ($serviceType === \App\Models\Procedure::class) {
       return ($service->procedure_cost ?? 0)
         + ($service->theatre_cost ?? 0)
         + ($service->anasthesia_cost ?? 0)
         + ($service->surgeon_fee ?? 0);
     }
+
+   if ($kind == 'follow-up'){
+     return ($service->follow_up_price ?? 0) * $qty;
+   }
 
     return ($service->price ?? 0) * $qty;
   }

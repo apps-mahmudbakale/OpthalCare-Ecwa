@@ -34,13 +34,13 @@ class BillingController extends Controller
    */
   public function store(Request $request)
   {
-
+   
     $request_ref = str()->random(6);
     if ($request->service_category == 'consultations') {
       $consult = Speciality::find($request->service_id);
-//      dd($request->all());
+
       $serviceHandler = new ServiceRequestHandler();
-      $billingRecord = $serviceHandler->handleServiceRequest($consult->name, $request->patient_id, 'consultations', $request_ref, 1);
+      $billingRecord = $serviceHandler->handleServiceRequest($consult->name, $request->patient_id, 'consultations', $request->service_type, $request_ref, 1);
       // Generate unique access code
 //      $accessCode = 'FU-' . strtoupper(Str::random(6));
 
