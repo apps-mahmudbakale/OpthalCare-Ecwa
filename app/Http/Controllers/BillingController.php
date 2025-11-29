@@ -47,16 +47,16 @@ class BillingController extends Controller
     } elseif ($request->service_category == 'laboratory') {
       $lab = Laboratory::find($request->service_id);
       $serviceHandler = new ServiceRequestHandler();
-      $billingRecord = $serviceHandler->handleServiceRequest($lab->name, $request->patient_id, 'laboratory', $request_ref, 1);
+      $billingRecord = $serviceHandler->handleServiceRequest($lab->name, $request->patient_id, 'laboratory', 'fresh', $request_ref, 1);
     } elseif ($request->service_category == 'pharmacy') {
       $drug = Drug::find($request->service_id);
       $serviceHandler = new ServiceRequestHandler();
-      $billingRecord = $serviceHandler->handleServiceRequest($drug->name, $request->patient_id, 'pharmacy', $request_ref, 1);
+      $billingRecord = $serviceHandler->handleServiceRequest($drug->name, $request->patient_id, 'pharmacy', 'fresh', $request_ref, 1);
     }elseif ($request->service_category == 'ophthicals') {
       //  dd($request->all());
       $optic = Antenatal::find($request->service_id);
       $serviceHandler = new ServiceRequestHandler();
-      $billingRecord = $serviceHandler->handleServiceRequest($optic->name, $request->patient_id, 'ophthicals', $request_ref, 1);
+      $billingRecord = $serviceHandler->handleServiceRequest($optic->name, $request->patient_id, 'ophthicals', 'fresh', $request_ref, 1);
     }
     return redirect()->back()->with('success', 'Bill Added Successfully!');
 
