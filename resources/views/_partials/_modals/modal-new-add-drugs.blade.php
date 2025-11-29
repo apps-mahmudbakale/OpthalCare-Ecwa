@@ -12,16 +12,6 @@
 
                     @csrf
                     <div class="col-12 col-md-12">
-                        <label class="form-label" for="store_id">Drug Store</label>
-                        <select name="store_id" id="store_id" class="form-control">
-                            <option value="" selected>Select Store...</option>
-                            @foreach (\App\Models\DrugStore::all() as $drugStore)
-                                <option value="{{ $drugStore->id }}">{{ $drugStore->name }}</option>
-                            @endforeach
-
-                        </select>
-                    </div>
-                    <div class="col-12 col-md-12">
                         <label class="form-label"> Name</label>
                         <input type="text" name="name" class="form-control" placeholder="New Drug " />
                     </div>
