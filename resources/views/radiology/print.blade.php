@@ -117,7 +117,7 @@
         <table>
           <tr>
             <td class="title">
-              <img src="{{ asset('hhh.png') }}" style="max-height:80px;">
+              <img src="{{ asset('logo.png') }}" style="max-height:80px;">
             </td>
             <td>
               {{ app(App\Settings\SystemSettings::class)->clinic_name ?: 'Clinic' }}<br>
