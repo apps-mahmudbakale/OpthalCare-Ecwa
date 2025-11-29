@@ -6,6 +6,7 @@ use App\Models\Antenatal;
 use App\Models\Drug;
 use App\Models\Billing;
 use App\Models\Laboratory;
+use App\Models\Radiology;
 use App\Models\Speciality;
 use App\Models\DrugRequest;
 use Illuminate\Http\Request;
@@ -34,7 +35,7 @@ class BillingController extends Controller
    */
   public function store(Request $request)
   {
-
+//    dd($request->all());
     $request_ref = str()->random(6);
     if ($request->service_category == 'consultations') {
       $consult = Speciality::find($request->service_id);
@@ -57,7 +58,11 @@ class BillingController extends Controller
       $optic = Antenatal::find($request->service_id);
       $serviceHandler = new ServiceRequestHandler();
       $billingRecord = $serviceHandler->handleServiceRequest($optic->name, $request->patient_id, 'ophthicals', 'fresh',  $request_ref, 1);
-    }elseif ($request->service_category == '')
+    }elseif ($request->service_category == 'radiology'){
+      $imaging = Radiology::find($request->service_id);
+      $serviceHandler = new ServiceRequestHandler();
+      $billingRecord = $serviceHandler->handleServiceRequest($imaging->name, $request->patient_id, 'radiology', 'fresh',  $request_ref, 1);
+    }
     return redirect()->back()->with('success', 'Bill Added Successfully!');
 
   }
