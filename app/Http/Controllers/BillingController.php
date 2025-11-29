@@ -56,8 +56,8 @@ class BillingController extends Controller
       //  dd($request->all());
       $optic = Antenatal::find($request->service_id);
       $serviceHandler = new ServiceRequestHandler();
-      $billingRecord = $serviceHandler->handleServiceRequest($optic->name, $request->patient_id, 'ophthicals', 'fresh', $request_ref, 1);
-    }
+      $billingRecord = $serviceHandler->handleServiceRequest($optic->name, $request->patient_id, 'ophthicals', 'fresh',  $request_ref, 1);
+    }elseif ($request->service_category == '')
     return redirect()->back()->with('success', 'Bill Added Successfully!');
 
   }

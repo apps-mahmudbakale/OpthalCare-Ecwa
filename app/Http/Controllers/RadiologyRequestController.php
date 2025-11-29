@@ -70,6 +70,7 @@ class RadiologyRequestController extends Controller
         $imaging->name,
         $request->patient_id,
         'Radiology',
+        'fresh',
         $request_ref,
         1
       );
