@@ -131,6 +131,7 @@
                                     <option value="" selected>Select Marital Status...</option>
                                     <option value="Single">Single</option>
                                     <option value="Married">Married</option>
+                                    <option value="Widow"></option>
                                     <option value="Divorced">Divorced</option>
                                 </select>
                                 @if ($errors->has('marital_status'))
