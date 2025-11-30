@@ -4,86 +4,152 @@ namespace App\Services;
 
 use App\Models\Billing;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ServiceRequestHandler
 {
-  public function handleServiceRequest($serviceName, $patientId, $serviceCategory, $kind, $billingRef, $qty)
-  {
-    // Determine the service type dynamically
-    $serviceType = $this->detectServiceType($serviceName);
+  // Cache service type detection for 10 minutes to avoid repeated DB hits
+  protected const SERVICE_TYPE_CACHE_TTL = 600;
 
+  // Map of service categories => model classes (faster than looping every time)
+  protected array $serviceModels = [
+    'Speciality'  => \App\Models\Speciality::class,
+    'Drug'        => \App\Models\Drug::class,
+    'Laboratory'  => \App\Models\Laboratory::class,
+    'Radiology'   => \App\Models\Radiology::class,
+    'Procedure'   => \App\Models\Procedure::class,
+    'Bed'         => \App\Models\Bed::class,
+    'Antenatal'   => \App\Models\Antenatal::class,
+    // Add new ones here easily
+  ];
 
-    // Fetch the service details
-    $service = $serviceType ? $serviceType::where('name', $serviceName)->first() : null;
-    if (!$service) {
-      return null; // Service not found
+  /**
+   * Handle creation of a billing record for a requested service.
+   */
+  public function handleServiceRequest(
+    string $serviceName,
+    int $patientId,
+    string $serviceCategory,
+    string $kind = 'fresh',
+    string $billingRef,
+    ?int $qty = null
+  ): ?Billing {
+    $qty = $qty ?? 1;
+
+    // Resolve model class efficiently
+    $modelClass = $this->resolveServiceModel($serviceName);
+
+    if (!$modelClass) {
+      return null; // Service not found in any registered model
     }
 
-    // Calculate the cost
-    $amount = $this->calculateAmount($serviceType, $kind, $service, $qty ?: 1);
+    // Fetch service with only needed columns
+    $service = $modelClass::select($this->getRequiredColumns($modelClass))
+      ->where('name', $serviceName)
+      ->first();
 
+    if (!$service) {
+      return null;
+    }
 
-    // Create a billing record
+    $amount = $this->calculateAmount($modelClass, $kind, $service, $qty);
+
     return Billing::create([
-      'service'    => $serviceCategory . ':' . $serviceName,
-      'service_id' => $service->id,
-      'user_id'    => $patientId,
-      'quantity'   => $qty ?: 1,
-      'amount'     => $amount,
-      'bill_ref'   => $billingRef,
-      'payer_id'   => Auth::id(),
-      'status'     => 0,
+      'service'     => $serviceCategory . ':' . $serviceName,
+      'service_id'  => $service->id,
+      'user_id'     => $patientId,
+      'quantity'    => $qty,
+      'amount'      => $amount,
+      'bill_ref'    => $billingRef,
+      'payer_id'    => Auth::id(),
+      'status'      => 0,
     ]);
   }
 
-  private function detectServiceType($serviceName)
+  /**
+   * Resolve which Eloquent model owns this service name (cached).
+   */
+  protected function resolveServiceModel(string $serviceName): ?string
   {
-    $models = [
-      'Speciality' => \App\Models\Speciality::class,
-      'Drug'       => \App\Models\Drug::class,
-      'Laboratory' => \App\Models\Laboratory::class,
-      'Radiology'  => \App\Models\Radiology::class,
-      'Procedure'  => \App\Models\Procedure::class,
-      'Bed' => \App\Models\Bed::class,
-      'Antenatal' => \App\Models\Antenatal::class,
-      // Add more models here as needed
-    ];
+    $cacheKey = 'service_model:' . md5(strtolower($serviceName));
 
-    foreach ($models as $modelClass) {
-      if (class_exists($modelClass) && method_exists($modelClass, 'getServiceType')) {
+    return Cache::remember($cacheKey, self::SERVICE_TYPE_CACHE_TTL, function () use ($serviceName) {
+      foreach ($this->serviceModels as $modelClass) {
+        if (!class_exists($modelClass)) {
+          continue;
+        }
+
+        // Use exists() — much lighter than count() or first()
         if ($modelClass::where('name', $serviceName)->exists()) {
           return $modelClass;
         }
       }
-    }
 
-    return null;
+      return null;
+    });
   }
 
-  private function calculateAmount($serviceType, $kind, $service, $qty)
+  /**
+   * Define minimal columns needed per model to avoid SELECT *
+   */
+  protected function getRequiredColumns(string $modelClass): array
   {
+    $columns = ['id', 'name', 'price'];
 
-    if ($serviceType === \App\Models\Procedure::class) {
-      return ($service->procedure_cost ?? 0)
-        + ($service->theatre_cost ?? 0)
-        + ($service->anasthesia_cost ?? 0)
-        + ($service->surgeon_fee ?? 0);
+    if ($modelClass === \App\Models\Procedure::class) {
+      return array_merge($columns, [
+        'procedure_cost',
+        'theatre_cost',
+        'anasthesia_cost',
+        'surgeon_fee',
+      ]);
     }
 
-   if ($kind == 'follow-up'){
-     return ($service->follow_up_price ?? 0) * $qty;
-   }
+    if (in_array($modelClass, [
+      \App\Models\Speciality::class,
+      // add others that have follow_up_price
+    ])) {
+      $columns[] = 'follow_up_price';
+    }
 
+    return $columns;
+  }
+
+  /**
+   * Calculate amount with proper type hints and logic grouping
+   */
+  protected function calculateAmount(string $modelClass, string $kind, $service, int $qty): float
+  {
+    // Special handling for procedures
+    if ($modelClass === \App\Models\Procedure::class) {
+      return (
+          ($service->procedure_cost ?? 0) +
+          ($service->theatre_cost ?? 0) +
+          ($service->anasthesia_cost ?? 0) +
+          ($service->surgeon_fee ?? 0)
+        ) * $qty;
+    }
+
+    // Follow-up pricing takes precedence over regular price
+    if ($kind === 'follow-up' && isset($service->follow_up_price)) {
+      return $service->follow_up_price * $qty;
+    }
+
+    // Default: regular price
     return ($service->price ?? 0) * $qty;
   }
 
-  public function isBilled($serviceId, $serviceName, $ref)
+  /**
+   * Check if a service has already been billed for a given reference
+   */
+  public function isBilled(int $serviceId, string $serviceName, string $ref): string
   {
     $billing = Billing::where('service_id', $serviceId)
       ->where('service', $serviceName)
       ->where('bill_ref', $ref)
-      ->first();
+      ->value('status'); // Only fetch status column
 
-    return $billing ? $billing->status : "0";
+    return $billing !== null ? (string) $billing : '0';
   }
 }
