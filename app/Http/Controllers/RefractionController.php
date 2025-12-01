@@ -50,6 +50,11 @@ class RefractionController extends Controller
     if($refraction->delete()){
       return response()->json(['success' => true]);
     }
+  }
 
+  public function print($id){
+    $refraction = Refraction::find($id);
+    $patient = Patient::find($refraction->patient_id);
+    return view('refraction.print', compact('refraction', 'patient'));
   }
 }

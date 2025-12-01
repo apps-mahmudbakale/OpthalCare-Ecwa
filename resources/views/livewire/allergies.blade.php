@@ -26,15 +26,14 @@
                                 <li><a href="{{ route('app.allergies.edit', $allergy->id) }}"
                                         class="dropdown-item">Edit</a></li>
                                 <div class="dropdown-divider"></div>
-                              <li><a href="javascript:void(0);" class="dropdown-item text-danger"
-                                     onclick="submitAllergyDeleteForm({{ $allergy->id }})">Delete</a></li>
+                              <li><button class="dropdown-item text-danger"
+                                     onclick="submitAllergyDeleteForm({{ $allergy->id }})">Delete</button></li>
                             </ul>
                         </div>
                       <form id="delete-allergy-{{ $allergy->id }}"
                             action="{{ route('app.allergies.destroy', $allergy->id) }}"
                             method="POST"
-                            style="display: none;"
-                            wire:ignore>
+                            style="display: none;>
                         @csrf
                         @method('DELETE')
                       </form>

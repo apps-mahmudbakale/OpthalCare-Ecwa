@@ -286,10 +286,6 @@
                         @include('_partials._modals.modal-new-allergies')
                     </div>
                     <div class="tab-pane fade" id="navs-pills-justified-diagnosis" role="tabpanel">
-                        <button type="button" class="btn btn-primary mb-2 float-end" data-bs-toggle="modal"
-                            data-bs-target="#new-diagnosis-modal">
-                            New Entry
-                        </button>
                         <table class="table"></table>
                         <div class="col-md-12">
                             <livewire:diagnoses :patientId="request()->route()->patient->id" />

@@ -245,6 +245,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   })->name('payment.print');
   Route::get('refraction/create/{patient}', [RefractionController::class, 'create'])->name('refraction.create');
   Route::resource('refraction', RefractionController::class)->only(['index', 'store', 'show', 'edit', 'update', 'destroy']);
+  Route::get('refraction/print/{refraction}', [RefractionController::class, 'print'])->name('refraction.print');
 
   Route::get('bills', function () {
     return view('billing.bill-modal');
