@@ -21,9 +21,9 @@ class Radiology extends Model
   {
     return $this->belongsTo(RadiologyCategory::class, 'category_id',);
   }
-  public function template(): HasOne
+  public function template()
   {
-    return $this->hasOne(RadiologyTemplate::class, 'template_id');
+    return $this->belongsTo(RadiologyTemplate::class, 'template_id');
   }
   public static function getServiceType()
   {

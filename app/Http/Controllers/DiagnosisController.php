@@ -63,6 +63,12 @@ class DiagnosisController extends Controller
     return $diagnosis;
   }
 
+  public function print($diagnosis)
+  {
+    $diagnosis = Diagnosis::findOrFail($diagnosis);
+    return view('diagnosis.print', compact('diagnosis'));
+  }
+
   /**
    * Remove the specified resource from storage.
    */

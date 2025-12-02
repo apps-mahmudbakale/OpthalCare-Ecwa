@@ -35,10 +35,10 @@
                     <i class="fa fa-ellipsis-v"></i>
                   </button>
                   <ul class="dropdown-menu" style="">
-                    <li><a data-request-url="" data-toggle="modal"
+                    <li><a data-request-url="{{route('app.diagnosis.show', $diagnosis->id)}}" data-toggle="modal"
                            data-target="#global-modal" class="dropdown-item"
                       >View </a></li>
-                    <li><a href="" target="_blank" class="dropdown-item"
+                    <li><a href="{{route('app.print.diagnosis', $diagnosis->id)}}" target="_blank" class="dropdown-item"
                       >Print </a></li>
                     <li><a class="dropdown-item"
                            data-request-url="{{ route('app.diagnosis.edit', $diagnosis->id) }}"

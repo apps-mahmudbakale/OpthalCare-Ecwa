@@ -82,6 +82,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::resource('users', UserController::class);
   Route::resource('diagnosis', DiagnosisController::class);
   Route::get('diagnosis/{id}', [DiagnosisController::class, 'show'])->name('show.diagnosis');
+  Route::get('diagnosis/{id}/print', [DiagnosisController::class, 'print'])->name('print.diagnosis');
   Route::resource('roles', RoleController::class);
   Route::resource('patients', PatientController::class);
   Route::get('patient-tag/{patient}', [PatientController::class, 'tag'])->name('patients.tag');
@@ -184,6 +185,8 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::post('radiology-template', [RadiologyController::class, 'storeTemplate'])->name('radiology-template.store');
   Route::post('radiology-test', [RadiologyController::class, 'store'])->name('radiology-test.store');
   Route::post('radiology-test/{test}', [RadiologyController::class, 'update'])->name('radiology-test.update');
+  Route::get('radiology-test/{test}', [RadiologyController::class, 'edit'])->name('radiology-test.edit');
+
   //
 
   Route::resource('wait-list', WaitingListController::class);

@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class RadiologyController extends Controller
 {
- 
+
 
   public function storeCategory(Request $request)
   {
@@ -21,6 +21,22 @@ class RadiologyController extends Controller
   {
     $template = RadiologyTemplate::create($request->all());
     return redirect()->route('app.settings.radiology')->with('success', 'Radiology Test Template Added !');
+  }
+
+  public function update(Request $request, $id)
+  {
+    $radiology = Radiology::find($id);
+
+    $radiology->update($request->all());
+
+    return redirect()->route('app.settings.radiology')->with('success', 'Radiology Test Updated !');
+
+  }
+
+  public function edit($id)
+  {
+    $test = Radiology::findOrFail($id);
+    return view('radiology.edit', compact('test'));
   }
 
   public function updateTemplate()

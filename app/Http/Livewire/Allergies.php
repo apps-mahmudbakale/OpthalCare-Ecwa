@@ -12,7 +12,23 @@ class Allergies extends Base
   public $type;
   public $allergen;
   public $reactionToAllergen;
-   public $patientId;
+  public $patientId;
+
+  public $deleteId;
+
+  protected $listeners = ['delete'];
+
+  public function confirmDelete($id)
+  {
+    $this->deleteId = $id;
+    $this->dispatch('show-delete-confirmation');
+  }
+
+  public function delete()
+  {
+    Allergy::find($this->deleteId)?->delete();
+    $this->dispatch('deleted-success');
+  }
 
   public function selectAllergy($allergy_id)
   {
