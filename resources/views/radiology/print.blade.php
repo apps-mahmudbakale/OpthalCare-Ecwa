@@ -148,7 +148,7 @@
     <tr class="item">
       <td>
       <h5>Radiolgy Report</h5>
-       <div class="text-justify"> {{ $result->result }}</div>
+       <div style="text-align: justify"> {{ $result->result }}</div>
 
       </td>
     </tr>
