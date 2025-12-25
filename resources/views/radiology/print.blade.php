@@ -122,7 +122,6 @@
             <td>
               {{ app(App\Settings\SystemSettings::class)->clinic_name ?: 'Clinic' }}<br>
               {{ app(App\Settings\SystemSettings::class)->address ?: 'Clinic' }}<br>
-              Kano State<br>
             </td>
           </tr>
         </table>
@@ -149,7 +148,7 @@
     <tr class="item">
       <td>
       <h5>Radiolgy Report</h5>
-        {{ $result->result }}
+       <div class="text-justify"> {{ $result->result }}</div>
 
       </td>
     </tr>
