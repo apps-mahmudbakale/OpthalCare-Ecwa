@@ -132,7 +132,7 @@
       <td></td>
       <td colspan="2">
         <div class="spacer"></div>
-        {{ $patient->user->firstname }} {{ $patient->user->firstname }}
+        {{ $patient->user->firstname }} {{ $patient->user->lastname }}
         [{{ app(App\Settings\SystemSettings::class)->number_prefix ?: 'HRN' }}{{ $patient->hospital_no }}]<br>
         PRIVATE - Self Pay<br>
         <br>
@@ -149,7 +149,11 @@
       <td>
       <h5>Radiolgy Report</h5>
        <div style="text-align: justify; line-height: 50px;"> {{ $result->result }}</div>
-
+      </td>
+    </tr>
+    <tr class="item">
+      <td colspan="3">
+         <b>Reported By:</b> {{ $result->user ? $result->user->FullName() : 'N/A' }}
       </td>
     </tr>
   </table>
