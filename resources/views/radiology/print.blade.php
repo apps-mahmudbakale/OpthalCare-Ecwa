@@ -140,7 +140,7 @@
     </tr>
     <tr>
       <td colspan="3">
-        <div style="font-weight: bold; font-size: larger">Radiology Investigation Result</div>
+        <div style="font-weight: bold; font-size: larger; text-align: center;">Radiology Investigation Result</div>
       </td>
     </tr>
     <tr class="item">

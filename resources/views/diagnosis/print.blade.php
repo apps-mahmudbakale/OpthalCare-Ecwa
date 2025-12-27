@@ -127,11 +127,15 @@
               <strong>Patient:</strong> {{ $diagnosis->patient->user->FullName() }} [{{ app(App\Settings\SystemSettings::class)->number_prefix ?: 'HRN' }}{{ $diagnosis->patient->hospital_no }}]<br>
               <strong>Payment Type:</strong> PRIVATE - Self Pay<br>
               <strong>Date of Visit:</strong> {{ $diagnosis->created_at->format('d/m/Y') }}<br><br>
-              <h2>OPHTHALMOLOGY CONSULTATION REPORT</h2>
             </td>
-            <td style="text-align:right;">
+            <td style="text-align:left; white-space: nowrap;">
               Report Date: <strong>{{ now()->format('d M Y') }}</strong><br>
               Consultant: <strong>{{ $diagnosis->user->FullName() }}</strong>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <h2 style="text-align: center;">OPHTHALMOLOGY CONSULTATION REPORT</h2>
             </td>
           </tr>
         </table>
