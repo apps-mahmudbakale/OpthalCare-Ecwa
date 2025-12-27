@@ -105,14 +105,13 @@
         <table>
           <tr>
             <td class="title">
-              <img src="/media/logos/logo-1a8e9af8.png" style="max-height:80px;">
+              <img src="{{ asset('logo.png') }}" style="max-height:80px;">
             </td>
           </tr>
           <tr>
             <td style="text-align:center; padding-top:10px;">
-              <strong>SAHAD HOSPITALS</strong><br>
-              Plot 1756 Cadastral Zone, E27 APO.<br>
-              Abuja Municipal, FCT - Abuja<br>
+              <strong>Reflex Vision & Diagnostics</strong><br>
+              {{ app(App\Settings\SystemSettings::class)->address ?: 'Clinic Address' }}<br>
             </td>
           </tr>
         </table>
@@ -125,14 +124,14 @@
         <table>
           <tr>
             <td>
-              <strong>Patient:</strong> Chukwudi, Esther Ifeoma [CID016616]<br>
+              <strong>Patient:</strong> {{ $diagnosis->patient->user->FullName() }} [{{ app(App\Settings\SystemSettings::class)->number_prefix ?: 'HRN' }}{{ $diagnosis->patient->hospital_no }}]<br>
               <strong>Payment Type:</strong> PRIVATE - Self Pay<br>
-              <strong>Date of Visit:</strong> 30/11/2025<br><br>
+              <strong>Date of Visit:</strong> {{ $diagnosis->created_at->format('d/m/Y') }}<br><br>
               <h2>OPHTHALMOLOGY CONSULTATION REPORT</h2>
             </td>
             <td style="text-align:right;">
-              Report Date: <strong>30 Nov 2025</strong><br>
-              Consultant: <strong>Dr. [Your Name]</strong>
+              Report Date: <strong>{{ now()->format('d M Y') }}</strong><br>
+              Consultant: <strong>{{ $diagnosis->user->FullName() }}</strong>
             </td>
           </tr>
         </table>
@@ -199,10 +198,10 @@
   @endif
 
   <div class="footer">
-    <p><strong>Approval Time:</strong> {{ now()->format('D, d/m/Y g:iA') }} |
-      <strong>Consultant:</strong> Dr. AHMAD YUSUF (or your name)</p>
+    <p><strong>Approval Time:</strong> {{ $diagnosis->updated_at->format('D, d/m/Y g:iA') }} |
+      <strong>Consultant:</strong> {{ $diagnosis->user->FullName() }}</p>
     <hr>
-    <p>www.sahadhospitals.com | info@sahadhospitals.com | 07070111111 - 07070222222</p>
+    <p>{{ app(App\Settings\SystemSettings::class)->clinic_name }} | {{ app(App\Settings\SystemSettings::class)->address }}</p>
   </div>
 
 </div>

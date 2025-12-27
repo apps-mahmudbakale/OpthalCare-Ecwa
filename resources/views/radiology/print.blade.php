@@ -129,8 +129,7 @@
     </tr>
 
     <tr class="information item">
-      <td></td>
-      <td colspan="2">
+      <td colspan="3">
         <div class="spacer"></div>
         {{ $patient->user->firstname }} {{ $patient->user->lastname }}
         [{{ app(App\Settings\SystemSettings::class)->number_prefix ?: 'HRN' }}{{ $patient->hospital_no }}]<br>
@@ -140,22 +139,20 @@
       </td>
     </tr>
     <tr>
-      <td colspan="2">
-        <div style="font-weight: bold; font-size: larger">Radiology Investigation  Result</div>
-      </td>
-      <td>Date: {{ $result->created_at->diffForHumans() }}</td>
-    </tr>
-    <tr class="item">
-      <td>
-      <h5>Radiolgy Report</h5>
-       <div style="text-align: justify; line-height: 50px;"> {{ $result->result }}</div>
+      <td colspan="3">
+        <div style="font-weight: bold; font-size: larger">Radiology Investigation Result</div>
       </td>
     </tr>
     <tr class="item">
       <td colspan="3">
-         <b>Reported By:</b> {{ $result->user ? $result->user->FullName() : 'N/A' }}
+       <div style="text-align: justify; line-height: 50px;"> {{ $result->result }}</div>
       </td>
     </tr>
+    <!-- <tr class="item">
+      <td colspan="3">
+         <b>Reported By:</b> {{ $result->user ? $result->user->FullName() : 'N/A' }}
+      </td>
+    </tr> -->
   </table>
   <div class="spacer"></div>
 </div>
