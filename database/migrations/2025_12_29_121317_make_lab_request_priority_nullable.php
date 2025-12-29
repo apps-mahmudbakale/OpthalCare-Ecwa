@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-      Schema::table('lab_requests', function (Blueprint $table) {
-        $table->string('priority')->nullable()->change();
-      });
+        Schema::table('lab_requests', function (Blueprint $table) {
+            //
+        });
     }
 
     /**
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-      Schema::table('lab_requests', function (Blueprint $table) {
-        $table->string('priority')->nullable(false)->change();
-      });
+        Schema::table('lab_requests', function (Blueprint $table) {
+            //
+        });
     }
 };
