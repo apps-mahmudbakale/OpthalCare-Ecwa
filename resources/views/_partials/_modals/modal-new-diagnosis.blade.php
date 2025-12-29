@@ -236,9 +236,9 @@
                                 <h4>Sketch or Upload</h4>
                                 <div class="mb-3">
                                     <label class="form-label">Draw a sketch:</label>
-                                    <iframe id="drawing" class="col-md-12" style="height: 500px;"
+                                    <!-- <iframe id="drawing" class="col-md-12" style="height: 500px;"
                                         src="{{ route('app.patient.draw', request()->route()->patient->id) }}">Your
-                                        browser isn't compatible</iframe>
+                                        browser isn't compatible</iframe> -->
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Or upload an image:</label>
