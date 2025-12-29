@@ -22,7 +22,7 @@
     <!-- tr -->
     @foreach ($labRequests as $labRequest)
     <tr>
-      <td class="align-middle">{{ $labRequest->test ? $labRequest->test->created_at->diffForHumans() : 'N/A' }}</td>
+      <td class="align-middle">{{ $labRequest->test ? \Carbon\Carbon::parse($labRequest->created_at)->format('d M Y') : 'N/A' }}</td>
       <td class="align-middle">
         <a href="patients/{{ $labRequest->patient->id }}" target="_blank">
           {{ $labRequest->patient->user->firstname }} {{ $labRequest->patient->user->lastname }}
