@@ -94,9 +94,9 @@
 </script>
 {{-- JavaScript for delete confirmation --}}
 <script>
-    function submitDeleteForms(id) {
+    function submitDeleteForm(id) {
         if (confirm('Are you sure you want to delete this Template?')) {
-            const form = document.getElementById('delete-forms-' + id);
+            const form = document.getElementById('delete-form-' + id);
             if (form) {
                 form.submit();
             }

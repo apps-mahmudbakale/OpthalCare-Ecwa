@@ -235,18 +235,16 @@
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <l>
+              <li>
                 <button class="dropdown-item3 text-bg-danger" id="delete"
                         data-delete-url="{{route('app.lab.destroy', $request->id)}}">Delete
                 </button>
-              </l>
+              </li>
             </ul>
           </div>
         </div>
-
       </div>
+    </details>
+  @endforeach
 </div>
-</details>
-@endforeach
-
-
+```
