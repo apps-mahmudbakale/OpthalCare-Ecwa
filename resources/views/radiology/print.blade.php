@@ -139,8 +139,9 @@
       </td>
     </tr>
     <tr>
+       <div style="font-weight: bold; font-size: larger; text-align: center;">Radiology Investigation Result</div>
       <td colspan="3">
-        <div style="font-weight: bold; font-size: larger; text-align: center;">Radiology Investigation Result</div>
+       
       </td>
     </tr>
     <tr class="item">
