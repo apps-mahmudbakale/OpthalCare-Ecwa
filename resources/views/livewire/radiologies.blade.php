@@ -41,7 +41,7 @@
                                     <li><button data-toggle="modal" id="edit{{ $test->id }}"
                                             data-request-url="{{ route('app.radiology-test.edit',$test->id) }}"
                                             data-target="#global-modal-lg"
-                                            class="dropdown-item">Edit</button></li>
+                                            class="dropdown-item edit-test-btn">Edit</button></li>
                                     <div class="dropdown-divider"></div>
                                     <li><a id="dele{{ $test->id }}" data-value="{{ $test->id }}"
                                             class="dropdown-item text-danger delete-record">Delete</a></li>
@@ -96,15 +96,14 @@
 @include('_partials._modals.global-modal')
 <script>
   $(document).ready(function () {
-    $('#edit{{ $test->id }}').click(function () {
+    $('.edit-test-btn').click(function () {
       var requestUrl = $(this).data('request-url');
-      if (!requestUrl) return true; // Skip if no request-url data attribute
+      if (!requestUrl) return true;
 
       $.ajax({
         url: requestUrl,
         type: 'GET',
         success: function(response) {
-          console.log(response);
           $('#global-modal .modal-body').html(response);
           $('#global-modal').modal('show');
         },
@@ -114,7 +113,6 @@
       });
       return false;
     });
-
   });
 </script>
 {{-- JavaScript for delete confirmation --}}

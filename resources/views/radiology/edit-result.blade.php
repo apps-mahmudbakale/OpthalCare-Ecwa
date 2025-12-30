@@ -1,13 +1,13 @@
 @trixassets
 <div class="text-center mb-4">
   <h6 class="mb-2">
-    {{ \App\Models\Radiology::find($request->imaging_id)->name }} Result for
+    Edit {{ \App\Models\Radiology::find($request->imaging_id)->name }} Result for
     {{ \App\Models\Patient::find($request->patient_id)->user->firstname }}
     {{ \App\Models\Patient::find($request->patient_id)->user->lastname }}
   </h6>
 </div>
 
-<form method="post" action="{{ route('app.radiology.add.result') }}" class="row g-3" id="radiology-result-form">
+<form method="post" action="{{ route('app.radiology.update.result') }}" class="row g-3" id="radiology-result-form">
   @csrf
 
   <div class="col-12 col-md-12">
@@ -25,7 +25,7 @@
 
   <!-- 🖼 Image Upload Section -->
   <div class="col-12 col-md-12">
-    <label class="form-label">Upload Image (Optional)</label>
+    <label class="form-label">Update Image (Optional)</label>
     <input type="hidden" id="image" name="image">
     <input type="file" id="image-upload" class="form-control" accept="image/*">
     <small class="text-muted">Accepted formats: PNG, JPG, JPEG (Max 5MB)</small>
@@ -35,11 +35,23 @@
   </div>
 
   <div class="col-12 text-center">
-    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+    <button type="submit" class="btn btn-primary me-sm-3 me-1">Update Result</button>
     <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
   </div>
 </form>
 <script>
+  // Handle Trix editor pre-population if empty
+  document.addEventListener("trix-initialize", function(event) {
+      var existingResult = {!! json_encode($request->findings->result ?? '') !!};
+      if (existingResult && event.target.editor) {
+          var editor = event.target.editor;
+          // Only load if the editor is currently empty to avoid overwriting user input
+          if (editor.getDocument().toString().trim() === "") {
+              editor.loadHTML(existingResult);
+          }
+      }
+  });
+
   jQuery(document).ready(function($) {
     // Handle image upload
     $('#image-upload').on('change', function(event) {

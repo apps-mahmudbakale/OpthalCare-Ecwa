@@ -179,6 +179,8 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::resource('radiology', RadiologyRequestController::class);
   Route::get('radiology-add-notes', [RadiologyRequestController::class, 'addFindings'])->name('radiology.requests.notes.add');
   Route::post('radiology-add-result', [RadiologyRequestController::class, 'addResult'])->name('radiology.add.result');
+  Route::get('radiology-edit-result/{id}', [RadiologyRequestController::class, 'editResult'])->name('radiology.edit.result');
+  Route::post('radiology-update-result', [RadiologyRequestController::class, 'updateResult'])->name('radiology.update.result');
   Route::get('radiology/result/{lab}', [RadiologyRequestController::class, 'showResult'])->name('radiology.print.result');
   Route::post('radiology-category', [RadiologyController::class, 'storeCategory'])->name('radiology-category.store');
   Route::post('radiology-category/{category}', [RadiologyController::class, 'updateCategory'])->name('radiology-category.update');

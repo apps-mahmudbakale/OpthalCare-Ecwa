@@ -55,7 +55,17 @@
                                     <li><a class="dropdown-item" target="_blank"
                                             href="{{ route('app.radiology.print.result', $radiologyRequest->id) }}">Print</a>
                                     </li>
+                                    @hasanyrole('admin|radiology')
+                                    <li>
+                                        <button class="dropdown-item add-notes-btn"
+                                            data-request-url="{{ route('app.radiology.edit.result', $radiologyRequest->id) }}"
+                                            data-paid="{{ $isPaid }}">
+                                            Edit Result
+                                        </button>
+                                    </li>
+                                    @endhasanyrole
                                 @else
+                                @hasanyrole('admin|radiology')
                                     <li>
                                         <button class="dropdown-item add-notes-btn"
                                             data-request-url="{{ route('app.radiology.edit', $radiologyRequest->id) }}"
@@ -63,6 +73,7 @@
                                             Add Findings/Notes
                                         </button>
                                     </li>
+                                @endhasanyrole
                                 @endif
                                 <li>
                                     <a class="dropdown-item cancel-request text-bg-danger"

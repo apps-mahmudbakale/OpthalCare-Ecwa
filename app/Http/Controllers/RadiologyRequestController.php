@@ -82,9 +82,58 @@ class RadiologyRequestController extends Controller
 
   public function addResult(Request $request)
   {
-    $result = RadiologyResult::create(array_merge($request->all(), ['user_id' => auth()->user()->id]));
+    $data = $request->all();
+
+    // Map Trix field to result column if present
+    if (isset($data['radiology-result-trixFields']['result'])) {
+      $data['result'] = $data['radiology-result-trixFields']['result'];
+    } else {
+        // Fallback or search for trixFields in case model naming differs
+        foreach($data as $key => $value) {
+            if (str_ends_with($key, '-trixFields') && isset($value['result'])) {
+                $data['result'] = $value['result'];
+                break;
+            }
+        }
+    }
+    // dd($data);
+
+    $resultData = array_merge($data, ['user_id' => auth()->user()->id]);
+    
+    $result = RadiologyResult::create($resultData);
+
     $update = RadiologyRequest::where('id', $result->imaging_id)->update(['status' => 'Result Ready']);
     return redirect()->back()->with('success', 'Result Collected!');
+  }
+
+  public function updateResult(Request $request)
+  {
+    $data = $request->all();
+
+    // Map Trix field to result column if present
+    if (isset($data['radiology-result-trixFields']['result'])) {
+      $data['result'] = $data['radiology-result-trixFields']['result'];
+    } else {
+        foreach($data as $key => $value) {
+            if (str_ends_with($key, '-trixFields') && isset($value['result'])) {
+                $data['result'] = $value['result'];
+                break;
+            }
+        }
+    }
+
+    $resultData = array_merge($data, ['user_id' => auth()->user()->id]);
+    
+    if (empty($resultData['image'])) {
+        unset($resultData['image']);
+    }
+
+    $result = RadiologyResult::updateOrCreate(
+        ['imaging_id' => $data['imaging_id']],
+        $resultData
+    );
+
+    return redirect()->back()->with('success', 'Result Updated!');
   }
 
   public function showResult($id)
@@ -110,6 +159,12 @@ class RadiologyRequestController extends Controller
   {
     $request = RadiologyRequest::where('id', $id)->first();
     return view('radiology.result', compact('request'));
+  }
+
+  public function editResult($id)
+  {
+    $request = RadiologyRequest::with('findings')->where('id', $id)->first();
+    return view('radiology.edit-result', compact('request'));
   }
 
   /**

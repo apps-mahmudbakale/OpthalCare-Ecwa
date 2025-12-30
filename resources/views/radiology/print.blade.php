@@ -145,7 +145,7 @@
     </tr>
     <tr class="item">
       <td colspan="3">
-       <div style="text-align: justify; line-height: 50px;"> {{ $result->result }}</div>
+       <div style="text-align: justify; line-height: 24px;"> {!! $result->result !!}</div>
       </td>
     </tr>
     <!-- <tr class="item">
