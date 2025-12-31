@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class LabResult extends Model
 {
   use HasFactory;
-  protected $fillable = ['lab_test_id', 'lab_template_id', 'patient_id', 'pathologist_comments', 'image'];
+  protected $fillable = ['lab_id', 'lab_test_id', 'lab_template_id', 'patient_id', 'pathologist_comments', 'image'];
 
   public function labTest()
   {

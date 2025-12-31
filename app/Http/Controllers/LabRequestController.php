@@ -115,7 +115,7 @@ class LabRequestController extends Controller
   public function showResult($id)
   {
     $lab = LabRequest::where('id', $id)->first();
-    $result = LabResult::where('lab_id', $id)->first();
+    $result = LabResult::where('lab_test_id', $lab->test_id)->first();
     $patient = Patient::where('id', $lab->patient_id)->first();
     return view('laboratory.print', compact('lab', 'result', 'patient'));
   }

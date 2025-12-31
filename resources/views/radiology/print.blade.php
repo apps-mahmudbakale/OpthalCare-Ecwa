@@ -146,7 +146,7 @@
     </tr>
     <tr class="item">
       <td colspan="3">
-       <div style="text-align: justify; line-height: 40px;"> {!! $result->result !!}</div>
+       <div style="text-align: justify; line-height: 40px;"> {!! $result ? $result->result : 'No results found.' !!}</div>
       </td>
     </tr>
     <!-- <tr class="item">
