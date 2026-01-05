@@ -6,7 +6,7 @@
         <select wire:model="patient_id" class="form-control">
           <option value="">- All -</option>
           @foreach($patients as $patient)
-          <option value="{{ $patient->id }}">{{ $patient->user->firstname }}</option>
+          <option value="{{ $patient->id }}">{{ $patient->user->firstname ?? 'N/A' }} {{ $patient->user->lastname ?? 'N/A' }}</option>
           @endforeach
         </select>
       </div>
@@ -37,7 +37,7 @@
       @foreach ($opticals as $optical)
       <tr>
         <td>{{ $optical->created_at }}</td>
-        <td>{{ $optical->patient->user->firstname }} {{ $optical->patient->user->lastname }}</td>
+        <td>{{ $optical->patient->user->firstname ?? 'N/A' }} {{ $optical->patient->user->lastname ?? 'N/A' }}</td>
         <td>{{$optical->status}}</td>
         <td>
           <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
