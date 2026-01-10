@@ -166,5 +166,29 @@ $configData = Helper::appClasses();
         parent.classList.toggle('open');
       });
     });
+
+    // Mobile menu toggle
+    const mobileToggle = document.getElementById('mobile');
+    if (mobileToggle) {
+      mobileToggle.addEventListener('click', function() {
+        document.documentElement.classList.toggle('layout-menu-expanded');
+      });
+    }
+
+    // Close menu on overlay click
+    const overlay = document.querySelector('.layout-overlay');
+    if (overlay) {
+      overlay.addEventListener('click', function() {
+        document.documentElement.classList.remove('layout-menu-expanded');
+      });
+    }
+
+    // Close menu on close toggle click
+    const closeToggle = document.querySelector('.layout-menu-toggle.menu-link');
+    if (closeToggle) {
+      closeToggle.addEventListener('click', function() {
+        document.documentElement.classList.remove('layout-menu-expanded');
+      });
+    }
   });
 </script>

@@ -463,8 +463,4 @@
 @endif
 </nav>
 <!-- / Navbar -->
-        <script>
-          document.getElementById('mobile').addEventListener('click', function(){
-            alert('hekkkkjf');
-          })
-        </script>
+
