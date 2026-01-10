@@ -27,6 +27,12 @@ class AllLab extends Component
             ->when($this->startDate && $this->endDate, function ($query) {
                 $query->whereBetween('request_date', [$this->startDate, $this->endDate]);
             })
+            ->orderByRaw("CASE 
+                WHEN status = 'Pending' THEN 1 
+                WHEN status = 'Specimen Collected' THEN 2 
+                WHEN status = 'Result Ready' THEN 3 
+                ELSE 4 END")
+            ->orderBy('created_at', 'desc')
             ->paginate($this->perPage);
 
         return view('livewire.all-lab', [

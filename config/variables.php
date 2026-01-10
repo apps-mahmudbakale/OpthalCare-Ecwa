@@ -1,8 +1,8 @@
 <?php
 // Variables
 return [
-  "creatorName" => "Almaarhj Teknologies",
-  "creatorUrl" => "https://amajtek.com.ng",
+  "creatorName" => "Bnetworks IT Solutions",
+  "creatorUrl" => "https://bnetworksit.com.ng",
   "templateName" => "Vital Care",
   "templateSuffix" => "Medical Record System",
   "templateVersion" => "1.0.0",

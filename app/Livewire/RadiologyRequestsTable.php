@@ -32,6 +32,11 @@ class RadiologyRequestsTable extends Component
       ->when($this->startDate && $this->endDate, function ($query) {
         $query->whereBetween('request_date', [$this->startDate, $this->endDate]);
       })
+      ->orderByRaw("CASE 
+          WHEN status = 'Pending' THEN 1 
+          WHEN status = 'Result Ready' THEN 2 
+          ELSE 3 END")
+      ->orderBy('created_at', 'desc')
       ->paginate($this->perPage);
 
         return view('livewire.radiology-requests-table', [
