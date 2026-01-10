@@ -1,4 +1,22 @@
 <div>
+  <style>
+    .optical-table .badge {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+    .optical-table tr {
+      transition: all 0.2s ease;
+    }
+    .optical-table tr:hover {
+      background-color: rgba(0, 0, 0, 0.02) !important;
+    }
+    .btn-label-secondary:hover {
+        background-color: rgba(168, 170, 174, 0.16) !important;
+    }
+    .gap-2 { gap: 0.5rem !important; }
+    .gap-1 { gap: 0.25rem !important; }
+  </style>
   @if (session()->has('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
   @endif
@@ -29,15 +47,15 @@
        data-target="#global-modal-lg" id="new-request">New Request</button>
   </div>
 
-  <div class="table-responsive mt-3">
-    <table class="table">
-      <thead>
+  <div class="table-responsive mt-4 overflow-visible">
+    <table class="table table-hover align-middle optical-table">
+      <thead class="bg-light">
       <tr>
-        <th>Request Date</th>
-        <th>Patient</th>
-        <th>Item</th>
-        <th>Status</th>
-        <th></th>
+        <th class="text-muted fw-light">Request Date</th>
+        <th class="text-muted fw-light">Patient</th>
+        <th class="text-muted fw-light">Item</th>
+        <th class="text-muted fw-light text-center">Status</th>
+        <th class="text-muted fw-light text-end">Actions</th>
       </tr>
       </thead>
       <tbody>
@@ -46,30 +64,44 @@
         <td>{{ $optical->created_at->format('Y-m-d H:i') }}</td>
         <td>{{ $optical->patient->user->firstname ?? 'N/A' }} {{ $optical->patient->user->lastname ?? 'N/A' }}</td>
         <td>{{ $optical->service->name ?? 'N/A' }}</td>
-        <td>
+        <td class="text-center">
             @if($optical->status == 'pending')
-                <span class="badge bg-label-warning text-capitalize">{{ $optical->status }}</span>
+                <span class="badge rounded-pill bg-label-warning px-3 py-1 text-uppercase">{{ $optical->status }}</span>
             @else
-                <span class="badge bg-label-success text-capitalize">{{ $optical->status }}</span>
+                <span class="badge rounded-pill bg-label-success px-3 py-1 text-uppercase">{{ $optical->status }}</span>
             @endif
         </td>
-        <td>
-          <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
-                                         data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
-            <ul class="dropdown-menu dropdown-menu-end m-0">
-              @if($optical->status == 'pending')
-              <li>
-                  <a href="" wire:click.prevent="dispense({{ $optical->id }})" class="dropdown-item">
-                      <i class="ti ti-check me-1"></i> Dispense
+        <td class="text-end">
+          <div class="d-flex align-items-center justify-content-end gap-2">
+            @if($optical->status == 'pending')
+              <button wire:click.prevent="dispense({{ $optical->id }})" 
+                      class="btn btn-sm btn-primary d-flex align-items-center gap-1 shadow-sm px-3">
+                <i class="ti ti-check fs-5"></i>
+                <span>Dispense</span>
+              </button>
+            @endif
+
+            <div class="dropdown">
+              <button class="btn btn-sm btn-icon btn-label-secondary dropdown-toggle hide-arrow shadow-none border-0"
+                      data-bs-toggle="dropdown"
+                      data-bs-boundary="viewport">
+                <i class="ti ti-dots-vertical"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end m-0">
+                <li>
+                  <a href="javascript:;" class="dropdown-item d-flex align-items-center gap-2">
+                    <i class="ti ti-edit fs-5"></i> <span>Edit</span>
                   </a>
-              </li>
-              @endif
-              <li><a href=""
-                     class="dropdown-item">Edit</a></li>
-              <div class="dropdown-divider"></div>
-              <li><a id="delet{{ $optical->id }}" data-value="{{ $optical->id }}"
-                     class="dropdown-item text-danger delete-record">Delete</a></li>
-            </ul>
+                </li>
+                <li>
+                  <a href="javascript:;" 
+                     id="delet{{ $optical->id }}" data-value="{{ $optical->id }}"
+                     class="dropdown-item d-flex align-items-center gap-2 text-danger delete-record">
+                    <i class="ti ti-trash fs-5"></i> <span>Delete</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
           <script>
             document.querySelector('#delet{{ $optical->id }}').addEventListener('click', function(e) {
@@ -110,8 +142,6 @@
 </div>
 @include('_partials._modals.global-modal')
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('js/jquery.min.js') }}"></script>
 <script>
   $(document).ready(function() {
     $('#new-request').on('click', function() {

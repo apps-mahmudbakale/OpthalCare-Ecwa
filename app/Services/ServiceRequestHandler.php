@@ -21,6 +21,7 @@ class ServiceRequestHandler
     'Procedure'   => \App\Models\Procedure::class,
     'Bed'         => \App\Models\Bed::class,
     'Antenatal'   => \App\Models\Antenatal::class,
+    'Opticals'    => \App\Models\Antenatal::class,
     // Add new ones here easily
   ];
 

@@ -56,7 +56,7 @@ class OpticalController extends Controller
                         $serviceHandler->handleServiceRequest(
                             $serviceItem->name,
                             $patient_id,
-                            'Antenatal',
+                            'Opticals',
                             'fresh',
                             $request_ref,
                             1
