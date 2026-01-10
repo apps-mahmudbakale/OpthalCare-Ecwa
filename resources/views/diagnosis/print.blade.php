@@ -175,7 +175,7 @@
     <tr><td>DISC</td><td>{{ $diagnosis->disc_right ?? '-' }}</td><td>{{ $diagnosis->disc_left ?? '-' }}</td></tr>
     <tr><td>VCDR</td><td>{{ $diagnosis->vcdr_right ?? '-' }}</td><td>{{ $diagnosis->vcdr_left ?? '-' }}</td></tr>
     <tr><td>MACULA</td><td>{{ $diagnosis->macula_right ?? '-' }}</td><td>{{ $diagnosis->macula_left ?? '-' }}</td></tr>
-    <tr><td>RETINA</td><td>{{ $diagnosis->retnia_right ?? '-' }}</td><td>{{ $diagnosis->retina_left ?? '-' }}</td></tr>
+    <tr><td>RETINA</td><td>{{ $diagnosis->retina_right ?? '-' }}</td><td>{{ $diagnosis->retina_left ?? '-' }}</td></tr>
     <tr><td>VESSELS</td><td>{{ $diagnosis->vessels_right ?? '-' }}</td><td>{{ $diagnosis->vessels_left ?? '-' }}</td></tr>
     </tbody>
   </table>

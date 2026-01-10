@@ -112,7 +112,7 @@
             </tr>
             <tr>
               <td width="30%">RETINA</td>
-              <td>{{ $diagnosis->retnia_right ?? '   ' }}</td>
+              <td>{{ $diagnosis->retina_right ?? '   ' }}</td>
               <td>{{ $diagnosis->retina_left ?? '   ' }}</td>
             </tr>
             <tr>
