@@ -31,7 +31,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($parameters as $item)
+                @forelse ($parameters as $item)
                     <tr>
                         <td>{{ $item->parameter->name }}</td>
                         <td>
@@ -40,7 +40,13 @@
                             <small><span class="form-text text-muted">{{ $item->reference }}</span></small>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="2" class="text-center text-danger">
+                            No parameters configured for this lab test template. Please contact admin to configure "{{ $labTest->template ? $labTest->template->name : 'Template' }}" items.
+                        </td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
 

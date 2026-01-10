@@ -18,23 +18,37 @@
   <input type="hidden" name="patient_id" id="patient-id">
   <div id="result"></div>
 
-  <div class="form-group">
-    <div class="form-label-group">
-      <select name="service_id" class="custom-select" id="service_id" required="required">
-        <option value="">Choose a service...</option> <!-- Default option -->
-        @foreach($opticals as $optical)
-        <option value="{{$optical->id}}">{{$optical->name}}</option>
-        @endforeach
-      </select>
-      <label for="service_id">Service</label>
+
+  <div id="services-container">
+    <div class="service-row mb-3 border p-3 rounded">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+         <h6 class="m-0 text-muted">Service Item</h6>
+         <button type="button" class="btn btn-danger btn-sm remove-row" style="display: none;">&times; Remove</button>
+      </div>
+      <div class="form-group">
+        <div class="form-label-group">
+          <select name="service_id[]" class="custom-select service-select" required="required">
+            <option value="">Choose a service...</option> <!-- Default option -->
+            @foreach($opticals as $optical)
+            <option value="{{$optical->id}}">{{$optical->name}}</option>
+            @endforeach
+          </select>
+          <label>Service</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label-group">
+          <textarea rows="2" name="comments[]" class="form-control" placeholder="Comments"></textarea>
+          <label>Comment</label>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="form-group">
-    <div class="form-label-group">
-      <textarea rows="5" cols="5" name="comments" class="form-control"></textarea>
-      <label for="patient-search">Comment</label>
-    </div>
+
+  <div class="mb-3 text-end">
+    <button type="button" id="add-row" class="btn btn-success btn-sm">+ Add Another Service</button>
   </div>
+
   <!-- Submit and Reset buttons -->
   <div class="col-12 text-center">
     <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
@@ -45,6 +59,33 @@
 <!-- jQuery Script -->
 <script>
   $(document).ready(function() {
+    // Function to handle showing/hiding remove buttons
+    function updateRemoveButtons() {
+      const rows = $('.service-row');
+      if (rows.length > 1) {
+        $('.remove-row').show();
+      } else {
+        $('.remove-row').hide();
+      }
+    }
+
+    // Add new row
+    $('#add-row').click(function() {
+      const newRow = $('.service-row:first').clone();
+      newRow.find('input, select, textarea').val(''); // Clear values
+      newRow.find('.remove-row').show(); // Ensure remove button is visible
+      $('#services-container').append(newRow);
+      updateRemoveButtons();
+    });
+
+    // Remove row
+    $(document).on('click', '.remove-row', function() {
+      if ($('.service-row').length > 1) {
+        $(this).closest('.service-row').remove();
+        updateRemoveButtons();
+      }
+    });
+
     // Fetch patient data from the API using jQuery
     $.ajax({
       url: '/api/patients',  // Replace with your actual API endpoint
@@ -104,65 +145,9 @@
       }
     });
 
-    // Change event for service category
-    $('#service-category').change(function() {
-      const selectedCategory = $(this).val(); // Get the selected value
+    // We removed the generic '#service-category' change event as it seemed unused or for a different context not present in the simplified view. 
+    // If dynamic loading of services based on category is needed, it should be adapted to the repeater structure.
+    // For now, focusing on the repeater logic for the existing static list of opticals.
 
-      // Send the selected category to the API endpoint
-      $.ajax({
-        url: '/api/billservice', // Replace with your actual API endpoint
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({ category: selectedCategory }), // Send the category in the request body
-        headers: {
-          'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for security
-        },
-        success: function(data) {
-          console.log('API Response:', data); // Log the response to the console
-
-          // Clear existing options in the service_id select
-          $('#service_id').empty().append('<option value="">Choose a service...</option>'); // Reset select options
-
-          if (data.error) {
-            $('#service_id').append(`<option disabled>Error: ${data.error}</option>`); // Show error in options
-          } else {
-            // Assuming response is an array of results
-            data.forEach(item => {
-              // Check if ward exists and append accordingly
-              if (item.ward) {
-                $('#service_id').append(`<option value="${item.id}">${item.name} - ${item.ward.name}</option>`);
-              } else {
-                $('#service_id').append(`<option value="${item.id}">${item.name}</option>`);
-              }
-            });
-          }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-          console.error('Error:', textStatus, errorThrown); // Handle any errors
-          alert('Error sending category!'); // Optional alert for error
-        }
-      });
-    });
-    $('#service_id').change(()=>{
-      if($('#service_id option:selected').text() === 'Enrollment Fee'){
-
-      }
-    });
-    $('#first-timer').on('click', function(e) {
-      e.preventDefault(); // Prevent the default action
-
-      var requestUrl = $(this).data('request-url');
-      $.ajax({
-        url: requestUrl,
-        type: 'GET',
-        success: function(response) {
-          $('#global-modal .modal-body').html(response);
-          $('#global-modal').modal('show');
-        },
-        error: function(xhr, status, error) {
-          console.error(error);
-        }
-      });
-    });
   });
 </script>

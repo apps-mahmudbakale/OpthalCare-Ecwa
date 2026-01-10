@@ -194,7 +194,7 @@
 					<td style="width: auto">{{ $item->templateItem->parameter->name ?? 'N/A' }}</td>
 					<td>{{ $item->value }}</td>
 					<td>{{ $item->templateItem->reference ?? 'N/A' }}</td>
-					<td style="text-align: right;white-space: nowrap">---</td>
+					<td style="text-align: right;white-space: nowrap">{{ $item->remark }}</td>
 				</tr>
 				@endforeach
 			@else

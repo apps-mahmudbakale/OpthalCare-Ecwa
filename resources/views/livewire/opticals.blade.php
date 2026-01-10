@@ -1,4 +1,10 @@
 <div>
+  @if (session()->has('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+  @endif
+  @if (session()->has('error'))
+    <div class="alert alert-danger">{{ session('error') }}</div>
+  @endif
   <div class="card-header">
     <div class="filterForm d-flex justify-content-between">
       <div class="form-group flex-fill">
@@ -29,6 +35,7 @@
       <tr>
         <th>Request Date</th>
         <th>Patient</th>
+        <th>Item</th>
         <th>Status</th>
         <th></th>
       </tr>
@@ -36,13 +43,27 @@
       <tbody>
       @foreach ($opticals as $optical)
       <tr>
-        <td>{{ $optical->created_at }}</td>
+        <td>{{ $optical->created_at->format('Y-m-d H:i') }}</td>
         <td>{{ $optical->patient->user->firstname ?? 'N/A' }} {{ $optical->patient->user->lastname ?? 'N/A' }}</td>
-        <td>{{$optical->status}}</td>
+        <td>{{ $optical->service->name ?? 'N/A' }}</td>
+        <td>
+            @if($optical->status == 'pending')
+                <span class="badge bg-label-warning text-capitalize">{{ $optical->status }}</span>
+            @else
+                <span class="badge bg-label-success text-capitalize">{{ $optical->status }}</span>
+            @endif
+        </td>
         <td>
           <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
                                          data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
             <ul class="dropdown-menu dropdown-menu-end m-0">
+              @if($optical->status == 'pending')
+              <li>
+                  <a href="" wire:click.prevent="dispense({{ $optical->id }})" class="dropdown-item">
+                      <i class="ti ti-check me-1"></i> Dispense
+                  </a>
+              </li>
+              @endif
               <li><a href=""
                      class="dropdown-item">Edit</a></li>
               <div class="dropdown-divider"></div>

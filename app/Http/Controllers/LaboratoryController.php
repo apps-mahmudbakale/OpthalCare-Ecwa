@@ -127,7 +127,7 @@ class LaboratoryController extends Controller
     }
 
     // Delete removed rows
-    LabTemplateItem::where('id', $template->id)
+    LabTemplateItem::where('lab_template_id', $template->id)
       ->whereNotIn('id', $processedIds)
       ->delete();
 

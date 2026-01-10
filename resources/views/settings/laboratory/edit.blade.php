@@ -27,7 +27,7 @@
     <select name="template_id" id="" class="form-control">
       <option value="">----</option>
       @foreach (\App\Models\LabTemplate::all() as $template)
-        <option value="{{ $template->id }}">{{ $template->name }}</option>
+        <option value="{{ $template->id }}" {{ $lab->template_id == $template->id ? 'selected' : '' }}>{{ $template->name }}</option>
       @endforeach
     </select>
   </div>

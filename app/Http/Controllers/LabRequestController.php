@@ -65,12 +65,11 @@ class LabRequestController extends Controller
     $request = LabRequest::where('id', $id)->first();
     $labTest = Laboratory::with('template.items.parameter')->findOrFail($request->test_id);
 
-
     return view('laboratory.result', [
       'request' => $request,
       'labTest' => $labTest,
       'template' => $labTest->template,
-      'parameters' => $labTest->template->items
+      'parameters' => $labTest->template ? $labTest->template->items : collect()
     ]);
   }
 
@@ -93,7 +92,16 @@ class LabRequestController extends Controller
   public function addResult(Request $request)
   {
     // dd($request->all());
-    $result = LabResult::create(array_merge($request->all(), ['user_id' => auth()->user()->id]));
+    // Use updateOrCreate to handle potential re-submissions or old ID reuse
+    $result = LabResult::updateOrCreate(
+        ['lab_request_id' => $request->lab_id],
+        array_merge($request->all(), [
+            'user_id' => auth()->user()->id,
+        ])
+    );
+
+    // Ensure we start with a clean list of items for this result
+    $result->items()->delete();
 
     foreach ($request->items as $templateItemId => $value) {
       LabResultItem::create([
@@ -109,8 +117,19 @@ class LabRequestController extends Controller
   public function showResult($id)
   {
     $lab = LabRequest::where('id', $id)->first();
-    $result = LabResult::where('lab_test_id', $lab->test_id)->first();
+    // Use the findings relationship to get the specific result for this request
+    $result = $lab->findings; 
+    
+    // Fallback if null: filter by test AND patient to be safer
+    if (!$result) {
+        $result = LabResult::where('lab_test_id', $lab->test_id)
+                           ->where('patient_id', $lab->patient_id)
+                           ->latest()
+                           ->first();
+    }
+
     $patient = Patient::where('id', $lab->patient_id)->first();
+
     return view('laboratory.print', compact('lab', 'result', 'patient'));
   }
 

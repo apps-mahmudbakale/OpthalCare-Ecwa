@@ -30,12 +30,43 @@ class OpticalController extends Controller
      */
     public function store(Request $request)
     {
-      $request_ref = str()->random(6);
+        $service_ids = $request->input('service_id');
+        $comments = $request->input('comments');
+        $patient_id = $request->input('patient_id'); // Assuming patient_id is single for all
 
-      $request = OpticalRequest::create(array_merge($request->all(), ['ref' => $request_ref, 'user_id' => auth()->user()->id, 'status' => 'pending']));
+        if (is_array($service_ids)) {
+            $serviceHandler = new \App\Services\ServiceRequestHandler();
+            foreach ($service_ids as $index => $service_id) {
+                if (!empty($service_id)) {
+                    $request_ref = str()->random(6);
+                    $comment = isset($comments[$index]) ? $comments[$index] : null;
 
-     return redirect()->back()->with('success', 'Request Submitted');
+                    OpticalRequest::create([
+                        'patient_id' => $patient_id,
+                        'service_id' => $service_id,
+                        'comments' => $comment,
+                        'ref' => $request_ref,
+                        'user_id' => auth()->user()->id,
+                        'status' => 'pending'
+                    ]);
 
+                    // Generate Billing
+                    $serviceItem = Antenatal::find($service_id);
+                    if ($serviceItem) {
+                        $serviceHandler->handleServiceRequest(
+                            $serviceItem->name,
+                            $patient_id,
+                            'Antenatal',
+                            'fresh',
+                            $request_ref,
+                            1
+                        );
+                    }
+                }
+            }
+        }
+
+        return redirect()->back()->with('success', 'Requests Submitted');
     }
 
     /**

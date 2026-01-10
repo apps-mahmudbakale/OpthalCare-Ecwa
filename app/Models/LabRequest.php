@@ -36,7 +36,7 @@ class LabRequest extends Model
   }
   public function findings()
   {
-    return $this->hasOne(LabResult::class, 'lab_id');
+    return $this->hasOne(LabResult::class, 'lab_request_id');
   }
 
 

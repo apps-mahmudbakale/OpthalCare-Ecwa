@@ -24,4 +24,9 @@ class OpticalRequest extends Model
     {
         return $this->belongsTo(Patient::class);
     }
+
+    public function service()
+    {
+        return $this->belongsTo(Antenatal::class, 'service_id');
+    }
 }
