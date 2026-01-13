@@ -5,9 +5,12 @@ namespace App\Http\Livewire;
 
 use App\Models\LabRequest;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class AllLab extends Base
 {
+    use WithPagination;
+
     public $patientId;
     public $locationId;
     public $categoryId;
