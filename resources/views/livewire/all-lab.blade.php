@@ -90,15 +90,17 @@
         </table>
     </div>
 
-    <div class="card-footer border-top py-3">
+    <div class="card-footer border-top py-2">
         <div class="row align-items-center">
-            <div class="col-sm-12 col-md-6 mb-3 mb-md-0">
-                <p class="dataTables_info text-muted small mb-0">
+            <div class="col-sm-12 col-md-6 mb-2 mb-md-0">
+                <div class="dataTables_info text-muted small" role="status" aria-live="polite">
                     Showing {{ $labRequests->firstItem() ?? 0 }} to {{ $labRequests->lastItem() ?? 0 }} of {{ $labRequests->total() }} entries
-                </p>
+                </div>
             </div>
-            <div class="col-sm-12 col-md-6 text-end d-flex justify-content-md-end justify-content-center">
-                {{ $labRequests->links() }}
+            <div class="col-sm-12 col-md-6 text-end">
+                <div class="dataTables_paginate paging_simple_numbers">
+                    {{ $labRequests->links('vendor.livewire.livewire-vuexy') }}
+                </div>
             </div>
         </div>
     </div>
