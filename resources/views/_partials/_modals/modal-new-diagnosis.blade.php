@@ -13,6 +13,17 @@
                     </h3>
                 </div>
 
+                <!-- Specialty Toggle -->
+                <div class="col-12 mb-4 d-flex justify-content-center">
+                    <div class="btn-group" role="group" aria-label="Specialty Toggle">
+                        <input type="radio" class="btn-check" name="specialty" id="specialty-ophth" value="Ophthalmology" checked>
+                        <label class="btn btn-outline-primary" for="specialty-ophth">Ophthalmology</label>
+
+                        <input type="radio" class="btn-check" name="specialty" id="specialty-gynae" value="Gynaecology">
+                        <label class="btn btn-outline-primary" for="specialty-gynae">Gynaecology</label>
+                    </div>
+                </div>
+
                 <!-- Tab Headings -->
                 <ul class="nav nav-pills mb-3 justify-content-center" id="step-tabs" role="tablist">
                     <li class="nav-item" role="presentation">
@@ -56,119 +67,191 @@
 
                         <!-- Step 2 -->
                         <div class="tab-pane fade" id="step2">
-                            <h2>Examination</h2>
-                            <table class="table table-striped table-bordered">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th></th>
-                                        <th>(RE)</th>
-                                        <th>(LE)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td width="70%">UNCORRECTED</td>
-                                        <td><input type="text" name="uncorrected_right" class="form-control"></td>
-                                        <td><input type="text" name="uncorrected_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">PIN HOLE</td>
-                                        <td><input type="text" name="pinhole_right" class="form-control"></td>
-                                        <td><input type="text" name="pinhole_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">VA WITH GLASSES</td>
-                                        <td><input type="text" name="va_glass_right" class="form-control"></td>
-                                        <td><input type="text" name="va_glass_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">NEAR VISION</td>
-                                        <td><input type="text" name="near_vision_right" class="form-control"></td>
-                                        <td><input type="text" name="near_vision_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">LID</td>
-                                        <td><input type="text" name="lid_right" class="form-control"></td>
-                                        <td><input type="text" name="lid_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">GLOBE</td>
-                                        <td><input type="text" name="globe_right" class="form-control"></td>
-                                        <td><input type="text" name="globe_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">EOMM</td>
-                                        <td><input type="text" name="eomm_right" class="form-control"></td>
-                                        <td><input type="text" name="eomm_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">CONJUCTIVA</td>
-                                        <td><input type="text" name="conjuctiva_right" class="form-control"></td>
-                                        <td><input type="text" name="conjuctiva_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">CORNEA</td>
-                                        <td><input type="text" name="cornea_right" class="form-control"></td>
-                                        <td><input type="text" name="cornea_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">ANTERIOR CHA</td>
-                                        <td><input type="text" name="anterior_cha_right" class="form-control">
-                                        </td>
-                                        <td><input type="text" name="anterior_cha_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">IRIS</td>
-                                        <td><input type="text" name="iris_right" class="form-control"></td>
-                                        <td><input type="text" name="iris_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">PUPIL</td>
-                                        <td><input type="text" name="pupil_right" class="form-control"></td>
-                                        <td><input type="text" name="pupil_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">LENS</td>
-                                        <td><input type="text" name="lens_right" class="form-control"></td>
-                                        <td><input type="text" name="lens_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">IOP</td>
-                                        <td><input type="text" name="iop_right" class="form-control"></td>
-                                        <td><input type="text" name="iop_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">VITREOUS</td>
-                                        <td><input type="text" name="vitreous_right" class="form-control"></td>
-                                        <td><input type="text" name="vitreous_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">DISC</td>
-                                        <td><input type="text" name="disc_right" class="form-control"></td>
-                                        <td><input type="text" name="disc_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">VCDR</td>
-                                        <td><input type="text" name="vcdr_right" class="form-control"></td>
-                                        <td><input type="text" name="vcdr_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">MACULA</td>
-                                        <td><input type="text" name="macula_right" class="form-control"></td>
-                                        <td><input type="text" name="macula_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">RETINA</td>
-                                        <td><input type="text" name="retina_right" class="form-control"></td>
-                                        <td><input type="text" name="retina_left" class="form-control"></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="70%">VESSELS</td>
-                                        <td><input type="text" name="vessels_right" class="form-control"></td>
-                                        <td><input type="text" name="vessels_left" class="form-control"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div id="eye-examination">
+                                <h2>Eye Examination</h2>
+                                <table class="table table-striped table-bordered">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th></th>
+                                            <th>(RE)</th>
+                                            <th>(LE)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td width="70%">UNCORRECTED</td>
+                                            <td><input type="text" name="uncorrected_right" class="form-control"></td>
+                                            <td><input type="text" name="uncorrected_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">PIN HOLE</td>
+                                            <td><input type="text" name="pinhole_right" class="form-control"></td>
+                                            <td><input type="text" name="pinhole_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">VA WITH GLASSES</td>
+                                            <td><input type="text" name="va_glass_right" class="form-control"></td>
+                                            <td><input type="text" name="va_glass_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">NEAR VISION</td>
+                                            <td><input type="text" name="near_vision_right" class="form-control"></td>
+                                            <td><input type="text" name="near_vision_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">LID</td>
+                                            <td><input type="text" name="lid_right" class="form-control"></td>
+                                            <td><input type="text" name="lid_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">GLOBE</td>
+                                            <td><input type="text" name="globe_right" class="form-control"></td>
+                                            <td><input type="text" name="globe_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">EOMM</td>
+                                            <td><input type="text" name="eomm_right" class="form-control"></td>
+                                            <td><input type="text" name="eomm_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">CONJUCTIVA</td>
+                                            <td><input type="text" name="conjuctiva_right" class="form-control"></td>
+                                            <td><input type="text" name="conjuctiva_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">CORNEA</td>
+                                            <td><input type="text" name="cornea_right" class="form-control"></td>
+                                            <td><input type="text" name="cornea_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">ANTERIOR CHA</td>
+                                            <td><input type="text" name="anterior_cha_right" class="form-control">
+                                            </td>
+                                            <td><input type="text" name="anterior_cha_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">IRIS</td>
+                                            <td><input type="text" name="iris_right" class="form-control"></td>
+                                            <td><input type="text" name="iris_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">PUPIL</td>
+                                            <td><input type="text" name="pupil_right" class="form-control"></td>
+                                            <td><input type="text" name="pupil_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">LENS</td>
+                                            <td><input type="text" name="lens_right" class="form-control"></td>
+                                            <td><input type="text" name="lens_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">IOP</td>
+                                            <td><input type="text" name="iop_right" class="form-control"></td>
+                                            <td><input type="text" name="iop_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">VITREOUS</td>
+                                            <td><input type="text" name="vitreous_right" class="form-control"></td>
+                                            <td><input type="text" name="vitreous_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">DISC</td>
+                                            <td><input type="text" name="disc_right" class="form-control"></td>
+                                            <td><input type="text" name="disc_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">VCDR</td>
+                                            <td><input type="text" name="vcdr_right" class="form-control"></td>
+                                            <td><input type="text" name="vcdr_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">MACULA</td>
+                                            <td><input type="text" name="macula_right" class="form-control"></td>
+                                            <td><input type="text" name="macula_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">RETINA</td>
+                                            <td><input type="text" name="retina_right" class="form-control"></td>
+                                            <td><input type="text" name="retina_left" class="form-control"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="70%">VESSELS</td>
+                                            <td><input type="text" name="vessels_right" class="form-control"></td>
+                                            <td><input type="text" name="vessels_left" class="form-control"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="gynae-examination" style="display: none;">
+                                <div class="mb-4">
+                                    <h4 class="fw-bold border-bottom pb-2"><i class="fas fa-baby-carriage me-2"></i>Gynaecology Examination</h4>
+                                </div>
+
+                                <!-- Section 1: Pregnancy Status -->
+                                <div class="card border border-primary mb-3 shadow-none">
+                                    <div class="card-header bg-label-primary py-2">
+                                        <h5 class="card-title mb-0 small fw-bold text-uppercase">Pregnancy Overview</h5>
+                                    </div>
+                                    <div class="card-body pt-3 pb-1">
+                                        <div class="row">
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label fw-bold">LMP (Last Menstrual Period)</label>
+                                                <input type="date" name="lmp" id="lmp-date" class="form-control border-primary">
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">EDD (Estimated Due Date)</label>
+                                                <input type="date" name="edd" id="edd-date" class="form-control bg-light" readonly>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">Gestational Age (GA)</label>
+                                                <input type="text" name="ga" id="ga-value" class="form-control bg-light" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Section 2: Obstetric History -->
+                                <div class="card border border-info mb-3 shadow-none">
+                                    <div class="card-header bg-label-info py-2">
+                                        <h5 class="card-title mb-0 small fw-bold text-uppercase">Obstetric History</h5>
+                                    </div>
+                                    <div class="card-body pt-3 pb-1">
+                                        <div class="row">
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">Gravidty</label>
+                                                <input type="number" name="gravidity" class="form-control" placeholder="0">
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">Parity</label>
+                                                <input type="number" name="parity" class="form-control" placeholder="0">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Last Delivery Date</label>
+                                                <input type="date" name="last_delivery_date" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Section 3: Detailed Examination -->
+                                <div class="card border border-secondary mb-3 shadow-none">
+                                    <div class="card-header bg-label-secondary py-2">
+                                        <h5 class="card-title mb-0 small fw-bold text-uppercase">Specialist Findings</h5>
+                                    </div>
+                                    <div class="card-body pt-3 pb-1">
+                                        <div class="row">
+                                            <div class="col-12 mb-3">
+                                                <label class="form-label">Menstrual History</label>
+                                                <textarea name="menstrual_history" class="form-control" rows="2" placeholder="Describe menstrual cycle, flow, etc..."></textarea>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <label class="form-label">Pelvic Examination</label>
+                                                <textarea name="pelvic_examination" class="form-control" rows="2" placeholder="Detailed pelvic examination findings..."></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-12 col-md-12">
                                 <label class="form-label" for="">General Examination</label>
                                 <textarea name="general_examination" id="" cols="5" rows="3" class="form-control"></textarea>
@@ -264,24 +347,50 @@
 </div>
 <!--/ Edit User Modal -->
 
-<!-- Styles (Bootstrap CSS) -->
-<!-- Scripts -->
-<script src="{{ asset('js/jquery.min.js') }}"></script>
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
-</script>
-<!-- SweetAlert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
     jQuery(document).ready(function($) {
         // Initialize EasyEditor for the comments textarea
         try {
-            new EasyEditor('#editor');
+            if ($('#editor').length) {
+                new EasyEditor('#editor');
+            }
         } catch (e) {
             console.error('EasyEditor initialization failed:', e);
         }
+
+        // Specialty Toggler
+        $('input[name="specialty"]').on('change', function() {
+            if ($(this).val() === 'Gynaecology') {
+                $('#eye-examination').hide();
+                $('#gynae-examination').show();
+            } else {
+                $('#eye-examination').show();
+                $('#gynae-examination').hide();
+            }
+        });
+
+        // EDD and GA Calculator
+        $('#lmp-date').on('change', function() {
+            const lmpValue = $(this).val();
+            if (lmpValue) {
+                const lmpDate = new Date(lmpValue);
+                if (!isNaN(lmpDate.getTime())) {
+                    // Calculate EDD (Naegele's rule: LMP + 9 months + 7 days)
+                    const eddDate = new Date(lmpDate);
+                    eddDate.setMonth(eddDate.getMonth() + 9);
+                    eddDate.setDate(eddDate.getDate() + 7);
+                    $('#edd-date').val(eddDate.toISOString().split('T')[0]);
+
+                    // Calculate GA (Today - LMP)
+                    const today = new Date();
+                    const diffTime = Math.abs(today - lmpDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    const weeks = Math.floor(diffDays / 7);
+                    const days = diffDays % 7;
+                    $('#ga-value').val(`${weeks} Weeks ${days} Days`);
+                }
+            }
+        });
 
         // Handle file upload for sketch
         $('#sketch-upload').on('change', function(event) {

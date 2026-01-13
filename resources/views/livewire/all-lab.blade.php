@@ -21,7 +21,7 @@
     <tbody>
     <!-- tr -->
     @foreach ($labRequests as $labRequest)
-    <tr>
+    <tr wire:key="lab-request-{{ $labRequest->id }}">
       <td class="align-middle">{{ $labRequest->test ? \Carbon\Carbon::parse($labRequest->created_at)->format('d M Y') : 'N/A' }}</td>
       <td class="align-middle">
         <a href="patients/{{ $labRequest->patient->id }}" target="_blank">
@@ -58,7 +58,7 @@
   </table><!-- /.table -->
   <hr class="my-2">
   <div class="d-flex justify-content-around">
-    {{ $labRequests->links() }}
+    {{ $labRequests->links('shared.custom-pagination') }}
   </div>
 </div><!-- /.table-responsive -->
 

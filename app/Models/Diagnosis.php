@@ -60,7 +60,16 @@ class Diagnosis extends Model
     'disability',
     'assessment',
     'treatment',
-    'general_examination'
+    'general_examination',
+    'specialty',
+    'lmp',
+    'edd',
+    'ga',
+    'gravidity',
+    'parity',
+    'last_delivery_date',
+    'menstrual_history',
+    'pelvic_examination'
   ];
 
   public function user()

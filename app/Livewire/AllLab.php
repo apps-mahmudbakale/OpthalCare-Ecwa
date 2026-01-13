@@ -5,15 +5,19 @@ namespace App\Livewire;
 
 use App\Models\LabRequest;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class AllLab extends Component
 {
+    use WithPagination;
     public $patientId;
     public $locationId;
     public $categoryId;
     public $startDate;
     public $endDate;
     public $perPage = 10;
+
+    protected $paginationTheme = 'bootstrap';
 
     public function render()
     {
