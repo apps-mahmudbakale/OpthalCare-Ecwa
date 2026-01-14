@@ -19,7 +19,7 @@ class AllLab extends Base
 
     public function render()
     {
-        $labRequests = LabRequest::query()->where('status', '!=', 'Result Ready')
+        $labRequests = LabRequest::query()
             ->when($this->patientId, function ($query) {
                 $query->where('patient_id', $this->patientId);
             })
