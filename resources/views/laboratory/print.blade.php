@@ -206,7 +206,7 @@
     @if($result)
         Approval Time:
         <strong>{{ $result->created_at->format('D, j/n/Y g:iA') }}</strong> by
-        <strong>{{ $result->user ? $result->user->FullName() : 'N/A' }}</strong>
+        <strong>{{ $result->user ? $result->user->firstname . ' ' . $result->user->lastname : 'N/A' }}</strong>
     @endif
     <br/>
     {{ app(App\Settings\SystemSettings::class)->website ?? 'www.reflexvision.org' }} - {{ app(App\Settings\SystemSettings::class)->email ?? 'info@reflexvision.org' }} - {{ app(App\Settings\SystemSettings::class)->phone ?? '09012325403' }}
