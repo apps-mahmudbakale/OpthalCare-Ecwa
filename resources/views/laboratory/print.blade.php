@@ -209,7 +209,7 @@
         <strong>{{ $result->user ? $result->user->FullName() : 'N/A' }}</strong>
     @endif
     <br/>
-    {{ app(App\Settings\SystemSettings::class)->website ?? 'www.sahadhospitals.com' }} - {{ app(App\Settings\SystemSettings::class)->email ?? 'info@sahadhospitals.com' }} - {{ app(App\Settings\SystemSettings::class)->phone ?? '07070111111' }}
+    {{ app(App\Settings\SystemSettings::class)->website ?? 'www.reflexvision.org' }} - {{ app(App\Settings\SystemSettings::class)->email ?? 'info@reflexvision.org' }} - {{ app(App\Settings\SystemSettings::class)->phone ?? '09012325403' }}
 </footer>
 </body>
 </html>
