@@ -11,9 +11,9 @@
       margin: auto;
       padding: 30px;
       box-shadow: 0 0 10px rgba(0, 0, 0, .15);
-      font-size: 16px;
+      font-size: 12pt;
       line-height: 24px;
-      font-family: -apple-system, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+      font-family: 'Times New Roman', Times, serif;
       color: #555;
     }
 
@@ -81,7 +81,7 @@
     /** RTL **/
     .rtl {
       direction: rtl;
-      font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+      font-family: 'Times New Roman', Times, serif;
     }
 
     .rtl table {
