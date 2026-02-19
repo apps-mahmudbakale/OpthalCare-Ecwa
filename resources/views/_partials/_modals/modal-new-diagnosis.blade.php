@@ -15,12 +15,16 @@
 
                 <!-- Specialty Toggle -->
                 <div class="col-12 mb-4 d-flex justify-content-center">
-                    <div class="btn-group" role="group" aria-label="Specialty Toggle">
-                        <input type="radio" class="btn-check" name="specialty" id="specialty-ophth" value="Ophthalmology" checked>
-                        <label class="btn btn-outline-primary" for="specialty-ophth">Ophthalmology</label>
-
-                        <input type="radio" class="btn-check" name="specialty" id="specialty-gynae" value="Gynaecology">
-                        <label class="btn btn-outline-primary" for="specialty-gynae">Gynaecology</label>
+                    <div class="col-md-12">
+                        <label for="specialty-select" class="form-label text-center d-block">Select Specialty</label>
+                        <select class="form-select" id="specialty-select" name="specialty">
+                            <option value="Ophthalmology" selected>Ophthalmology</option>
+                            <option value="Gynaecology">Gynaecology</option>
+                            <option value="Obstetrics">Obstetrics</option>
+                            <option value="Antenatal">Antenatal</option>
+                            <option value="Family Planning">Family Planning</option>
+                            <option value="General Out-Patient">General Out-Patient</option>
+                        </select>
                     </div>
                 </div>
 
@@ -184,7 +188,7 @@
                             </div>
                             <div id="gynae-examination" style="display: none;">
                                 <div class="mb-4">
-                                    <h4 class="fw-bold border-bottom pb-2"><i class="fas fa-baby-carriage me-2"></i>Gynaecology Examination</h4>
+                                    <h4 class="fw-bold border-bottom pb-2" id="specialized-exam-header"><i class="fas fa-baby-carriage me-2"></i>Gynaecology Examination</h4>
                                 </div>
 
                                 <!-- Section 1: Pregnancy Status -->
@@ -252,10 +256,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-12">
-                                <label class="form-label" for="">General Examination</label>
-                                <textarea name="general_examination" id="" cols="5" rows="3" class="form-control"></textarea>
-                            </div>
+                             <div class="col-12 col-md-12 mt-3">
+                                 <h4 class="fw-bold border-bottom pb-2" id="general-exam-header">General Examination</h4>
+                                 <textarea name="general_examination" id="" cols="5" rows="3" class="form-control" placeholder="General examination findings..."></textarea>
+                             </div>
                         </div>
 
                         <!-- Step 3 -->
@@ -359,13 +363,34 @@
         }
 
         // Specialty Toggler
-        $('input[name="specialty"]').on('change', function() {
-            if ($(this).val() === 'Gynaecology') {
+        $('#specialty-select').on('change', function() {
+            const specialty = $(this).val();
+            const gynaeRelated = ['Gynaecology', 'Obstetrics', 'Antenatal', 'Family Planning'];
+            const header = $('#specialized-exam-header');
+            const generalHeader = $('#general-exam-header');
+
+            // Reset headers
+            generalHeader.text('General Examination');
+
+            if (gynaeRelated.includes(specialty)) {
                 $('#eye-examination').hide();
                 $('#gynae-examination').show();
-            } else {
+
+                // Update Header Text and Icon
+                let icon = 'fa-baby-carriage';
+                if (specialty === 'Obstetrics') icon = 'fa-stethoscope';
+                if (specialty === 'Antenatal') icon = 'fa-female';
+                if (specialty === 'Family Planning') icon = 'fa-users';
+
+                header.html(`<i class="fas ${icon} me-2"></i>${specialty} Examination`);
+            } else if (specialty === 'Ophthalmology') {
                 $('#eye-examination').show();
                 $('#gynae-examination').hide();
+            } else {
+                // General Out-Patient or others
+                $('#eye-examination').hide();
+                $('#gynae-examination').hide();
+                generalHeader.text(specialty + ' Examination');
             }
         });
 

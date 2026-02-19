@@ -49,10 +49,10 @@
                                         <a class="dropdown-item" href="" wire:click.prevent="selectPlan({{ $plan->id }})">
                                             Edit
                                         </a>
-                                        <a class="dropdown-item" href="" wire:click.prevent="selectPlan({{ $plan->id }})">
+                                        <a class="dropdown-item" href="" wire:click.prevent="$emit('manageServices', {{ $plan->id }})">
                                             Services
                                         </a>
-                                        <a class="dropdown-item" href="" wire:click.prevent="selectPlan({{ $plan->id }})">
+                                        <a class="dropdown-item" href="" wire:click.prevent="$emit('manageServices', {{ $plan->id }})">
                                             Add Service
                                         </a>
                                         <button class="dropdown-item" id="del{{ $plan->id }}" data-value="{{ $plan->id }}">
@@ -115,7 +115,7 @@
     });
     @endonce
 @endpush
-@include('hmo-plans.modals.new')
-@include('hmo-plans.modals.edit')
+@include('_partials._modals.modal-new-HmoPlan')
+@include('_partials._modals.modal-edit-HmoPlan')
 </div>
 

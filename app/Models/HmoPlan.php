@@ -23,4 +23,9 @@ class HmoPlan extends Model
     public function hmo(){
         return $this->belongsTo(HmoGroup::class);
     }
+
+    public function services()
+    {
+        return $this->hasMany(HmoService::class, 'plan_id');
+    }
 }

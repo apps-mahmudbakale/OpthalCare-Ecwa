@@ -9,8 +9,9 @@ use Livewire\Component;
 class HmoPlans extends Base
 {
     public $sortBy = 'id';
+    public $plan_id;
     public $hmo_id;
-    public $hmo_name;
+    public $name;
     public $enrollment_amount;
     public $signup_amount;
     public $max_no;
@@ -20,7 +21,9 @@ class HmoPlans extends Base
     public function selectPlan($id)
     {
         $plan = HmoPlan::find($id);
+        $this->plan_id = $id;
         $this->hmo_id = $plan->hmo_id;
+        $this->name = $plan->name;
         $this->enrollment_amount = $plan->enrollment_amount;
         $this->signup_amount = $plan->signup_amount;
         $this->max_no = $plan->max_no;
@@ -30,10 +33,12 @@ class HmoPlans extends Base
 
     public function updatePlan()
     {
-        HmoPlan::where('id', $this->HmoId)->update([
+        HmoPlan::where('id', $this->plan_id)->update([
             'hmo_id' => $this->hmo_id,
+            'name' => $this->name,
             'enrollment_amount' => $this->enrollment_amount,
             'signup_amount' => $this->signup_amount,
+            'max_no' => $this->max_no,
             'is_insurance' => $this->is_insurance
         ]);
 
