@@ -11,6 +11,7 @@ class Base extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $sortDirection = 'asc';
+    public $sortBy = '';
 
     public $perPage = 10;
 
@@ -25,9 +26,9 @@ class Base extends Component
     public function sortBy($field)
     {
         if ($this->sortDirection == 'asc') {
-            $this->sortDirection == 'desc';
+            $this->sortDirection = 'desc';
         } else {
-            $this->sortDirection == 'asc';
+            $this->sortDirection = 'asc';
         }
         return $this->sortBy = $field;
     }

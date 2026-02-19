@@ -37,7 +37,7 @@
                         <td>
                             <input type="text" name="items[{{ $item->id }}]" class="form-control"
                                 placeholder="{{ $item->parameter->name }}" required>
-                            <small><span class="form-text text-muted">{{ $item->reference }}</span></small>
+                            <small><span class="form-text text-muted">{{ $item->reference }} </span></small>
                         </td>
                     </tr>
                 @empty
