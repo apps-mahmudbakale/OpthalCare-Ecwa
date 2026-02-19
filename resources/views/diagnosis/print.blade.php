@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Ophthalmology Diagnosis Report</title>
+  <title>{{ $diagnosis->specialty ?? 'Ophthalmology' }} Diagnosis Report</title>
   <style>
     body {
       font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -135,7 +135,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              <h2 style="text-align: center;">OPHTHALMOLOGY CONSULTATION REPORT</h2>
+              <h2 style="text-align: center;">{{ strtoupper($diagnosis->specialty ?? 'OPHTHALMOLOGY') }} CONSULTATION REPORT</h2>
             </td>
           </tr>
         </table>
@@ -148,37 +148,171 @@
   <p>{!! $diagnosis->history ?? 'No history provided' !!}</p>
 
   <h6>Examination</h6>
-  <table class="examination-table">
-    <thead>
-    <tr>
-      <th style="width:35%;"></th>
-      <th>(RE) Right Eye</th>
-      <th>(LE) Left Eye</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr><td>UNCORRECTED</td><td>{{ $diagnosis->uncorrected_right ?? '-' }}</td><td>{{ $diagnosis->uncorrected_left ?? '-' }}</td></tr>
-    <tr><td>PIN HOLE</td><td>{{ $diagnosis->pinhole_right ?? '-' }}</td><td>{{ $diagnosis->pinhole_left ?? '-' }}</td></tr>
-    <tr><td>VA WITH GLASSES</td><td>{{ $diagnosis->va_glass_right ?? '-' }}</td><td>{{ $diagnosis->va_glass_left ?? '-' }}</td></tr>
-    <tr><td>NEAR VISION</td><td>{{ $diagnosis->near_vision_right ?? '-' }}</td><td>{{ $diagnosis->near_vision_left ?? '-' }}</td></tr>
-    <tr><td>LID</td><td>{{ $diagnosis->lid_right ?? '-' }}</td><td>{{ $diagnosis->lid_left ?? '-' }}</td></tr>
-    <tr><td>GLOBE</td><td>{{ $diagnosis->globe_right ?? '-' }}</td><td>{{ $diagnosis->globe_left ?? '-' }}</td></tr>
-    <tr><td>EOM (Extraocular Movements)</td><td>{{ $diagnosis->eomm_right ?? '-' }}</td><td>{{ $diagnosis->eomm_left ?? '-' }}</td></tr>
-    <tr><td>CONJUNCTIVA</td><td>{{ $diagnosis->conjuctiva_right ?? '-' }}</td><td>{{ $diagnosis->conjuctiva_left ?? '-' }}</td></tr>
-    <tr><td>CORNEA</td><td>{{ $diagnosis->cornea_right ?? '-' }}</td><td>{{ $diagnosis->cornea_left ?? '-' }}</td></tr>
-    <tr><td>ANTERIOR CHAMBER</td><td>{{ $diagnosis->anterior_cha_right ?? '-' }}</td><td>{{ $diagnosis->anterior_cha_left ?? '-' }}</td></tr>
-    <tr><td>IRIS</td><td>{{ $diagnosis->iris_right ?? '-' }}</td><td>{{ $diagnosis->iris_left ?? '-' }}</td></tr>
-    <tr><td>PUPIL</td><td>{{ $diagnosis->pupil_right ?? '-' }}</td><td>{{ $diagnosis->pupil_left ?? '-' }}</td></tr>
-    <tr><td>LENS</td><td>{{ $diagnosis->lens_right ?? '-' }}</td><td>{{ $diagnosis->lens_left ?? '-' }}</td></tr>
-    <tr><td>IOP (mmHg)</td><td>{{ $diagnosis->iop_right ?? '-' }}</td><td>{{ $diagnosis->iop_left ?? '-' }}</td></tr>
-    <tr><td>VITREOUS</td><td>{{ $diagnosis->vitreous_right ?? '-' }}</td><td>{{ $diagnosis->vitreous_left ?? '-' }}</td></tr>
-    <tr><td>DISC</td><td>{{ $diagnosis->disc_right ?? '-' }}</td><td>{{ $diagnosis->disc_left ?? '-' }}</td></tr>
-    <tr><td>VCDR</td><td>{{ $diagnosis->vcdr_right ?? '-' }}</td><td>{{ $diagnosis->vcdr_left ?? '-' }}</td></tr>
-    <tr><td>MACULA</td><td>{{ $diagnosis->macula_right ?? '-' }}</td><td>{{ $diagnosis->macula_left ?? '-' }}</td></tr>
-    <tr><td>RETINA</td><td>{{ $diagnosis->retina_right ?? '-' }}</td><td>{{ $diagnosis->retina_left ?? '-' }}</td></tr>
-    <tr><td>VESSELS</td><td>{{ $diagnosis->vessels_right ?? '-' }}</td><td>{{ $diagnosis->vessels_left ?? '-' }}</td></tr>
-    </tbody>
-  </table>
+  @if ($diagnosis->specialty == 'Gynaecology')
+      <div class="gynae-print-section">
+          <div style="background: #f0f0f0; padding: 5px; margin-top: 10px; border-left: 4px solid #007bff; font-weight: bold; text-transform: uppercase; font-size: 13px;">Pregnancy Overview</div>
+          <table class="examination-table">
+              <tbody>
+                  <tr>
+                      <td width="50%">LMP (Last Menstrual Period)</td>
+                      <td style="text-align: left;">{{ $diagnosis->lmp ?? 'N/A' }}</td>
+                  </tr>
+                  <tr>
+                      <td>EDD (Estimated Due Date)</td>
+                      <td style="text-align: left;">{{ $diagnosis->edd ?? 'N/A' }}</td>
+                  </tr>
+                  <tr>
+                      <td>GA (Gestational Age)</td>
+                      <td style="text-align: left;">{{ $diagnosis->ga ?? 'N/A' }}</td>
+                  </tr>
+              </tbody>
+          </table>
+
+          <div style="background: #f0f0f0; padding: 5px; margin-top: 10px; border-left: 4px solid #17a2b8; font-weight: bold; text-transform: uppercase; font-size: 13px;">Obstetric History</div>
+          <table class="examination-table">
+              <tbody>
+                  <tr>
+                      <td width="50%">Gravidity</td>
+                      <td style="text-align: left;">{{ $diagnosis->gravidity ?? '0' }}</td>
+                  </tr>
+                  <tr>
+                      <td>Parity</td>
+                      <td style="text-align: left;">{{ $diagnosis->parity ?? '0' }}</td>
+                  </tr>
+                  <tr>
+                      <td>Last Delivery Date</td>
+                      <td style="text-align: left;">{{ $diagnosis->last_delivery_date ?? 'N/A' }}</td>
+                  </tr>
+              </tbody>
+          </table>
+
+          <div style="background: #f0f0f0; padding: 5px; margin-top: 10px; border-left: 4px solid #6c757d; font-weight: bold; text-transform: uppercase; font-size: 13px;">Specialist Findings</div>
+          <table class="examination-table">
+              <tbody>
+                  <tr>
+                      <td width="50%">Menstrual History</td>
+                      <td style="text-align: left;">{{ $diagnosis->menstrual_history ?? 'N/A' }}</td>
+                  </tr>
+                  <tr>
+                      <td>Pelvic Examination</td>
+                      <td style="text-align: left;">{{ $diagnosis->pelvic_examination ?? 'N/A' }}</td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+  @else
+      <table class="examination-table">
+          <thead>
+              <tr>
+                  <th style="width:35%;"></th>
+                  <th>(RE) Right Eye</th>
+                  <th>(LE) Left Eye</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <td>UNCORRECTED</td>
+                  <td>{{ $diagnosis->uncorrected_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->uncorrected_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>PIN HOLE</td>
+                  <td>{{ $diagnosis->pinhole_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->pinhole_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>VA WITH GLASSES</td>
+                  <td>{{ $diagnosis->va_glass_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->va_glass_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>NEAR VISION</td>
+                  <td>{{ $diagnosis->near_vision_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->near_vision_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>LID</td>
+                  <td>{{ $diagnosis->lid_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->lid_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>GLOBE</td>
+                  <td>{{ $diagnosis->globe_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->globe_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>EOM (Extraocular Movements)</td>
+                  <td>{{ $diagnosis->eomm_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->eomm_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>CONJUNCTIVA</td>
+                  <td>{{ $diagnosis->conjuctiva_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->conjuctiva_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>CORNEA</td>
+                  <td>{{ $diagnosis->cornea_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->cornea_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>ANTERIOR CHAMBER</td>
+                  <td>{{ $diagnosis->anterior_cha_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->anterior_cha_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>IRIS</td>
+                  <td>{{ $diagnosis->iris_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->iris_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>PUPIL</td>
+                  <td>{{ $diagnosis->pupil_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->pupil_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>LENS</td>
+                  <td>{{ $diagnosis->lens_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->lens_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>IOP (mmHg)</td>
+                  <td>{{ $diagnosis->iop_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->iop_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>VITREOUS</td>
+                  <td>{{ $diagnosis->vitreous_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->vitreous_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>DISC</td>
+                  <td>{{ $diagnosis->disc_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->disc_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>VCDR</td>
+                  <td>{{ $diagnosis->vcdr_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->vcdr_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>MACULA</td>
+                  <td>{{ $diagnosis->macula_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->macula_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>RETINA</td>
+                  <td>{{ $diagnosis->retina_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->retina_left ?? '-' }}</td>
+              </tr>
+              <tr>
+                  <td>VESSELS</td>
+                  <td>{{ $diagnosis->vessels_right ?? '-' }}</td>
+                  <td>{{ $diagnosis->vessels_left ?? '-' }}</td>
+              </tr>
+          </tbody>
+      </table>
+  @endif
 
   <h6>General Examination</h6>
   <p>{{ $diagnosis->general_examination ?? 'No general examination provided' }}</p>

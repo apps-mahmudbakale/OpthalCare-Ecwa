@@ -177,7 +177,7 @@
         const encryptedData = btoa(JSON.stringify(result.value.data));
 
         // Redirect to the patient.create route with encrypted data
-        window.location.href = `/app/patients/create?data=${encodeURIComponent(encryptedData)}`;
+        window.location.href = `{{ route('app.patients.create') }}?data=${encodeURIComponent(encryptedData)}`;
       }
     });
   });

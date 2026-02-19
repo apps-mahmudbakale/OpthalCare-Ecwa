@@ -28,7 +28,7 @@
 @section('content')
 
     <div class="row">
-        <h2>Welcome to Reflex Vision & Diagnostics</h2>
+        <h2>Welcome to GAMJI PREMIER CLINIC </h2>
         <img src="{{ asset('logo.png') }}" alt="" style="width:83%; margin:2em;">
     </div>
 

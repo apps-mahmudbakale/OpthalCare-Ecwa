@@ -17,6 +17,8 @@ class AllLab extends Base
     public $startDate;
     public $endDate;
 
+    protected $paginationTheme = 'bootstrap';
+
     public function render()
     {
         $labRequests = LabRequest::query()

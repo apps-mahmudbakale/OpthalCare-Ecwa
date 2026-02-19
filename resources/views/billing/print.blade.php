@@ -67,7 +67,7 @@
 
   <div class="centered">
     <div>
-      {{ app(App\Settings\SystemSettings::class)->clinic_name ?? 'OphthalCare' }}<br>
+      {{ app(App\Settings\SystemSettings::class)->clinic_name ?? 'Gamji Premier Clinic' }}<br>
       {{ app(App\Settings\SystemSettings::class)->address ?? 'Address' }}
     </div>
   </div>
@@ -124,7 +124,7 @@
   <p class="centered small">
     Cashier: {{ $payment->user->firstname . ' ' . $payment->user->lastname }}
   </p>
-  <p class="centered small">&copy; 2020 - {{ date('Y') }} - OphthalCare</p>
+  <p class="centered small">&copy; 2020 - {{ date('Y') }} - Gamji Premier Clinic</p>
 </div>
 
 <button id="btnPrint" class="hidden-print">Print</button>

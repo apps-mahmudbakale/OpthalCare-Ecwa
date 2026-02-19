@@ -323,21 +323,22 @@
                             <h5 class="m-0 me-2">HMO Plans</h5>
                         </div>
                         <div class="dropdown">
-                            <button class="btn p-0" type="button" id="salesByCountry" data-bs-toggle="dropdown"
+                            <button class="btn p-0" type="button" id="hmoPlansDropdown" data-bs-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
                                 <i class="ti ti-dots-vertical ti-sm text-muted"></i>
                             </button>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="salesByCountry">
-                                <a class="dropdown-item" href="javascript:void(0);" id="add-payment-method"
-                                   data-request-url="{{ route('app.hmos.create') }}">New Hmo Group</a>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="hmoPlansDropdown">
+                                <a class="dropdown-item" href="javascript:void(0);" 
+                                   data-bs-toggle="modal" data-bs-target="#newHmoPlan">New Hmo Plan</a>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
-                        <livewire:hmo-groups />
+                        <livewire:hmo-plans />
                     </div>
                 </div>
             </div>
+            <livewire:hmo-services />
         @endif
         <!--/ Sales By Country -->
         <div class="col-xl-12 col-md-12 mb-4">
@@ -377,7 +378,7 @@
             </div>
 
         </div>
-        <div class="col-md-6 col-xl-4 mb-4">
+        <!-- <div class="col-md-6 col-xl-4 mb-4">
 
             <div class="card h-100">
                 <div class="card-body">
@@ -388,7 +389,7 @@
                 </div>
             </div>
 
-        </div>
+        </div> -->
         <div class="col-md-6 col-xl-4 mb-4">
             <div class="card h-100">
                 <div class="card-body">

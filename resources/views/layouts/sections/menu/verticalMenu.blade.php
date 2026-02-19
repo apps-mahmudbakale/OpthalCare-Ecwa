@@ -103,14 +103,14 @@ $configData = Helper::appClasses();
       </a>
     </li>
 @endcan
-    @can('read-opticals')
+    <!-- @can('read-opticals')
     <li class="menu-item {{ request()->is('app/opticals*') ? 'active' : '' }}">
       <a href="{{ route('app.opticals.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-eyeglass"></i>
         <div>Opticals</div>
       </a>
     </li>
-@endcan
+@endcan -->
 @can('read-admission')
     <li class="menu-item {{ request()->is('app/admissions*') ? 'active' : '' }}">
       <a href="{{ route('app.admissions.index') }}" class="menu-link">
