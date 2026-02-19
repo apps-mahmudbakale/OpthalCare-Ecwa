@@ -6,7 +6,7 @@
 
 @extends('layouts/layoutMaster')
 
-@section('title', 'OphthalCare Auth')
+@section('title', 'GAMJI PREMIER CLINIC Auth')
 
 @section('vendor-style')
     <!-- Vendor -->
