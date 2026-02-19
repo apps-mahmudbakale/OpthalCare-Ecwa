@@ -378,7 +378,7 @@
             </div>
 
         </div>
-        <div class="col-md-6 col-xl-4 mb-4">
+        <!-- <div class="col-md-6 col-xl-4 mb-4">
 
             <div class="card h-100">
                 <div class="card-body">
@@ -389,7 +389,7 @@
                 </div>
             </div>
 
-        </div>
+        </div> -->
         <div class="col-md-6 col-xl-4 mb-4">
             <div class="card h-100">
                 <div class="card-body">

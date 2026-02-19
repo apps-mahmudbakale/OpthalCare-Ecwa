@@ -136,7 +136,7 @@
                             <i class="tf-icons ti ti-activity-heartbeat ti-xs me-1"></i> Vitals
                         </button>
                     </li>
-                    <li class="nav-item" role="presentation">
+                    <!-- <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                             data-bs-target="#navs-pills-justified-va" aria-controls="navs-pills-justified-va"
                             aria-selected="false" tabindex="-1">
@@ -156,7 +156,7 @@
                             aria-controls="navs-pills-justified-refraction" aria-selected="false" tabindex="-1">
                             <i class="tf-icons ti ti-search ti-xs me-1"></i> Refraction
                         </button>
-                    </li>
+                    </li> -->
                     <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                             data-bs-target="#navs-pills-justified-allergies"
