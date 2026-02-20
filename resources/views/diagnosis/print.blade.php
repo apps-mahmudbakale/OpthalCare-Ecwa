@@ -149,6 +149,78 @@
 
   <h6>Examination</h6>
 
+  @if ($diagnosis->lmp || $diagnosis->edd || $diagnosis->ga)
+      <div style="background: #f0f0f0; padding: 5px; margin-top: 10px; border-left: 4px solid #007bff; font-weight: bold; text-transform: uppercase; font-size: 13px;">Pregnancy Overview</div>
+      <table class="examination-table">
+          <tbody>
+              @if ($diagnosis->lmp)
+              <tr>
+                  <td width="50%">LMP (Last Menstrual Period)</td>
+                  <td style="text-align: left;">{{ $diagnosis->lmp }}</td>
+              </tr>
+              @endif
+              @if ($diagnosis->edd)
+              <tr>
+                  <td>EDD (Estimated Due Date)</td>
+                  <td style="text-align: left;">{{ $diagnosis->edd }}</td>
+              </tr>
+              @endif
+              @if ($diagnosis->ga)
+              <tr>
+                  <td>GA (Gestational Age)</td>
+                  <td style="text-align: left;">{{ $diagnosis->ga }}</td>
+              </tr>
+              @endif
+          </tbody>
+      </table>
+  @endif
+
+  @if ($diagnosis->gravidity || $diagnosis->parity || $diagnosis->last_delivery_date)
+      <div style="background: #f0f0f0; padding: 5px; margin-top: 10px; border-left: 4px solid #17a2b8; font-weight: bold; text-transform: uppercase; font-size: 13px;">Obstetric History</div>
+      <table class="examination-table">
+          <tbody>
+              @if ($diagnosis->gravidity)
+              <tr>
+                  <td width="50%">Gravidity</td>
+                  <td style="text-align: left;">{{ $diagnosis->gravidity }}</td>
+              </tr>
+              @endif
+              @if ($diagnosis->parity)
+              <tr>
+                  <td>Parity</td>
+                  <td style="text-align: left;">{{ $diagnosis->parity }}</td>
+              </tr>
+              @endif
+              @if ($diagnosis->last_delivery_date)
+              <tr>
+                  <td>Last Delivery Date</td>
+                  <td style="text-align: left;">{{ $diagnosis->last_delivery_date }}</td>
+              </tr>
+              @endif
+          </tbody>
+      </table>
+  @endif
+
+  @if ($diagnosis->menstrual_history || $diagnosis->pelvic_examination)
+      <div style="background: #f0f0f0; padding: 5px; margin-top: 10px; border-left: 4px solid #6c757d; font-weight: bold; text-transform: uppercase; font-size: 13px;">Specialist Findings</div>
+      <table class="examination-table">
+          <tbody>
+              @if ($diagnosis->menstrual_history)
+              <tr>
+                  <td width="50%">Menstrual History</td>
+                  <td style="text-align: left;">{{ $diagnosis->menstrual_history }}</td>
+              </tr>
+              @endif
+              @if ($diagnosis->pelvic_examination)
+              <tr>
+                  <td>Pelvic Examination</td>
+                  <td style="text-align: left;">{{ $diagnosis->pelvic_examination }}</td>
+              </tr>
+              @endif
+          </tbody>
+      </table>
+  @endif
+
   <h6>General Examination</h6>
   <p>{{ $diagnosis->general_examination ?? 'No general examination provided' }}</p>
 
