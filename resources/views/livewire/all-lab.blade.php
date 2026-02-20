@@ -89,8 +89,6 @@
             </tbody>
         </table>
     </div>
-
-<<<<<<< Refelex
     <div class="card-footer border-top py-2">
         <div class="row align-items-center">
             <div class="col-sm-12 col-md-6 mb-2 mb-md-0">
@@ -106,66 +104,6 @@
         </div>
     </div>
 </div>
-=======
-<!-- .table-responsive -->
-<div class="table-responsive">
-  <!-- .table -->
-  <table class="table table-striped">
-    <!-- thead -->
-    <thead>
-    <tr>
-      <th>Date</th>
-      <th>Patient</th>
-      <th>Lab Test</th>
-      <th>Requester</th>
-      <th>Status</th>
-      <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!-- tr -->
-    @foreach ($labRequests as $labRequest)
-    <tr wire:key="lab-request-{{ $labRequest->id }}">
-      <td class="align-middle">{{ $labRequest->test ? \Carbon\Carbon::parse($labRequest->created_at)->format('d M Y') : 'N/A' }}</td>
-      <td class="align-middle">
-        <a href="patients/{{ $labRequest->patient->id }}" target="_blank">
-          {{ $labRequest->patient->user->firstname }} {{ $labRequest->patient->user->lastname }}
-        </a>
-      </td>
-      <td class="align-middle">{{ $labRequest->test ? $labRequest->test->name : 'Test not found' }}</td>
-      <td class="align-middle">{{ $labRequest->user->firstname . ' ' . $labRequest->user->lastname }}</td>
-      <td class="align-middle">{{ $labRequest->status }}</td>
-      <td class="align-middle text-right">
-        <div class="btn-group">
-          <button type="button" class="btn btn-sm btn-icon btn-light waves-effect waves-light"
-                  data-bs-toggle="dropdown" data-boundary="viewport" aria-expanded="false"
-                  aria-haspopup="true">
-            <i class="fa fa-ellipsis-v"></i>
-          </button>
-          <ul class="dropdown-menu" style="">
-            @if ($labRequest->status == 'Specimen Collected')
-            <li><button class="dropdown-item" data-request-url="{{ route('app.lab.show', $labRequest->id) }}">Add Result</button></li>
-            @elseif ($labRequest->status == 'Result Ready')
-            <li><a class="dropdown-item" target="_blank" href="{{ route('app.lab.print.result', $labRequest->id) }}">Print</a></li>
-            @else
-            <li><a href="{{ route('app.lab.specimen', $labRequest->id) }}"
-                   class="dropdown-item" href="javascript:void(0);">Receive Specimens</a></li>
-            @endif
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-bg-danger" href="javascript:void(0);">Cancel</a></li>
-          </ul>
-        </div>
-      </td>
-    </tr>
-    @endforeach
-    </tbody><!-- /tbody -->
-  </table><!-- /.table -->
-  <hr class="my-2">
-  <div class="d-flex justify-content-around">
-    {{ $labRequests->links('shared.custom-pagination') }}
-  </div>
-</div><!-- /.table-responsive -->
->>>>>>> Adoke
 
 @include('_partials._modals.global-modal')
 
