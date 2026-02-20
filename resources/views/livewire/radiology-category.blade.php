@@ -34,7 +34,7 @@
                             <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
                                     data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
                                 <ul class="dropdown-menu dropdown-menu-end m-0">
-                                    <li><a href="" wire:click.prevent="selectConsultingRoom({{ $category->id }})"
+                                    <li><a href="" wire:click.prevent="selectCategory({{ $category->id }})"
                                             class="dropdown-item">Edit</a></li>
                                     <div class="dropdown-divider"></div>
                                     <li><a id="dele{{ $category->id }}" data-value="{{ $category->id }}"
@@ -86,10 +86,12 @@
             </div>
         </div>
     </div>
-    {{-- <script>
-        window.addEventListener('ConsultingRoomEditModal', function() {
-            $('#edit-consulting-room-modal').modal('show');
+    <script>
+        window.addEventListener('RadiologyCategoryEditModal', function() {
+            var modal = new bootstrap.Modal(document.getElementById('editRadiologyCategoryModal'));
+            modal.show();
         });
-    </script> --}}
+    </script>
 </div>
 @include('_partials._modals.modal-new-radiology-category')
+@include('_partials._modals.modal-edit-radiology-category')

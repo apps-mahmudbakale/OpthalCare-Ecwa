@@ -86,10 +86,12 @@
             </div>
         </div>
     </div>
-    {{-- <script>
-      window.addEventListener('ConsultingRoomEditModal', function() {
-          $('#edit-consulting-room-modal').modal('show');
-      });
-  </script> --}}
+    <script>
+        window.addEventListener('DrugStoreEditModal', function() {
+            var modal = new bootstrap.Modal(document.getElementById('editDrugStoreModal'));
+            modal.show();
+        });
+    </script>
 </div>
 @include('_partials._modals.modal-new-drugs-store')
+@include('_partials._modals.modal-edit-drug-store')

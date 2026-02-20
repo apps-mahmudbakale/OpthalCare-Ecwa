@@ -30,7 +30,7 @@
                         {{ $radiologyRequest->created_at->diffForHumans() }}
                     </td>
                     <td class="align-middle">
-                        <a target="_blank" href="/app/patients/{{ $radiologyRequest->patient->id }}">
+                        <a target="_blank" href="{{ url('/app/patients/' . $radiologyRequest->patient->id) }}">
                             {{ $radiologyRequest->patient->user->firstname }}
                             {{ $radiologyRequest->patient->user->lastname }}
                             [HRN {{ $radiologyRequest->patient->hospital_no }}]
