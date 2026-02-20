@@ -102,4 +102,51 @@ class BillingController extends Controller
   {
     //
   }
+
+  /**
+   * Generates a clearance code for a pending check-in bill when paid.
+   */
+  public function generateCheckInCode(Request $request)
+  {
+      $request->validate([
+          'billing_id' => 'required|string'
+      ]);
+
+      // Find the check-in consultation bill
+      $bill = Billing::where('bill_ref', $request->billing_id)
+                     ->where('service', 'Consultation / Check-In Fee')
+                     ->firstOrFail();
+
+      if ($bill->status == 1) {
+          return back()->with('error', 'Bill is already paid.');
+      }
+
+      // Find the pending checkin record for this patient today
+      $checkIn = \App\Models\CheckIn::where('patient_id', $bill->user_id)
+                                    ->whereDate('check_in_date', today())
+                                    ->where('cleared', false)
+                                    ->first();
+
+      if (!$checkIn) {
+          return back()->with('error', 'No pending check-in found for this bill.');
+      }
+
+      \DB::beginTransaction();
+      try {
+          // Mark bill as paid
+          $bill->update(['status' => 1]);
+
+          // Generate a 6-character uppercase alphanumeric code
+          $code = strtoupper(str()->random(6));
+
+          // Save code to the checkin record
+          $checkIn->update(['clearance_code' => $code]);
+
+          \DB::commit();
+          return back()->with('success', 'Payment successful. Clearance Code: ' . $code)->with('clearance_code', $code);
+      } catch (\Exception $e) {
+          \DB::rollBack();
+          return back()->with('error', 'Failed to generate clearance code: ' . $e->getMessage());
+      }
+  }
 }

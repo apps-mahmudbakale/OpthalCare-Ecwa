@@ -89,6 +89,11 @@ class SystemSettingsController extends Controller
     $system->insurance_providers = $request->has('insurance_providers');
     $system->auto_bill = $request->has('auto_bill');
     $system->check_in = $request->has('check_in');
+    
+    if ($request->has('checkin_fee')) {
+        $system->checkin_fee = $request->checkin_fee;
+    }
+
     $system->save();
     return redirect()->route('app.settings.index')->with('System Settings Has Been Updated');
   }

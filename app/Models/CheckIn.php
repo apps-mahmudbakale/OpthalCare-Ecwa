@@ -11,6 +11,8 @@ class CheckIn extends Model
 
   protected $fillable = [
     'patient_id',
-    'check_in_date'
+    'check_in_date',
+    'clearance_code',
+    'cleared'
   ];
 }

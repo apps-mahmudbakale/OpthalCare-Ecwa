@@ -25,11 +25,15 @@
             <label class="form-label" for="modalEditUserEmail">Address</label>
             <textarea name="address" id="" cols="30" rows="10" class="form-control">{{ $system->address }}</textarea>
           </div>
-          <div class="col-12 col-md-12">
+          <div class="col-12 col-md-6">
             <label class="form-label" for="modalEditUserStatus">Footer</label>
             <input type="text" value="{{$system->footer}}" name="footer" class="form-control">
           </div>
-          <div class="col-12 text-center">
+          <div class="col-12 col-md-6">
+            <label class="form-label" for="modalEditCheckinFee">Check-In Fee (₦)</label>
+            <input type="number" step="0.01" value="{{$system->checkin_fee ?? 0}}" name="checkin_fee" class="form-control">
+          </div>
+          <div class="col-12 text-center mt-4">
             <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
           </div>

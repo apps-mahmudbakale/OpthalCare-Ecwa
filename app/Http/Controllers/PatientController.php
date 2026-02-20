@@ -200,8 +200,15 @@ class PatientController extends Controller
 
     if (!$isCheckedIn) {
       if (app(SystemSettings::class)->check_in) {
-        $checkInService->checkIn($patient->id);
-        $isCheckedIn = true;
+        $checkInFee = (float)(app(SystemSettings::class)->checkin_fee ?? 0);
+        
+        if ($checkInFee > 0) {
+            // For auto check-in, if fee is required, don't auto check-in. Tell them to use manual checkin button
+            return back()->with('check-in', 'Check-In fee required. Please click the Check-In button to initiate billing.');
+        } else {
+            $checkInService->checkIn($patient->id);
+            $isCheckedIn = true;
+        }
       } else {
         return back()->with('check-in', 'Please Check-In the Patient');
       }
@@ -311,13 +318,87 @@ class PatientController extends Controller
     $checkInService = new CheckInService();
     if ($checkInService->hasCheckedInToday($patient)) {
       return back()->with('error', 'Patient has checked in already');
-    } else {
-      $checkIn = CheckIn::create([
+    }
+
+    $system = app(SystemSettings::class);
+    $checkInFee = (float)($system->checkin_fee ?? 0);
+
+    // If there is no fee configured, we can just clear them immediately
+    if ($checkInFee <= 0) {
+      CheckIn::create([
         'patient_id' => $patient,
         'check_in_date' => now()->toDateString(),
+        'cleared' => true
       ]);
       return back()->with('success', 'Patient checked in Successfully');
     }
+
+    // Check if they already have a pending checkin today to avoid duplicate bills
+    $existingPending = CheckIn::where('patient_id', $patient)
+                              ->whereDate('check_in_date', today())
+                              ->first();
+
+    if ($existingPending && !$existingPending->cleared) {
+       return back()->with('error', 'Patient already has a pending check-in. Please clear the pending bill.');
+    }
+
+    \DB::beginTransaction();
+    try {
+        // Create pending checkin
+        $checkIn = CheckIn::create([
+          'patient_id' => $patient,
+          'check_in_date' => now()->toDateString(),
+          'cleared' => false
+        ]);
+
+        // Create billing record for check-in fee
+        Billing::create([
+          'service' => 'Consultation / Check-In Fee',
+          'service_id' => 0, // 0 or null for check-in
+          'user_id' => $patient,
+          'quantity' => 1,
+          'amount' => $checkInFee,
+          'bill_ref' => str()->random(6),
+          'status' => 0, // Unpaid
+          'payer_id' => $patient,
+        ]);
+
+        \DB::commit();
+        return back()->with('error', 'Check-In initiated. Patient must pay the consultation fee of ₦' . number_format($checkInFee, 2) . ' to receive a clearance code.');
+    } catch (\Exception $e) {
+        \DB::rollBack();
+        return back()->with('error', 'Failed to initiate check-in: ' . $e->getMessage());
+    }
+  }
+
+  /**
+   * Approves a pending check-in using the cashier's clearance code.
+   */
+  public function approveCheckIn(Request $request, $patient)
+  {
+      $request->validate([
+          'clearance_code' => 'required|string'
+      ]);
+
+      // Find the pending checkin record
+      $checkIn = CheckIn::where('patient_id', $patient)
+                        ->whereDate('check_in_date', today())
+                        ->where('cleared', false)
+                        ->first();
+
+      if (!$checkIn) {
+          return back()->with('error', 'No pending check-in found for this patient today.');
+      }
+
+      // Verify clearance code
+      if (strtoupper($checkIn->clearance_code) !== strtoupper($request->clearance_code)) {
+          return back()->with('error', 'Invalid clearance code.');
+      }
+
+      // Mark as cleared
+      $checkIn->update(['cleared' => true]);
+
+      return back()->with('success', 'Patient checked in Successfully with Clearance Code!');
   }
 
   /**

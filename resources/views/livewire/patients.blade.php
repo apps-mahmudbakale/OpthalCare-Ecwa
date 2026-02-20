@@ -48,9 +48,15 @@
                     <a class="dropdown-item" href="{{ route('app.patients.show', $patient->id) }}">Open Profile</a>
                     <a class="dropdown-item" href="{{ route('app.patients.edit', $patient->id) }}">Edit Profile</a>
 
+                    @if($patient->hasPendingCheckIn())
+                    <a class="dropdown-item text-warning" href="javascript:void(0);" onclick="requestClearanceCode({{ $patient->id }})">
+                      Enter Clearance Code
+                    </a>
+                    @else
                     <a class="dropdown-item" href="{{ route('app.patient.checkIn', $patient->id) }}">
                       Check In
                     </a>
+                    @endif
                     <a class="dropdown-item text-danger" href="javascript:void(0);">Delete Profile</a>
                   </div>
                 </div>
@@ -97,6 +103,47 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
+  function requestClearanceCode(patientId) {
+    Swal.fire({
+      title: 'Enter Clearance Code',
+      text: 'This patient has a pending check-in fee. Please enter the generated clearance code.',
+      input: 'text',
+      inputPlaceholder: 'e.g. CHK-A3F9',
+      showCancelButton: true,
+      confirmButtonText: 'Submit Code',
+      showLoaderOnConfirm: true,
+      preConfirm: (code) => {
+        if (!code) {
+          Swal.showValidationMessage('Please enter a clearance code');
+        }
+        return code;
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Create a form dynamically to POST the data
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `{{ url('/app/patient/check-in') }}/${patientId}/approve`;
+
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = '_token';
+        csrfToken.value = '{{ csrf_token() }}';
+        form.appendChild(csrfToken);
+
+        const codeInput = document.createElement('input');
+        codeInput.type = 'hidden';
+        codeInput.name = 'clearance_code';
+        codeInput.value = result.value;
+        form.appendChild(codeInput);
+
+        document.body.appendChild(form);
+        form.submit();
+      }
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
     document.body.addEventListener('click', function(event) {
       if (event.target.classList.contains('check-in-btn')) {

@@ -101,6 +101,20 @@ class PaymentController extends Controller
 
         $service = $billings->first(); // Use first billing for service check
 
+        // Handle Check-In Consultation Fee
+        $clearanceCode = null;
+        if (strtolower($service->service) === strtolower('consultation / check-in fee')) {
+          $checkIn = \App\Models\CheckIn::where('patient_id', $service->user_id)
+                                        ->whereDate('check_in_date', today())
+                                        ->where('cleared', false)
+                                        ->first();
+
+          if ($checkIn) {
+              $clearanceCode = strtoupper(str()->random(6));
+              $checkIn->update(['clearance_code' => $clearanceCode]);
+          }
+        }
+
         // Handle follow-up consultation
         if (strtolower($service->service) === strtolower('consultations:Follow-Up')) {
           $accessCode = 'OPC-' . substr(rand(100000, 999999) . time(), 0, 6);
@@ -115,7 +129,8 @@ class PaymentController extends Controller
         return view('billing.print', [
           'billing' => $service,
           'payment' => $payment,
-          'bill_ref' => $request->billing_id
+          'bill_ref' => $request->billing_id,
+          'clearance_code' => $clearanceCode
         ])->with(['success' => 'Payment added successfully']);
       });
     } catch (\Exception $e) {

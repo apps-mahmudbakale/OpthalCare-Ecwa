@@ -33,7 +33,7 @@
                             </button>
                             <ul class="dropdown-menu" style="">
                                 <li><button class="dropdown-item"
-                                        data-request-url="{{ route('app.billing.show', $billing->id) }}"
+                                        data-request-url="{{ route('app.billing.show', $billing->bill_ref) }}"
                                         data-toggle="modal" data-target="#global-modal">Receive
                                         Payment</button></li>
                                 {{-- <li>

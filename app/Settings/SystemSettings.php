@@ -11,6 +11,8 @@ class SystemSettings extends Settings
   public string $address;
   public string $logo;
   public string $check_in;
+  public string $checkin_fee;
+
   public string $auto_bill;
   public string $number_prefix;
   public string $insurance_providers;

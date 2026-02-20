@@ -89,6 +89,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::post('patient/tag', [PatientController::class, 'addTag'])->name('patients.tag.post');
   Route::get('patient/draw/{id}', [PatientController::class, 'draw'])->name('patient.draw');
   Route::get('patient/check-in/{id}', [PatientController::class, 'checkIn'])->name('patient.checkIn');
+  Route::post('patient/check-in/{id}/approve', [PatientController::class, 'approveCheckIn'])->name('patient.checkIn.approve');
   Route::get('patient/fund-wallet/{id}', [PatientController::class, 'fundWalletView'])->name('patient.fund.wallet');
   Route::post('patient/fund-wallet', [PatientController::class, 'fundWalletSave'])->name('patient.fund.wallet.save');
   Route::get('patient/schedule-appointment/{id}', [PatientController::class, 'scheduleAppointment'])->name('patient.schedule.appointment');
@@ -138,6 +139,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::post('drugs-add', [DrugController::class, 'storeDrugs'])->name('drugs-add.store');
   Route::post('drugs-add/{drugs}', [DrugController::class, 'updateDrugs'])->name('drugs-add.update');
   Route::post('drugs-store', [DrugStoreController::class, 'store'])->name('drugs-store.store');
+
   Route::post('drugs-category', [DrugController::class, 'storeCategory'])->name('drugs-category.store');
   Route::post('drugs-category/{category}', [DrugController::class, 'updateCategory'])->name('drugs-category.update');
   Route::resource('lab', LabRequestController::class);

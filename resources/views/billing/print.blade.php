@@ -115,6 +115,14 @@
     {{\App\Models\Patient::where('id',\App\Models\Billing::where('id', $payment->billing_id)->first()->user_id)->first()->user->firstname}}, {{\App\Models\Patient::where('id',\App\Models\Billing::where('id', $payment->billing_id)->first()->user_id)->first()->user->lastname}} [{{ app(App\Settings\SystemSettings::class)->number_prefix ?: 'HRN' }}{{\App\Models\Patient::where('id',\App\Models\Billing::where('id', $payment->billing_id)->first()->user_id)->first()->hospital_no}}]
   </div>
 
+  @if(isset($clearance_code) && $clearance_code)
+  <div style="border: 2px dashed black; padding: 10px; margin-top: 15px; text-align: center;">
+      <strong style="font-size: 16px;">CLEARANCE CODE</strong><br>
+      <span style="font-size: 24px; font-weight: bold;">{{ $clearance_code }}</span><br>
+      <small style="font-size: 11px;">Provide this code at reception to check-in.</small>
+  </div>
+  @endif
+
   <br>
   <div class="centered">
     Date:<br> {{ $payment->created_at->format('d M Y h:i A') }}

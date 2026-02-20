@@ -2,7 +2,7 @@
 <div class="text-center mb-4">
     <h3 class="mb-2">Receive Payment</h3>
 </div>
-<form action="{{route('app.payments.store')}}" method="POST">
+<form id="billingPaymentForm" action="{{route('app.payments.store')}}" method="POST">
     @csrf
     <div class="form-group">
       <input type="hidden" name="billing_id" value="{{$ref}}">
@@ -46,8 +46,11 @@
             </div>
         </div>
     </div>
-    <div class="col-12 text-center">
-        <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+        @if($billing->service == 'Consultation / Check-In Fee')
+            <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit & Generate Clearance Code</button>
+        @else
+            <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+        @endif
         <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
             aria-label="Close">Cancel</button>
     </div>

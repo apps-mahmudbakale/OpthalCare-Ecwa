@@ -67,7 +67,13 @@ class Patient extends Model
   public function isCheckedInToday()
   {
     $today = Carbon::today();
-    return $this->checkIns()->whereDate('check_in_date', $today)->exists();
+    return $this->checkIns()->whereDate('check_in_date', $today)->where('cleared', true)->exists();
+  }
+
+  public function hasPendingCheckIn()
+  {
+    $today = Carbon::today();
+    return $this->checkIns()->whereDate('check_in_date', $today)->where('cleared', false)->exists();
   }
 
   public function checkIns()
