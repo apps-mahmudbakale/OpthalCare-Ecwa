@@ -110,7 +110,7 @@
           showLoaderOnConfirm: true,
           preConfirm: async (accessCode) => {
             try {
-              const response = await fetch(`/api/billservices/${patientId}/follow-up/${accessCode}`);
+              const response = await fetch(`{{ url('/api/billservices') }}/${patientId}/follow-up/${accessCode}`);
               if (!response.ok) throw new Error('Request failed');
 
               const result = await response.json();
@@ -125,7 +125,7 @@
         }).then((result) => {
           if (result.isConfirmed) {
             const encryptedData = btoa(JSON.stringify(result.value));
-            window.location.href = `/app/patient/check-in/${patientId}`;
+            window.location.href = `{{ url('/app/patient/check-in') }}/${patientId}`;
           }
         });
       }

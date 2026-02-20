@@ -44,11 +44,8 @@
                     var encryptedPatientId = btoa(patientId);
                     var encryptedPatientName = btoa(patientName);
 
-                    // Redirect to the Laravel route 'cashpoints.new-patient'
-                    var route = "cashpoints/new-patient/"; // Your Laravel route
-
                     // Construct the full URL with encrypted query parameters
-                    window.location.href = route + encryptedPatientId;
+                    window.location.href = `{{ url('app/cashpoints/new-patient') }}/` + encryptedPatientId;
                 },
                 error: function(xhr, status, error) {
                     // Handle error response
