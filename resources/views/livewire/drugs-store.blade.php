@@ -34,8 +34,8 @@
                             <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
                                     data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
                                 <ul class="dropdown-menu dropdown-menu-end m-0">
-                                    <li><a href="" wire:click.prevent="selectStore({{ $store->id }})"
-                                            class="dropdown-item">Edit</a></li>
+                                    <li><button type="button" wire:click.prevent="selectStore({{ $store->id }})"
+                                            class="dropdown-item">Edit</button></li>
                                     <div class="dropdown-divider"></div>
                                     <li><a id="dele{{ $store->id }}" data-value="{{ $store->id }}"
                                             class="dropdown-item text-danger delete-record">Delete</a></li>
