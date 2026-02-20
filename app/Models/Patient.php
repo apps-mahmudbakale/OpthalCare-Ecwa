@@ -55,7 +55,7 @@ class Patient extends Model
 
   public function hmo()
   {
-    return $this->hasOne(HmoGroup::class, 'id');
+    return $this->belongsTo(HmoGroup::class, 'hmo_id');
   }
 
   public function state()

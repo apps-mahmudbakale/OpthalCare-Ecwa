@@ -10,7 +10,9 @@ class DrugsRequest extends Base
 
 
   public $sortBy = 'created_at';
-  public $patientId; // Add patientId property to hold the patient ID
+  public $patientId;
+
+  protected $listeners = ['deleteDrugRequest' => 'delete'];
 
   public function mount($patientId)
   {
@@ -37,6 +39,16 @@ class DrugsRequest extends Base
         'livewire.drugs-request',
         ['requests' => $requests]
       );
+    }
+  }
+
+  public function delete($id)
+  {
+    $request = \App\Models\DrugRequest::find($id);
+    if ($request) {
+      $request->delete();
+      $this->emit('drugRequestDeleted');
+      session()->flash('success', 'Drug Prescription Deleted Successfully!');
     }
   }
 }

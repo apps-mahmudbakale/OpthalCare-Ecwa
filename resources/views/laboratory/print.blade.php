@@ -162,14 +162,14 @@
 						<td>
 							<b>{{ $patient->user->firstname }} {{ $patient->user->lastname }} [{{ app(App\Settings\SystemSettings::class)->number_prefix ?: 'HRN' }}{{ $patient->hospital_no }}]</b><br>
                             Age: {{ $patient->getAge() }} | Gender: {{ $patient->gender }}<br>
-							{{ $patient->hmo ? $patient->hmo->name : 'PRIVATE - Self Pay' }}<br>
+							{{ $patient->hmo->name ?? 'PRIVATE - Self Pay' }}<br>
 							
 						</td>
 					</tr>
                     <tr><td colspan="4"><hr /></td></tr>
 					<tr>
 						<td>
-                            <h2 style="margin: 2px 0">{{ $lab->test->name }} &middot; {{ $lab->request_ref }}</h2>
+                            <h2 style="margin: 2px 0">{{ $lab->test->name ?? 'N/A' }} &middot; {{ $lab->request_ref }}</h2>
 							<em>Order Date: {{ $lab->created_at->format('D, j/n/Y g:iA') }}  &middot;
                                 @if($result)
                                 Result Date: {{ $result->created_at->format('D, j/n/Y g:iA') }}
@@ -191,7 +191,7 @@
 			@if($result)
 				@foreach($result->items as $item)
 				<tr class="item">
-					<td style="width: auto">{{ $item->templateItem->parameter->name ?? 'N/A' }}</td>
+					<td style="width: auto">{{ $item->templateItem?->parameter?->name ?? 'N/A' }}</td>
 					<td>{{ $item->value }}</td>
 					<td>{{ $item->templateItem->reference ?? 'N/A' }}</td>
 					<td style="text-align: right;white-space: nowrap">{{ $item->remark }}</td>

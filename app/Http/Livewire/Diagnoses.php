@@ -8,7 +8,9 @@ use Livewire\Component;
 class Diagnoses extends Base
 {
   public $sortBy = 'created_at';
-  public $patientId; // Add patientId property to hold the patient ID
+  public $patientId;
+
+  protected $listeners = ['deleteDiagnosisRecord' => 'delete'];
 
   public function mount($patientId)
   {
@@ -36,6 +38,16 @@ class Diagnoses extends Base
         'livewire.diagnoses',
         ['diagnoses' => $diagnoses]
       );
+    }
+  }
+
+  public function delete($id)
+  {
+    $diagnosis = Diagnosis::find($id);
+    if ($diagnosis) {
+      $diagnosis->delete();
+      $this->emit('diagnosisDeleted');
+      session()->flash('success', 'Diagnosis Deleted Successfully!');
     }
   }
 }
