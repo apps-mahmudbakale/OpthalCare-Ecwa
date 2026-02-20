@@ -155,7 +155,7 @@
           if (!categorySelect.value) return;
 
           try {
-            const response = await fetch('/getDrugsByCategory', {
+            const response = await fetch('{{ url('/getDrugsByCategory') }}', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

@@ -4,16 +4,6 @@
           <h3 class="mb-2">Update Diagnosis for {{ $diagnosis->patient->user->firstname }} {{ $diagnosis->patient->user->lastname }}</h3>
         </div>
 
-        <!-- Specialty Toggle -->
-        <div class="col-12 mb-4 d-flex justify-content-center">
-            <div class="btn-group" role="group" aria-label="Specialty Toggle">
-                <input type="radio" class="btn-check" name="specialty" id="specialty-ophth" value="Ophthalmology" {{ $diagnosis->specialty == 'Ophthalmology' ? 'checked' : '' }}>
-                <label class="btn btn-outline-primary" for="specialty-ophth">Ophthalmology</label>
-
-                <input type="radio" class="btn-check" name="specialty" id="specialty-gynae" value="Gynaecology" {{ $diagnosis->specialty == 'Gynaecology' ? 'checked' : '' }}>
-                <label class="btn btn-outline-primary" for="specialty-gynae">Gynaecology</label>
-            </div>
-        </div>
 
         <!-- Tab Headings -->
         <ul class="nav nav-pills mb-3 justify-content-center" id="step-tabs" role="tablist">
@@ -51,123 +41,11 @@
               </div>
             </div>
 
-            <!-- Step 2: Examination -->
+            <!-- Step 2: Examination (Gynaecology Only) -->
             <div class="tab-pane fade" id="step2" role="tabpanel" aria-labelledby="step2-tab">
-              <div id="eye-examination" style="{{ $diagnosis->specialty == 'Gynaecology' ? 'display: none;' : '' }}">
-                <h2>Eye Examination</h2>
-                <table class="table table-striped table-bordered">
-                  <thead class="table-dark">
-                  <tr>
-                    <th></th>
-                    <th>(RE)</th>
-                    <th>(LE)</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr>
-                    <td width="70%">UNCORRECTED</td>
-                    <td><input type="text" value="{{ old('uncorrected_right', $diagnosis->uncorrected_right) }}" name="uncorrected_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('uncorrected_left', $diagnosis->uncorrected_left) }}" name="uncorrected_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">PIN HOLE</td>
-                    <td><input type="text" value="{{ old('pinhole_right', $diagnosis->pinhole_right) }}" name="pinhole_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('pinhole_left', $diagnosis->pinhole_left) }}" name="pinhole_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">VA WITH GLASSES</td>
-                    <td><input type="text" value="{{ old('va_glass_right', $diagnosis->va_glass_right) }}" name="va_glass_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('va_glass_left', $diagnosis->va_glass_left) }}" name="va_glass_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">NEAR VISION</td>
-                    <td><input type="text" value="{{ old('near_vision_right', $diagnosis->near_vision_right) }}" name="near_vision_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('near_vision_left', $diagnosis->near_vision_left) }}" name="near_vision_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">LID</td>
-                    <td><input type="text" value="{{ old('lid_right', $diagnosis->lid_right) }}" name="lid_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('lid_left', $diagnosis->lid_left) }}" name="lid_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">GLOBE</td>
-                    <td><input type="text" value="{{ old('globe_right', $diagnosis->globe_right) }}" name="globe_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('globe_left', $diagnosis->globe_left) }}" name="globe_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">EOMM</td>
-                    <td><input type="text" value="{{ old('eomm_right', $diagnosis->eomm_right) }}" name="eomm_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('eomm_left', $diagnosis->eomm_left) }}" name="eomm_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">CONJUNCTIVA</td>
-                    <td><input type="text" value="{{ old('conjuctiva_right', $diagnosis->conjuctiva_right) }}" name="conjuctiva_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('conjuctiva_left', $diagnosis->conjuctiva_left) }}" name="conjuctiva_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">CORNEA</td>
-                    <td><input type="text" value="{{ old('cornea_right', $diagnosis->cornea_right) }}" name="cornea_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('cornea_left', $diagnosis->cornea_left) }}" name="cornea_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">ANTERIOR CHA</td>
-                    <td><input type="text" value="{{ old('anterior_cha_right', $diagnosis->anterior_cha_right) }}" name="anterior_cha_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('anterior_cha_left', $diagnosis->anterior_cha_left) }}" name="anterior_cha_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">IRIS</td>
-                    <td><input type="text" value="{{ old('iris_right', $diagnosis->iris_right) }}" name="iris_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('iris_left', $diagnosis->iris_left) }}" name="iris_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">PUPIL</td>
-                    <td><input type="text" value="{{ old('pupil_right', $diagnosis->pupil_right) }}" name="pupil_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('pupil_left', $diagnosis->pupil_left) }}" name="pupil_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">LENS</td>
-                    <td><input type="text" value="{{ old('lens_right', $diagnosis->lens_right) }}" name="lens_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('lens_left', $diagnosis->lens_left) }}" name="lens_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">IOP</td>
-                    <td><input type="text" value="{{ old('iop_right', $diagnosis->iop_right) }}" name="iop_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('iop_left', $diagnosis->iop_left) }}" name="iop_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">VITREOUS</td>
-                    <td><input type="text" value="{{ old('vitreous_right', $diagnosis->vitreous_right) }}" name="vitreous_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('vitreous_left', $diagnosis->vitreous_left) }}" name="vitreous_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">DISC</td>
-                    <td><input type="text" value="{{ old('disc_right', $diagnosis->disc_right) }}" name="disc_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('disc_left', $diagnosis->disc_left) }}" name="disc_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">VCDR</td>
-                    <td><input type="text" value="{{ old('vcdr_right', $diagnosis->vcdr_right) }}" name="vcdr_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('vcdr_left', $diagnosis->vcdr_left) }}" name="vcdr_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">MACULA</td>
-                    <td><input type="text" value="{{ old('macula_right', $diagnosis->macula_right) }}" name="macula_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('macula_left', $diagnosis->macula_left) }}" name="macula_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">RETINA</td>
-                    <td><input type="text" value="{{ old('retina_right', $diagnosis->retina_right) }}" name="retina_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('retina_left', $diagnosis->retina_left) }}" name="retina_left" class="form-control"></td>
-                  </tr>
-                  <tr>
-                    <td width="70%">VESSELS</td>
-                    <td><input type="text" value="{{ old('vessels_right', $diagnosis->vessels_right) }}" name="vessels_right" class="form-control"></td>
-                    <td><input type="text" value="{{ old('vessels_left', $diagnosis->vessels_left) }}" name="vessels_left" class="form-control"></td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div id="gynae-examination" style="{{ $diagnosis->specialty == 'Gynaecology' ? '' : 'display: none;' }}">
+              <input type="hidden" name="specialty" value="Gynaecology">
+              <div id="gynae-examination">
+
                 <div class="mb-4">
                   <h4 class="fw-bold border-bottom pb-2"><i class="fas fa-baby-carriage me-2"></i>Gynaecology Examination</h4>
                 </div>

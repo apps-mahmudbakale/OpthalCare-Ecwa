@@ -36,7 +36,7 @@
                         </td>
                         <td class="text-center">
                             <div class="btn-group" role="group">
-                                <a href="{{ route('app.pharmacy.print', $request->id) }}" target="_blank"
+                                <a href="{{ route('app.pharmacy.request.print', $request->id) }}" target="_blank"
                                     class="btn btn-sm btn-icon btn-outline-secondary" title="Print Prescription">
                                     <i class="ti ti-printer ti-xs"></i>
                                 </a>
