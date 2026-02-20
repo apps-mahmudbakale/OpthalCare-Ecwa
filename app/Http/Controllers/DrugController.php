@@ -26,7 +26,18 @@ class DrugController extends Controller
     return redirect()->route('app.settings.pharmacy')->with('success', 'Drug Category Added !');
   }
 
-  public function UpdateCategory() {}
+  public function editCategory($id)
+  {
+    $category = DrugCategory::findOrFail($id);
+    return view('settings.pharmacy.edit-category', compact('category'));
+  }
+
+  public function UpdateCategory(Request $request, $id)
+  {
+    $category = DrugCategory::findOrFail($id);
+    $category->update($request->all());
+    return redirect()->route('app.settings.pharmacy')->with('success', 'Drug Category Updated !');
+  }
 
   //  public function getDrugsbyStore(Request $request)
   //  {

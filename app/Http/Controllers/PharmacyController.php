@@ -76,12 +76,16 @@ class PharmacyController extends Controller
     $drug = Drug::find($id);
     $drug->update([
       'name' => $request->name,
-      'description' => $request->description,
-      'dispense_qty' => $request->dispense_qty,
-      'active' => $request->has('active') ? 1 : 0,
+      'is_active' => $request->has('is_active') ? 1 : 0,
+      'quantity' => $request->quantity,
+      'category_id' => $request->category_id,
+      'price' => $request->price,
+      'expiry_date' => $request->expiry_date,
+      'threshold' => $request->threshold,
+      'store_id' => $request->store_id,
     ]);
 
-    return redirect()->route('app.settings.pharmacy.index')->with('success', 'Drug updated successfully.');
+    return redirect()->route('app.settings.pharmacy')->with('success', 'Drug updated successfully.');
   }
 
 

@@ -53,10 +53,10 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end m-0">
                                     <li>
-                                        <a href="javascript:void(0);" wire:click="selectDrugs({{ $test->id }})"
-                                            class="dropdown-item">
-                                            Edit
-                                        </a>
+                                        <button type="button"
+                                            data-request-url="{{ route('app.settings.pharmacy.edit', $test->id) }}"
+                                            data-bs-toggle="modal" data-bs-target="#global-modal"
+                                            class="dropdown-item">Edit</button>
                                     </li>
 
                                     <div class="dropdown-divider"></div>
@@ -96,12 +96,6 @@
     </div>
 
     <!-- LISTEN FOR LIVEWIRE EVENT -->
-    <script>
-        window.addEventListener('DrugsEditModal', function() {
-            var modal = new bootstrap.Modal(document.getElementById('editDrugModal'));
-            modal.show();
-        });
-    </script>
 
     <!-- GLOBAL DELETE HANDLER -->
     <script>
@@ -130,7 +124,7 @@
     </script>
 
     <!-- Include Edit Drug Modal -->
-  @include('_partials._modals.modal-edit-drug')
+  @include('_partials._modals.modal-new-drugs')
   @include('_partials._modals.modal-new-add-drugs')
 
 </div>

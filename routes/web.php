@@ -109,8 +109,11 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::resource('appointments', AppointmentController::class);
   Route::get('appointment/schedule/{patient}', [AppointmentController::class, 'schedule'])->name('appointment.schedule');
   Route::resource('pharmacy', PharmacyController::class);
+  Route::get('settings/pharmacy', [SystemSettingsController::class, 'PharmacySettings'])->name('settings.pharmacy');
   Route::get('settings/pharmacy/edit/{id}', [PharmacyController::class, 'editDrug'])->name('settings.pharmacy.edit');
-  Route::post('settings/pharmacy/update/{id}', [PharmacyController::class, 'updateDrug'])->name('settings.pharmacy.update');
+  Route::put('settings/pharmacy/update/{id}', [PharmacyController::class, 'updateDrug'])->name('settings.pharmacy.update');
+  Route::get('settings/pharmacy/drug-category/edit/{id}', [DrugController::class, 'editCategory'])->name('drugs-category.edit');
+  Route::get('settings/pharmacy/drug-store/edit/{id}', [DrugStoreController::class, 'edit'])->name('drugs-store.edit');
 
   Route::get('pharmacy/request/{id}', [PharmacyController::class, 'print'])->name('pharmacy.request.print');
   Route::post('lab-category', [LaboratoryController::class, 'storeCategory'])->name('lab-category.store');
@@ -155,9 +158,11 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::post('lab-category', [LaboratoryController::class, 'storeCategory'])->name('lab-category.store');
 
   Route::post('consumables-add', [ConsumbleController::class, 'storeConsumables'])->name('consumables-add.store');
-  Route::post('consumables-add/{drugs}', [ConsumbleController::class, 'updateConsumables'])->name('consumables-add.update');
+  Route::get('consumables-add/edit/{id}', [ConsumbleController::class, 'editConsumables'])->name('consumables-add.edit');
+  Route::put('consumables-add/{id}', [ConsumbleController::class, 'updateConsumables'])->name('consumables-add.update');
   Route::post('consumables-category', [ConsumbleController::class, 'storeCategory'])->name('consumables-category.store');
-  Route::post('consumables-category/{category}', [ConsumbleController::class, 'updateCategory'])->name('consumables-category.update');
+  Route::get('consumables-category/edit/{id}', [ConsumbleController::class, 'editCategory'])->name('consumables-category.edit');
+  Route::put('consumables-category/{id}', [ConsumbleController::class, 'updateCategory'])->name('consumables-category.update');
 
 
   Route::resource('procedures', ProcedureController::class);
@@ -183,7 +188,8 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::post('radiology-update-result', [RadiologyRequestController::class, 'updateResult'])->name('radiology.update.result');
   Route::get('radiology/result/{lab}', [RadiologyRequestController::class, 'showResult'])->name('radiology.print.result');
   Route::post('radiology-category', [RadiologyController::class, 'storeCategory'])->name('radiology-category.store');
-  Route::post('radiology-category/{category}', [RadiologyController::class, 'updateCategory'])->name('radiology-category.update');
+  Route::get('radiology-category/edit/{id}', [RadiologyController::class, 'editCategory'])->name('radiology-category.edit');
+  Route::put('radiology-category/{id}', [RadiologyController::class, 'updateCategory'])->name('radiology-category.update');
   Route::post('radiology-template', [RadiologyController::class, 'storeTemplate'])->name('radiology-template.store');
   Route::post('radiology-test', [RadiologyController::class, 'store'])->name('radiology-test.store');
   Route::post('radiology-test/{test}', [RadiologyController::class, 'update'])->name('radiology-test.update');

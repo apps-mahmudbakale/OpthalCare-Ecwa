@@ -34,7 +34,9 @@
                             <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
                                     data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
                                 <ul class="dropdown-menu dropdown-menu-end m-0">
-                                    <li><button type="button" wire:click.prevent="selectCategory({{ $category->id }})"
+                                    <li><button type="button" 
+                                            data-request-url="{{ route('app.consumables-category.edit', $category->id) }}"
+                                            data-bs-toggle="modal" data-bs-target="#global-modal"
                                             class="dropdown-item">Edit</button></li>
                                     <div class="dropdown-divider"></div>
                                     <li><a id="dele{{ $category->id }}" data-value="{{ $category->id }}"
@@ -86,12 +88,5 @@
             </div>
         </div>
     </div>
-    <script>
-        window.addEventListener('consumables-listEditModal', function() {
-            var modal = new bootstrap.Modal(document.getElementById('editConsumablesCategoryModal'));
-            modal.show();
-        });
-    </script>
 </div>
 @include('_partials._modals.modal-new-consumables-category')
-@include('_partials._modals.modal-edit-consumables-category')

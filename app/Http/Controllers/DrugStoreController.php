@@ -44,17 +44,20 @@ class DrugStoreController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(DrugStore $drugStore)
+    public function edit($id)
     {
-        //
+        $store = DrugStore::findOrFail($id);
+        return view('settings.pharmacy.edit-store', compact('store'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, DrugStore $drugStore)
+    public function update(Request $request, $id)
     {
-        //
+        $store = DrugStore::findOrFail($id);
+        $store->update($request->all());
+        return redirect()->route('app.settings.pharmacy')->with('success', 'Drug Store Updated !');
     }
 
     /**

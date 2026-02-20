@@ -43,8 +43,17 @@ class RadiologyController extends Controller
   {
   }
 
-  public function updateCategory()
+  public function editCategory($id)
   {
+    $category = RadiologyCategory::findOrFail($id);
+    return view('settings.pharmacy.edit-radiology-category', compact('category'));
+  }
+
+  public function updateCategory(Request $request, $id)
+  {
+    $category = RadiologyCategory::findOrFail($id);
+    $category->update($request->all());
+    return redirect()->route('app.settings.radiology')->with('success', 'Radiology Category Updated !');
   }
 
   public function store(Request $request){

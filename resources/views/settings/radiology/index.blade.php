@@ -91,4 +91,32 @@
             </div>
         </div>
     </div>
+
+    @include('_partials._modals.global-modal')
+
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '[data-request-url]', function(e) {
+                var requestUrl = $(this).data('request-url');
+                if (requestUrl) {
+                    $.ajax({
+                        url: requestUrl,
+                        type: 'GET',
+                        success: function(response) {
+                            $('#global-modal .modal-body').html(response);
+                            $('#global-modal').modal('show');
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: 'Failed to load modal content.',
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 @endsection

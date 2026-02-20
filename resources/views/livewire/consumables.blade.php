@@ -38,8 +38,10 @@
                             <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
                                     data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
                                 <ul class="dropdown-menu dropdown-menu-end m-0">
-                                    <li><a href="" wire:click.prevent="selectTemplate({{ $test->id }})"
-                                            class="dropdown-item">Edit</a></li>
+                                    <li><button type="button" 
+                                            data-request-url="{{ route('app.consumables-add.edit', $test->id) }}"
+                                            data-bs-toggle="modal" data-bs-target="#global-modal"
+                                            class="dropdown-item">Edit</button></li>
                                     <div class="dropdown-divider"></div>
                                     <li><a id="dele{{ $test->id }}" data-value="{{ $test->id }}"
                                             class="dropdown-item text-danger delete-record">Delete</a></li>

@@ -17,8 +17,17 @@ class ConsumbleController extends Controller
     return redirect()->route('app.settings.consumables')->with('success', 'Consumable Added !');
   }
 
-  public function updateConsumables()
+  public function editConsumables($id)
   {
+    $consumable = Consumable::findOrFail($id);
+    return view('settings.pharmacy.edit-consumable', compact('consumable'));
+  }
+
+  public function updateConsumables(Request $request, $id)
+  {
+    $consumable = Consumable::findOrFail($id);
+    $consumable->update($request->all());
+    return redirect()->route('app.settings.consumables')->with('success', 'Consumable Updated !');
   }
 
   public function storeCategory(Request $request)
@@ -28,7 +37,16 @@ class ConsumbleController extends Controller
     return redirect()->route('app.settings.consumables')->with('success', 'Consumable Category Added !');
   }
 
-  public function UpdateCategory()
+  public function editCategory($id)
   {
+    $category = ConsumableCategory::findOrFail($id);
+    return view('settings.pharmacy.edit-consumable-category', compact('category'));
+  }
+
+  public function UpdateCategory(Request $request, $id)
+  {
+    $category = ConsumableCategory::findOrFail($id);
+    $category->update($request->all());
+    return redirect()->route('app.settings.consumables')->with('success', 'Consumable Category Updated !');
   }
 }

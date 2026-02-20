@@ -38,10 +38,10 @@
                             <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
                                     data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
                                 <ul class="dropdown-menu dropdown-menu-end m-0">
-                                    <li><button data-toggle="modal" id="edit{{ $test->id }}"
-                                            data-request-url="{{ route('app.radiology-test.edit',$test->id) }}"
-                                            data-target="#global-modal-lg"
-                                            class="dropdown-item edit-test-btn">Edit</button></li>
+                                    <li><button type="button" 
+                                            data-request-url="{{ route('app.radiology-test.edit', $test->id) }}"
+                                            data-bs-toggle="modal" data-bs-target="#global-modal"
+                                            class="dropdown-item">Edit</button></li>
                                     <div class="dropdown-divider"></div>
                                     <li><a id="dele{{ $test->id }}" data-value="{{ $test->id }}"
                                             class="dropdown-item text-danger delete-record">Delete</a></li>
@@ -93,37 +93,5 @@
     </div>
 </div>
 @include('_partials._modals.modal-new-radiology-test')
-@include('_partials._modals.global-modal')
-<script>
-  $(document).ready(function () {
-    $('.edit-test-btn').click(function () {
-      var requestUrl = $(this).data('request-url');
-      if (!requestUrl) return true;
-
-      $.ajax({
-        url: requestUrl,
-        type: 'GET',
-        success: function(response) {
-          $('#global-modal .modal-body').html(response);
-          $('#global-modal').modal('show');
-        },
-        error: function(xhr, status, error) {
-          console.error(error);
-        }
-      });
-      return false;
-    });
-  });
-</script>
-{{-- JavaScript for delete confirmation --}}
-<script>
-  function submitDeleteForm(id) {
-    if (confirm('Are you sure you want to delete this Lab Test?')) {
-      const form = document.getElementById('delete-form-' + id);
-      if (form) {
-        form.submit();
-      }
-    }
-  }
-</script>
+    <!-- GLOBAL DELETE HANDLER -->
 
