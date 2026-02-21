@@ -55,9 +55,9 @@
                 {{ $request->patient && $request->patient->user ? $request->patient->user->firstname . ' ' . $request->patient->user->lastname : 'N/A' }}
               </span>
             </td>
-            <td><span class="text-primary fw-bold">{{ $request->drug->name ?? 'N/A' }}</span></td>
+            <td><span class="text-primary fw-bold">{{ $request->drug?->name ?? 'N/A' }}</span></td>
             <td class="text-center"><span class="badge bg-label-info">{{ $request->qty ?? 0 }}</span></td>
-            <td>{{ $request->store->name ?? 'N/A' }}</td>
+            <td>{{ $request->store?->name ?? 'N/A' }}</td>
             <td>
               <span class="badge bg-label-success">
                 {{ ucfirst($request->status) }}

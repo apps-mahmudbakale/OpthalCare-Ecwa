@@ -32,9 +32,9 @@ class DrugsFilledExport implements FromCollection, WithHeadings
       ->map(function ($request) {
         return [
           'Patient Name' => $request->patient && $request->patient->user ? $request->patient->user->firstname.' '.$request->patient->user->lastname : 'N/A',
-          'Drug'         => $request->drug->name ?? 'N/A',
+          'Drug'         => $request->drug?->name ?? 'N/A',
           'Quantity'     => $request->qty ?? 0,
-          'Store'        => $request->store->name ?? 'N/A',
+          'Store'        => $request->store?->name ?? 'N/A',
           'Status'       => ucfirst($request->status),
           'Requested At' => $request->created_at->format('Y-m-d'),
         ];

@@ -26,13 +26,13 @@
 
         <div class="form-group flex-fill ml-2">
           <label class="mb-0">Start Date</label>
-          <input wire:model="startDate" type="date" class="form-control">
+          <input wire:model="startDate" type="text" class="form-control flatpickr" placeholder="YYYY-MM-DD">
         </div>
 
         <!-- End Date -->
         <div class="form-group flex-fill ml-2">
           <label class="mb-0">End Date</label>
-          <input wire:model="endDate" type="date" class="form-control">
+          <input wire:model="endDate" type="text" class="form-control flatpickr" placeholder="YYYY-MM-DD">
         </div>
 
         <div class="form-group flex-fill ml-2 no-label">
@@ -44,48 +44,66 @@
     </div><!-- /.card-header -->
 
     <!-- Table -->
-    <div class="table-responsive">
-      <table class="table table-sm table-striped">
+    <div class="table-responsive text-nowrap">
+      <table class="table table-hover">
         <thead>
         <tr>
+          <th>Date</th>
+          <th>Patient</th>
           <th>Investigation</th>
           <th>Category</th>
-          <th># of Requests</th>
+          <th>Status</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody class="table-border-bottom-0">
         @forelse($labReports as $report)
         <tr>
-          <td>{{ $report->test->name }}</td>
-          <td>{{ $report->test->category->name }}</td>
-          <td>{{ $report->request_count }}</td>
+          <td>{{ $report->created_at->format('d M Y') }}</td>
+          <td>
+            <span class="fw-medium">
+              {{ $report->patient && $report->patient->user ? $report->patient->user->firstname . ' ' . $report->patient->user->lastname : 'N/A' }}
+            </span>
+          </td>
+          <td><span class="text-primary fw-bold">{{ $report->test?->name ?? 'N/A' }}</span></td>
+          <td>{{ $report->test?->category->name ?? 'N/A' }}</td>
+          <td>
+            @php
+              $statusClass = match($report->status) {
+                'Pending' => 'warning',
+                'Specimen Collected' => 'info',
+                'Result Ready' => 'success',
+                'Cancelled' => 'danger',
+                default => 'secondary'
+              };
+            @endphp
+            <span class="badge bg-label-{{ $statusClass }}">
+              {{ $report->status }}
+            </span>
+          </td>
         </tr>
         @empty
         <tr>
-          <td colspan="3" class="text-center">No lab reports found.</td>
+          <td colspan="5" class="text-center py-5">
+            <div class="text-muted"><i class="ti ti-info-circle me-1"></i> No lab requests found.</div>
+          </td>
         </tr>
         @endforelse
         </tbody>
       </table>
 
       <!-- Pagination -->
-      <div class="d-flex justify-content-between align-items-center px-3 py-2">
-        <div>
-          Showing {{ $labReports->firstItem() }} to {{ $labReports->lastItem() }} of {{ $labReports->total() }} entries
-        </div>
-        <div>
-          {{ $labReports->links() }}
-        </div>
+      <div class="d-flex align-items-center justify-content-between px-3 mt-4">
+        <small class="text-muted">Showing {{ $labReports->firstItem() ?? 0 }} to {{ $labReports->lastItem() ?? 0 }} of {{ $labReports->total() }}</small>
+        {{ $labReports->links('vendor.pagination.vuexy-custom') }}
       </div>
     </div>
   </div>
 </div>
 <script>
-  $(function () {
-    $('#daterange').daterangepicker({
-      opens: 'left'
-    }, function (start, end, label) {
-      console.log("Selected date range: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+  document.addEventListener('livewire:initialized', () => {
+    flatpickr(".flatpickr", {
+      dateFormat: "Y-m-d",
+      allowInput: true
     });
   });
 </script>

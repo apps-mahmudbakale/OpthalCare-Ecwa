@@ -39,7 +39,7 @@
           <td class="align-middle">{{$drug->name}}</td>
           <td class="text-right">{{$drug->quantity}}</td>
           <td class="align-middle">{{ \Carbon\Carbon::parse($drug->expiry_date)->format('d M Y') }}</td>
-          <td class="align-middle">{{$drug->store->name ?? 'N/A'}}</td>
+          <td class="align-middle">{{$drug->store?->name ?? 'N/A'}}</td>
         </tr>
         @empty
         <tr>
