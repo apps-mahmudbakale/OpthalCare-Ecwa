@@ -15,6 +15,7 @@
             <tr>
               <th>Date</th>
               <th>Recorded By</th>
+              <th>Specialty</th>
               <th class="text-center">Actions</th>
             </tr>
             </thead>
@@ -23,6 +24,7 @@
               <tr>
                 <td>{{ $diagnosis->created_at->format('d M Y h:i A') }}</td>
                 <td> {{ $diagnosis->user->firstname }} {{ $diagnosis->user->lastname }}</td>
+                <td><span class="badge bg-label-primary">{{ $diagnosis->specialty ?? 'General' }}</span></td>
                         <td class="text-center">
                             <div class="btn-group" role="group">
                                 <a href="javascript:void(0);" 
@@ -52,7 +54,7 @@
               </tr>
             @empty
               <tr>
-                <td colspan="3" class="text-center py-4 text-muted">No encounter notes found for this patient.</td>
+                <td colspan="4" class="text-center py-4 text-muted">No encounter notes found for this patient.</td>
               </tr>
             @endforelse
             </tbody>

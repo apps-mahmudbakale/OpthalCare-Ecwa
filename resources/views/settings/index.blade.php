@@ -119,7 +119,7 @@
                             <label class="form-label">Check-In Fee (₦)</label>
                             <input type="number" step="0.01" class="form-control" name="checkin_fee"
                                 value="{{ $system->checkin_fee ?? 0 }}" placeholder="0.00">
-                            <small class="text-muted">Set to 0 to disable check-in billing.</small>
+                            <small class="text-muted">Set to 0 to disable check-in billing. Has no effect when Auto Check-In is ON.</small>
                         </div>
                         <div class="form-group col-md-12">
                             Address

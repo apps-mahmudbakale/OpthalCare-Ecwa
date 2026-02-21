@@ -34,6 +34,11 @@
                             <div class="btn-group" role="group">
                                 @if ($request->status == 'Result Ready')
                                     <a href="{{ route('app.lab.print.result', $request->id) }}" target="_blank"
+                                       class="btn btn-sm btn-icon btn-outline-secondary" title="View Result">
+                                        <i class="ti ti-eye ti-xs"></i>
+                                    </a>
+
+                                    <a href="{{ route('app.lab.print.result', $request->id) }}" target="_blank"
                                         class="btn btn-sm btn-icon btn-outline-secondary" title="Print Result">
                                         <i class="ti ti-printer ti-xs"></i>
                                     </a>

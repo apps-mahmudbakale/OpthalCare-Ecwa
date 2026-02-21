@@ -323,6 +323,16 @@ class PatientController extends Controller
     $system = app(SystemSettings::class);
     $checkInFee = (float)($system->checkin_fee ?? 0);
 
+    // If auto check-in is enabled (via system settings), skip billing workflow
+    if ($system->check_in) {
+      CheckIn::create([
+        'patient_id' => $patient,
+        'check_in_date' => now()->toDateString(),
+        'cleared' => true
+      ]);
+      return back()->with('success', 'Patient checked in Successfully');
+    }
+
     // If there is no fee configured, we can just clear them immediately
     if ($checkInFee <= 0) {
       CheckIn::create([

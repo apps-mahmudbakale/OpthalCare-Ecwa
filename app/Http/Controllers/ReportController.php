@@ -52,7 +52,45 @@ class ReportController extends Controller
 
   public function generalReport(Request $request)
   {
-    return view('report.general');
+    $tab = $request->input('tab', 'visits');
+    $from = $request->input('from');
+    $to   = $request->input('to');
+
+    // ---------- Visits (Check-Ins) ----------
+    $visitsQuery = \App\Models\CheckIn::with('patient.user')
+      ->when($request->cleared !== null && $request->cleared !== '', fn ($q) => $q->where('cleared', $request->cleared))
+      ->when($from, fn ($q) => $q->whereDate('check_in_date', '>=', $from))
+      ->when($to,   fn ($q) => $q->whereDate('check_in_date', '<=', $to))
+      ->latest('check_in_date');
+
+    $visits = $visitsQuery->paginate(15, ['*'], 'visits_page')->withQueryString();
+
+    // ---------- Diagnoses ----------
+    $specialties = \App\Models\Diagnosis::select('specialty')->distinct()->pluck('specialty');
+
+    $diagnosesQuery = \App\Models\Diagnosis::with(['patient.user', 'user'])
+      ->when($request->specialty, fn ($q) => $q->where('specialty', $request->specialty))
+      ->when($from, fn ($q) => $q->whereDate('created_at', '>=', $from))
+      ->when($to,   fn ($q) => $q->whereDate('created_at', '<=', $to))
+      ->latest();
+
+    $diagnoses = $diagnosesQuery->paginate(15, ['*'], 'diag_page')->withQueryString();
+
+    // ---------- Admissions ----------
+    $wards = \App\Models\Ward::pluck('name', 'id');
+
+    $admissionsQuery = \App\Models\Admission::with(['patient.user', 'ward'])
+      ->when($request->ward_id,  fn ($q) => $q->where('ward_id', $request->ward_id))
+      ->when($request->adm_status, fn ($q) => $q->where('status', $request->adm_status))
+      ->when($from, fn ($q) => $q->whereDate('created_at', '>=', $from))
+      ->when($to,   fn ($q) => $q->whereDate('created_at', '<=', $to))
+      ->latest();
+
+    $admissions = $admissionsQuery->paginate(15, ['*'], 'adm_page')->withQueryString();
+
+    return view('report.general', compact(
+      'tab', 'visits', 'diagnoses', 'specialties', 'admissions', 'wards', 'from', 'to'
+    ));
   }
 
 

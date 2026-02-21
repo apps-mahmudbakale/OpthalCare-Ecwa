@@ -1,22 +1,21 @@
 <div>
-    <div id="users_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
-        <div class="row">
-            <div class="col-sm-12 col-md-12">
-                <div class="dataTables_length" id="users_length"><label>Show <select wire:model="perPage"
-                            aria-controls="hmos"
-                            class="custom-select custom-select-sm form-control form-control-sm">
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select> entries</label></div>
-            </div>
-            <div class="col-sm-12 col-md-12">
-                <div id="users_filter" class="dataTables_filter"><label>Search:<input type="search"
-                            class="form-control form-control-sm" wire:model.debounce.300ms='search' placeholder=""
-                            aria-controls="hmos"></label></div>
-            </div>
+    <div class="card-header d-flex align-items-center justify-content-between gap-2 pb-2">
+        <div class="d-flex align-items-center gap-2">
+            <label class="mb-0 text-nowrap small">Show</label>
+            <select wire:model="perPage" class="form-select form-select-sm w-auto">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+            <span class="small text-nowrap">entries</span>
         </div>
+        <div class="d-flex align-items-center gap-2">
+            <input type="search" class="form-control form-control-sm" wire:model.debounce.300ms="search"
+                   placeholder="Search plans…" style="min-width: 200px;">
+        </div>
+    </div>
+    <div>
         <div class="row">
             <div class="col-sm-12 col-md-12">
                 <table id="hmos" class="table table-striped table-responsive dataTable no-footer"
@@ -96,17 +95,13 @@
                 </table>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12 col-md-5">
-                <div class="dataTables_info" id="users_info" role="status" aria-live="polite">Showing <b>{{ $plans->firstItem() }}</b> to
-                    <b>{{ $plans->lastItem() }}</b> out of <b>{{ $plans->total() }}</b> entries</div>
-            </div>
-            <div class="col-sm-12 col-md-7">
-                <div class="dataTables_paginate paging_simple_numbers" id="users_paginate">
-                    {{ $plans->links() }}
-                </div>
-            </div>
-        </div>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-between px-3 py-2">
+        <p class="text-muted small mb-0">
+            Showing <b>{{ $plans->firstItem() }}</b> to <b>{{ $plans->lastItem() }}</b> of <b>{{ $plans->total() }}</b> entries
+        </p>
+        <div>{{ $plans->links() }}</div>
     </div>
     @push('body-scripts')
     @once

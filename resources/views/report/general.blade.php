@@ -3,348 +3,285 @@
 @section('title', 'General Report')
 
 @section('vendor-style')
-<link rel="stylesheet" href="{{ asset('assets/vendor/libs/fullcalendar/fullcalendar.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
-<link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}" />
-<link rel="stylesheet" href="{{ asset('assets/vendor/libs/quill/editor.css') }}" />
-<link rel="stylesheet" href="{{ asset('assets/vendor/libs/@form-validation/umd/styles/index.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}" />
-@endsection
-
-@section('page-style')
-<link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/app-calendar.css') }}" />
 @endsection
 
 @section('vendor-script')
-<script src="{{ asset('assets/vendor/libs/fullcalendar/fullcalendar.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/@form-validation/umd/bundle/popular.min.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/@form-validation/umd/plugin-bootstrap5/index.min.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/@form-validation/umd/plugin-auto-focus/index.min.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/moment/moment.js') }}"></script>
-@endsection
-
-@section('page-script')
-<script src="{{ asset('assets/js/app-calendar-events.js') }}"></script>
-<script src="{{ asset('assets/js/app-calendar.js') }}"></script>
 @endsection
 
 @section('content')
-<div class="page-section">
-  <div class="section-block"><!-- metric row -->
-    <h4>General Report</h4>
-    <div class="nav-align-top nav-tabs-shadow mb-6">
-      <ul class="nav nav-tabs nav-fill" role="tablist">
-        <li class="nav-item" role="presentation">
-          <button type="button" class="nav-link waves-effect active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-justified-visits" aria-controls="navs-justified-visit" aria-selected="true"><span class="d-none d-sm-block"><i class="tf-icons ti ti-calendar ti-sm ti-sm me-1_5"></i> Visits </span><i class="ti ti-calendar ti-sm d-sm-none"></i></button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-justified-diagnoses" aria-controls="navs-justified-diagnoses" aria-selected="false" tabindex="-1"><span class="d-none d-sm-block"><i class="tf-icons ti ti-stethoscope ti-sm me-1_5"></i> Diagnoses</span><i class="ti ti-stethoscope ti-sm d-sm-none"></i></button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-justified-admission" aria-controls="navs-justified-admission" aria-selected="false" tabindex="-1"><span class="d-none d-sm-block"><i class="tf-icons ti ti-bed ti-sm me-1_5"></i> Admissions</span><i class="ti ti-bed ti-sm d-sm-none"></i></button>
-        </li>
-      </ul>
-      <div class="tab-content">
-        <div class="tab-pane fade active show" id="navs-justified-visits" role="tabpanel">
-          <div class="card">
-            <div class="card-header">
-              <form action="" class="filterForm d-flex justify-content-between">
-                <div class="form-group flex-fill mr-2">
-                  <label class="mb-0" for="id_clinic">Filter By Service</label>
-                  <select id="id_clinic" name="clinic_id" class="custom-select form-control filter">
-                    <option value="">- All -</option>
-                    <option value="1">DIAGNOSTICS</option>
+<div class="container-xxl flex-grow-1 container-p-y">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h4 class="fw-bold mb-0"><i class="ti ti-chart-bar me-2"></i>General Report</h4>
+  </div>
 
-                    <option value="3">GENERAL CONSULTATION</option>
-
-                    <option value="4">MEDICAL CHECK-UP</option>
-
-                    <option value="6">PSYCHIATRY</option>
-
-                    <option value="5">RETAINERSHIP</option>
-
-                    <option value="2">SPECIALIST CLINIC</option>
-
-                  </select>
-                </div>
-                <div class="form-group flex-fill mr-2">
-                  <label class="mb-0" for="id_clinic">Filter By Status</label>
-                  <select id="id_status" name="status" class="custom-select form-control filter">
-                    <option value="">- All -</option>
-                    <option value="scheduled">Scheduled</option>
-
-                    <option value="missed">Missed</option>
-
-                    <option value="active">Checked In</option>
-
-                    <option value="done">Completed</option>
-
-                    <option value="cancelled">Cancelled</option>
-
-                  </select>
-                </div>
-
-                <div class="form-group flex-fill mr-2">
-                  <input type="hidden" name="start" class="filter sr-only" value="2024-11-24">
-                  <input type="hidden" name="stop" class="filter sr-only" value="2024-11-24">
-                  <label for="reportrange" class="mb-0">Filter By Visit Date</label>
-                  <div id="reportrange" class="form-control d-flex custom-select">
-                    <i class="mt-1 fa fa-calendar"></i>&nbsp;
-                    <span class="text-nowrap">11/24/2024 - 11/24/2024</span>
-                  </div>
-                </div>
-                <div class="form-group flex-fill- ml-3 no-label">
-                  <button class="btn btn-primary px-3" style="margin-top: 1.26rem;" type="button" id="export-btn">
-                    <i class="fa fa-download"></i> Export to File
-                  </button>
-                </div>
-
-              </form>
+  <div class="nav-align-top nav-tabs-shadow mb-4">
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link {{ $tab !== 'diagnoses' && $tab !== 'admissions' ? 'active' : '' }}"
+           href="{{ route('app.reports.general', array_merge(request()->query(), ['tab' => 'visits'])) }}">
+          <i class="ti ti-user-check me-1"></i> Visits
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ $tab === 'diagnoses' ? 'active' : '' }}"
+           href="{{ route('app.reports.general', array_merge(request()->query(), ['tab' => 'diagnoses'])) }}">
+          <i class="ti ti-stethoscope me-1"></i> Diagnoses
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ $tab === 'admissions' ? 'active' : '' }}"
+           href="{{ route('app.reports.general', array_merge(request()->query(), ['tab' => 'admissions'])) }}">
+          <i class="ti ti-bed me-1"></i> Admissions
+        </a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane fade active show" role="tabpanel">
+        {{-- ============================== VISITS TAB ============================== --}}
+        @if($tab !== 'diagnoses' && $tab !== 'admissions')
+        <div class="card-header p-0 pb-3 mb-4 border-bottom">
+          <form method="GET" action="{{ route('app.reports.general') }}" class="row g-3">
+            <input type="hidden" name="tab" value="visits">
+            <div class="col-md-3">
+              <label class="form-label">Status</label>
+              <select name="cleared" class="form-select">
+                <option value="">— All Status —</option>
+                <option value="1" {{ request('cleared') === '1' ? 'selected' : '' }}>Cleared</option>
+                <option value="0" {{ request('cleared') === '0' ? 'selected' : '' }}>Pending</option>
+              </select>
             </div>
-            <div class="table-responsive">
-
-              <!-- .table -->
-              <table class="table table-sm- table-striped">
-                <!-- thead -->
-                <thead>
-
-                <tr>
-                  <th>Service</th>
-                  <th>Patient</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                </tr>
-                </thead>
-                <tbody>
-                <!-- tr -->
-
-                <tr>
-                  <td colspan="4">
-                    <div class="alert-warning alert">No Records to Display at the moment</div>
-                  </td>
-                </tr>
-
-
-                </tbody><!-- /tbody -->
-              </table><!-- /.table -->
-              <hr class="my-2">
-
-
-              <div class="d-flex justify-content-around">
-
-                <ul class="pagination">
-
-                  <li class="page-item disabled">
-                    <a class="page-link" href="javascript:"><span class="oi oi-arrow-left"></span> Previous</a>
-                  </li>
-
-
-                  <li class="page-item active">
-
-                    <span class="page-link" href="javascript:"> 0 - 0 of 0</span>
-                  </li>
-
-
-                  <li class="page-item disabled">
-                    <a class="page-link" href="javascript:">Next <span class="oi oi-arrow-right"></span></a>
-                  </li>
-
-                </ul>
-                <input type="hidden" class="sr-only filter" name="page" value="1">
-
-              </div>
+            <div class="col-md-3">
+              <label class="form-label">From Date</label>
+              <input type="date" name="from" class="form-control flatpickr" value="{{ $from }}">
             </div>
-          </div>
+            <div class="col-md-3">
+              <label class="form-label">To Date</label>
+              <input type="date" name="to" class="form-control flatpickr" value="{{ $to }}">
+            </div>
+            <div class="col-md-3 d-flex align-items-end gap-2">
+              <button type="submit" class="btn btn-primary flex-grow-1"><i class="ti ti-filter me-1"></i>Filter</button>
+              <a href="{{ route('app.reports.general', ['tab' => 'visits']) }}" class="btn btn-outline-secondary px-2"><i class="ti ti-refresh"></i></a>
+            </div>
+          </form>
         </div>
-        <div class="tab-pane fade" id="navs-justified-diagnoses" role="tabpanel">
-          <div class="card" data-select2-id="5">
-            <!-- .card-header -->
-            <div class="card-header">
-              <form class="filterForm d-flex justify-content-between">
-                <input type="hidden" name="csrfmiddlewaretoken" value="T9xfm6WZ0x7CSeF5aTDp0rCI1tD0kQOB4i6Xr7u2gnihH6QfRYYwHPYkKEQs7eMf">
-                <div class="form-group flex-fill ml-2-" data-select2-id="4">
-                  <label class="mb-0" for="id_diagnosis">Filter By Case</label>
-                  <select id="id_diagnosis" name="diagnosis_id" class="custom-select form-control filter select2-hidden-accessible" data-select2-id="id_diagnosis" tabindex="-1" aria-hidden="true">
-                    <option value="" data-select2-id="1">- All -</option>
-                  </select><span class="select2 select2-container select2-container--default select2-container--below select2-container--focus" dir="ltr" data-select2-id="2" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-id_diagnosis-container"><span class="select2-selection__rendered" id="select2-id_diagnosis-container" role="textbox" aria-readonly="true"><span class="select2-selection__placeholder">Browse ICD10 Collection ...</span></span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
-                </div>
 
-                <div class="form-group flex-fill ml-2">
-                  <input type="hidden" name="start" class="filter sr-only" value="2024-11-24">
-                  <input type="hidden" name="stop" class="filter sr-only" value="2024-11-24">
-                  <label for="reportrange" class="mb-0">Filter By Date</label>
-                  <div id="reportrange" class="form-control d-flex custom-select">
-                    <i class="mt-1 fa fa-calendar"></i>&nbsp;
-                    <span class="text-nowrap">11/24/2024 - 11/24/2024</span>
-                  </div>
-                </div>
-                <div class="form-group flex-fill- ml-3 no-label">
-                  <button class="btn btn-primary px-3" style="margin-top: 1.26rem;" type="button" id="export-btn">
-                    <i class="fa fa-download"></i> Export to File
-                  </button>
-                </div>
-              </form>
-            </div><!-- /.card-header -->
-            <!-- .table-responsive -->
-            <div class="table-responsive">
-              <!-- .table -->
-              <table class="table table-sm- table-striped">
-                <!-- thead -->
-                <thead>
-                <tr>
-                  <th>Date</th><th>Case</th><th>Status</th><th>Patient</th>
-                </tr>
-                </thead>
-                <tbody>
-                <!-- tr -->
-
-                <tr>
-                  <td colspan="4">
-                    <div class="alert-warning alert">No Records to Display at the moment</div>
-                  </td>
-                </tr>
-
-                </tbody><!-- /tbody -->
-              </table><!-- /.table -->
-              <hr class="my-2">
-
-
-              <div class="d-flex justify-content-around">
-
-                <ul class="pagination">
-
-                  <li class="page-item disabled">
-                    <a class="page-link" href="javascript:"><span class="oi oi-arrow-left"></span> Previous</a>
-                  </li>
-
-
-                  <li class="page-item active">
-
-                    <span class="page-link" href="javascript:"> 0 - 0 of 0</span>
-                  </li>
-
-
-                  <li class="page-item disabled">
-                    <a class="page-link" href="javascript:">Next <span class="oi oi-arrow-right"></span></a>
-                  </li>
-
-                </ul>
-                <input type="hidden" class="sr-only filter" name="page" value="1">
-
-              </div>
-
-
-            </div><!-- /.table-responsive -->
-          </div
+        <div class="table-responsive text-nowrap">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Patient</th>
+                <th>HRN</th>
+                <th>Check-In Date</th>
+                <th>Status</th>
+                <th>Clearance Code</th>
+              </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+              @forelse ($visits as $visit)
+              <tr>
+                <td>
+                  <span class="fw-medium">
+                    {{ $visit->patient && $visit->patient->user ? $visit->patient->user->firstname . ' ' . $visit->patient->user->lastname : 'N/A' }}
+                  </span>
+                </td>
+                <td><span class="badge bg-label-info">{{ app(\App\Settings\SystemSettings::class)->number_prefix }}{{ $visit->patient->hospital_no ?? '' }}</span></td>
+                <td>{{ \Carbon\Carbon::parse($visit->check_in_date)->format('d M Y') }}</td>
+                <td>
+                  <span class="badge bg-label-{{ $visit->cleared ? 'success' : 'warning' }}">
+                    {{ $visit->cleared ? 'Cleared' : 'Pending' }}
+                  </span>
+                </td>
+                <td><code class="text-primary fw-bold">{{ $visit->clearance_code ?? '—' }}</code></td>
+              </tr>
+              @empty
+              <tr>
+                <td colspan="5" class="text-center py-5">
+                  <div class="text-muted"><i class="ti ti-info-circle me-1"></i> No visits found for this period.</div>
+                </td>
+              </tr>
+              @endforelse
+            </tbody>
+          </table>
         </div>
+        <div class="d-flex align-items-center justify-content-between mt-4">
+          <small class="text-muted">Showing {{ $visits->firstItem() ?? 0 }} to {{ $visits->lastItem() ?? 0 }} of {{ $visits->total() }}</small>
+          {{ $visits->links('vendor.pagination.vuexy-custom') }}
+        </div>
+        @endif
+
+        {{-- ============================== DIAGNOSES TAB ============================== --}}
+        @if($tab === 'diagnoses')
+        <div class="card-header p-0 pb-3 mb-4 border-bottom">
+          <form method="GET" action="{{ route('app.reports.general') }}" class="row g-3">
+            <input type="hidden" name="tab" value="diagnoses">
+            <div class="col-md-3">
+              <label class="form-label">Specialty</label>
+              <select name="specialty" class="form-select">
+                <option value="">— All Specialties —</option>
+                @foreach ($specialties as $sp)
+                <option value="{{ $sp }}" {{ request('specialty') === $sp ? 'selected' : '' }}>{{ $sp }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">From Date</label>
+              <input type="date" name="from" class="form-control flatpickr" value="{{ $from }}">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">To Date</label>
+              <input type="date" name="to" class="form-control flatpickr" value="{{ $to }}">
+            </div>
+            <div class="col-md-3 d-flex align-items-end gap-2">
+              <button type="submit" class="btn btn-primary flex-grow-1"><i class="ti ti-filter me-1"></i>Filter</button>
+              <a href="{{ route('app.reports.general', ['tab' => 'diagnoses']) }}" class="btn btn-outline-secondary px-2"><i class="ti ti-refresh"></i></a>
+            </div>
+          </form>
+        </div>
+
+        <div class="table-responsive text-nowrap">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Patient</th>
+                <th>Specialty</th>
+                <th>Recorded By</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+              @forelse ($diagnoses as $diag)
+              <tr>
+                <td>{{ $diag->created_at->format('d M Y') }}</td>
+                <td>
+                  <span class="fw-medium">
+                    {{ $diag->patient && $diag->patient->user ? $diag->patient->user->firstname . ' ' . $diag->patient->user->lastname : 'N/A' }}
+                  </span>
+                </td>
+                <td><span class="badge bg-label-primary">{{ $diag->specialty ?? 'General' }}</span></td>
+                <td>{{ $diag->user->firstname ?? '' }} {{ $diag->user->lastname ?? 'N/A' }}</td>
+                <td>
+                  <span class="badge bg-label-{{ $diag->status === 'Pending' ? 'warning' : 'success' }}">
+                    {{ $diag->status }}
+                  </span>
+                </td>
+              </tr>
+              @empty
+              <tr>
+                <td colspan="5" class="text-center py-5">
+                  <div class="text-muted"><i class="ti ti-info-circle me-1"></i> No diagnoses found for this period.</div>
+                </td>
+              </tr>
+              @endforelse
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex align-items-center justify-content-between mt-4">
+          <small class="text-muted">Showing {{ $diagnoses->firstItem() ?? 0 }} to {{ $diagnoses->lastItem() ?? 0 }} of {{ $diagnoses->total() }}</small>
+          {{ $diagnoses->links('vendor.pagination.vuexy-custom') }}
+        </div>
+        @endif
+
+        {{-- ============================== ADMISSIONS TAB ============================== --}}
+        @if($tab === 'admissions')
+        <div class="card-header p-0 pb-3 mb-4 border-bottom">
+          <form method="GET" action="{{ route('app.reports.general') }}" class="row g-3">
+            <input type="hidden" name="tab" value="admissions">
+            <div class="col-md-2">
+              <label class="form-label">Ward</label>
+              <select name="ward_id" class="form-select">
+                <option value="">— All Wards —</option>
+                @foreach ($wards as $id => $name)
+                <option value="{{ $id }}" {{ request('ward_id') == $id ? 'selected' : '' }}>{{ $name }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Status</label>
+              <select name="adm_status" class="form-select">
+                <option value="">— All Status —</option>
+                <option value="active" {{ request('adm_status') === 'active' ? 'selected' : '' }}>Active</option>
+                <option value="discharged" {{ request('adm_status') === 'discharged' ? 'selected' : '' }}>Discharged</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">From Date</label>
+              <input type="date" name="from" class="form-control flatpickr" value="{{ $from }}">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">To Date</label>
+              <input type="date" name="to" class="form-control flatpickr" value="{{ $to }}">
+            </div>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+              <button type="submit" class="btn btn-primary flex-grow-1"><i class="ti ti-filter me-1"></i>Filter</button>
+              <a href="{{ route('app.reports.general', ['tab' => 'admissions']) }}" class="btn btn-outline-secondary px-2"><i class="ti ti-refresh"></i></a>
+            </div>
+          </form>
+        </div>
+
+        <div class="table-responsive text-nowrap">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Patient</th>
+                <th>Ward</th>
+                <th>Admission Date</th>
+                <th>Status</th>
+                <th>Length of Stay</th>
+              </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+              @forelse ($admissions as $adm)
+              @php
+                $los = \Carbon\Carbon::parse($adm->created_at)->diffInDays(
+                  $adm->status === 'discharged' ? $adm->updated_at : now()
+                );
+              @endphp
+              <tr>
+                <td>
+                  <span class="fw-medium">
+                    {{ $adm->patient && $adm->patient->user ? $adm->patient->user->firstname . ' ' . $adm->patient->user->lastname : 'N/A' }}
+                  </span>
+                </td>
+                <td>{{ $adm->ward->name ?? 'N/A' }}</td>
+                <td>{{ $adm->created_at->format('d M Y') }}</td>
+                <td>
+                  <span class="badge bg-label-{{ $adm->status === 'active' ? 'success' : 'secondary' }}">
+                    {{ ucfirst($adm->status) }}
+                  </span>
+                </td>
+                <td>{{ $los }} day(s)</td>
+              </tr>
+              @empty
+              <tr>
+                <td colspan="5" class="text-center py-5">
+                  <div class="text-muted"><i class="ti ti-info-circle me-1"></i> No admissions found for this period.</div>
+                </td>
+              </tr>
+              @endforelse
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex align-items-center justify-content-between mt-4">
+          <small class="text-muted">Showing {{ $admissions->firstItem() ?? 0 }} to {{ $admissions->lastItem() ?? 0 }} of {{ $admissions->total() }}</small>
+          {{ $admissions->links('vendor.pagination.vuexy-custom') }}
+        </div>
+        @endif
       </div>
-        <div class="tab-pane fade" id="navs-justified-admission" role="tabpanel">
-          <div class="card">
-            <!-- .card-header -->
-            <div class="card-header">
-              <form class="filterForm d-flex justify-content-between">
-                <input type="hidden" name="csrfmiddlewaretoken" value="gzZVLY5UxBuum7yNuXIG123VvvvlYnLFrIyDQZDXNrF9bZJXb23NIqpxeGINLLJj">
-                <div class="form-group flex-fill">
-                  <label class="mb-0" for="id_ward">Filter By Wards</label>
-                  <select id="id_ward" name="ward_id" class="custom-select form-control filter">
-                    <option value="">- All -</option>
-                    <option value="3">ACCIDENT &amp; EMERGENCY</option>
-
-                    <option value="5">FEMALE AMINITY</option>
-
-                    <option value="2">FEMALE WARD</option>
-
-                    <option value="6">MALE AMINITY</option>
-
-                    <option value="1">MALE WARD</option>
-
-                    <option value="4">PEDIATRIC WARD</option>
-
-                  </select>
-                </div>
-                <div class="form-group flex-fill ml-2">
-                  <label class="mb-0" for="id_status">Filter By Status</label>
-                  <select id="id_status" name="status" class="custom-select form-control filter">
-                    <option value="">- All -</option>
-                    <option value="active">Active</option>
-
-                    <option value="discharged">Discharged</option>
-
-                  </select>
-                </div>
-                <div class="form-group flex-fill ml-2">
-                  <input type="hidden" name="start" class="filter sr-only" value="2024-11-24">
-                  <input type="hidden" name="stop" class="filter sr-only" value="2024-11-24">
-                  <label for="reportrange" class="mb-0">Filter By Admission Date</label>
-                  <div id="reportrange" class="form-control d-flex custom-select">
-                    <i class="mt-1 fa fa-calendar"></i>&nbsp;
-                    <span class="text-nowrap">11/24/2024 - 11/24/2024</span>
-                  </div>
-                </div>
-                <div class="form-group flex-fill- ml-3 no-label">
-                  <button class="btn btn-primary px-3 text-nowrap" style="margin-top: 1.26rem;" type="button" id="export-btn">
-                    <i class="fa fa-download"></i> Export to File
-                  </button>
-                </div>
-              </form>
-            </div><!-- /.card-header -->
-            <!-- .table-responsive -->
-            <div class="table-responsive">
-              <!-- .table -->
-              <table class="table table-sm- table-striped">
-                <!-- thead -->
-                <thead>
-                <tr>
-                  <th>Patient</th><th>Ward</th><th>Date of Admission</th><th>Length of Stay</th>
-                </tr>
-                </thead>
-                <tbody>
-                <!-- tr -->
-
-                <tr>
-                  <td colspan="4">
-                    <div class="alert-warning alert">No Records to Display at the moment</div>
-                  </td>
-                </tr>
-
-                </tbody><!-- /tbody -->
-              </table><!-- /.table -->
-              <hr class="my-2">
-
-
-              <div class="d-flex justify-content-around">
-
-                <ul class="pagination">
-
-                  <li class="page-item disabled">
-                    <a class="page-link" href="javascript:"><span class="oi oi-arrow-left"></span> Previous</a>
-                  </li>
-
-
-                  <li class="page-item active">
-
-                    <span class="page-link" href="javascript:"> 0 - 0 of 0</span>
-                  </li>
-
-
-                  <li class="page-item disabled">
-                    <a class="page-link" href="javascript:">Next <span class="oi oi-arrow-right"></span></a>
-                  </li>
-
-                </ul>
-                <input type="hidden" class="sr-only filter" name="page" value="1">
-
-              </div>
-
-
-            </div><!-- /.table-responsive -->
-          </div>
-        </div>
-      </div>
-
     </div>
-  </div><!-- /metric row -->
+  </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof flatpickr !== 'undefined') {
+      flatpickr('.flatpickr', {
+        dateFormat: 'Y-m-d',
+        allowInput: true
+      });
+    }
+  });
+</script>
 @endsection
