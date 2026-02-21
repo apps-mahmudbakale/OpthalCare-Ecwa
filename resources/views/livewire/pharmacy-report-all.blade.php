@@ -43,8 +43,9 @@
 
         </tbody><!-- /tbody -->
       </table><!-- /.table -->
-      <div class="d-flex justify-content-center mt-3">
-        {{ $all->links() }}
+      <div class="d-flex align-items-center justify-content-between px-3 mt-4">
+        <small class="text-muted">Showing {{ $all->firstItem() ?? 0 }} to {{ $all->lastItem() ?? 0 }} of {{ $all->total() }}</small>
+        {{ $all->links('vendor.pagination.vuexy-custom') }}
       </div>
     </div>
   </div>

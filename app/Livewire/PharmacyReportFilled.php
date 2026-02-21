@@ -34,7 +34,7 @@ class PharmacyReportFilled extends Component
 
   public function render()
   {
-    $expired = DrugRequest::with(['store', 'patient'])
+    $filled = DrugRequest::with(['store', 'patient.user', 'drug'])
       ->where('status', 'filled')
       ->when($this->store_id, fn($q) => $q->where('store_id', $this->store_id))
       ->when($this->startDate, fn($q) => $q->whereDate('created_at', '>=', $this->startDate))
@@ -44,6 +44,6 @@ class PharmacyReportFilled extends Component
 
     $stores = DrugStore::all();
 
-    return view('livewire.pharmacy-report-filled', compact('expired', 'stores'));
+    return view('livewire.pharmacy-report-filled', compact('filled', 'stores'));
   }
 }

@@ -23,7 +23,7 @@ class DrugsFilledExport implements FromCollection, WithHeadings
 
   public function collection(): Collection
   {
-    return DrugRequest::with(['store', 'patient'])
+    return DrugRequest::with(['store', 'patient.user', 'drug'])
       ->where('status', 'filled')
       ->when($this->store_id, fn($q) => $q->where('store_id', $this->store_id))
       ->when($this->startDate, fn($q) => $q->whereDate('created_at', '>=', $this->startDate))
@@ -31,9 +31,11 @@ class DrugsFilledExport implements FromCollection, WithHeadings
       ->get()
       ->map(function ($request) {
         return [
-          'Patient Name' => $request->patient->user->firstname.' '.$request->patient->user->lastname ?? 'N/A',
-          'Store' => $request->store->name ?? 'N/A',
-          'Status' => ucfirst($request->status),
+          'Patient Name' => $request->patient && $request->patient->user ? $request->patient->user->firstname.' '.$request->patient->user->lastname : 'N/A',
+          'Drug'         => $request->drug->name ?? 'N/A',
+          'Quantity'     => $request->qty ?? 0,
+          'Store'        => $request->store->name ?? 'N/A',
+          'Status'       => ucfirst($request->status),
           'Requested At' => $request->created_at->format('Y-m-d'),
         ];
       });
@@ -41,6 +43,6 @@ class DrugsFilledExport implements FromCollection, WithHeadings
 
   public function headings(): array
   {
-    return ['Patient Name', 'Store', 'Status', 'Requested At'];
+    return ['Patient Name', 'Drug', 'Quantity', 'Store', 'Status', 'Requested At'];
   }
 }

@@ -50,8 +50,9 @@
       </table>
 
       <!-- Pagination -->
-      <div class="d-flex justify-content-center mt-3">
-        {{ $expired->links() }}
+      <div class="d-flex align-items-center justify-content-between px-3 mt-4">
+        <small class="text-muted">Showing {{ $expired->firstItem() ?? 0 }} to {{ $expired->lastItem() ?? 0 }} of {{ $expired->total() }}</small>
+        {{ $expired->links('vendor.pagination.vuexy-custom') }}
       </div>
     </div>
   </div>

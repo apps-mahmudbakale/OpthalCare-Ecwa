@@ -35,34 +35,49 @@
     </div>
 
     <!-- Table -->
-    <div class="table-responsive">
-      <table class="table table-sm table-striped">
+    <div class="table-responsive text-nowrap">
+      <table class="table table-hover">
         <thead>
-        <tr>
-          <th>Patient Name</th>
-          <th>Location</th>
-          <th>Status</th>
-          <th>Requested At</th>
-        </tr>
+          <tr>
+            <th>Patient Name</th>
+            <th>Drug Prescribed</th>
+            <th class="text-center">Quantity</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Requested At</th>
+          </tr>
         </thead>
-        <tbody>
-        @forelse ($expired as $request)
-        <tr>
-          <td>{{ $request->patient->user->firstname.' '.$request->patient->user->lastname ?? 'N/A' }}</td>
-          <td>{{ $request->store->name ?? 'N/A' }}</td>
-          <td>{{ ucfirst($request->status) }}</td>
-          <td>{{ $request->created_at->format('Y-m-d') }}</td>
-        </tr>
-        @empty
-        <tr>
-          <td colspan="5">No filled drug requests found for the selected filters.</td>
-        </tr>
-        @endforelse
+        <tbody class="table-border-bottom-0">
+          @forelse ($filled as $request)
+          <tr>
+            <td>
+              <span class="fw-medium">
+                {{ $request->patient && $request->patient->user ? $request->patient->user->firstname . ' ' . $request->patient->user->lastname : 'N/A' }}
+              </span>
+            </td>
+            <td><span class="text-primary fw-bold">{{ $request->drug->name ?? 'N/A' }}</span></td>
+            <td class="text-center"><span class="badge bg-label-info">{{ $request->qty ?? 0 }}</span></td>
+            <td>{{ $request->store->name ?? 'N/A' }}</td>
+            <td>
+              <span class="badge bg-label-success">
+                {{ ucfirst($request->status) }}
+              </span>
+            </td>
+            <td>{{ $request->created_at->format('d M Y') }}</td>
+          </tr>
+          @empty
+          <tr>
+            <td colspan="6" class="text-center py-5">
+              <div class="text-muted"><i class="ti ti-info-circle me-1"></i> No filled drug requests found for the selected filters.</div>
+            </td>
+          </tr>
+          @endforelse
         </tbody>
       </table>
 
-      <div class="d-flex justify-content-center">
-        {{ $expired->links() }}
+      <div class="d-flex align-items-center justify-content-between px-3 mt-4">
+        <small class="text-muted">Showing {{ $filled->firstItem() ?? 0 }} to {{ $filled->lastItem() ?? 0 }} of {{ $filled->total() }}</small>
+        {{ $filled->links('vendor.pagination.vuexy-custom') }}
       </div>
     </div>
   </div>

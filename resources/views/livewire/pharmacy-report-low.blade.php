@@ -41,8 +41,9 @@
       @endforeach
         </tbody><!-- /tbody -->
       </table><!-- /.table -->
-      <div class="d-flex justify-content-center mt-3">
-        {{ $lowstock->links() }}
+      <div class="d-flex align-items-center justify-content-between px-3 mt-4">
+        <small class="text-muted">Showing {{ $lowstock->firstItem() ?? 0 }} to {{ $lowstock->lastItem() ?? 0 }} of {{ $lowstock->total() }}</small>
+        {{ $lowstock->links('vendor.pagination.vuexy-custom') }}
       </div>
 
     </div><!-- /.table-responsive -->
