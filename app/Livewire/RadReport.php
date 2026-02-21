@@ -27,9 +27,8 @@ class RadReport extends Component
 
   public function export()
   {
-    $query = \App\Models\RadiologyRequest::with('test.category')
-      ->selectRaw('imaging_id, COUNT(*) as request_count')
-      ->groupBy('imaging_id');
+    $query = \App\Models\RadiologyRequest::with(['test.category', 'patient.user'])
+      ->latest();
 
     if ($this->category_id) {
       $query->whereHas('test', fn ($q) => $q->where('category_id', $this->category_id));
@@ -39,23 +38,22 @@ class RadReport extends Component
       $query->where('status', $this->status);
     }
 
-    if ($this->startDate && $this->endDate) {
-      $query->whereBetween(\DB::raw('DATE(created_at)'), [$this->startDate, $this->endDate]);
-    } elseif ($this->startDate) {
-      $query->whereDate('created_at', $this->startDate);
+    if ($this->startDate) {
+      $query->whereDate('created_at', '>=', $this->startDate);
+    }
+    if ($this->endDate) {
+      $query->whereDate('created_at', '<=', $this->endDate);
     }
 
     $data = $query->get();
 
-    return
-      Excel::download(new RadReportExport($data), 'rad-report.xlsx');
+    return Excel::download(new RadReportExport($data), 'rad-report.xlsx');
   }
 
   public function render()
   {
-    $query = \App\Models\RadiologyRequest::with('test.category')
-      ->selectRaw('imaging_id, COUNT(*) as request_count')
-      ->groupBy('imaging_id');
+    $query = \App\Models\RadiologyRequest::with(['test.category', 'patient.user'])
+      ->latest();
 
     if ($this->category_id) {
       $query->whereHas('test', fn ($q) => $q->where('category_id', $this->category_id));
@@ -65,10 +63,11 @@ class RadReport extends Component
       $query->where('status', $this->status);
     }
 
-    if ($this->startDate && $this->endDate) {
-      $query->whereBetween(DB::raw('DATE(created_at)'), [$this->startDate, $this->endDate]);
-    } elseif ($this->startDate) {
-      $query->whereDate('created_at', $this->startDate);
+    if ($this->startDate) {
+      $query->whereDate('created_at', '>=', $this->startDate);
+    }
+    if ($this->endDate) {
+      $query->whereDate('created_at', '<=', $this->endDate);
     }
 
     $radReports = $query->paginate(10);

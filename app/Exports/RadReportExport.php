@@ -17,20 +17,25 @@ class RadReportExport implements FromCollection, withHeadings
 
   public function collection()
   {
-    return collect($this->reports)->map(function ($report) {
+    return $this->reports->map(function ($report) {
       return [
-        'Imaging Name' => $report->test->name ?? '-',
-        'Category' => $report->test->category->name ?? '-',
-        'Request Count' => $report->request_count,
+        'Date'          => $report->created_at->format('Y-m-d'),
+        'Patient Name'  => $report->patient && $report->patient->user ? $report->patient->user->firstname.' '.$report->patient->user->lastname : 'N/A',
+        'Investigation' => $report->test?->name ?? '-',
+        'Category'      => $report->test?->category?->name ?? '-',
+        'Status'        => $report->status,
       ];
     });
   }
+
   public function headings(): array
   {
     return [
-      'Imaging Name',
+      'Date',
+      'Patient Name',
+      'Investigation',
       'Category',
-      'Request Count',
+      'Status',
     ];
   }
 }

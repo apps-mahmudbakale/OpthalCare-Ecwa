@@ -24,13 +24,13 @@
         </div>
         <div class="form-group flex-fill ml-2">
           <label class="mb-0">Start Date</label>
-          <input wire:model="startDate" type="date" class="form-control">
+          <input wire:model="startDate" type="text" class="form-control flatpickr" placeholder="YYYY-MM-DD">
         </div>
 
         <!-- End Date -->
         <div class="form-group flex-fill ml-2">
           <label class="mb-0">End Date</label>
-          <input wire:model="endDate" type="date" class="form-control">
+          <input wire:model="endDate" type="text" class="form-control flatpickr" placeholder="YYYY-MM-DD">
         </div>
         <div class="form-group flex-fill- ml-3 no-label">
           <button wire:click="export" class="btn btn-primary  px-3" style="margin-top: 1.26rem" type="button" id="export-btn">
@@ -39,55 +39,67 @@
         </div>
       </form>
     </div><!-- /.card-header -->
-    <!-- .table-responsive -->
-    <div class="table-responsive">
-      <!-- .table -->
-      <table class="table table-sm- table-striped">
-        <!-- thead -->
+    <!-- Table -->
+    <div class="table-responsive text-nowrap">
+      <table class="table table-hover">
         <thead>
         <tr>
-          <th>Investigation</th><th>Category</th><th># of Requests</th>
+          <th>Date</th>
+          <th>Patient</th>
+          <th>Investigation</th>
+          <th>Category</th>
+          <th>Status</th>
         </tr>
         </thead>
-        <tbody>
-        <!-- tr -->
-      @foreach($radReports as $report)
+        <tbody class="table-border-bottom-0">
+        @forelse($radReports as $report)
         <tr>
-          <td>{{$report->test->name}}</td>
-          <td>{{$report->test->category->name}}</td>
-          <td>{{ $report->request_count }}</td>
+          <td>{{ $report->created_at->format('d M Y') }}</td>
+          <td>
+            <span class="fw-medium">
+              {{ $report->patient && $report->patient->user ? $report->patient->user->firstname . ' ' . $report->patient->user->lastname : 'N/A' }}
+            </span>
+          </td>
+          <td><span class="text-primary fw-bold">{{ $report->test?->name ?? 'N/A' }}</span></td>
+          <td>{{ $report->test?->category->name ?? 'N/A' }}</td>
+          <td>
+            @php
+              $statusClass = match($report->status) {
+                'Pending' => 'warning',
+                'Result Ready' => 'success',
+                'Cancelled' => 'danger',
+                default => 'secondary'
+              };
+            @endphp
+            <span class="badge bg-label-{{ $statusClass }}">
+              {{ $report->status }}
+            </span>
+          </td>
         </tr>
-      @endforeach
-        </tbody><!-- /tbody -->
-      </table><!-- /.table -->
-      <hr class="my-2">
+        @empty
+        <tr>
+          <td colspan="5" class="text-center py-5">
+            <div class="text-muted"><i class="ti ti-info-circle me-1"></i> No radiology requests found.</div>
+          </td>
+        </tr>
+        @endforelse
+        </tbody>
+      </table>
 
-
-      <div class="d-flex justify-content-around">
-
-        <ul class="pagination">
-
-          <li class="page-item disabled">
-            <a class="page-link" href="javascript:"><span class="oi oi-arrow-left"></span> Previous</a>
-          </li>
-
-
-          <li class="page-item active">
-
-            <span class="page-link" href="javascript:"> 1 - 10 of 623</span>
-          </li>
-
-
-          <li class="page-item">
-            <a class="page-link" href="javascript:" data-page="2" data-href="?page=2">Next <span class="oi oi-arrow-right"></span></a>
-          </li>
-
-        </ul>
-        <input type="hidden" class="sr-only filter" name="page" value="1">
-
+      <!-- Pagination -->
+      <div class="d-flex align-items-center justify-content-between px-3 mt-4">
+        <small class="text-muted">Showing {{ $radReports->firstItem() ?? 0 }} to {{ $radReports->lastItem() ?? 0 }} of {{ $radReports->total() }}</small>
+        {{ $radReports->links('vendor.pagination.vuexy-custom') }}
       </div>
-
-
-    </div><!-- /.table-responsive -->
+    </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener('livewire:initialized', () => {
+    flatpickr(".flatpickr", {
+      dateFormat: "Y-m-d",
+      allowInput: true
+    });
+  });
+</script>
