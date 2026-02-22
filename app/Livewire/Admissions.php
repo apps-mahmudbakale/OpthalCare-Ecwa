@@ -23,7 +23,7 @@ class Admissions extends Component
 
 
     if ($this->patient_id) {
-      $admissions = Admission::with(['patient', 'ward', 'bed', 'procedureRequests'])
+      $admissions = Admission::with(['patient', 'ward', 'bed', 'procedure'])
         ->where('status', 'pending')
         ->orWhere('status', 'prepared')
         ->orWhere('status', 'billed')
@@ -34,7 +34,7 @@ class Admissions extends Component
     }
 
     if ($this->ward_id) {
-      $admissions = Admission::with(['patient', 'ward', 'bed', 'procedureRequests'])
+      $admissions = Admission::with(['patient', 'ward', 'bed', 'procedure'])
         ->where('status', 'pending')
         ->orWhere('status', 'prepared')
         ->orWhere('status', 'billed')
