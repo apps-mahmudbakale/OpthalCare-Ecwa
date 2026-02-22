@@ -117,5 +117,13 @@ class Patient extends Model
     return now()->diffInDays($lastVisit->created_at) > 5;
   }
 
+  public function activeAdmission()
+  {
+    return Admission::where('patient_id', $this->id)
+      ->where('status', 'active')
+      ->latest()
+      ->first();
+  }
+
 
 }

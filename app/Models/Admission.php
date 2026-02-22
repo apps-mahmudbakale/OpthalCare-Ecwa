@@ -42,4 +42,19 @@ class Admission extends Model
   {
     return $this->belongsTo(Procedure::class);
   }
+
+  public function progressNotes()
+  {
+    return $this->hasMany(ProgressNote::class);
+  }
+
+  public function nursingNotes()
+  {
+    return $this->hasMany(NursingNote::class);
+  }
+
+  public function nursingTasks()
+  {
+    return $this->hasMany(NursingTask::class);
+  }
 }

@@ -6,11 +6,29 @@
         <div class="modal-content p-3 p-md-5">
             <div class="modal-body">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                @php
+                    use App\Models\Patient;
+                    use App\Models\Admission;
+
+                    $patientId = null;
+                    $route = request()->route();
+                    
+                    if ($route) {
+                        if ($route->parameter('patient')) {
+                            $param = $route->parameter('patient');
+                            $patientId = is_object($param) ? $param->id : $param;
+                        } elseif ($route->parameter('admission')) {
+                            $param = $route->parameter('admission');
+                            $admission = is_object($param) ? $param : Admission::find($param);
+                            $patientId = $admission?->patient_id;
+                        }
+                    }
+
+                    $patient = Patient::find($patientId);
+                    $user = $patient?->user;
+                @endphp
                 <div class="text-center mb-4">
-                    <h3 class="mb-2">New Diagnosis for
-                        {{ \App\Models\Patient::find(request()->route()->patient->id)->user->firstname }}
-                        {{ \App\Models\Patient::find(request()->route()->patient->id)->user->lastname }}
-                    </h3>
+                    <h3 class="mb-2">New Diagnosis for {{ $user->firstname ?? '' }} {{ $user->lastname ?? '' }}</h3>
                 </div>
 
                 <!-- Specialty Toggle -->
@@ -152,10 +170,10 @@
                             <div class="col-12 col-md-12">
                                 <label class="form-label">Patient</label>
                                 <input type="text" class="form-control"
-                                    value="{{ \App\Models\Patient::find(request()->route()->patient->id)->user->firstname . ' ' . \App\Models\Patient::find(request()->route()->patient->id)->middlename . ' ' . \App\Models\Patient::find(request()->route()->patient->id)->user->lastname }}"
+                                    value="{{ ($user->firstname ?? '') . ' ' . ($patient->middlename ?? '') . ' ' . ($user->lastname ?? '') }}"
                                     readonly disabled>
                                 <input type="hidden" name="patient_id" class="form-control"
-                                    value="{{ request()->route()->patient->id }}">
+                                    value="{{ $patientId }}">
                             </div>
 
                             <div class="col-12">
@@ -209,7 +227,7 @@
                                 <div class="mb-3">
                                     <label class="form-label">Draw a sketch:</label>
                                     <!-- <iframe id="drawing" class="col-md-12" style="height: 500px;"
-                                        src="{{ route('app.patient.draw', request()->route()->patient->id) }}">Your
+                                        src="{{ $patientId ? route('app.patient.draw', $patientId) : '#' }}">Your
                                         browser isn't compatible</iframe> -->
                                 </div>
                                 <div class="mb-3">

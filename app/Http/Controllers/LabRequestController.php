@@ -96,7 +96,7 @@ class LabRequestController extends Controller
     $result = LabResult::updateOrCreate(
         ['lab_request_id' => $request->lab_id],
         array_merge($request->all(), [
-            'user_id' => auth()->user()->id,
+            'user_id' => auth()->id(),
         ])
     );
 
@@ -114,9 +114,9 @@ class LabRequestController extends Controller
     return redirect()->back()->with('success', 'Result Collected!');
   }
 
-  public function showResult($id)
+  public function showResult(Request $request, $id)
   {
-    $lab = LabRequest::where('id', $id)->first();
+    $lab = LabRequest::findOrFail($id);
     // Use the findings relationship to get the specific result for this request
     $result = $lab->findings; 
     
@@ -129,6 +129,10 @@ class LabRequestController extends Controller
     }
 
     $patient = Patient::where('id', $lab->patient_id)->first();
+
+    if ($request->has('modal')) {
+        return view('laboratory.result-partial', compact('lab', 'result', 'patient'));
+    }
 
     return view('laboratory.print', compact('lab', 'result', 'patient'));
   }

@@ -98,7 +98,7 @@ class RadiologyRequestController extends Controller
     }
     // dd($data);
 
-    $resultData = array_merge($data, ['user_id' => auth()->user()->id]);
+    $resultData = array_merge($data, ['user_id' => auth()->id()]);
     
     $result = RadiologyResult::create($resultData);
 
@@ -122,7 +122,7 @@ class RadiologyRequestController extends Controller
         }
     }
 
-    $resultData = array_merge($data, ['user_id' => auth()->user()->id]);
+    $resultData = array_merge($data, ['user_id' => auth()->id()]);
     
     if (empty($resultData['image'])) {
         unset($resultData['image']);
@@ -136,11 +136,16 @@ class RadiologyRequestController extends Controller
     return redirect()->back()->with('success', 'Result Updated!');
   }
 
-  public function showResult($id)
+  public function showResult(Request $request, $id)
   {
-    $image = RadiologyRequest::where('id', $id)->first();
+    $image = RadiologyRequest::findOrFail($id);
     $result = RadiologyResult::where('imaging_id', $id)->first();
     $patient = Patient::where('id', $image->patient_id)->first();
+
+    if ($request->has('modal')) {
+        return view('radiology.result-partial', compact('image', 'result', 'patient'));
+    }
+
     return view('radiology.print', compact('image', 'result', 'patient'));
   }
 

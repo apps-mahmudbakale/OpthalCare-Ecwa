@@ -373,24 +373,21 @@
                     <div class="tab-pane fade" id="navs-pills-justified-progress-note" role="tabpanel">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#new-progress-note-modal"
                             class="btn btn-primary mb-2 float-end">New Entry</a>
-
-
+                        <livewire:progress-note :admissionId="$admission->id" />
                     </div>
 
                     <!-- Nursing Note Tab -->
                     <div class="tab-pane fade" id="navs-pills-justified-nursing-note" role="tabpanel">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#new-nursing-note-modal"
                             class="btn btn-primary mb-2 float-end">New Entry</a>
-
-
+                        <livewire:nursing-note :admissionId="$admission->id" />
                     </div>
 
                     <!-- Nursing Task Tab -->
                     <div class="tab-pane fade" id="navs-pills-justified-nursing-task" role="tabpanel">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#new-nursing-task-modal"
                             class="btn btn-primary mb-2 float-end">New Entry</a>
-
-
+                        <livewire:nursing-task :admissionId="$admission->id" />
                     </div>
                 </div>
             </div>

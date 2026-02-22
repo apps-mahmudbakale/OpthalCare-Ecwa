@@ -33,7 +33,9 @@
                         <td class="text-center">
                             <div class="btn-group" role="group">
                                 @if ($request->status == 'Result Ready')
-                                    <a href="{{ route('app.lab.print.result', $request->id) }}" target="_blank"
+                                    <a href="javascript:void(0);" 
+                                       data-request-url="{{ route('app.lab.print.result', ['lab' => $request->id, 'modal' => 1]) }}"
+                                       data-target="#global-modal-lg"
                                        class="btn btn-sm btn-icon btn-outline-secondary" title="View Result">
                                         <i class="ti ti-eye ti-xs"></i>
                                     </a>

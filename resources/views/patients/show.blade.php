@@ -56,7 +56,20 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="btn-group">
+                            <div class="d-flex align-items-center gap-2">
+                                @php $activeAdmission = $patient->activeAdmission(); @endphp
+                                @if($activeAdmission)
+                                    <a href="{{ route('app.admissions.show', $activeAdmission->id) }}" class="btn btn-success btn-sm waves-effect waves-light">
+                                        <i class="ti ti-file-text me-1"></i> Open Admission File
+                                    </a>
+                                @else
+                                    <button type="button" class="btn btn-primary btn-sm waves-effect waves-light" data-toggle="modal"
+                                            data-request-url="{{ route('app.admissions.request', $patient->id) }}"
+                                            data-target="#global-modal-lg">
+                                        <i class="ti ti-user-plus me-1"></i> Admit Patient
+                                    </button>
+                                @endif
+                                <div class="btn-group">
                                 <button type="button" class="btn btn-sm btn-icon btn-light waves-effect waves-light"
                                     data-bs-toggle="dropdown" data-boundary="viewport" aria-expanded="false"
                                     aria-haspopup="true">
