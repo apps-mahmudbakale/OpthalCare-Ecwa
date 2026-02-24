@@ -23,11 +23,12 @@
                     <thead>
                         <tr role="row">
                             <th>S/N</th>
-                            <th>Name</th>
+                            <th>Plan Name</th>
                             <th>HMO</th>
-                            <th>Phone</th>
-                            <th>Email</th>
-                            <th>Address</th>
+                            <th>Enrollment Amount</th>
+                            <th>Signup Amount</th>
+                            <th>Max Members</th>
+                            <th>Insurance?</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -35,30 +36,47 @@
                             @foreach($plans as $plan)
                             <tr>
                             <td>{{$loop->iteration}}</td>
-                            <td>{{$plan->hmo->name}}</td>
-                            <td>{{$plan->hmo->name}}</td>
-                            <td>{{$plan->hmo->phone}}</td>
-                            <td>{{$plan->hmo->email}}</td>
-                            <td>{{$plan->hmo->address}}</td>
+                            <td>{{$plan->name}}</td>
+                            <td>{{$plan->hmo->name ?? ''}}</td>
+                            <td>{{ number_format($plan->enrollment_amount, 2) }}</td>
+                            <td>{{ number_format($plan->signup_amount, 2) }}</td>
+                            <td>{{ $plan->max_no ?? 'Unlimited' }}</td>
+                            <td>
+                                @if($plan->is_insurance)
+                                    <span class="badge bg-success">Yes</span>
+                                @else
+                                    <span class="badge bg-secondary">No</span>
+                                @endif
+                            </td>
                             <td class="text-right">
-                                <span class="dropdown ml-1">
-                                    <button class="btn btn-default btn-sm dropdown-toggle align-text-top"
-                                        data-boundary="viewport" data-toggle="dropdown">Actions</button>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="" wire:click.prevent="selectPlan({{ $plan->id }})">
-                                            Edit
-                                        </a>
-                                        <a class="dropdown-item" href="" wire:click.prevent="$emit('manageServices', {{ $plan->id }})">
-                                            Services
-                                        </a>
-                                        <a class="dropdown-item" href="" wire:click.prevent="$emit('manageServices', {{ $plan->id }})">
-                                            Add Service
-                                        </a>
-                                        <button class="dropdown-item" id="del{{ $plan->id }}" data-value="{{ $plan->id }}">
-                                            Delete
-                                        </button>
-                                    </div>
-                                </span>
+                                <div class="d-inline-block">
+                                    <a href="javascript:;" class="dropdown hide-arrow" data-bs-toggle="dropdown">
+                                        <i class="text-primary ti ti-dots-vertical"></i>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end m-0">
+                                        <li>
+                                            <a class="dropdown-item" href="javascript:void(0);" id="add-payment-method" data-request-url="{{ route('app.hmo-plans.edit', $plan->id) }}">
+                                                Edit
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="javascript:void(0);" id="add-payment-method" data-request-url="{{ route('app.hmo-plans.services.index', $plan->id) }}">
+                                                Services
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="javascript:void(0);" id="add-payment-method" data-request-url="{{ route('app.hmo-plans.services.index', $plan->id) }}">
+                                                Add Service
+                                            </a>
+                                        </li>
+                                        <div class="dropdown-divider"></div>
+                                        <li>
+                                            <button class="dropdown-item text-danger" id="del{{ $plan->id }}" data-value="{{ $plan->id }}">
+                                                Delete
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
                                 <script>
                                     document.querySelector('#del{{ $plan->id }}').addEventListener('click', function(e) {
                                         // alert(this.getAttribute('data-value'));
@@ -67,9 +85,12 @@
                                             text: "You won't be able to revert this!",
                                             icon: 'warning',
                                             showCancelButton: true,
-                                            confirmButtonColor: '#3085d6',
-                                            cancelButtonColor: '#d33',
-                                            confirmButtonText: 'Yes, delete it!'
+                                            confirmButtonText: 'Yes, delete it!',
+                                            customClass: {
+                                                confirmButton: 'btn btn-primary me-3',
+                                                cancelButton: 'btn btn-label-secondary'
+                                            },
+                                            buttonsStyling: false
                                         }).then((result) => {
                                             if (result.isConfirmed) {
                                                 document.getElementById('del#'+this.getAttribute('data-value')).submit();
@@ -103,14 +124,12 @@
         </p>
         <div>{{ $plans->links() }}</div>
     </div>
-    @push('body-scripts')
-    @once
+    <script>
     window.addEventListener('HmoPlanEditModal', function() {
         $('#edit-plan-modal').modal('show');
     });
-    @endonce
-@endpush
-@include('_partials._modals.modal-new-HmoPlan')
-@include('_partials._modals.modal-edit-HmoPlan')
+    window.addEventListener('close-modal', function(event) {
+        $('#' + event.detail.id).modal('hide');
+    });
+    </script>
 </div>
-

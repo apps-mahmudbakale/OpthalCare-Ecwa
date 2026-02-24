@@ -8,7 +8,6 @@ use Livewire\Component;
 
 class HmoPlans extends Base
 {
-    public $sortBy = 'id';
     public $plan_id;
     public $hmo_id;
     public $name;
@@ -18,53 +17,36 @@ class HmoPlans extends Base
     public $is_insurance;
     public $logo;
 
-    public function selectPlan($id)
-    {
-        $plan = HmoPlan::find($id);
-        $this->plan_id = $id;
-        $this->hmo_id = $plan->hmo_id;
-        $this->name = $plan->name;
-        $this->enrollment_amount = $plan->enrollment_amount;
-        $this->signup_amount = $plan->signup_amount;
-        $this->max_no = $plan->max_no;
-        $this->is_insurance = $plan->is_insurance;
-        $this->dispatchBrowserEvent('HmoPlanEditModal');
-    }
+    protected $rules = [
+        'hmo_id' => 'required|exists:hmo_groups,id',
+        'name' => 'required|string|max:255',
+        'enrollment_amount' => 'nullable|numeric|min:0',
+        'signup_amount' => 'nullable|numeric|min:0',
+        'max_no' => 'nullable|integer|min:1',
+        'is_insurance' => 'boolean',
+    ];
 
-    public function updatePlan()
-    {
-        HmoPlan::where('id', $this->plan_id)->update([
-            'hmo_id' => $this->hmo_id,
-            'name' => $this->name,
-            'enrollment_amount' => $this->enrollment_amount,
-            'signup_amount' => $this->signup_amount,
-            'max_no' => $this->max_no,
-            'is_insurance' => $this->is_insurance
-        ]);
 
-        redirect()->route('app.settings.index')->with('success', 'HMO Plan Updated');
-    }
 
     public function render()
     {
-        if ($this->search) {
-            $plans = HmoPlan::query()
-                ->where('name', 'like', '%' . $this->search . '%')
-                ->paginate(10);
+        $query = HmoPlan::query()->with('hmo');
 
-            return view(
-                'livewire.hmo-plans',
-                ['plans' => $plans]
-            );
-        } else {
-            $plans = HmoPlan::query()
-                ->orderBy($this->sortBy, $this->sortDirection)
-                ->paginate($this->perPage);
-            $hmos = HmoGroup::all();
-            return view(
-                'livewire.hmo-plans',
-                ['plans' => $plans, 'hmos' =>$hmos]
-            );
+        if ($this->search) {
+            $query->where('name', 'like', '%' . $this->search . '%')
+                  ->orWhereHas('hmo', function($q) {
+                      $q->where('name', 'like', '%' . $this->search . '%');
+                  });
         }
+
+        $plans = $query->orderBy($this->sortBy ?: 'id', $this->sortDirection)
+                       ->paginate($this->perPage);
+
+        $hmos = HmoGroup::all();
+        
+        return view('livewire.hmo-plans', [
+            'plans' => $plans,
+            'hmos' => $hmos
+        ]);
     }
 }

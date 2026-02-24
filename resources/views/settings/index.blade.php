@@ -334,8 +334,8 @@
                                 <i class="ti ti-dots-vertical ti-sm text-muted"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="hmoPlansDropdown">
-                                <a class="dropdown-item" href="javascript:void(0);" 
-                                   data-bs-toggle="modal" data-bs-target="#newHmoPlan">New Hmo Plan</a>
+                                <a class="dropdown-item" href="javascript:void(0);" id="add-payment-method"
+                                   data-request-url="{{ route('app.hmo-plans.create') }}">New Hmo Plan</a>
                             </div>
                         </div>
                     </div>
@@ -344,7 +344,7 @@
                     </div>
                 </div>
             </div>
-            <livewire:hmo-services />
+            
         @endif
         <!--/ Sales By Country -->
         <div class="col-xl-12 col-md-12 mb-4">
@@ -492,7 +492,7 @@
         }
       });
     });
-    $('#add-payment-method').on('click', function() {
+    $('[id="add-payment-method"]').on('click', function() {
       var requestUrl = $(this).data('request-url');
 
       $.ajax({

@@ -24,7 +24,8 @@ class HmoPlanController extends Controller
      */
     public function create()
     {
-        //
+        $hmos = \App\Models\HmoGroup::all();
+        return view('hmo-plans.create', compact('hmos'));
     }
 
     /**
@@ -35,7 +36,18 @@ class HmoPlanController extends Controller
      */
     public function store(Request $request)
     {
-        $plan = HmoPlan::create($request->all());
+        $validated = $request->validate([
+            'hmo_id' => 'required|exists:hmo_groups,id',
+            'name' => 'required|string|max:255',
+            'enrollment_amount' => 'nullable|numeric|min:0',
+            'signup_amount' => 'nullable|numeric|min:0',
+            'max_no' => 'nullable|integer|min:1',
+            'is_insurance' => 'boolean',
+        ]);
+
+        $validated['is_insurance'] = $request->has('is_insurance');
+
+        HmoPlan::create($validated);
 
         return redirect()->route('app.settings.index')->with('success', 'HMO Plan Added');
     }
@@ -59,7 +71,8 @@ class HmoPlanController extends Controller
      */
     public function edit(HmoPlan $hmoPlan)
     {
-        //
+        $hmos = \App\Models\HmoGroup::all();
+        return view('hmo-plans.edit', compact('hmoPlan', 'hmos'));
     }
 
     /**
@@ -71,7 +84,20 @@ class HmoPlanController extends Controller
      */
     public function update(Request $request, HmoPlan $hmoPlan)
     {
-        //
+        $validated = $request->validate([
+            'hmo_id' => 'required|exists:hmo_groups,id',
+            'name' => 'required|string|max:255',
+            'enrollment_amount' => 'nullable|numeric|min:0',
+            'signup_amount' => 'nullable|numeric|min:0',
+            'max_no' => 'nullable|integer|min:1',
+            'is_insurance' => 'boolean',
+        ]);
+
+        $validated['is_insurance'] = $request->has('is_insurance');
+
+        $hmoPlan->update($validated);
+
+        return redirect()->route('app.settings.index')->with('success', 'HMO Plan Updated');
     }
 
     /**

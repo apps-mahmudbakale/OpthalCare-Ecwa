@@ -12,74 +12,66 @@ class HmoServiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(\App\Models\HmoPlan $plan)
     {
-        //
+        $hmoPlan = $plan;
+        // Don't eager load 'service' anymore since it's removed
+        $assignedServices = HmoService::where('plan_id', $hmoPlan->id)->get();
+        
+        $categories = [
+            'admissions' => 'Admissions',
+            'antenatal' => 'Antenatal/Ophthicals',
+            'consultations' => 'Consultations',
+            'laboratory' => 'Laboratory',
+            'pharmacy' => 'Pharmacy',
+            'procedure' => 'Procedure',
+            'radiology' => 'Radiology',
+        ];
+
+        return view('hmo-services.index', compact('hmoPlan', 'assignedServices', 'categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function store(Request $request, \App\Models\HmoPlan $plan)
     {
-        //
+        $request->validate([
+            'type' => 'required|string',
+            'service_id' => 'required|integer',
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        $exists = HmoService::where('plan_id', $plan->id)
+            ->where('type', $request->type)
+            ->where('service_id', $request->service_id)
+            ->exists();
+
+        if ($exists) {
+            return response()->json(['success' => false, 'message' => 'This service is already added to this plan.'], 422);
+        }
+
+        HmoService::create([
+            'plan_id' => $plan->id,
+            'type' => $request->type,
+            'service_id' => $request->service_id,
+            'price' => $request->price,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Service added successfully.']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\HmoService  $hmoService
-     * @return \Illuminate\Http\Response
-     */
-    public function show(HmoService $hmoService)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\HmoService  $hmoService
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(HmoService $hmoService)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\HmoService  $hmoService
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, HmoService $hmoService)
     {
-        //
+        $request->validate([
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        $hmoService->update(['price' => $request->price]);
+
+        return response()->json(['success' => true, 'message' => 'Service price updated.']);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\HmoService  $hmoService
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(HmoService $hmoService)
     {
-        //
+        $hmoService->delete();
+        return response()->json(['success' => true, 'message' => 'Service removed from plan.']);
     }
 }

@@ -35,8 +35,15 @@ class HmoGroupController extends Controller
      */
     public function store(Request $request)
     {
-        $hmo = HmoGroup::create($request->all());
-        return back()->with('success', 'HMO Group Added');
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'address' => 'nullable|string',
+        ]);
+
+        HmoGroup::create($validated);
+        return redirect()->route('app.settings.index')->with('success', 'HMO Group Added Successfully');
     }
 
     /**

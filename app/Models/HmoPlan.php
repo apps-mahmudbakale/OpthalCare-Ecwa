@@ -11,6 +11,7 @@ class HmoPlan extends Model
 
     protected $fillable = [
         'hmo_id',
+        'name',
         'enrollment_amount',
         'signup_amount',
         'is_insurance',
