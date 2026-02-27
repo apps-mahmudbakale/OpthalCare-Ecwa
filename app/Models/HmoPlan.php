@@ -29,4 +29,14 @@ class HmoPlan extends Model
     {
         return $this->hasMany(HmoService::class, 'plan_id');
     }
+
+    public function patients()
+    {
+        return $this->hasMany(Patient::class, 'hmo_plan_id');
+    }
+
+    public function billings()
+    {
+        return $this->hasMany(Billing::class, 'plan_id');
+    }
 }

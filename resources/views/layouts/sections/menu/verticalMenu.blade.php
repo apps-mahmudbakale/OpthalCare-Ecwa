@@ -134,13 +134,25 @@ $configData = Helper::appClasses();
     </li>
 @endcan
     @can('read-report')
-    <li class="menu-item {{ request()->is('app/reports*') ? 'active' : '' }}">
-      <a href="{{ route('app.reports.index') }}" class="menu-link">
+    <li class="menu-item {{ request()->is('app/reports*') || request()->is('app/report/hmo*') ? 'active open' : '' }}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons ti ti-report"></i>
         <div>Reports</div>
       </a>
+      <ul class="menu-sub">
+        <li class="menu-item {{ request()->is('app/reports*') ? 'active' : '' }}">
+          <a href="{{ route('app.reports.index') }}" class="menu-link">
+            <div>General Reports</div>
+          </a>
+        </li>
+        <li class="menu-item {{ request()->is('app/report/hmo*') ? 'active' : '' }}">
+          <a href="{{ route('app.reports.hmo') }}" class="menu-link">
+            <div>HMO Analytics</div>
+          </a>
+        </li>
+      </ul>
     </li>
-@endcan
+    @endcan
 @can('read-settings')
     <li class="menu-item {{ request()->is('app/settings*') ? 'active' : '' }}">
       <a href="{{ route('app.settings.index') }}" class="menu-link">

@@ -27,6 +27,7 @@ class Patient extends Model
     'lga_of_origin',
     'residential_address',
     'hmo_id',
+    'hmo_plan_id',
     'dependent',
     'principal_id',
     'tag_id',
@@ -56,6 +57,11 @@ class Patient extends Model
   public function hmo()
   {
     return $this->belongsTo(HmoGroup::class, 'hmo_id');
+  }
+
+  public function hmoPlan()
+  {
+    return $this->belongsTo(HmoPlan::class, 'hmo_plan_id');
   }
 
   public function state()

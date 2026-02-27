@@ -101,6 +101,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::resource('payment-methods', PaymentMethodController::class);
   Route::resource('religions', ReligionController::class);
   Route::get('hmo-plans/{plan}/services', [HmoServiceController::class, 'index'])->name('hmo-plans.services.index');
+  Route::get('hmo-plans/{plan}/services/create', [HmoServiceController::class, 'create'])->name('hmo-plans.services.create');
   Route::post('hmo-plans/{plan}/services', [HmoServiceController::class, 'store'])->name('hmo-plans.services.store');
   Route::put('hmo-services/{hmo_service}', [HmoServiceController::class, 'update'])->name('hmo-services.update');
   Route::delete('hmo-services/{hmo_service}', [HmoServiceController::class, 'destroy'])->name('hmo-services.destroy');
@@ -227,6 +228,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::get('report/radiology', [ReportController::class, 'radiologyReport'])->name('reports.radiology');
   Route::get('report/procedures', [ReportController::class, 'procedureReport'])->name('reports.procedure');
   Route::get('report/billings', [ReportController::class, 'billingReport'])->name('reports.billing');
+  Route::get('report/hmo', App\Livewire\HmoReport::class)->name('reports.hmo');
   Route::resource('consulting-rooms', ConsultingRoomController::class);
   Route::resource('appointment-type', AppointmentTypeController::class);
   Route::resource('consulting-templates', ConsultingTemplateController::class);

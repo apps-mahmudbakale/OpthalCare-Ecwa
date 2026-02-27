@@ -285,10 +285,10 @@
                                 <div class="col-md-4">
 
                                     <label class="form-label" for="hmo_plan">HMO Plan </label>
-                                    <select name="hmo_id" id="" class="form-control">
+                                    <select name="hmo_plan_id" id="hmo_plan" class="form-control">
                                         <option value="" selected>Select HMO Plan...</option>
                                         @foreach ($hmos as $hmo)
-                                            <option value="{{ $hmo->id }}">{{ $hmo->name }}</option>
+                                            <option value="{{ $hmo->id }}" {{ (isset($data->hmo_plan_id) && $data->hmo_plan_id == $hmo->id) ? 'selected' : '' }}>{{ $hmo->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>

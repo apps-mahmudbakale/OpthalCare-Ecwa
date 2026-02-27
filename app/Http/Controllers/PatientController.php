@@ -49,7 +49,7 @@ class PatientController extends Controller
       $ng = new NG();
       $states = $ng->states;
       $religions = Religion::all();
-      $hmos = HmoGroup::all();
+      $hmos = \App\Models\HmoPlan::all();
       $data = json_decode(base64_decode($request->data));
       $hospital_no = UniqueIdGenerator::generate(['table' => 'patients', 'length' => 4,]);
       return view('patients.create', compact('religions', 'states', 'hmos', 'data'));
@@ -237,7 +237,7 @@ class PatientController extends Controller
     $ng = new NG();
     $states = $ng->states;
     $religions = Religion::all();
-    $hmos = HmoGroup::all();
+    $hmos = \App\Models\HmoPlan::all();
     $hospital_no = UniqueIdGenerator::generate(['table' => 'patients', 'length' => 4,]);
     return view('patients.edit', compact('religions', 'states', 'hmos', 'patient'));
   }

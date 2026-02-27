@@ -32,7 +32,7 @@ class ServiceRequestHandler
     string $serviceName,
     int $patientId,
     string $serviceCategory,
-    string $kind = 'fresh',
+    string $kind,
     string $billingRef,
     ?int $qty = null
   ): ?Billing {
@@ -56,6 +56,32 @@ class ServiceRequestHandler
 
     $amount = $this->calculateAmount($modelClass, $kind, $service, $qty);
 
+    $status = 0;
+    $plan_id = null;
+
+    // Fetch Patient to check HMO Plan mappings
+    $patient = \App\Models\Patient::with('hmoPlan')->find($patientId);
+    
+    if ($patient && $patient->hmoPlan) {
+        $plan_id = $patient->hmo_plan_id;
+
+        // Check for Custom HMO Plan Price override
+        $hmoService = \App\Models\HmoService::where('plan_id', $plan_id)
+            ->where('type', $serviceCategory)
+            ->where('service_id', $service->id)
+            ->first();
+
+        // If the HMO Plan specifies a custom rate, override the base amount
+        if ($hmoService) {
+            $amount = $hmoService->price * $qty;
+        }
+
+        // If the Patient's HMO Plan is marked as Insurance, automatically bypass the payment requirement
+        if ($patient->hmoPlan->is_insurance) {
+            $status = 1;
+        }
+    }
+
     return Billing::create([
       'service'     => $serviceCategory . ':' . $serviceName,
       'service_id'  => $service->id,
@@ -64,7 +90,8 @@ class ServiceRequestHandler
       'amount'      => $amount,
       'bill_ref'    => $billingRef,
       'payer_id'    => Auth::id(),
-      'status'      => 0,
+      'plan_id'     => $plan_id,
+      'status'      => $status,
     ]);
   }
 

@@ -5,45 +5,6 @@
 </div>
 
 <div class="row g-3">
-    <!-- Add Service Form -->
-    <div class="col-md-12">
-        <div class="card bg-light border-0 shadow-none mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Add New Service</h5>
-                <form id="add-service-form" action="{{ route('app.hmo-plans.services.store', $hmoPlan->id) }}" method="POST">
-                    @csrf
-                    <div class="row align-items-end g-3">
-                        <div class="col-md-3">
-                            <label class="form-label" for="type">Category</label>
-                            <select id="type" name="type" class="form-select" required>
-                                <option value="">Select Category</option>
-                                @foreach($categories as $key => $name)
-                                    <option value="{{ $key }}">{{ $name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label" for="service_id">Service</label>
-                            <select name="service_id" id="service_id" class="form-select" required disabled>
-                                <option value="" data-price="">Select Service</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label" for="price">HMO Price</label>
-                            <div class="input-group">
-                                <span class="input-group-text">&#8358;</span>
-                                <input name="price" type="number" step="0.01" id="price" class="form-control" placeholder="0.00" required>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-success w-100">Add</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <!-- Services Table -->
     <div class="col-md-12">
         <div id="service-alert-container"></div>
@@ -167,8 +128,12 @@ $(document).ready(function() {
             $serviceSelect.append('<option value="" data-price="">Loading...</option>');
             
             $.ajax({
-                url: "{{ route('api.bill.services') }}?category=" + selectedCategory,
-                type: 'GET',
+                url: "{{ route('bill.services') }}",
+                type: 'POST',
+                data: {
+                    category: selectedCategory,
+                    _token: "{{ csrf_token() }}"
+                },
                 success: function(response) {
                     $serviceSelect.empty().append('<option value="" data-price="">Select Service</option>');
                     

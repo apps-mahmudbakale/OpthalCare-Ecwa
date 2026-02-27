@@ -65,7 +65,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" href="javascript:void(0);" id="add-payment-method" data-request-url="{{ route('app.hmo-plans.services.index', $plan->id) }}">
+                                            <a class="dropdown-item" href="javascript:void(0);" id="add-payment-method" data-request-url="{{ route('app.hmo-plans.services.create', $plan->id) }}">
                                                 Add Service
                                             </a>
                                         </li>

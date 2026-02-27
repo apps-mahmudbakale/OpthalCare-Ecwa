@@ -69,29 +69,21 @@
                                         <i class="ti ti-user-plus me-1"></i> Admit Patient
                                     </button>
                                 @endif
-                                <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-icon btn-light waves-effect waves-light"
-                                    data-bs-toggle="dropdown" data-boundary="viewport" aria-expanded="false"
-                                    aria-haspopup="true">
-                                    <i class="fa fa-ellipsis-v"></i>
-                                </button>
-                                <ul class="dropdown-menu" style="">
-                                    <li><a class="dropdown-item" href="{{ route('app.patients.edit', $patient->id) }}">Edit
-                                            Patient</a></li>
-                                    <li><a class="dropdown-item" data-toggle="modal"
-                                            data-request-url="{{ route('app.appointment.schedule', $patient->id) }}"
-                                            data-target="#global-modal-lg">Schedule Appointment</a></li>
-                                    <li><a class="dropdown-item" data-toggle="modal"
+                                <button type="button" class="btn btn-primary btn-sm waves-effect waves-light" data-toggle="modal"
                                             data-request-url="{{ route('app.admissions.request', $patient->id) }}"
-                                            data-target="#global-modal-lg" href="javascript:void(0);">Requests Admission</a>
-                                    </li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li><a class="dropdown-item"
-                                            data-request-url="{{ route('app.patient.fund.wallet', $patient->id) }}"
-                                            data-target="#global-modal-lg">Fund Wallet</a></li>
-                                </ul>
+                                            data-target="#global-modal-lg">
+                                        <i class="ti ti-edit me-1"></i> Edit Patient
+                                </button>
+                                <button type="button" class="btn btn-primary btn-sm waves-effect waves-light" data-toggle="modal"
+                                            data-request-url="{{ route('app.admissions.request', $patient->id) }}"
+                                            data-target="#global-modal-lg">
+                                        <i class="ti ti-calendar me-1"></i> Schedule Appointment
+                                </button>
+                                <button type="button" class="btn btn-primary btn-sm waves-effect waves-light" data-toggle="modal"
+                                            data-request-url="{{ route('app.admissions.request', $patient->id) }}"
+                                            data-target="#global-modal-lg">
+                                        <i class="ti ti-money me-1"></i> Fund Wallet
+                                </button>
                             </div>
                         </div>
                     </div>

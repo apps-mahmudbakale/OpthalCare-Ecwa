@@ -8,6 +8,26 @@ use Illuminate\Http\Request;
 class HmoServiceController extends Controller
 {
     /**
+     * Show the form for creating a new resource.
+     */
+    public function create(\App\Models\HmoPlan $plan)
+    {
+        $hmoPlan = $plan;
+        
+        $categories = [
+            'admissions' => 'Admissions',
+            'antenatal' => 'Antenatal/Ophthicals',
+            'consultations' => 'Consultations',
+            'laboratory' => 'Laboratory',
+            'pharmacy' => 'Pharmacy',
+            'procedure' => 'Procedure',
+            'radiology' => 'Radiology',
+        ];
+
+        return view('hmo-services.create', compact('hmoPlan', 'categories'));
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
