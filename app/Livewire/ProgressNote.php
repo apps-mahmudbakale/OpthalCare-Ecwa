@@ -11,26 +11,34 @@ class ProgressNote extends Component
     use WithPagination;
 
     public $admissionId;
+    public $procedureRequestId;
     public $note;
 
     protected $rules = [
         'note' => 'required|string',
     ];
 
-    public function mount($admissionId)
+    public function mount($admissionId = null, $procedureRequestId = null)
     {
         $this->admissionId = $admissionId;
+        $this->procedureRequestId = $procedureRequestId;
     }
 
     public function save()
     {
         $this->validate();
 
-        $admission = Admission::find($this->admissionId);
+        $patient_id = null;
+        if ($this->admissionId) {
+            $patient_id = Admission::find($this->admissionId)->patient_id;
+        } elseif ($this->procedureRequestId) {
+            $patient_id = \App\Models\ProcedureRequest::find($this->procedureRequestId)->patient_id;
+        }
 
         \App\Models\ProgressNote::create([
             'admission_id' => $this->admissionId,
-            'patient_id' => $admission->patient_id,
+            'procedure_request_id' => $this->procedureRequestId,
+            'patient_id' => $patient_id,
             'user_id' => auth()->id(),
             'note' => $this->note,
         ]);
@@ -42,11 +50,16 @@ class ProgressNote extends Component
 
     public function render()
     {
+        $query = \App\Models\ProgressNote::query()->with('user');
+
+        if ($this->admissionId) {
+            $query->where('admission_id', $this->admissionId);
+        } elseif ($this->procedureRequestId) {
+            $query->where('procedure_request_id', $this->procedureRequestId);
+        }
+
         return view('livewire.progress-note', [
-            'notes' => \App\Models\ProgressNote::where('admission_id', $this->admissionId)
-                ->with('user')
-                ->latest()
-                ->paginate(10)
+            'notes' => $query->latest()->paginate(10)
         ]);
     }
 }

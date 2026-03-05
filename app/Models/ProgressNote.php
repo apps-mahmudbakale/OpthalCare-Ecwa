@@ -8,11 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class ProgressNote extends Model
 {
     use HasFactory;
-    protected $fillable = ['admission_id', 'patient_id', 'user_id', 'note'];
+    protected $fillable = ['admission_id', 'procedure_request_id', 'patient_id', 'user_id', 'note'];
 
     public function admission()
     {
         return $this->belongsTo(Admission::class);
+    }
+
+    public function procedureRequest()
+    {
+        return $this->belongsTo(ProcedureRequest::class, 'procedure_request_id');
     }
 
     public function patient()

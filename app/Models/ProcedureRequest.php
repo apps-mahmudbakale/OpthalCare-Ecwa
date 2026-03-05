@@ -28,4 +28,19 @@ class ProcedureRequest extends Model
   public function patient(){
     return $this->belongsTo(Patient::class, 'patient_id');
   }
+
+  public function progressNotes()
+  {
+    return $this->hasMany(ProgressNote::class, 'procedure_request_id');
+  }
+
+  public function nursingNotes()
+  {
+    return $this->hasMany(NursingNote::class, 'procedure_request_id');
+  }
+
+  public function nursingTasks()
+  {
+    return $this->hasMany(NursingTask::class, 'procedure_request_id');
+  }
 }

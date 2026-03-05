@@ -2,7 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Charts\BloodPressureChart;
+use App\Charts\PulseChart;
+use App\Charts\TemperatureChart;
+use App\Charts\WeightChart;
 use App\Models\Admission;
+use App\Models\Billing;
+use App\Models\Patient;
 use App\Models\Procedure;
 use App\Models\ProcedureRequest;
 use Illuminate\Http\Request;
@@ -78,12 +84,25 @@ class ProcedureRequestController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(BloodPressureChart $chart, PulseChart $pulse, TemperatureChart $temperature, WeightChart $weight, $id)
     {
         $procedureRequest = ProcedureRequest::with(['patient.user', 'procedure.category', 'user'])
             ->findOrFail($id);
 
-        return view('procedure.show', compact('procedureRequest'));
+        $patient = Patient::where('id', $procedureRequest->patient_id)->first();
+        $wallet_balance = $patient->wallet ? $patient->wallet->balance : 0;
+        $outstanding_balance = Billing::where('user_id', $procedureRequest->patient_id)->where('status', 0)->sum('amount');
+        
+        return view('procedure.show', [
+            'procedureRequest' => $procedureRequest,
+            'patient' => $patient,
+            'blood_pressure' => $chart->build($patient->id),
+            'pulse' => $pulse->build($patient->id),
+            'temperature' => $temperature->build($patient->id),
+            'weight' => $weight->build($patient->id),
+            'outstanding_balance' => $outstanding_balance,
+            'wallet_balance' => $wallet_balance,
+        ]);
     }
 
     /**

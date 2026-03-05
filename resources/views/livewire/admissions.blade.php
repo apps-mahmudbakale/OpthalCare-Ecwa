@@ -56,23 +56,7 @@
                 <i class="fa fa-ellipsis-v"></i>
               </button>
               <ul class="dropdown-menu">
-                @if($admission->status == 'Pending')
-                <li>
-                  <a href="{{route('app.procedure.prepare', $admission->ref)}}" id="prepare" class="dropdown-item"
-                  >
-                    Prepare for Admission
-                  </a>
-                </li>
-                @elseif($admission->status == 'prepared')
-                <li>
-                  <button class="dropdown-item" data-toggle="modal"
-                     data-request-url="{{ route('app.admissions.bill', $admission->ref) }}"
-                     data-target="#global-modal-lg"
-                  >
-                    Bill for Admission
-                  </button>
-                </li>
-                @elseif($admission->status == 'billed')
+                @if(!$admission->bed_id)
                 <li>
                   <button class="dropdown-item" data-toggle="modal"
                           data-request-url="{{ route('app.admissions.bed', $admission->ref) }}"
@@ -81,14 +65,12 @@
                     Assign Bed
                   </button>
                 </li>
-                @elseif($admission->status == 'active')
+                @endif
                 <li>
-                  <a href="{{route('app.admissions.show', $admission->id)}}" class="dropdown-item"
-                  >
+                  <a href="{{route('app.admissions.show', $admission->id)}}" class="dropdown-item">
                     Open Instance
                   </a>
                 </li>
-                @endif
               </ul>
             </div>
           </td>

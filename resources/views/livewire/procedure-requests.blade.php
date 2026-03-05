@@ -34,7 +34,7 @@
                                     <i class="fa fa-ellipsis-v"></i>
                                 </button>
                                 <ul class="dropdown-menu" style="">
-                                    <li><a class="dropdown-item" href="{{ route('app.procedure-requests.show', $request->id) }}">View Profile </a></li>
+                                    <li><a class="dropdown-item" href="{{ route('app.procedure-requests.show', $request->id) }}">Open Profile </a></li>
                                     <li><a class="dropdown-item" href="javascript:void(0);">Edit </a></li>
                                     <li>
                                         <hr class="dropdown-divider">

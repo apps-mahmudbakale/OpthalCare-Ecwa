@@ -3,108 +3,300 @@
 @section('title', 'Procedure Profile')
 
 @section('vendor-style')
-<link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/quill/typography.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/quill/katex.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/quill/editor.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/quill.snow.css') }}" />
+    <link rel="stylesheet" href="{{ asset('easyeditor.css') }}">
+@endsection
+@section('vendor-script')
+    <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/cleavejs/cleave.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/cleavejs/cleave-phone.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/swiper/swiper.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/moment/moment.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/quill/katex.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/quill/quill.js') }}"></script>
 @endsection
 
 @section('content')
-<h4 class="fw-bold py-3 mb-4">
-  <span class="text-muted fw-light">Procedure /</span> Profile
-</h4>
-
-<div class="row">
-  <!-- Procedure Detail -->
-  <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
-    <!-- Procedure Card -->
-    <div class="card mb-4">
-      <div class="card-body">
-        <div class="user-avatar-section">
-          <div class="d-flex align-items-center flex-column">
-            <div class="user-info text-center">
-              <h4 class="mb-2">{{ $procedureRequest->procedure->name }}</h4>
-              <span class="badge bg-label-secondary">{{ $procedureRequest->procedure->category->name ?? 'N/A' }}</span>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="{{ asset('assets/js/extended-ui-sweetalert2.js') }}"></script>
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Procedure /</span> Request Profile</h4>
+    <!-- Header -->
+    <div class="row">
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="user-profile-header d-flex flex-column flex-sm-row text-sm-start text-center mb-4">
+                    <div class="flex-shrink-0 mt-n2 mx-sm-0 mx-auto user-avatar user-avatar-xl">
+                        <img src="{{ $patient->gender == 'Male' ? asset('assets/img/user-male-circle.png') : asset('assets/img/user-female-circle.png') }}"
+                            alt="user image" class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img">
+                    </div>
+                    <div class="flex-grow-1 mt-3 mt-sm-5">
+                        <div
+                            class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">
+                            <div class="user-profile-info">
+                                <h4>{{ $patient->user->firstname . ' ' . $patient->user->lastname }}</h4>
+                                <ul
+                                    class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-2">
+                                    <li class="list-inline-item d-flex gap-1">
+                                        <span class="badge bg-primary">{{ $patient->gender }}</span>
+                                        <span class="badge bg-primary">{{ $patient->getAge() }}</span>
+                                        <span class="badge bg-primary">Procedure: {{ $procedureRequest->procedure->name }}</span>
+                                        <span class="badge bg-secondary">Status: {{ $procedureRequest->status }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-icon btn-light waves-effect waves-light"
+                                    data-bs-toggle="dropdown" data-boundary="viewport" aria-expanded="false"
+                                    aria-haspopup="true">
+                                    <i class="fa fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu" style="">
+                                    <li><a class="dropdown-item"
+                                            href="{{ route('app.patients.edit', $patient->id) }}">Edit
+                                            Patient</a></li>
+                                    <li><a class="dropdown-item" data-toggle="modal"
+                                            data-request-url="{{ route('app.appointment.schedule', $patient->id) }}"
+                                            data-target="#global-modal-lg">Schedule Appointment</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item"
+                                            data-request-url="{{ route('app.patient.fund.wallet', $patient->id) }}"
+                                            data-target="#global-modal-lg">Fund Wallet</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-        <div class="d-flex justify-content-around flex-wrap my-4 py-3">
-          <div class="d-flex align-items-start me-4 mt-3 gap-3">
-            <span class="badge bg-label-primary p-2 rounded"><i class='ti ti-checkbox ti-sm'></i></span>
-            <div>
-              <h5 class="mb-0">{{ $procedureRequest->status }}</h5>
-              <span>Status</span>
-            </div>
-          </div>
-          <div class="d-flex align-items-start mt-3 gap-3">
-            <span class="badge bg-label-primary p-2 rounded"><i class='ti ti-briefcase ti-sm'></i></span>
-            <div>
-              <h5 class="mb-0">{{ $procedureRequest->request_ref }}</h5>
-              <span>Reference</span>
-            </div>
-          </div>
-        </div>
-        <p class="mt-4 small text-uppercase text-muted">Details</p>
-        <div class="info-container">
-          <ul class="list-unstyled">
-            <li class="mb-2">
-              <span class="fw-semibold me-1">Patient:</span>
-              <span>{{ $procedureRequest->patient->user->firstname }} {{ $procedureRequest->patient->user->lastname }}</span>
-            </li>
-            <li class="mb-2 pt-1">
-              <span class="fw-semibold me-1">Requested By:</span>
-              <span>{{ $procedureRequest->user->firstname }} {{ $procedureRequest->user->lastname }}</span>
-            </li>
-            <li class="mb-2 pt-1">
-              <span class="fw-semibold me-1">Request Date:</span>
-              <span>{{ $procedureRequest->created_at->format('M d, Y h:i A') }}</span>
-            </li>
-          </ul>
-        </div>
-      </div>
     </div>
-    <!-- /Procedure Card -->
-  </div>
-  <!--/ Procedure Detail -->
-
-  <!-- Procedure Actions & Content -->
-  <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
-    <div class="nav-align-top mb-4">
-      <ul class="nav nav-pills mb-3" role="tablist">
-        <li class="nav-item">
-          <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-overview" aria-controls="navs-pills-overview" aria-selected="true">Overview</button>
-        </li>
-      </ul>
-      <div class="tab-content">
-        <div class="tab-pane fade show active" id="navs-pills-overview" role="tabpanel">
-           <div class="card mb-4">
-            <h5 class="card-header">Procedure Information</h5>
-            <div class="card-body">
-              <p>This page displays the details for procedure <strong>{{ $procedureRequest->procedure->name }}</strong> requested for <strong>{{ $procedureRequest->patient->user->firstname }} {{ $procedureRequest->patient->user->lastname }}</strong>.</p>
-              
-              <div class="row">
-                  <div class="col-md-6 mb-3">
-                      <label class="form-label fw-bold">Current Status</label>
-                      <div>
-                          @if($procedureRequest->status == 'Pending')
-                            <span class="badge bg-label-warning">Scheduled / Pending</span>
-                          @else
-                            <span class="badge bg-label-success">{{ $procedureRequest->status }}</span>
-                          @endif
-                      </div>
-                  </div>
-                  <div class="col-md-6 mb-3">
-                      <label class="form-label fw-bold">Admission Preparation</label>
-                      <div>
-                          <a href="{{route('app.procedure.prepare', $procedureRequest->request_ref)}}" class="btn btn-primary btn-sm">
-                              <i class="ti ti-bed me-1"></i> Prepare for Admission
-                          </a>
-                      </div>
-                  </div>
-              </div>
+    <!--/ Header -->
+    <div class="row g-4">
+        <div class="col-lg-6 col-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="badge rounded-pill p-2 bg-label-success mb-2">
+                        <i class="ti ti-briefcase ti-sm"></i>
+                    </div>
+                    <h5 class="card-title mb-2">{{ number_format($wallet_balance) }}</h5>
+                    <small>Wallet Balance</small>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
+        <div class="col-lg-6 col-6 mb-4">
+            <a href="{{ route('app.billing.index') }}">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="badge rounded-pill p-2 bg-label-danger mb-2">
+                            <i class="ti ti-briefcase ti-sm"></i>
+                        </div>
+                        <h5 class="card-title mb-2">{{ number_format($outstanding_balance) }}</h5>
+                        <small>Outstanding Balance</small>
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
-  </div>
-  <!--/ Procedure Actions & Content -->
-</div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="nav-scroller position-relative">
+                <button class="nav-scroller-arrow nav-scroller-arrow-left btn btn-sm btn-icon btn-light"
+                    style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); z-index: 10;">
+                    <i class="ti ti-chevron-left"></i>
+                </button>
+                <ul class="nav nav-pills flex-column flex-sm-row mb-4" role="tablist"
+                    style="overflow-x: auto; white-space: nowrap; padding: 0 40px;">
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#navs-pills-justified-procedure-notes" aria-controls="navs-pills-justified-procedure-notes"
+                            aria-selected="true">
+                            <i class="tf-icons ti ti-notebook ti-xs me-1"></i> Procedure Notes
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#navs-pills-justified-nursing-note"
+                            aria-controls="navs-pills-justified-nursing-note" aria-selected="false" tabindex="-1">
+                            <i class="tf-icons ti ti-clipboard-heart ti-xs me-1"></i> Nursing Note
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#navs-pills-justified-procedure-checklist"
+                            aria-controls="navs-pills-justified-procedure-checklist" aria-selected="false" tabindex="-1">
+                            <i class="tf-icons ti ti-clipboard-list ti-xs me-1"></i> Procedure Checklist
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#navs-pills-justified-vitals" aria-controls="navs-pills-justified-vitals"
+                            aria-selected="false" tabindex="-1">
+                            <i class="tf-icons ti ti-activity-heartbeat ti-xs me-1"></i> Vitals
+                        </button>
+                    </li>
+                </ul>
+                <button class="nav-scroller-arrow nav-scroller-arrow-right btn btn-sm btn-icon btn-light"
+                    style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); z-index: 10;">
+                    <i class="ti ti-chevron-right"></i>
+                </button>
+            </div>
+            <div class="card">
+                <div class="tab-content">
+                    <!-- Procedure Note Tab -->
+                    <div class="tab-pane fade active show" id="navs-pills-justified-procedure-notes" role="tabpanel">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#new-progress-note-modal"
+                            class="btn btn-primary mb-2 float-end">New Entry</a>
+                        <livewire:progress-note :procedureRequestId="$procedureRequest->id" />
+                    </div>
+
+                    <!-- Nursing Note Tab -->
+                    <div class="tab-pane fade" id="navs-pills-justified-nursing-note" role="tabpanel">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#new-nursing-note-modal"
+                            class="btn btn-primary mb-2 float-end">New Entry</a>
+                        <livewire:nursing-note :procedureRequestId="$procedureRequest->id" />
+                    </div>
+
+                    <!-- Procedure Checklist Tab -->
+                    <div class="tab-pane fade" id="navs-pills-justified-procedure-checklist" role="tabpanel">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#new-nursing-task-modal"
+                            class="btn btn-primary mb-2 float-end">New Entry</a>
+                        <livewire:nursing-task :procedureRequestId="$procedureRequest->id" />
+                    </div>
+
+                    <div class="tab-pane fade" id="navs-pills-justified-vitals" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        {!! $blood_pressure->container() !!}
+                                    </div>
+                                    <script src="{{ $blood_pressure->cdn() }}"></script>
+                                    {{ $blood_pressure->script() }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        {!! $pulse->container() !!}
+                                    </div>
+                                    {{ $pulse->script() }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        {!! $temperature->container() !!}
+                                    </div>
+                                    {{ $temperature->script() }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        {!! $weight->container() !!}
+                                    </div>
+                                    {{ $weight->script() }}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .nav-scroller {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-scroller-arrow {
+            display: none;
+        }
+
+        .nav-scroller:hover .nav-scroller-arrow {
+            display: block;
+        }
+
+        .nav-scroller-arrow:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function() {
+            const navScroller = $('.nav-scroller ul');
+            const arrowLeft = $('.nav-scroller-arrow-left');
+            const arrowRight = $('.nav-scroller-arrow-right');
+            const scrollAmount = 200; // Pixels to scroll per click
+
+            function updateArrows() {
+                const scrollLeft = navScroller.scrollLeft();
+                const maxScroll = navScroller[0].scrollWidth - navScroller[0].clientWidth;
+                arrowLeft.prop('disabled', scrollLeft <= 0);
+                arrowRight.prop('disabled', scrollLeft >= maxScroll);
+            }
+
+            navScroller.on('scroll', updateArrows);
+            $(window).on('resize', updateArrows);
+            updateArrows();
+
+            arrowLeft.on('click', function() {
+                if (!$(this).prop('disabled')) {
+                    navScroller.animate({
+                        scrollLeft: navScroller.scrollLeft() - scrollAmount
+                    }, 300);
+                }
+            });
+
+            arrowRight.on('click', function() {
+                if (!$(this).prop('disabled')) {
+                    navScroller.animate({
+                        scrollLeft: navScroller.scrollLeft() + scrollAmount
+                    }, 300);
+                }
+            });
+        });
+    </script>
 @endsection
+@include('_partials._modals.modal-new-diagnosis')
+@include('_partials._modals.global-modal')
+@include('_partials._modals.modal-new-progress-note', ['admissionId' => null, 'procedureRequestId' => $procedureRequest->id])
+@include('_partials._modals.modal-new-nursing-note', ['admissionId' => null, 'procedureRequestId' => $procedureRequest->id])
+@include('_partials._modals.modal-new-nursing-task', ['admissionId' => null, 'procedureRequestId' => $procedureRequest->id])
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        $('.dropdown-item').on('click', function() {
+            var requestUrl = $(this).data('request-url');
+            $.ajax({
+                url: requestUrl,
+                type: 'GET',
+                success: function(response) {
+                    $('#global-modal .modal-body').html(response);
+                    $('#global-modal').modal('show');
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>
