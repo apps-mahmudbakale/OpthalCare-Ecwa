@@ -63,23 +63,23 @@
                                         <i class="ti ti-file-text me-1"></i> Open Admission File
                                     </a>
                                 @else
-                                    <button type="button" class="btn btn-primary btn-sm waves-effect waves-light" data-toggle="modal"
+                                    <button type="button" class="btn btn-primary btn-xs waves-effect waves-light" data-toggle="modal"
                                             data-request-url="{{ route('app.admissions.request', $patient->id) }}"
                                             data-target="#global-modal-lg">
                                         <i class="ti ti-user-plus me-1"></i> Admit Patient
                                     </button>
                                 @endif
-                                <button type="button" class="btn btn-primary btn-sm waves-effect waves-light" data-toggle="modal"
+                                <button type="button" class="btn btn-primary btn-xs waves-effect waves-light" data-toggle="modal"
                                             data-request-url="{{ route('app.admissions.request', $patient->id) }}"
                                             data-target="#global-modal-lg">
                                         <i class="ti ti-edit me-1"></i> Edit Patient
                                 </button>
-                                <button type="button" class="btn btn-primary btn-sm waves-effect waves-light" data-toggle="modal"
+                                <button type="button" class="btn btn-primary btn-xs waves-effect waves-light" data-toggle="modal"
                                             data-request-url="{{ route('app.admissions.request', $patient->id) }}"
                                             data-target="#global-modal-lg">
                                         <i class="ti ti-calendar me-1"></i> Schedule Appointment
                                 </button>
-                                <button type="button" class="btn btn-primary btn-sm waves-effect waves-light" data-toggle="modal"
+                                <button type="button" class="btn btn-primary btn-xs waves-effect waves-light" data-toggle="modal"
                                             data-request-url="{{ route('app.admissions.request', $patient->id) }}"
                                             data-target="#global-modal-lg">
                                         <i class="ti ti-money me-1"></i> Fund Wallet
@@ -195,6 +195,13 @@
                             data-bs-target="#navs-pills-justified-imaging" aria-controls="navs-pills-justified-imaging"
                             aria-selected="false" tabindex="-1">
                             <i class="tf-icons ti ti-photo ti-xs me-1"></i> Investigation
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#navs-pills-justified-procedures" aria-controls="navs-pills-justified-procedures"
+                            aria-selected="false" tabindex="-1">
+                            <i class="tf-icons ti ti-medical-cross ti-xs me-1"></i> Procedures
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -315,6 +322,13 @@
                         <table class="table"></table>
                         <livewire:radiology-request :patientId="request()->route()->patient->id" />
                         @include('_partials._modals.modal-new-imaging')
+                    </div>
+                    <div class="tab-pane fade" id="navs-pills-justified-procedures" role="tabpanel">
+                        <a href="" data-bs-toggle="modal" data-bs-target="#new-procedure-modal"
+                            class="btn btn-primary mb-2 float-end">New Entry</a>
+                        <table class="table"></table>
+                        <livewire:procedure-requests :patientId="request()->route()->patient->id" />
+                        @include('_partials._modals.modal-new-procedure')
                     </div>
                     <div class="tab-pane fade" id="navs-pills-justified-documents" role="tabpanel">
                         <a href="" data-bs-toggle="modal" data-bs-target="#new-documents-modal"

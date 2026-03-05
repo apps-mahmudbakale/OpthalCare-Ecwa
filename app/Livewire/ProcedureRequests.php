@@ -2,7 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Models\ProceudreRequest;
+use App\Models\ProcedureRequest;
 use Livewire\Component;
 
 class ProcedureRequests extends Base
@@ -17,7 +17,7 @@ class ProcedureRequests extends Base
   public function render()
   {
     if ($this->search) {
-      $requests = ProceudreRequest::query()
+      $requests = ProcedureRequest::query()
         ->where('patient_id', $this->patientId)
         ->where('status', 'like', '%' . $this->search . '%')
         ->paginate(10);
@@ -27,7 +27,7 @@ class ProcedureRequests extends Base
         ['requests' => $requests]
       );
     } else {
-      $requests = ProceudreRequest::query()
+      $requests = ProcedureRequest::query()
         ->where('patient_id', $this->patientId)
         ->orderBy($this->sortBy, $this->sortDirection)
         ->paginate($this->perPage);

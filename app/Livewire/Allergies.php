@@ -37,6 +37,9 @@ class Allergies extends Base
     public function render()
     {
       $allergies = Allergy::query()
+      ->when($this->patientId, function($query) {
+          $query->where('patient_id', $this->patientId);
+      })
       ->orderBy($this->sortBy, $this->sortDirection)
       ->paginate($this->perPage);
         return view('livewire.allergies',

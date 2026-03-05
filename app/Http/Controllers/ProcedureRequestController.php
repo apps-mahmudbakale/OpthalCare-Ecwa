@@ -7,6 +7,8 @@ use App\Models\Procedure;
 use App\Models\ProcedureRequest;
 use Illuminate\Http\Request;
 
+use App\Services\ServiceRequestHandler;
+
 class ProcedureRequestController extends Controller
 {
     /**
@@ -36,12 +38,41 @@ class ProcedureRequestController extends Controller
      */
     public function store(Request $request)
     {
-//      dd($request->all());
-        $request_ref = str()->random(6);
-        $request = Admission::create(array_merge($request->all(), ['ref' => $request_ref, 'status' => 'Pending', 'user_id' => auth()->user()->id]));
-//        $request = ProcedureRequest::create(array_merge($request->all(), ['user_id' => auth()->user()->id, 'request_ref' => $request_ref, 'status' => 'Pending']));
+        $request->validate([
+            'patient_id' => 'required|exists:patients,id',
+            'user_id' => 'required|exists:users,id',
+            'procedure_id' => 'required|array',
+        ]);
 
-        return back()->with('success', 'Procedure request created successfully.');
+        $request_ref = str()->upper(str()->random(6));
+        $serviceHandler = new ServiceRequestHandler();
+
+        foreach ($request->procedure_id as $index => $procedureId) {
+            $procedure = Procedure::find($procedureId);
+
+            if (!$procedure) {
+                continue; // Skip invalid entries
+            }
+
+            ProcedureRequest::create([
+                'patient_id'   => $request->patient_id,
+                'user_id'      => $request->user_id,
+                'procedure_id' => $procedure->id,
+                'status'       => 'Pending',
+                'request_ref'  => $request_ref,
+            ]);
+
+            $serviceHandler->handleServiceRequest(
+                $procedure->name,
+                $request->patient_id,
+                'Procedure',
+                'fresh',
+                $request_ref,
+                1
+            );
+        }
+
+        return redirect()->back()->with('success', 'Procedure request created successfully.');
     }
 
     /**
