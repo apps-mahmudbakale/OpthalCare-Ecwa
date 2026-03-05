@@ -60,12 +60,17 @@
               <i class="fa fa-ellipsis-v"></i>
             </button>
             <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ route('app.procedure-requests.show', $request->id) }}">View Profile </a></li>
+              <li><a class="dropdown-item" href="javascript:void(0);">Edit </a></li>
               <li>
-                <a href="{{route('app.procedure.prepare', $request->request_ref)}}" id="prepare" class="dropdown-item"
-                       >
+                <a href="{{route('app.procedure.prepare', $request->request_ref)}}" id="prepare" class="dropdown-item">
                   Prepare for Admission
                 </a>
               </li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item text-bg-danger" href="javascript:void(0);">Delete</a></li>
             </ul>
           </div>
         </td>

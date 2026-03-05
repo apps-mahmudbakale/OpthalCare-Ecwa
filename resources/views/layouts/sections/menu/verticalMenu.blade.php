@@ -119,12 +119,12 @@ $configData = Helper::appClasses();
       </a>
     </li>
 @endcan
-<!--    <li class="menu-item {{ request()->is('app/procedures*') ? 'active' : '' }}">-->
-<!--      <a href="{{ route('app.procedures.index') }}" class="menu-link">-->
-<!--        <i class="menu-icon tf-icons ti ti-medical-cross"></i>-->
-<!--        <div>Procedures</div>-->
-<!--      </a>-->
-<!--    </li>-->
+    <li class="menu-item {{ request()->is('app/procedures*') ? 'active' : '' }}">
+      <a href="{{ route('app.procedures.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-medical-cross"></i>
+        <div>Procedures</div>
+      </a>
+    </li>
 @can('read-billing')
     <li class="menu-item {{ request()->is('app/billing*') ? 'active' : '' }}">
       <a href="{{ route('app.billing.index') }}" class="menu-link">

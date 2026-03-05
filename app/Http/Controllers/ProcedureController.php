@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Procedure;
 use Illuminate\Http\Request;
-use App\Models\ProceudreRequest;
+use App\Models\ProcedureRequest;
 use App\Models\ProcedureCategory;
 use App\Services\ServiceRequestHandler;
 
@@ -22,7 +22,7 @@ class ProcedureController extends Controller
   public function store(Request $request)
   {
     dd($request->all());
-    $request = ProceudreRequest::create(array_merge($request->except('status'), ['status' => 'Pending']));
+    $request = ProcedureRequest::create(array_merge($request->except('status'), ['status' => 'Pending']));
     $procedure = Procedure::find($request->procedure_id);
     $serviceHandler = new ServiceRequestHandler();
     $billingRecord = $serviceHandler->handleServiceRequest($procedure->name, $request->patient_id, 'Procedure');

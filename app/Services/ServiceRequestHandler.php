@@ -125,15 +125,6 @@ class ServiceRequestHandler
   {
     $columns = ['id', 'name', 'price'];
 
-    if ($modelClass === \App\Models\Procedure::class) {
-      return array_merge($columns, [
-        'procedure_cost',
-        'theatre_cost',
-        'anasthesia_cost',
-        'surgeon_fee',
-      ]);
-    }
-
     if (in_array($modelClass, [
       \App\Models\Speciality::class,
       // add others that have follow_up_price
@@ -149,16 +140,6 @@ class ServiceRequestHandler
    */
   protected function calculateAmount(string $modelClass, string $kind, $service, int $qty): float
   {
-    // Special handling for procedures
-    if ($modelClass === \App\Models\Procedure::class) {
-      return (
-          ($service->procedure_cost ?? 0) +
-          ($service->theatre_cost ?? 0) +
-          ($service->anasthesia_cost ?? 0) +
-          ($service->surgeon_fee ?? 0)
-        ) * $qty;
-    }
-
     // Follow-up pricing takes precedence over regular price
     if ($kind === 'follow-up' && isset($service->follow_up_price)) {
       return $service->follow_up_price * $qty;

@@ -78,9 +78,12 @@ class ProcedureRequestController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ProcedureRequest $procedureRequest)
+    public function show($id)
     {
-        //
+        $procedureRequest = ProcedureRequest::with(['patient.user', 'procedure.category', 'user'])
+            ->findOrFail($id);
+
+        return view('procedure.show', compact('procedureRequest'));
     }
 
     /**
