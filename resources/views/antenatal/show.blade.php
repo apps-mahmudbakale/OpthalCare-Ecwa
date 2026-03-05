@@ -1,35 +1,22 @@
 @extends('layouts/layoutMaster')
 
-@section('title', 'Procedure Profile')
+@section('title', 'Antenatal Profile')
 
 @section('vendor-style')
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/quill/typography.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/quill/katex.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/quill/editor.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/quill.snow.css') }}" />
-    <link rel="stylesheet" href="{{ asset('easyeditor.css') }}">
 @endsection
 @section('vendor-script')
-    <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/cleavejs/cleave.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/cleavejs/cleave-phone.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/swiper/swiper.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/moment/moment.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/quill/katex.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/quill/quill.js') }}"></script>
 @endsection
 
 @section('content')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <script src="{{ asset('assets/js/extended-ui-sweetalert2.js') }}"></script>
-    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Procedure /</span> Request Profile</h4>
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Antenatal /</span> Record Profile</h4>
+
     <!-- Header -->
     <div class="row">
         <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -41,17 +28,14 @@
                             alt="user image" class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img">
                     </div>
                     <div class="flex-grow-1 mt-3 mt-sm-5">
-                        <div
-                            class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">
+                        <div class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">
                             <div class="user-profile-info">
                                 <h4>{{ $patient->user->firstname . ' ' . $patient->user->lastname }}</h4>
-                                <ul
-                                    class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-2">
+                                <ul class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-2">
                                     <li class="list-inline-item d-flex gap-1">
                                         <span class="badge bg-primary">{{ $patient->gender }}</span>
                                         <span class="badge bg-primary">{{ $patient->getAge() }}</span>
-                                        <span class="badge bg-primary">Procedure: {{ $procedureRequest->procedure->name }}</span>
-                                        <span class="badge bg-secondary">Status: {{ $procedureRequest->status }}</span>
+                                        <span class="badge bg-info">Visit: {{ $record->visit_date ? $record->visit_date->format('M d, Y') : $record->created_at->format('M d, Y') }}</span>
                                     </li>
                                 </ul>
                             </div>
@@ -61,16 +45,12 @@
                                     aria-haspopup="true">
                                     <i class="fa fa-ellipsis-v"></i>
                                 </button>
-                                <ul class="dropdown-menu" style="">
-                                    <li><a class="dropdown-item"
-                                            href="{{ route('app.patients.edit', $patient->id) }}">Edit
-                                            Patient</a></li>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{{ route('app.patients.edit', $patient->id) }}">Edit Patient</a></li>
                                     <li><a class="dropdown-item" data-toggle="modal"
                                             data-request-url="{{ route('app.appointment.schedule', $patient->id) }}"
                                             data-target="#global-modal-lg">Schedule Appointment</a></li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item"
                                             data-request-url="{{ route('app.patient.fund.wallet', $patient->id) }}"
                                             data-target="#global-modal-lg">Fund Wallet</a></li>
@@ -82,7 +62,8 @@
             </div>
         </div>
     </div>
-    <!--/ Header -->
+
+    <!-- Patient balances -->
     <div class="row g-4">
         <div class="col-lg-6 col-6 mb-4">
             <div class="card h-100">
@@ -109,6 +90,45 @@
             </a>
         </div>
     </div>
+
+    <!-- Record Detail Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center">
+                    <i class="ti ti-stethoscope me-2 text-primary"></i>
+                    <h5 class="card-title mb-0">Complaint</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">{{ $record->complaint ?? 'No complaint recorded.' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center">
+                    <i class="ti ti-clipboard-list me-2 text-success"></i>
+                    <h5 class="card-title mb-0">Treatment Plan</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">{{ $record->treatment_plan ?? 'No treatment plan recorded.' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center">
+                    <i class="ti ti-notebook me-2 text-info"></i>
+                    <h5 class="card-title mb-0">Notes</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">{{ $record->note ?? 'No notes recorded.' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
     <div class="row">
         <div class="col-md-12">
             <div class="nav-scroller position-relative">
@@ -120,23 +140,9 @@
                     style="overflow-x: auto; white-space: nowrap; padding: 0 40px;">
                     <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
-                            data-bs-target="#navs-pills-justified-procedure-notes" aria-controls="navs-pills-justified-procedure-notes"
+                            data-bs-target="#navs-pills-justified-all-visits" aria-controls="navs-pills-justified-all-visits"
                             aria-selected="true">
-                            <i class="tf-icons ti ti-notebook ti-xs me-1"></i> Procedure Notes
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
-                            data-bs-target="#navs-pills-justified-nursing-note"
-                            aria-controls="navs-pills-justified-nursing-note" aria-selected="false" tabindex="-1">
-                            <i class="tf-icons ti ti-clipboard-heart ti-xs me-1"></i> Nursing Note
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
-                            data-bs-target="#navs-pills-justified-procedure-checklist"
-                            aria-controls="navs-pills-justified-procedure-checklist" aria-selected="false" tabindex="-1">
-                            <i class="tf-icons ti ti-clipboard-list ti-xs me-1"></i> Procedure Checklist
+                            <i class="tf-icons ti ti-list ti-xs me-1"></i> All Antenatal Visits
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -175,25 +181,11 @@
             </div>
             <div class="card">
                 <div class="tab-content">
-                    <!-- Procedure Note Tab -->
-                    <div class="tab-pane fade active show" id="navs-pills-justified-procedure-notes" role="tabpanel">
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#new-progress-note-modal"
-                            class="btn btn-primary mb-2 float-end">New Entry</a>
-                        <livewire:progress-note :procedureRequestId="$procedureRequest->id" />
-                    </div>
-
-                    <!-- Nursing Note Tab -->
-                    <div class="tab-pane fade" id="navs-pills-justified-nursing-note" role="tabpanel">
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#new-nursing-note-modal"
-                            class="btn btn-primary mb-2 float-end">New Entry</a>
-                        <livewire:nursing-note :procedureRequestId="$procedureRequest->id" />
-                    </div>
-
-                    <!-- Procedure Checklist Tab -->
-                    <div class="tab-pane fade" id="navs-pills-justified-procedure-checklist" role="tabpanel">
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#new-nursing-task-modal"
-                            class="btn btn-primary mb-2 float-end">New Entry</a>
-                        <livewire:nursing-task :procedureRequestId="$procedureRequest->id" />
+                    <!-- All Visits Tab -->
+                    <div class="tab-pane fade active show" id="navs-pills-justified-all-visits" role="tabpanel">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#new-antenatal-record-modal"
+                            class="btn btn-primary mb-2 float-end">New Visit</a>
+                        <livewire:antenatal-records :patientId="$patient->id" />
                     </div>
 
                     <!-- Lab Requests Tab -->
@@ -217,43 +209,35 @@
                         <livewire:drugs-request :patientId="$patient->id" />
                     </div>
 
+                    <!-- Vitals Tab -->
                     <div class="tab-pane fade" id="navs-pills-justified-vitals" role="tabpanel">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="card">
-                                    <div class="card-body">
-                                        {!! $blood_pressure->container() !!}
-                                    </div>
+                                    <div class="card-body">{!! $blood_pressure->container() !!}</div>
                                     <script src="{{ $blood_pressure->cdn() }}"></script>
                                     {{ $blood_pressure->script() }}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="card">
-                                    <div class="card-body">
-                                        {!! $pulse->container() !!}
-                                    </div>
+                                    <div class="card-body">{!! $pulse->container() !!}</div>
                                     {{ $pulse->script() }}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="card">
-                                    <div class="card-body">
-                                        {!! $temperature->container() !!}
-                                    </div>
+                                    <div class="card-body">{!! $temperature->container() !!}</div>
                                     {{ $temperature->script() }}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="card">
-                                    <div class="card-body">
-                                        {!! $weight->container() !!}
-                                    </div>
+                                    <div class="card-body">{!! $weight->container() !!}</div>
                                     {{ $weight->script() }}
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -261,23 +245,10 @@
     </div>
 
     <style>
-        .nav-scroller {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-scroller-arrow {
-            display: none;
-        }
-
-        .nav-scroller:hover .nav-scroller-arrow {
-            display: block;
-        }
-
-        .nav-scroller-arrow:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+        .nav-scroller { position: relative; overflow: hidden; }
+        .nav-scroller-arrow { display: none; }
+        .nav-scroller:hover .nav-scroller-arrow { display: block; }
+        .nav-scroller-arrow:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
 
     <script>
@@ -285,7 +256,7 @@
             const navScroller = $('.nav-scroller ul');
             const arrowLeft = $('.nav-scroller-arrow-left');
             const arrowRight = $('.nav-scroller-arrow-right');
-            const scrollAmount = 200; // Pixels to scroll per click
+            const scrollAmount = 200;
 
             function updateArrows() {
                 const scrollLeft = navScroller.scrollLeft();
@@ -298,44 +269,9 @@
             $(window).on('resize', updateArrows);
             updateArrows();
 
-            arrowLeft.on('click', function() {
-                if (!$(this).prop('disabled')) {
-                    navScroller.animate({
-                        scrollLeft: navScroller.scrollLeft() - scrollAmount
-                    }, 300);
-                }
-            });
-
-            arrowRight.on('click', function() {
-                if (!$(this).prop('disabled')) {
-                    navScroller.animate({
-                        scrollLeft: navScroller.scrollLeft() + scrollAmount
-                    }, 300);
-                }
-            });
+            arrowLeft.on('click', function() { if (!$(this).prop('disabled')) { navScroller.animate({ scrollLeft: navScroller.scrollLeft() - scrollAmount }, 300); } });
+            arrowRight.on('click', function() { if (!$(this).prop('disabled')) { navScroller.animate({ scrollLeft: navScroller.scrollLeft() + scrollAmount }, 300); } });
         });
     </script>
 @endsection
-@include('_partials._modals.modal-new-diagnosis')
 @include('_partials._modals.global-modal')
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<script>
-    $(document).ready(function() {
-        $('.dropdown-item').on('click', function() {
-            var requestUrl = $(this).data('request-url');
-            $.ajax({
-                url: requestUrl,
-                type: 'GET',
-                success: function(response) {
-                    $('#global-modal .modal-body').html(response);
-                    $('#global-modal').modal('show');
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        });
-    });
-</script>

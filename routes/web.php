@@ -33,6 +33,7 @@ use App\Http\Controllers\ReligionController;
 use App\Http\Controllers\VitalRefController;
 use App\Http\Controllers\AdmissionController;
 use App\Http\Controllers\AntenatalController;
+use App\Http\Controllers\AntenatalRecordController;
 use App\Http\Controllers\CashPointController;
 use App\Http\Controllers\ConsumbleController;
 use App\Http\Controllers\DashboardController;
@@ -220,6 +221,10 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::get('antenatal-export', [AntenatalController::class, 'export'])->name('antenatal.export');
   Route::get('antenatal-import', [AntenatalController::class, 'importView'])->name('antenatal.import');
   Route::post('antenatal-import', [AntenatalController::class, 'import'])->name('antenatal.import.post');
+  // Antenatal Records (per-patient visit records)
+  Route::post('antenatal-records', [AntenatalRecordController::class, 'store'])->name('antenatal-records.store');
+  Route::get('antenatal-records/{antenatalRecord}', [AntenatalRecordController::class, 'show'])->name('antenatal-records.show');
+  Route::delete('antenatal-records/{antenatalRecord}', [AntenatalRecordController::class, 'destroy'])->name('antenatal-records.destroy');
   Route::resource('specialities', SpecialityController::class);
   Route::resource('reports', ReportController::class);
   Route::get('report/general', [ReportController::class, 'generalReport'])->name('reports.general');
