@@ -19,6 +19,7 @@ class Billings extends Base
     if ($this->search) {
       $billings = Billing::query()
         ->where('user_id', $this->patientId)
+        ->whereNull('plan_id')
         ->where('status', 'like', '%' . $this->search . '%')
         ->paginate(10);
 
@@ -29,6 +30,7 @@ class Billings extends Base
     } else {
       $billings = Billing::query()
         ->where('user_id', $this->patientId)
+        ->whereNull('plan_id')
         ->where('status', false)
         ->orderBy($this->sortBy, $this->sortDirection)
         ->paginate($this->perPage);

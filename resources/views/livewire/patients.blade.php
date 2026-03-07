@@ -72,7 +72,11 @@
                 <p class="text-muted mb-0">{{ $patient->gender }}, {{ $patient->getAge() }}</p>
                 <p class="text-muted mb-0">{{ $patient->phone }}</p>
                 <p class="text-muted mb-0">
-                  <span class="badge bg-dark">WALK-IN PATIENT - Self Pay</span>
+                  @if($patient->hmoPlan)
+                    <span class="badge bg-info">{{ $patient->hmoPlan->hmo->name ?? 'HMO' }} - {{ $patient->hmoPlan->name }}</span>
+                  @else
+                    <span class="badge bg-dark">WALK-IN PATIENT - Self Pay</span>
+                  @endif
                   @if(\App\Models\PatientTags::where('patient_id', $patient->id)->count() > 0)
                   @foreach(\App\Models\PatientTags::where('patient_id', $patient->id)->get() as $tags)
                   <span class="badge bg-{{$tags->tag->color}} bg-glow">{{$tags->tag->name}}</span>

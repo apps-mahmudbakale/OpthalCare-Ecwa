@@ -22,8 +22,21 @@
                     <td>{{ $billing->service }}</td>
                     <td>{{ $billing->quantity }}</td>
                     <td class="text-right">{{ number_format($billing->amount) }}</td>
-                    <td>{{ $billing->patient->hmo ? $billing->patient->hmo->name : 'Patient Self Pay' }} </td>
-                    <td class="text-right">{{ $billing->status }}</td>
+                    <td>
+                        @if ($billing->hmoPlan)
+                            <span class="text-primary">{{ $billing->hmoPlan->hmo->name ?? 'HMO' }}</span><br>
+                            <small class="text-muted">{{ $billing->hmoPlan->name }}</small>
+                        @else
+                            <span class="text-dark">Self Pay</span>
+                        @endif
+                    </td>
+                    <td class="text-right">
+                        @if ($billing->status == 1)
+                            <span class="badge bg-label-success">Paid</span>
+                        @else
+                            <span class="badge bg-label-warning">Unpaid</span>
+                        @endif
+                    </td>
                     <td class="align-middle text-right">
                         <div class="btn-group">
                             <button type="button" class="btn btn-sm btn-icon btn-light waves-effect waves-light"

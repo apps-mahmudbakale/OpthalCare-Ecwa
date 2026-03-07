@@ -22,7 +22,7 @@ class Patients extends Base
 
   public function render()
   {
-    $query = Patient::query()->with('user', );
+    $query = Patient::query()->with('user', 'hmoPlan.hmo');
 
     if ($this->search) {
       $query->join('users', 'patients.user_id', '=', 'users.id')

@@ -12,6 +12,7 @@ class AntenatalController extends Controller
 {
   public function index()
   {
+    return view('antenatal.index');
   }
 
 

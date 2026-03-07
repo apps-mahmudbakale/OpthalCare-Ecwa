@@ -15,4 +15,14 @@ class HmoGroup extends Model
         'email',
         'address'
     ];
+
+    public function wallet()
+    {
+        return $this->hasOne(HmoWallet::class);
+    }
+
+    public function getWallet()
+    {
+        return $this->wallet ?: $this->wallet()->create(['balance' => 0]);
+    }
 }

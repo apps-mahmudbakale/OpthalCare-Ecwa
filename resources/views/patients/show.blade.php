@@ -50,6 +50,11 @@
                                     <li class="list-inline-item d-flex gap-1">
                                         <span class="badge bg-primary">{{ $patient->gender }}</span>
                                         <span class="badge bg-primary">{{ $patient->getAge() }}</span>
+                                        @if($patient->hmoPlan)
+                                            <span class="badge bg-info">{{ $patient->hmoPlan->hmo->name ?? 'HMO' }} - {{ $patient->hmoPlan->name }}</span>
+                                        @else
+                                            <span class="badge bg-dark">Self Pay</span>
+                                        @endif
                                         <span class="badge bg-primary">Next Appointment: </span>
                                         <span class="badge bg-primary">Updated at:
                                             {{ $patient->updated_at->diffForHumans() }}</span>

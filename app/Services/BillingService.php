@@ -28,6 +28,11 @@ class BillingService
     return $antenatal;
   }
 
+  public function antenatal()
+  {
+    return Antenatal::all();
+  }
+
   public function laboratory()
   {
     $laboratory = Laboratory::all();

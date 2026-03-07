@@ -30,7 +30,7 @@
       ->filter()
       ->implode(' ');
       $hospitalNo = sprintf('%06d', $patient->hospital_no ?? 0);
-      $insurancePlan = $patient->hmo->name ?? 'Patient Self Pay';
+      $insurancePlan = $first->hmoPlan ? ($first->hmoPlan->hmo->name . ' - ' . $first->hmoPlan->name) : 'Patient Self Pay';
       $formattedAmount = number_format($group->sum('amount'));
       @endphp
       <tr>

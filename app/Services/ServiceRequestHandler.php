@@ -76,10 +76,7 @@ class ServiceRequestHandler
             $amount = $hmoService->price * $qty;
         }
 
-        // If the Patient's HMO Plan is marked as Insurance, automatically bypass the payment requirement
-        if ($patient->hmoPlan->is_insurance) {
-            $status = 1;
-        }
+        // Note: HMO bills remain unpaid (status=0) until payment is confirmed from the provider
     }
 
     return Billing::create([

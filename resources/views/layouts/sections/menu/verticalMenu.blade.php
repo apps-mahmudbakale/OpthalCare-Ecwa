@@ -125,6 +125,12 @@ $configData = Helper::appClasses();
         <div>Procedures</div>
       </a>
     </li>
+    <li class="menu-item {{ request()->is('app/antenatal*') ? 'active' : '' }}">
+      <a href="{{ route('app.antenatals.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-heart-plus"></i>
+        <div>Antenatal</div>
+      </a>
+    </li>
 @can('read-billing')
     <li class="menu-item {{ request()->is('app/billing*') ? 'active' : '' }}">
       <a href="{{ route('app.billing.index') }}" class="menu-link">
@@ -133,6 +139,24 @@ $configData = Helper::appClasses();
       </a>
     </li>
 @endcan
+    <li class="menu-item {{ request()->is('app/hmo*') ? 'active open' : '' }}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons ti ti-building-hospital"></i>
+        <div>HMO Management</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item {{ request()->is('app/hmo/billing*') ? 'active' : '' }}">
+          <a href="{{ route('app.hmo.billing') }}" class="menu-link">
+            <div>HMO Billing</div>
+          </a>
+        </li>
+        <li class="menu-item {{ request()->is('app/hmo/finance*') ? 'active' : '' }}">
+          <a href="{{ route('app.hmo.finance') }}" class="menu-link">
+            <div>Wallets & Finance</div>
+          </a>
+        </li>
+      </ul>
+    </li>
     @can('read-report')
     <li class="menu-item {{ request()->is('app/reports*') || request()->is('app/report/hmo*') ? 'active open' : '' }}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">

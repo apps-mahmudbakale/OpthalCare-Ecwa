@@ -12,7 +12,7 @@ class AllBillings extends Base
 
   public function render()
   {
-    $query = Billing::query()->where('status', 0);
+    $query = Billing::query()->where('status', 0)->whereNull('plan_id');
 
     if ($this->search) {
       $query->where('status', 'like', '%' . $this->search . '%');

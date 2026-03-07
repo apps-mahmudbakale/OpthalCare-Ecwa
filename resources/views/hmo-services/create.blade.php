@@ -64,14 +64,17 @@
                     type: "POST",
                     data: {
                         _token: "{{ csrf_token() }}",
-                        serviceCategory: categoryType
+                        category: categoryType
                     },
                     success: function(response) {
                         serviceSelect.empty();
                         serviceSelect.append('<option value="" data-price="">Select Service</option>');
                         
-                        if(response && response.services && response.services.length > 0) {
-                            $.each(response.services, function(index, service) {
+                        // Handle both array and {services: [...]} response formats
+                        var services = response.services || response;
+                        
+                        if(services && services.length > 0) {
+                            $.each(services, function(index, service) {
                                 serviceSelect.append('<option value="' + service.id + '" data-price="' + service.price + '">' + service.name + '</option>');
                             });
                             serviceSelect.prop('disabled', false);
