@@ -98,6 +98,38 @@
     </div>
 
     <script>
+        window.confirmSettlement = () => {
+            Swal.fire({
+                title: 'Confirm Settlement',
+                text: "Are you sure you want to settle the selected bills using the HMO wallet?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, settle them!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    @this.settleSelected();
+                }
+            });
+        }
+
+        window.confirmSingleSettlement = (id) => {
+            Swal.fire({
+                title: 'Confirm Settlement',
+                text: "Are you sure you want to settle this bill?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, settle it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    @this.settleSingle(id);
+                }
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             window.livewire.on('swal', (data) => {
                 Swal.fire({
@@ -106,38 +138,6 @@
                     text: data.message,
                 });
             });
-
-            window.confirmSettlement = () => {
-                Swal.fire({
-                    title: 'Confirm Settlement',
-                    text: "Are you sure you want to settle the selected bills using the HMO wallet?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#28a745',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, settle them!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        @this.settleSelected();
-                    }
-                });
-            }
-
-            window.confirmSingleSettlement = (id) => {
-                Swal.fire({
-                    title: 'Confirm Settlement',
-                    text: "Are you sure you want to settle this bill?",
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#28a745',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, settle it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        @this.settleSingle(id);
-                    }
-                });
-            }
         });
     </script>
 </div>
