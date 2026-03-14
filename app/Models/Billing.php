@@ -19,6 +19,7 @@ class Billing extends Model
     'payer_id',
     'plan_id',
     'status',
+    'clearance_code',
   ];
 
   public function patient()

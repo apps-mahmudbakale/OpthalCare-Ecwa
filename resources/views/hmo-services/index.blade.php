@@ -2,6 +2,14 @@
 <div class="text-center mb-4">
     <h3 class="mb-2">Manage Services for {{ $hmoPlan->hmo->name ?? '' }} ({{ $hmoPlan->name ?? '' }})</h3>
     <p class="text-muted">Add or remove services and set custom pricing for this HMO plan.</p>
+    <div class="mt-2">
+        <a href="{{ route('app.hmo-plans.services.export', $hmoPlan->id) }}" class="btn btn-sm btn-success me-2">
+            <i class="ti ti-file-export me-1"></i> Export to Excel
+        </a>
+        <a href="javascript:void(0);" data-request-url="{{ route('app.hmo-plans.services.import', $hmoPlan->id) }}" id="import-services-btn" class="btn btn-sm btn-info">
+            <i class="ti ti-file-import me-1"></i> Import Services
+        </a>
+    </div>
 </div>
 
 <div class="row g-3">
@@ -165,6 +173,21 @@ $(document).ready(function() {
         } else {
             $priceInput.val('');
         }
+    });
+
+    // Handle Import Services button click (since it's dynamically loaded, it needs its own binding or delegation)
+    $('#import-services-btn').on('click', function() {
+        var requestUrl = $(this).data('request-url');
+        $.ajax({
+            url: requestUrl,
+            type: 'GET',
+            success: function(response) {
+                $('#global-modal .modal-body').html(response);
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
     });
 });
 </script>

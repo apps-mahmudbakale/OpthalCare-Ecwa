@@ -16,6 +16,8 @@ class HmoFinance extends Component
     public $fundingAmount = 0;
     public $fundingDescription = 'Wallet Funding';
     public $selectedHmoId = null;
+    public $selectedHmoName = '';
+    public $historyTransactions = [];
 
     protected $rules = [
         'fundingAmount' => 'required|numeric|min:1',
@@ -41,6 +43,17 @@ class HmoFinance extends Component
             $this->emit('closeModal');
             session()->flash('success', "Wallet for {$hmo->name} funded with ₦" . number_format($this->fundingAmount, 2));
             $this->reset(['fundingAmount', 'fundingDescription', 'selectedHmoId']);
+        }
+    }
+
+    public function showHistory($id)
+    {
+        $hmo = HmoGroup::with('wallet.transactions')->find($id);
+        if ($hmo) {
+            $this->selectedHmoId = $id;
+            $this->selectedHmoName = $hmo->name;
+            $this->historyTransactions = $hmo->wallet ? $hmo->wallet->transactions()->latest()->get()->toArray() : [];
+            $this->emit('openHistoryModal');
         }
     }
 

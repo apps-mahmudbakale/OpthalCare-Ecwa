@@ -107,6 +107,7 @@
                         <th>Qty</th>
                         <th>Amount (&#8358;)</th>
                         <th>Status</th>
+                        <th>Clearance Code</th>
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
@@ -127,6 +128,9 @@
                             @else
                                 <span class="badge bg-warning">Unpaid</span>
                             @endif
+                        </td>
+                        <td>
+                            <span class="text-info fw-bold">{{ $bill->clearance_code ?? 'N/A' }}</span>
                         </td>
                     </tr>
                     @empty

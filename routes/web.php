@@ -102,11 +102,16 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::resource('payment-methods', PaymentMethodController::class);
   Route::resource('religions', ReligionController::class);
   Route::get('hmo-plans/{plan}/services', [HmoServiceController::class, 'index'])->name('hmo-plans.services.index');
+  Route::get('hmo-plans/{plan}/services/export', [HmoServiceController::class, 'export'])->name('hmo-plans.services.export');
+  Route::get('hmo-plans/{plan}/services/import', [HmoServiceController::class, 'importView'])->name('hmo-plans.services.import');
+  Route::post('hmo-plans/{plan}/services/import', [HmoServiceController::class, 'import'])->name('hmo-plans.services.import.post');
   Route::get('hmo-plans/{plan}/services/create', [HmoServiceController::class, 'create'])->name('hmo-plans.services.create');
   Route::post('hmo-plans/{plan}/services', [HmoServiceController::class, 'store'])->name('hmo-plans.services.store');
   Route::put('hmo-services/{hmo_service}', [HmoServiceController::class, 'update'])->name('hmo-services.update');
   Route::delete('hmo-services/{hmo_service}', [HmoServiceController::class, 'destroy'])->name('hmo-services.destroy');
   Route::resource('hmo-plans', HmoPlanController::class);
+  Route::get('hmo-plans-import', [HmoPlanController::class, 'importView'])->name('hmo-plans.import');
+  Route::post('hmo-plans-import', [HmoPlanController::class, 'import'])->name('hmo-plans.import.post');
   Route::resource('wards', WardController::class);
   Route::resource('beds', BedController::class);
   Route::get('bed-export', [BedController::class, 'export'])->name('bed.export');
@@ -213,6 +218,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::resource('tags', TagController::class);
   Route::resource('admissions', AdmissionController::class);
   Route::get('admissions/request/{id}', [AdmissionController::class, 'requestAdmission'])->name('admissions.request');
+  Route::post('admissions/request', [AdmissionController::class, 'storeAdmissionRequest'])->name('admissions.store-request');
   Route::get('admission/bill/{admission}', [AdmissionController::class, 'bill'])->name('admissions.bill');
   Route::post('admission/bill', [AdmissionController::class, 'billAdmission'])->name('admissions.bill.post');
   Route::get('admission-bed/{ref}', [AdmissionController::class, 'assignBed'])->name('admissions.bed');

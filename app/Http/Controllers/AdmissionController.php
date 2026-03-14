@@ -41,7 +41,32 @@ class AdmissionController extends Controller
 
   public function requestAdmission($id){
     $patient = Patient::find($id);
-    return view('admission.create', compact('patient'));
+    $wards = \App\Models\Ward::all();
+    return view('admission.create', compact('patient', 'wards'));
+  }
+
+  public function storeAdmissionRequest(Request $request)
+  {
+      $request->validate([
+          'patient_id' => 'required|exists:patients,id',
+          'ward_id' => 'required|exists:wards,id',
+          'bed_id' => 'required|exists:beds,id',
+          'reason_for_admission' => 'required|string',
+      ]);
+
+      $ref = str()->upper(str()->random(6));
+
+      Admission::create([
+          'patient_id' => $request->patient_id,
+          'ward_id' => $request->ward_id,
+          'bed_id' => $request->bed_id,
+          'reason_for_admission' => $request->reason_for_admission,
+          'user_id' => auth()->id(),
+          'status' => 'pending',
+          'ref' => $ref,
+      ]);
+
+      return redirect()->back()->with('success', 'Admission request submitted successfully.');
   }
 
   /**

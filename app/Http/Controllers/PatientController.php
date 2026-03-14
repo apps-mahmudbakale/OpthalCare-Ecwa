@@ -323,24 +323,20 @@ class PatientController extends Controller
     $system = app(SystemSettings::class);
     $checkInFee = (float)($system->checkin_fee ?? 0);
 
-    // If auto check-in is enabled (via system settings), skip billing workflow
-    if ($system->check_in) {
-      CheckIn::create([
-        'patient_id' => $patient,
-        'check_in_date' => now()->toDateString(),
-        'cleared' => true
-      ]);
-      return back()->with('success', 'Patient checked in Successfully');
-    }
+    $patientModel = \App\Models\Patient::with('hmoPlan')->find($patient);
 
-    // If there is no fee configured, we can just clear them immediately
+    // If there is no global fee configured, we must check if the HMO plan requires one
     if ($checkInFee <= 0) {
-      CheckIn::create([
-        'patient_id' => $patient,
-        'check_in_date' => now()->toDateString(),
-        'cleared' => true
-      ]);
-      return back()->with('success', 'Patient checked in Successfully');
+        if ($patientModel && $patientModel->hmoPlan && $patientModel->hmoPlan->enrollment_amount > 0) {
+            $checkInFee = (float)$patientModel->hmoPlan->enrollment_amount;
+        } else {
+            CheckIn::create([
+                'patient_id' => $patient,
+                'check_in_date' => now()->toDateString(),
+                'cleared' => true
+            ]);
+            return back()->with('success', 'Patient checked in Successfully');
+        }
     }
 
     // Check if they already have a pending checkin today to avoid duplicate bills
@@ -352,6 +348,39 @@ class PatientController extends Controller
        return back()->with('error', 'Patient already has a pending check-in. Please clear the pending bill.');
     }
 
+    // Handle HMO Patients
+    if ($patientModel && $patientModel->hmo_plan_id) {
+        \DB::beginTransaction();
+        try {
+            // Create cleared checkin for HMO patient
+            CheckIn::create([
+                'patient_id' => $patient,
+                'check_in_date' => now()->toDateString(),
+                'cleared' => true
+            ]);
+
+            // Create unpaid billing record for check-in fee, mapped to their HMO plan
+            Billing::create([
+                'service' => 'Consultation / Check-In Fee',
+                'service_id' => 0, // 0 or null for check-in
+                'user_id' => $patient,
+                'quantity' => 1,
+                'amount' => $checkInFee, // Fetched from HMO specific fee if global is 0
+                'bill_ref' => str()->random(6),
+                'status' => 0, // Unpaid
+                'payer_id' => $patient,
+                'plan_id' => $patientModel->hmo_plan_id,
+            ]);
+
+            \DB::commit();
+            return back()->with('success', 'Patient checked in successfully via HMO Plan.');
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return back()->with('error', 'Failed to initiate HMO check-in: ' . $e->getMessage());
+        }
+    }
+
+    // Handle Private/Non-HMO Patients
     \DB::beginTransaction();
     try {
         // Create pending checkin

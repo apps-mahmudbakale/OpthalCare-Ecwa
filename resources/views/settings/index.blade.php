@@ -336,6 +336,8 @@
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="hmoPlansDropdown">
                                 <a class="dropdown-item" href="javascript:void(0);" id="add-payment-method"
                                    data-request-url="{{ route('app.hmo-plans.create') }}">New Hmo Plan</a>
+                                <a class="dropdown-item" href="javascript:void(0);" id="add-payment-method"
+                                   data-request-url="{{ route('app.hmo-plans.import') }}">Import HMO Plans</a>
                             </div>
                         </div>
                     </div>

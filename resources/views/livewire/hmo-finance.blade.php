@@ -41,9 +41,9 @@
                                 <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#fundModal" wire:click="selectHmo({{ $hmo->id }})">
                                     <i class="ti ti-plus me-1"></i> Fund Wallet
                                 </button>
-                                <a href="javascript:void(0);" class="btn btn-sm btn-outline-info">
+                                <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#historyModal" wire:click="showHistory({{ $hmo->id }})">
                                     <i class="ti ti-list me-1"></i> History
-                                </a>
+                                </button>
                             </td>
                         </tr>
                     @empty
@@ -88,6 +88,57 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div wire:ignore.self class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Transaction History: {{ $selectedHmoName }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive text-nowrap">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Description</th>
+                                    <th>Ref</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($historyTransactions as $tx)
+                                    <tr>
+                                        <td>{{ \Carbon\Carbon::parse($tx['created_at'])->format('d M, Y H:i') }}</td>
+                                        <td>
+                                            @if($tx['type'] == 'credit')
+                                                <span class="badge bg-label-success">Credit</span>
+                                            @else
+                                                <span class="badge bg-label-danger">Debit</span>
+                                            @endif
+                                        </td>
+                                        <td class="fw-bold">₦{{ number_format($tx['amount'], 2) }}</td>
+                                        <td>{{ $tx['description'] }}</td>
+                                        <td><small class="text-muted">{{ $tx['reference'] ?? '-' }}</small></td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center">No transactions found.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>

@@ -110,4 +110,20 @@ class HmoPlanController extends Controller
     {
         //
     }
+
+    public function importView()
+    {
+        return view('hmo-plans.import');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'csv' => 'required|mimes:csv,xlsx,xls'
+        ]);
+
+        \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\HmoPlanImport, $request->file('csv')->store('files'));
+        
+        return redirect()->back()->with('success', 'HMO Plans imported successfully!');
+    }
 }

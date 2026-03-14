@@ -16,7 +16,8 @@ class Admission extends Model
     'procedure_id',
     'user_id',
     'status',
-    'ref'
+    'ref',
+    'reason_for_admission'
   ];
 
   public static function getServiceType()

@@ -94,4 +94,29 @@ class HmoServiceController extends Controller
         $hmoService->delete();
         return response()->json(['success' => true, 'message' => 'Service removed from plan.']);
     }
+
+    public function export(\App\Models\HmoPlan $plan)
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\HmoPlanServicesExport($plan->id), 
+            $plan->name . '_services.xlsx'
+        );
+    }
+
+    public function importView(\App\Models\HmoPlan $plan)
+    {
+        $hmoPlan = $plan;
+        return view('hmo-services.import', compact('hmoPlan'));
+    }
+
+    public function import(Request $request, \App\Models\HmoPlan $plan)
+    {
+        $request->validate([
+            'csv' => 'required|mimes:csv,xlsx,xls'
+        ]);
+
+        \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\HmoPlanServiceImport($plan->id), $request->file('csv')->store('files'));
+        
+        return redirect()->back()->with('success', 'Plan Services pricing imported successfully!');
+    }
 }

@@ -16,6 +16,8 @@ class HmoBillingList extends Component
     public $selectedHmoId = '';
     public $search = '';
     public $selectedBills = [];
+    public $clearanceCode = '';
+    public $serviceClearanceCodes = [];
 
     public function settleSelected()
     {
@@ -47,11 +49,20 @@ class HmoBillingList extends Component
         DB::transaction(function () use ($wallet, $totalAmount, $bills, $hmo) {
             $wallet->debit($totalAmount, "Settlement for " . count($bills) . " bills");
             
-            Billing::whereIn('id', $bills->pluck('id'))->update(['status' => 1]);
+            foreach ($bills as $bill) {
+                // Determine the code for this specific bill: individual record code OR the bulk override
+                $finalCode = $this->serviceClearanceCodes[$bill->id] 
+                            ?? ($this->clearanceCode ?: null);
+
+                $bill->update([
+                    'status' => 1,
+                    'clearance_code' => $finalCode
+                ]);
+            }
         });
 
         session()->flash('success', "Successfully settled " . count($bills) . " bills totaling ₦" . number_format($totalAmount, 2));
-        $this->reset('selectedBills');
+        $this->reset(['selectedBills', 'clearanceCode', 'serviceClearanceCodes']);
     }
 
     public function render()

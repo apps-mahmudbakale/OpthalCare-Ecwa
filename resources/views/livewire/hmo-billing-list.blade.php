@@ -25,6 +25,8 @@
                     <input type="text" wire:model="search" class="form-control" placeholder="Type to search...">
                 </div>
                 <div class="col-md-3">
+                    <label class="form-label">Clearance Code (Optional)</label>
+                    <input type="text" wire:model.defer="clearanceCode" class="form-control mb-2" placeholder="Enter Authorization Code">
                     <button class="btn btn-success w-100" wire:click="settleSelected" wire:loading.attr="disabled" @if(empty($selectedBills)) disabled @endif>
                         <i class="ti ti-check me-1"></i> Settle Selected ({{ count($selectedBills) }})
                     </button>
@@ -47,6 +49,7 @@
                         <th>HMO Provider / Plan</th>
                         <th>Service</th>
                         <th>Amount</th>
+                        <th>Clearance Code</th>
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
@@ -66,6 +69,12 @@
                             </td>
                             <td>{{ $bill->service }}</td>
                             <td><strong>₦{{ number_format($bill->amount, 2) }}</strong></td>
+                            <td>
+                                <input type="text" wire:model.defer="serviceClearanceCodes.{{ $bill->id }}" 
+                                       class="form-control form-control-sm" 
+                                       placeholder="Code" 
+                                       style="width: 120px;">
+                            </td>
                         </tr>
                     @empty
                         <tr>
