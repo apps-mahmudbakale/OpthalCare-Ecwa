@@ -2,12 +2,15 @@
 <div class="text-center mb-4">
     <h3 class="mb-2">Manage Services for {{ $hmoPlan->hmo->name ?? '' }} ({{ $hmoPlan->name ?? '' }})</h3>
     <p class="text-muted">Add or remove services and set custom pricing for this HMO plan.</p>
-    <div class="mt-2">
+    <div class="mt-2 text-center">
         <a href="{{ route('app.hmo-plans.services.export', $hmoPlan->id) }}" class="btn btn-sm btn-success me-2">
-            <i class="ti ti-file-export me-1"></i> Export to Excel
+            <i class="ti ti-file-export me-1"></i> Export Current Pricing
+        </a>
+        <a href="{{ route('app.hmo-plans.services.template') }}" class="btn btn-sm btn-secondary me-2">
+            <i class="ti ti-download me-1"></i> Download Import Template
         </a>
         <a href="javascript:void(0);" data-request-url="{{ route('app.hmo-plans.services.import', $hmoPlan->id) }}" id="import-services-btn" class="btn btn-sm btn-info">
-            <i class="ti ti-file-import me-1"></i> Import Services
+            <i class="ti ti-file-import me-1"></i> Import New Pricing
         </a>
     </div>
 </div>
