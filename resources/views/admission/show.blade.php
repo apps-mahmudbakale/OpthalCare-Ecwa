@@ -124,13 +124,13 @@
                 </button>
                 <ul class="nav nav-pills flex-column flex-sm-row mb-4" role="tablist"
                     style="overflow-x: auto; white-space: nowrap; padding: 0 40px;">
-                    <li class="nav-item" role="presentation">
+                    <!-- <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
                             data-bs-target="#navs-pills-justified-visits" aria-controls="navs-pills-justified-visits"
                             aria-selected="true">
                             <i class="menu-icon tf-icons ti ti-calendar"></i> Visits
                         </button>
-                    </li>
+                    </li> -->
                     <!-- New Tabs After Visits -->
                     <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
