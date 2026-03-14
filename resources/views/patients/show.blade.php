@@ -74,18 +74,16 @@
                                         <i class="ti ti-user-plus me-1"></i> Admit Patient
                                     </button>
                                 @endif
-                                <button type="button" class="btn btn-primary btn-xs waves-effect waves-light" data-toggle="modal"
-                                            data-request-url="{{ route('app.admissions.request', $patient->id) }}"
-                                            data-target="#global-modal-lg">
+                                <a href="{{ route('app.patients.edit', $patient->id) }}" class="btn btn-primary btn-xs waves-effect waves-light">
                                         <i class="ti ti-edit me-1"></i> Edit Patient
-                                </button>
+                                </a>
                                 <button type="button" class="btn btn-primary btn-xs waves-effect waves-light" data-toggle="modal"
-                                            data-request-url="{{ route('app.admissions.request', $patient->id) }}"
+                                            data-request-url="{{ route('app.appointment.schedule', $patient->id) }}"
                                             data-target="#global-modal-lg">
                                         <i class="ti ti-calendar me-1"></i> Schedule Appointment
                                 </button>
                                 <button type="button" class="btn btn-primary btn-xs waves-effect waves-light" data-toggle="modal"
-                                            data-request-url="{{ route('app.admissions.request', $patient->id) }}"
+                                            data-request-url="{{ route('app.patient.fund.wallet', $patient->id) }}"
                                             data-target="#global-modal-lg">
                                         <i class="ti ti-money me-1"></i> Fund Wallet
                                 </button>

@@ -55,8 +55,21 @@ class HmoBillingList extends Component
             return;
         }
 
-        $bills = Billing::whereIn('id', $this->selectedBills)->with('hmoPlan.hmo')->get();
+        $this->processSettlement($this->selectedBills);
+        $this->reset(['selectedBills', 'clearanceCode', 'serviceClearanceCodes', 'selectAll']);
+    }
+
+    public function settleSingle($billId)
+    {
+        $this->processSettlement([$billId]);
+    }
+
+    private function processSettlement($billIds)
+    {
+        $bills = Billing::whereIn('id', $billIds)->with('hmoPlan.hmo')->get();
         
+        if ($bills->isEmpty()) return;
+
         // Ensure all selected bills belong to the same HMO Group for the wallet deduction
         $hmoGroupId = $bills->first()->hmoPlan->hmo_id;
         foreach ($bills as $bill) {
@@ -75,23 +88,30 @@ class HmoBillingList extends Component
             return;
         }
 
-        DB::transaction(function () use ($wallet, $totalAmount, $bills, $hmo) {
-            $wallet->debit($totalAmount, "Settlement for " . count($bills) . " bills");
-            
-            foreach ($bills as $bill) {
-                // Determine the code for this specific bill: individual record code OR the bulk override
-                $finalCode = $this->serviceClearanceCodes[$bill->id] 
-                            ?? ($this->clearanceCode ?: null);
+        try {
+            DB::transaction(function () use ($wallet, $totalAmount, $bills, $hmo) {
+                $wallet->debit($totalAmount, "Settlement for " . count($bills) . " bills");
+                
+                foreach ($bills as $bill) {
+                    // Determine the code for this specific bill: individual record code OR the bulk override
+                    $finalCode = $this->serviceClearanceCodes[$bill->id] 
+                                ?? ($this->clearanceCode ?: null);
 
-                $bill->update([
-                    'status' => 1,
-                    'clearance_code' => $finalCode
-                ]);
-            }
-        });
+                    if (empty($finalCode)) {
+                        throw new \Exception("Clearance code is required for service: " . $bill->service . " (Patient: " . ($bill->patient->user->firstname ?? '') . ")");
+                    }
 
-        session()->flash('success', "Successfully settled " . count($bills) . " bills totaling ₦" . number_format($totalAmount, 2));
-        $this->reset(['selectedBills', 'clearanceCode', 'serviceClearanceCodes']);
+                    $bill->update([
+                        'status' => 1,
+                        'clearance_code' => $finalCode
+                    ]);
+                }
+            });
+
+            session()->flash('success', "Successfully settled " . count($bills) . " bills totaling ₦" . number_format($totalAmount, 2));
+        } catch (\Exception $e) {
+            $this->emit('swal', ['type' => 'error', 'message' => $e->getMessage()]);
+        }
     }
 
     public function render()

@@ -45,18 +45,17 @@ class PatientController extends Controller
    */
   public function create(Request $request)
   {
-    if (!empty($request->data)){
-      $ng = new NG();
-      $states = $ng->states;
-      $religions = Religion::all();
-      $hmos = \App\Models\HmoPlan::all();
-      $data = json_decode(base64_decode($request->data));
-      $hospital_no = UniqueIdGenerator::generate(['table' => 'patients', 'length' => 4,]);
-      return view('patients.create', compact('religions', 'states', 'hmos', 'data'));
-    } else{
-      return redirect()->route('app.patients.index')->with('error', 'You Need Accces Code  to access this Page');
+    $ng = new NG();
+    $states = $ng->states;
+    $religions = Religion::all();
+    $hmos = \App\Models\HmoPlan::all();
+
+    $data = null;
+    if (!empty($request->data)) {
+        $data = json_decode(base64_decode($request->data));
     }
 
+    return view('patients.create', compact('religions', 'states', 'hmos', 'data'));
   }
 
   /**

@@ -52,6 +52,7 @@
                         <th>Service</th>
                         <th>Amount</th>
                         <th>Clearance Code</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
@@ -77,10 +78,15 @@
                                        placeholder="Code" 
                                        style="width: 120px;">
                             </td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" onclick="confirmSingleSettlement({{ $bill->id }})" title="Settle this bill">
+                                    <i class="ti ti-check"></i>
+                                </button>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center">No outstanding HMO bills found.</td>
+                            <td colspan="8" class="text-center">No outstanding HMO bills found.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -113,6 +119,22 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         @this.settleSelected();
+                    }
+                });
+            }
+
+            window.confirmSingleSettlement = (id) => {
+                Swal.fire({
+                    title: 'Confirm Settlement',
+                    text: "Are you sure you want to settle this bill?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, settle it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        @this.settleSingle(id);
                     }
                 });
             }

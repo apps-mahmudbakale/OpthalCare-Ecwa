@@ -1,4 +1,12 @@
 <h2 class="text-center">Import Services for {{ $hmoPlan->name }}</h2>
+<div class="row mb-3">
+    <div class="col-md-12 text-center">
+        <div class="alert alert-info py-2">
+            <i class="ti ti-info-circle me-1"></i>
+            Download the <a href="{{ route('app.hmo-plans.services.template') }}" class="fw-bold text-primary">Excel Template</a> for correct format.
+        </div>
+    </div>
+</div>
 <form action="{{ route('app.hmo-plans.services.import.post', $hmoPlan->id) }}" method="POST" class="row g-3" enctype="multipart/form-data">
     @csrf
     <div class="col-12 col-md-12">

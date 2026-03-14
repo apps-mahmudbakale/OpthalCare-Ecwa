@@ -119,4 +119,9 @@ class HmoServiceController extends Controller
         
         return redirect()->back()->with('success', 'Plan Services pricing imported successfully!');
     }
+
+    public function downloadTemplate()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\HmoPlanServiceTemplateExport(), 'hmo_service_import_template.xlsx');
+    }
 }

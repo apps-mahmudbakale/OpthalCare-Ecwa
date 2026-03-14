@@ -23,7 +23,16 @@
         <option value="{{ $i }}">{{ $i }} years</option>
         @endfor
       </select>
-      <button id="new-patient" class="btn btn-primary waves-effect">New Patient</button>
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle waves-effect" data-bs-toggle="dropdown" aria-expanded="false">
+          New Patient
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="{{ route('app.patients.create') }}">Free Registration (Walk-in/HMO)</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="javascript:void(0);" id="new-patient-code">Paid Registration (Access Code)</a></li>
+        </ul>
+      </div>
     </div>
 
     <div class="card-datatable table-responsive pt-0">
@@ -184,57 +193,56 @@
   });
 </script>
 <script>
-  var patient = document.getElementById('new-patient');
-  patient.addEventListener('click', function() {
-    Swal.fire({
-      title: 'Provide Access Code',
-      input: 'text',
-      inputAttributes: {
-        autocapitalize: 'off'
-      },
-      confirmButtonText: 'Get Access',
-      showLoaderOnConfirm: true,
-      preConfirm: async (accessCode) => {
-        try {
-          const apiUrl = `{{ route('bill.services.verify', ['0', 'create', '']) }}/${accessCode}`;
-          const response = await fetch(apiUrl);
+  document.addEventListener('click', function(event) {
+    if (event.target.id === 'new-patient-code') {
+      Swal.fire({
+        title: 'Provide Access Code',
+        input: 'text',
+        inputAttributes: {
+          autocapitalize: 'off'
+        },
+        confirmButtonText: 'Get Access',
+        showLoaderOnConfirm: true,
+        preConfirm: async (accessCode) => {
+          try {
+            const apiUrl = `{{ route('bill.services.verify', ['0', 'create', '']) }}/${accessCode}`;
+            const response = await fetch(apiUrl);
 
-          if (!response.ok) {
-            return Swal.showValidationMessage(`
-              Request failed: ${response.statusText}
+            if (!response.ok) {
+              return Swal.showValidationMessage(`
+                Request failed: ${response.statusText}
+              `);
+            }
+
+            const result = await response.json();
+
+            // Check if the access code verification was successful
+            if (result.success) {
+              return result;  // If successful, return the result
+            } else {
+              return Swal.showValidationMessage(`Error: ${result.message}`);
+            }
+
+          } catch (error) {
+            Swal.showValidationMessage(`
+              Request failed: ${error}
             `);
           }
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Encrypt the response (for demonstration, using base64 encoding)
+          console.log(result.value.data);
+          const encryptedData = btoa(JSON.stringify(result.value.data));
 
-          const result = await response.json();
-
-          // Check if the access code verification was successful
-          if (result.success) {
-            return result;  // If successful, return the result
-          } else {
-            return Swal.showValidationMessage(`Error: ${result.message}`);
-          }
-
-        } catch (error) {
-          Swal.showValidationMessage(`
-            Request failed: ${error}
-          `);
+          // Redirect to the patient.create route with encrypted data
+          window.location.href = `{{ route('app.patients.create') }}?data=${encodeURIComponent(encryptedData)}`;
         }
-      },
-      allowOutsideClick: () => !Swal.isLoading()
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Encrypt the response (for demonstration, using base64 encoding)
-        console.log(result.value.data);
-        const encryptedData = btoa(JSON.stringify(result.value.data));
-
-        // Redirect to the patient.create route with encrypted data
-        window.location.href = `{{ route('app.patients.create') }}?data=${encodeURIComponent(encryptedData)}`;
-      }
-    });
+      });
+    }
   });
 </script>
-
-<script>
   $(document).ready(function() {
     $(document).on('click', '.dropdown-item[data-request-url]', function(e) {
 
