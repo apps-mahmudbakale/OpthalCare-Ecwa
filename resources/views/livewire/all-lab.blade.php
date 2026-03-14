@@ -107,20 +107,43 @@
 
 @include('_partials._modals.global-modal')
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
   $(document).ready(function () {
-    $(document).on('click', '.new-bill-btn, .billing-show-btn, .dropdown-item', function (e) {
-      let requestUrl = $(this).data('request-url');
-      if (!requestUrl) return;
+    const modal = $('#global-modal');
 
+    $('.new-bill-btn, .billing-show-btn').on('click', function (e) {
       e.preventDefault();
+      let requestUrl = $(this).data('request-url');
 
       $.get(requestUrl)
         .done(response => {
-          $('#global-modal .modal-body').html(response);
-          $('#global-modal').modal('show');
+          modal.find('.modal-body').html(response);
+          modal.modal('show');
         })
         .fail(xhr => console.error(xhr.responseText));
+    });
+  });
+</script>
+<script>
+  $(document).ready(function() {
+    $('.dropdown-item').on('click', function() {
+      var requestUrl = $(this).data('request-url');
+
+      if (requestUrl) {  // Only trigger AJAX if there's a request URL
+        $.ajax({
+          url: requestUrl,
+          type: 'GET',
+          success: function(response) {
+            $('#global-modal .modal-body').html(response);
+            $('#global-modal').modal('show');
+          },
+          error: function(xhr, status, error) {
+            console.error(error);
+          }
+        });
+      }
     });
   });
 </script>

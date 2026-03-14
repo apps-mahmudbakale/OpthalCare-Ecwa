@@ -79,9 +79,9 @@
                                        style="width: 120px;">
                             </td>
                             <td>
-                                <a href="javascript:void(0);" class="text-primary fw-bold" onclick="confirmSingleSettlement({{ $bill->id }})" title="Settle this bill">
-                                    Settle Now
-                                </a>
+                                <button class="btn btn-sm btn-primary" onclick="confirmSingleSettlement({{ $bill->id }})" title="Settle this bill">
+                                    <i class="ti ti-check"></i>
+                                </button>
                             </td>
                         </tr>
                     @empty

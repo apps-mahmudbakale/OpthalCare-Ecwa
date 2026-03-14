@@ -72,20 +72,42 @@
 
 @include('_partials._modals.global-modal')
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ asset('js/jquery.min.js') }}"></script>
 <script>
   $(document).ready(function () {
-    $(document).on('click', '.new-bill-btn, .billing-show-btn, .dropdown-item', function (e) {
-      let requestUrl = $(this).data('request-url');
-      if (!requestUrl) return;
+    const modal = $('#global-modal');
 
+    $('.new-bill-btn, .billing-show-btn').on('click', function (e) {
       e.preventDefault();
+      let requestUrl = $(this).data('request-url');
 
       $.get(requestUrl)
         .done(response => {
-          $('#global-modal .modal-body').html(response);
-          $('#global-modal').modal('show');
+          modal.find('.modal-body').html(response);
+          modal.modal('show');
         })
         .fail(xhr => console.error(xhr.responseText));
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(function() {
+    $('.dropdown-item').on('click', function() {
+      var requestUrl = $(this).data('request-url');
+
+      $.ajax({
+        url: requestUrl,
+        type: 'GET',
+        success: function(response) {
+          $('#global-modal .modal-body').html(response);
+          $('#global-modal').modal('show');
+        },
+        error: function(xhr, status, error) {
+          console.error(error);
+        }
+      });
     });
   });
 </script>
