@@ -55,27 +55,30 @@ class HmoBillingList extends Component
             return;
         }
 
-        $this->processSettlement($this->selectedBills);
-        $this->reset(['selectedBills', 'clearanceCode', 'serviceClearanceCodes', 'selectAll']);
+        if ($this->processSettlement($this->selectedBills)) {
+            $this->reset(['selectedBills', 'clearanceCode', 'serviceClearanceCodes', 'selectAll']);
+        }
     }
 
     public function settleSingle($billId)
     {
-        $this->processSettlement([$billId]);
+        if ($this->processSettlement([$billId])) {
+            $this->reset(['serviceClearanceCodes']); // Clear the specific code if successful
+        }
     }
 
     private function processSettlement($billIds)
     {
-        $bills = Billing::whereIn('id', $billIds)->with('hmoPlan.hmo')->get();
+        $bills = Billing::whereIn('id', $billIds)->with(['hmoPlan.hmo', 'patient.user'])->get();
         
-        if ($bills->isEmpty()) return;
+        if ($bills->isEmpty()) return false;
 
         // Ensure all selected bills belong to the same HMO Group for the wallet deduction
         $hmoGroupId = $bills->first()->hmoPlan->hmo_id;
         foreach ($bills as $bill) {
             if ($bill->hmoPlan->hmo_id !== $hmoGroupId) {
                 $this->emit('swal', ['type' => 'error', 'message' => 'Selected bills must belong to the same HMO provider.']);
-                return;
+                return false;
             }
         }
 
@@ -85,7 +88,7 @@ class HmoBillingList extends Component
 
         if ($wallet->balance < $totalAmount) {
             $this->emit('swal', ['type' => 'error', 'message' => 'Insufficient HMO wallet balance. Please fund the wallet first.']);
-            return;
+            return false;
         }
 
         try {
@@ -94,11 +97,12 @@ class HmoBillingList extends Component
                 
                 foreach ($bills as $bill) {
                     // Determine the code for this specific bill: individual record code OR the bulk override
-                    $finalCode = $this->serviceClearanceCodes[$bill->id] 
-                                ?? ($this->clearanceCode ?: null);
+                    $individualCode = $this->serviceClearanceCodes[$bill->id] ?? null;
+                    $finalCode = !empty($individualCode) ? $individualCode : ($this->clearanceCode ?: null);
 
                     if (empty($finalCode)) {
-                        throw new \Exception("Clearance code is required for service: " . $bill->service . " (Patient: " . ($bill->patient->user->firstname ?? '') . ")");
+                        $patientName = $bill->patient->user->firstname ?? 'Unknown Patient';
+                        throw new \Exception("Clearance code is required for service: " . $bill->service . " (Patient: " . $patientName . ")");
                     }
 
                     $bill->update([
@@ -108,9 +112,14 @@ class HmoBillingList extends Component
                 }
             });
 
-            session()->flash('success', "Successfully settled " . count($bills) . " bills totaling ₦" . number_format($totalAmount, 2));
+            $this->emit('swal', [
+                'type' => 'success', 
+                'message' => "Successfully settled " . count($bills) . " bills totaling ₦" . number_format($totalAmount, 2)
+            ]);
+            return true;
         } catch (\Exception $e) {
             $this->emit('swal', ['type' => 'error', 'message' => $e->getMessage()]);
+            return false;
         }
     }
 
