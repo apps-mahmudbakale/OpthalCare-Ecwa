@@ -36,7 +36,6 @@
         <tr>
           <th>Date Admitted</th>
           <th>Patient</th>
-          <th>Procedure</th>
           <th>Ward</th>
           <th>Bed</th>
           <th class="text-right">*</th>
@@ -47,32 +46,12 @@
         <tr>
           <td>{{ $admission->created_at->format('Y-m-d') ?? 'N/A' }}</td>
           <td>{{ $admission->patient->user->firstname ?? '' }} {{ $admission->patient->user->lastname ?? '' }}</td>
-          <td>{{ optional($admission->procedure)->name ?? 'N/A' }}</td>
           <td>{{ $admission->ward->name ?? 'N/A' }}</td>
           <td>{{ $admission->bed->name ?? 'N/A' }}</td>
           <td class="text-right">
-            <div class="btn-group">
-              <button type="button" class="btn btn-sm btn-icon btn-light" data-bs-toggle="dropdown">
-                <i class="fa fa-ellipsis-v"></i>
-              </button>
-              <ul class="dropdown-menu">
-                @if(!$admission->bed_id)
-                <li>
-                  <button class="dropdown-item" data-toggle="modal"
-                          data-request-url="{{ route('app.admissions.bed', $admission->ref) }}"
-                          data-target="#global-modal-lg"
-                  >
-                    Assign Bed
-                  </button>
-                </li>
-                @endif
-                <li>
-                  <a href="{{route('app.admissions.show', $admission->id)}}" class="dropdown-item">
+                  <a href="{{route('app.admissions.show', $admission->id)}}">
                     Open Instance
                   </a>
-                </li>
-              </ul>
-            </div>
           </td>
         </tr>
         @empty

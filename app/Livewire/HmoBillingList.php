@@ -18,6 +18,35 @@ class HmoBillingList extends Component
     public $selectedBills = [];
     public $clearanceCode = '';
     public $serviceClearanceCodes = [];
+    public $selectAll = false;
+
+    public function updatingSearch() { $this->resetPage(); }
+    public function updatingSelectedHmoId() { $this->resetPage(); }
+
+    public function updatedSelectAll($value)
+    {
+        if ($value) {
+            $this->selectedBills = Billing::query()
+                ->whereNotNull('plan_id')
+                ->where('status', 0)
+                ->when($this->selectedHmoId, function($q) {
+                    $q->whereHas('hmoPlan', function($sq) {
+                        $sq->where('hmo_id', $this->selectedHmoId);
+                    });
+                })
+                ->when($this->search, function($q) {
+                    $q->whereHas('patient.user', function($sq) {
+                        $sq->where('firstname', 'like', '%' . $this->search . '%')
+                          ->orWhere('lastname', 'like', '%' . $this->search . '%');
+                    })->orWhere('service', 'like', '%' . $this->search . '%');
+                })
+                ->pluck('id')
+                ->map(fn($id) => (string) $id)
+                ->toArray();
+        } else {
+            $this->selectedBills = [];
+        }
+    }
 
     public function settleSelected()
     {

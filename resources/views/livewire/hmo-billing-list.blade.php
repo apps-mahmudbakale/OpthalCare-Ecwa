@@ -27,7 +27,7 @@
                 <div class="col-md-3">
                     <label class="form-label">Clearance Code (Optional)</label>
                     <input type="text" wire:model.defer="clearanceCode" class="form-control mb-2" placeholder="Enter Authorization Code">
-                    <button class="btn btn-success w-100" wire:click="settleSelected" wire:loading.attr="disabled" @if(empty($selectedBills)) disabled @endif>
+                    <button class="btn btn-success w-100" onclick="confirmSettlement()" wire:loading.attr="disabled" @if(empty($selectedBills)) disabled @endif>
                         <i class="ti ti-check me-1"></i> Settle Selected ({{ count($selectedBills) }})
                     </button>
                     <div wire:loading wire:target="settleSelected" class="mt-1 small text-success">
@@ -43,7 +43,9 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th style="width: 40px;"><input type="checkbox" class="form-check-input"></th>
+                        <th style="width: 40px;">
+                            <input type="checkbox" wire:model="selectAll" class="form-check-input">
+                        </th>
                         <th>Date</th>
                         <th>Patient</th>
                         <th>HMO Provider / Plan</th>
@@ -54,7 +56,7 @@
                 </thead>
                 <tbody class="table-border-bottom-0">
                     @forelse($bills as $bill)
-                        <tr>
+                        <tr wire:key="billing-row-{{ $bill->id }}">
                             <td>
                                 <input type="checkbox" wire:model="selectedBills" value="{{ $bill->id }}" class="form-check-input">
                             </td>
@@ -78,7 +80,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center">No outstanding HMO bills found.</td>
+                            <td colspan="7" class="text-center">No outstanding HMO bills found.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -98,6 +100,22 @@
                     text: data.message,
                 });
             });
+
+            window.confirmSettlement = () => {
+                Swal.fire({
+                    title: 'Confirm Settlement',
+                    text: "Are you sure you want to settle the selected bills using the HMO wallet?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, settle them!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        @this.settleSelected();
+                    }
+                });
+            }
         });
     </script>
 </div>
