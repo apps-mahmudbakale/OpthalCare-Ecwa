@@ -103,21 +103,14 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Scripts -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-
 <script>
     $(document).ready(function() {
-        const modal = $('#global-modal');
-
-        $('.add-notes-btn').on('click', function(e) {
+        $(document).on('click', '.add-notes-btn', function(e) {
             e.preventDefault();
             var requestUrl = $(this).data('request-url');
-            var isPaid = $(this).data('paid'); // Will be 1 or 0
+            var isPaid = $(this).data('paid');
 
-            console.log(isPaid);
-
-            if (isPaid != 1) { // Check for 1 explicitly (not equal to 1 means unpaid)
+            if (isPaid != 1) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Service Not Paid',
@@ -127,40 +120,32 @@
                 return;
             }
 
-            $.ajax({
-                url: requestUrl,
-                type: 'GET',
-                success: function(response) {
-                    modal.find('.modal-body').html(response);
-                    modal.modal('show');
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
+            $.get(requestUrl)
+                .done(response => {
+                    $('#global-modal .modal-body').html(response);
+                    $('#global-modal').modal('show');
+                })
+                .fail(xhr => {
+                    console.error('Error:', xhr.responseText);
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
                         text: 'Something went wrong while loading the form.',
                     });
-                }
-            });
+                });
         });
 
         // Handle other dropdown items (like Cancel) that don't need payment check
-        $('.dropdown-item:not(.add-notes-btn)').on('click', function(e) {
+        $(document).on('click', '.dropdown-item:not(.add-notes-btn)', function(e) {
             var requestUrl = $(this).data('request-url');
             if (requestUrl) {
                 e.preventDefault();
-                $.ajax({
-                    url: requestUrl,
-                    type: 'GET',
-                    success: function(response) {
-                        modal.find('.modal-body').html(response);
-                        modal.modal('show');
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', error);
-                    }
-                });
+                $.get(requestUrl)
+                    .done(response => {
+                        $('#global-modal .modal-body').html(response);
+                        $('#global-modal').modal('show');
+                    })
+                    .fail(xhr => console.error('Error:', xhr.responseText));
             }
         });
     });

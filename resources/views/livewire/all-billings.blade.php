@@ -72,42 +72,20 @@
 
 @include('_partials._modals.global-modal')
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('js/jquery.min.js') }}"></script>
 <script>
   $(document).ready(function () {
-    const modal = $('#global-modal');
-
-    $('.new-bill-btn, .billing-show-btn').on('click', function (e) {
-      e.preventDefault();
+    $(document).on('click', '.new-bill-btn, .billing-show-btn, .dropdown-item', function (e) {
       let requestUrl = $(this).data('request-url');
+      if (!requestUrl) return;
+
+      e.preventDefault();
 
       $.get(requestUrl)
         .done(response => {
-          modal.find('.modal-body').html(response);
-          modal.modal('show');
-        })
-        .fail(xhr => console.error(xhr.responseText));
-    });
-  });
-</script>
-
-<script>
-  $(document).ready(function() {
-    $('.dropdown-item').on('click', function() {
-      var requestUrl = $(this).data('request-url');
-
-      $.ajax({
-        url: requestUrl,
-        type: 'GET',
-        success: function(response) {
           $('#global-modal .modal-body').html(response);
           $('#global-modal').modal('show');
-        },
-        error: function(xhr, status, error) {
-          console.error(error);
-        }
-      });
+        })
+        .fail(xhr => console.error(xhr.responseText));
     });
   });
 </script>
