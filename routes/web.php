@@ -59,6 +59,7 @@ use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\ProcedureRequestController;
 use App\Http\Controllers\RadiologyRequestController;
 use App\Http\Controllers\ConsultingTemplateController;
+use App\Http\Controllers\HmoBillingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -106,7 +107,8 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::get('hmo-plans/{plan}/services/import', [HmoServiceController::class, 'importView'])->name('hmo-plans.services.import');
   Route::post('hmo-plans/{plan}/services/import', [HmoServiceController::class, 'import'])->name('hmo-plans.services.import.post');
   Route::get('hmo-plans/{plan}/services/create', [HmoServiceController::class, 'create'])->name('hmo-plans.services.create');
-  Route::get('hmo-plans-services-template', [HmoServiceController::class, 'downloadTemplate'])->name('hmo-plans.services.template');
+  Route::get('hmo-plans/services/template', [HmoServiceController::class, 'downloadTemplate'])->name('hmo-plans.services.template');
+  Route::post('hmo-billing/settle', [HmoBillingController::class, 'settle'])->name('hmo-billing.settle');
   Route::post('hmo-plans/{plan}/services', [HmoServiceController::class, 'store'])->name('hmo-plans.services.store');
   Route::put('hmo-services/{hmo_service}', [HmoServiceController::class, 'update'])->name('hmo-services.update');
   Route::delete('hmo-services/{hmo_service}', [HmoServiceController::class, 'destroy'])->name('hmo-services.destroy');

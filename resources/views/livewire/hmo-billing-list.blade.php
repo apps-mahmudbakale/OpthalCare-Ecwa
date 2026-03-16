@@ -99,9 +99,17 @@
 
     <script>
         window.confirmSettlement = () => {
+            const selectedCheckboxes = document.querySelectorAll('input[wire\\:model="selectedBills"]:checked');
+            const billIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+
+            if (billIds.length === 0) {
+                Swal.fire('Error', 'No bills selected.', 'error');
+                return;
+            }
+
             Swal.fire({
-                title: 'Confirm Settlement',
-                text: "Are you sure you want to settle the selected bills using the HMO wallet?",
+                title: 'Confirm Bulk Settlement',
+                text: `Are you sure you want to settle ${billIds.length} selected bills using the HMO wallet?`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#28a745',
@@ -109,7 +117,7 @@
                 confirmButtonText: 'Yes, settle them!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    @this.settleSelected();
+                    processSettlement(billIds);
                 }
             });
         }
@@ -125,19 +133,61 @@
                 confirmButtonText: 'Yes, settle it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    @this.settleSingle(id);
+                    processSettlement([id]);
+                }
+            });
+        }
+
+        function processSettlement(billIds) {
+            // Collect clearance codes from the inputs
+            const clearanceCodes = {};
+            billIds.forEach(id => {
+                const input = document.querySelector(`input[wire\\:model\\.defer="serviceClearanceCodes.${id}"]`);
+                if (input && input.value) {
+                    clearanceCodes[id] = input.value;
+                }
+            });
+
+            const bulkCode = document.querySelector('input[wire\\:model\\.defer="clearanceCode"]').value;
+
+            Swal.showLoading();
+
+            $.ajax({
+                url: "{{ route('app.hmo-billing.settle') }}",
+                type: 'POST',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    bill_ids: billIds,
+                    clearance_codes: clearanceCodes,
+                    bulk_code: bulkCode
+                },
+                success: function(response) {
+                    Swal.fire('Success', response.message, 'success').then(() => {
+                        // Reset inputs and refresh Livewire
+                        location.reload(); 
+                    });
+                },
+                error: function(xhr) {
+                    let message = 'An error occurred processing the settlement.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        message = xhr.responseJSON.message;
+                    }
+                    Swal.fire('Error', message, 'error');
                 }
             });
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            window.livewire.on('swal', (data) => {
-                Swal.fire({
-                    icon: data.type,
-                    title: data.type === 'error' ? 'Oops...' : 'Success',
-                    text: data.message,
-                });
-            });
+             // Handle the "Select All" checkbox manually to ensure consistency
+             const selectAllCheckbox = document.querySelector('input[wire\\:model="selectAll"]');
+             if (selectAllCheckbox) {
+                 selectAllCheckbox.addEventListener('change', (e) => {
+                     const checkboxes = document.querySelectorAll('input[wire\\:model="selectedBills"]');
+                     checkboxes.forEach(cb => {
+                         cb.checked = e.target.checked;
+                     });
+                 });
+             }
         });
     </script>
 </div>

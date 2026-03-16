@@ -136,6 +136,7 @@
           <tr>
             <td colspan="2">
               <h2 style="text-align: center;">GYNAECOLOGY CONSULTATION REPORT</h2>
+              <p style="text-align: center;"><strong>ICD-10 Code:</strong> {{ $diagnosis->ICD->number ?? 'Not specified' }}</p>
             </td>
           </tr>
         </table>

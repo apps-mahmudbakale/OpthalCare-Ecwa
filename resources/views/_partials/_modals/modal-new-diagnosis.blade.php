@@ -59,10 +59,10 @@
                         <button class="nav-link" id="step3-tab" data-bs-toggle="pill" data-bs-target="#step3"
                             type="button">Disability</button>
                     </li>
-{{--                    <li class="nav-item" role="presentation">--}}
-{{--                        <button class="nav-link" id="step4-tab" data-bs-toggle="pill" data-bs-target="#step4"--}}
-{{--                            type="button">Case Description</button>--}}
-{{--                    </li>--}}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="step4-tab" data-bs-toggle="pill" data-bs-target="#step4"
+                            type="button">Case Description</button>
+                    </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="step5-tab" data-bs-toggle="pill" data-bs-target="#step5"
                             type="button">Treatment</button>
@@ -191,17 +191,18 @@
                         </div>
 
                         <!-- Step 4 -->
-{{--                        <div class="tab-pane fade" id="step4">--}}
-{{--                            <div class="col-12">--}}
-{{--                                <label class="form-label">Case Description</label>--}}
-{{--                                <select id="select-icd" name="icd_id" class="form-control">--}}
-{{--                                    @foreach (\App\Models\ICD10::all() as $icd)--}}
-{{--                                        <option value="{{ $icd->id }}">({{ $icd->number }}) {{ $icd->name }}--}}
-{{--                                        </option>--}}
-{{--                                    @endforeach--}}
-{{--                                </select>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
+                        <div class="tab-pane fade" id="step4">
+                            <div class="col-12">
+                                <label class="form-label">Case Description (ICD-10)</label>
+                                <select id="select-icd" name="icd_id" class="form-control" style="width: 100%;">
+                                    <option value="">Select ICD-10 Code</option>
+                                    @foreach (\App\Models\ICD10::all() as $icd)
+                                        <option value="{{ $icd->id }}">({{ $icd->number }}) {{ $icd->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
 
                         <!-- Step 5 -->
                         <div class="tab-pane fade" id="step5">

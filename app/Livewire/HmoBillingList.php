@@ -19,100 +19,10 @@ class HmoBillingList extends Component
     public $clearanceCode = '';
     public $serviceClearanceCodes = [];
     public $selectAll = false;
+    protected $listeners = ['refresh' => '$refresh'];
 
     public function updatingSearch() { $this->resetPage(); }
     public function updatingSelectedHmoId() { $this->resetPage(); }
-
-    public function updatedSelectAll($value)
-    {
-        if ($value) {
-            $this->selectedBills = Billing::query()
-                ->whereNotNull('plan_id')
-                ->where('status', 0)
-                ->when($this->selectedHmoId, function($q) {
-                    $q->whereHas('hmoPlan', function($sq) {
-                        $sq->where('hmo_id', $this->selectedHmoId);
-                    });
-                })
-                ->when($this->search, function($q) {
-                    $q->whereHas('patient.user', function($sq) {
-                        $sq->where('firstname', 'like', '%' . $this->search . '%')
-                          ->orWhere('lastname', 'like', '%' . $this->search . '%');
-                    })->orWhere('service', 'like', '%' . $this->search . '%');
-                })
-                ->pluck('id')
-                ->map(fn($id) => (string) $id)
-                ->toArray();
-        } else {
-            $this->selectedBills = [];
-        }
-    }
-
-    public function settleSelected()
-    {
-        if (empty($this->selectedBills)) {
-            $this->emit('swal', ['type' => 'error', 'message' => 'No bills selected.']);
-            return;
-        }
-
-        $this->processSettlement($this->selectedBills);
-        $this->reset(['selectedBills', 'clearanceCode', 'serviceClearanceCodes', 'selectAll']);
-    }
-
-    public function settleSingle($billId)
-    {
-        $this->processSettlement([$billId]);
-    }
-
-    private function processSettlement($billIds)
-    {
-        $bills = Billing::whereIn('id', $billIds)->with('hmoPlan.hmo')->get();
-        
-        if ($bills->isEmpty()) return;
-
-        // Ensure all selected bills belong to the same HMO Group for the wallet deduction
-        $hmoGroupId = $bills->first()->hmoPlan->hmo_id;
-        foreach ($bills as $bill) {
-            if ($bill->hmoPlan->hmo_id !== $hmoGroupId) {
-                $this->emit('swal', ['type' => 'error', 'message' => 'Selected bills must belong to the same HMO provider.']);
-                return;
-            }
-        }
-
-        $totalAmount = $bills->sum('amount');
-        $hmo = HmoGroup::find($hmoGroupId);
-        $wallet = $hmo->getWallet();
-
-        if ($wallet->balance < $totalAmount) {
-            $this->emit('swal', ['type' => 'error', 'message' => 'Insufficient HMO wallet balance. Please fund the wallet first.']);
-            return;
-        }
-
-        try {
-            DB::transaction(function () use ($wallet, $totalAmount, $bills, $hmo) {
-                $wallet->debit($totalAmount, "Settlement for " . count($bills) . " bills");
-                
-                foreach ($bills as $bill) {
-                    // Determine the code for this specific bill: individual record code OR the bulk override
-                    $finalCode = $this->serviceClearanceCodes[$bill->id] 
-                                ?? ($this->clearanceCode ?: null);
-
-                    if (empty($finalCode)) {
-                        throw new \Exception("Clearance code is required for service: " . $bill->service . " (Patient: " . ($bill->patient->user->firstname ?? '') . ")");
-                    }
-
-                    $bill->update([
-                        'status' => 1,
-                        'clearance_code' => $finalCode
-                    ]);
-                }
-            });
-
-            session()->flash('success', "Successfully settled " . count($bills) . " bills totaling ₦" . number_format($totalAmount, 2));
-        } catch (\Exception $e) {
-            $this->emit('swal', ['type' => 'error', 'message' => $e->getMessage()]);
-        }
-    }
 
     public function render()
     {

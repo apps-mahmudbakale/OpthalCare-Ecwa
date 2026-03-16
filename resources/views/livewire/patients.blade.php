@@ -242,7 +242,7 @@
       });
     }
   });
-</script>
+<script>
   $(document).ready(function() {
     $(document).on('click', '.dropdown-item[data-request-url]', function(e) {
 
