@@ -10,8 +10,40 @@ use Illuminate\Support\Facades\Log;
 
 class HmoBillingController extends Controller
 {
+    public function index(Request $request)
+    {
+        $hmoGroups = HmoGroup::all();
+        $selectedHmoId = $request->hmo_id;
+        $search = $request->search;
+
+        $query = Billing::query()
+            ->whereNotNull('plan_id')
+            ->where('status', 0) // Only unpaid
+            ->with(['patient.user', 'hmoPlan.hmo']);
+
+        if ($selectedHmoId) {
+            $query->whereHas('hmoPlan', function($q) use ($selectedHmoId) {
+                $q->where('hmo_id', $selectedHmoId);
+            });
+        }
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->whereHas('patient.user', function($sq) use ($search) {
+                    $sq->where('firstname', 'like', '%' . $search . '%')
+                      ->orWhere('lastname', 'like', '%' . $search . '%');
+                })->orWhere('service', 'like', '%' . $search . '%');
+            });
+        }
+
+        $bills = $query->latest()->paginate(20)->withQueryString();
+
+        return view('hmo-billing.index', compact('hmoGroups', 'bills', 'selectedHmoId', 'search'));
+    }
+
     public function settle(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'bill_ids' => 'required|array',
             'bill_ids.*' => 'exists:billings,id',

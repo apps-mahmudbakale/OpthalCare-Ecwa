@@ -245,7 +245,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::get('report/hmo', App\Livewire\HmoReport::class)->name('reports.hmo');
   Route::get('report/hmo-reconciliation', App\Livewire\HmoReconciliation::class)->name('reports.hmo-reconciliation');
   Route::get('hmo/finance', App\Livewire\HmoFinance::class)->name('hmo.finance');
-  Route::get('hmo/billing', App\Livewire\HmoBillingList::class)->name('hmo.billing');
+  Route::get('hmo/billing', [HmoBillingController::class, 'index'])->name('hmo.billing');
   Route::resource('consulting-rooms', ConsultingRoomController::class);
   Route::resource('appointment-type', AppointmentTypeController::class);
   Route::resource('consulting-templates', ConsultingTemplateController::class);
