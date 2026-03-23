@@ -34,9 +34,7 @@ class HmoWallet extends Model
 
     public function debit($amount, $description, $reference = null)
     {
-        if ($this->balance < $amount) {
-            throw new \Exception('Insufficient HMO wallet balance.');
-        }
+        // Allow overdraft — negative balance represents outstanding debt
         $this->decrement('balance', $amount);
         return $this->transactions()->create([
             'amount' => $amount,
@@ -44,5 +42,10 @@ class HmoWallet extends Model
             'description' => $description,
             'reference' => $reference,
         ]);
+    }
+
+    public function isOverdrawn(): bool
+    {
+        return $this->balance < 0;
     }
 }

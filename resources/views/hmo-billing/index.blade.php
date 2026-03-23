@@ -13,6 +13,18 @@
         </div>
     @endif
 
+    @if(isset($selectedHmo) && $selectedHmo)
+        @php $walletBalance = $selectedHmo->wallet->balance ?? 0; @endphp
+        <div class="alert {{ $walletBalance < 0 ? 'alert-danger' : 'alert-info' }} mb-3">
+            <i class="ti ti-wallet me-1"></i>
+            <strong>{{ $selectedHmo->name }}</strong> wallet balance:
+            <strong>₦{{ number_format($walletBalance, 2) }}</strong>
+            @if($walletBalance < 0)
+                — <em>Currently overdrawn. Outstanding will be deducted from next funding.</em>
+            @endif
+        </div>
+    @endif
+
     <div class="card mb-4">
         <div class="card-body">
             <form action="{{ route('app.hmo.billing') }}" method="GET">
@@ -177,7 +189,8 @@
                     clearance_codes: clearanceCodes
                 },
                 success: function(response) {
-                    Swal.fire('Success', response.message, 'success').then(() => {
+                    const icon = response.overdrawn ? 'warning' : 'success';
+                    Swal.fire(response.overdrawn ? 'Settled (Overdrawn)' : 'Success', response.message, icon).then(() => {
                         location.reload(); 
                     });
                 },

@@ -244,7 +244,9 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::get('report/billings', [ReportController::class, 'billingReport'])->name('reports.billing');
   Route::get('report/hmo', App\Livewire\HmoReport::class)->name('reports.hmo');
   Route::get('report/hmo-reconciliation', App\Livewire\HmoReconciliation::class)->name('reports.hmo-reconciliation');
-  Route::get('hmo/finance', App\Livewire\HmoFinance::class)->name('hmo.finance');
+  Route::get('hmo/finance', [App\Http\Controllers\HmoFinanceController::class, 'index'])->name('hmo.finance');
+  Route::post('hmo/{hmo}/fund-wallet', [App\Http\Controllers\HmoFinanceController::class, 'fund'])->name('hmo.finance.fund');
+  Route::get('hmo/{hmo}/wallet-history', [App\Http\Controllers\HmoFinanceController::class, 'history'])->name('hmo.finance.history');
   Route::get('hmo/billing', [HmoBillingController::class, 'index'])->name('hmo.billing');
   Route::resource('consulting-rooms', ConsultingRoomController::class);
   Route::resource('appointment-type', AppointmentTypeController::class);

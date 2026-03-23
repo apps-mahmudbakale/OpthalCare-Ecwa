@@ -12,9 +12,10 @@ class HmoBillingController extends Controller
 {
     public function index(Request $request)
     {
-        $hmoGroups = HmoGroup::all();
+        $hmoGroups = HmoGroup::with('wallet')->get();
         $selectedHmoId = $request->hmo_id;
         $search = $request->search;
+        $selectedHmo = $selectedHmoId ? HmoGroup::with('wallet')->find($selectedHmoId) : null;
 
         $query = Billing::query()
             ->whereNotNull('plan_id')
@@ -38,7 +39,7 @@ class HmoBillingController extends Controller
 
         $bills = $query->latest()->paginate(20)->withQueryString();
 
-        return view('hmo-billing.index', compact('hmoGroups', 'bills', 'selectedHmoId', 'search'));
+        return view('hmo-billing.index', compact('hmoGroups', 'bills', 'selectedHmoId', 'search', 'selectedHmo'));
     }
 
     public function settle(Request $request)
@@ -73,13 +74,14 @@ class HmoBillingController extends Controller
         $hmo = HmoGroup::find($hmoGroupId);
         $wallet = $hmo->getWallet();
 
-        if ($wallet->balance < $totalAmount) {
-            return response()->json(['success' => false, 'message' => 'Insufficient HMO wallet balance. Please fund the wallet first.'], 422);
-        }
+        $balanceBefore = $wallet->balance;
+        $willBeOverdrawn = $balanceBefore < $totalAmount;
+        $outstanding = $willBeOverdrawn ? ($totalAmount - $balanceBefore) : 0;
 
         try {
             DB::transaction(function () use ($wallet, $totalAmount, $bills, $serviceClearanceCodes, $bulkCode) {
-                $wallet->debit($totalAmount, "Settlement for " . count($bills) . " bills via AJAX");
+                // Debit wallet — allows negative balance (outstanding debt)
+                $wallet->debit($totalAmount, "Settlement for " . count($bills) . " bills");
 
                 foreach ($bills as $bill) {
                     $finalCode = $serviceClearanceCodes[$bill->id] ?? ($bulkCode ?: null);
@@ -95,10 +97,12 @@ class HmoBillingController extends Controller
                 }
             });
 
-            return response()->json([
-                'success' => true, 
-                'message' => "Successfully settled " . count($bills) . " bills totaling ₦" . number_format($totalAmount, 2)
-            ]);
+            $message = "Successfully settled " . count($bills) . " bills totaling ₦" . number_format($totalAmount, 2) . ".";
+            if ($willBeOverdrawn) {
+                $message .= " Note: wallet is now overdrawn by ₦" . number_format($outstanding, 2) . ". Outstanding will be cleared on next funding.";
+            }
+
+            return response()->json(['success' => true, 'message' => $message, 'overdrawn' => $willBeOverdrawn]);
         } catch (\Exception $e) {
             Log::error('HMO Settlement failed: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => $e->getMessage()], 422);
