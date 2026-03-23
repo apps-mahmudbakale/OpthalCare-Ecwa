@@ -105,7 +105,7 @@
         fundModal.addEventListener('show.bs.modal', (e) => {
             const btn = e.relatedTarget;
             document.getElementById('modalHmoName').textContent = btn.dataset.name;
-            document.getElementById('fundForm').action = `/app/hmo/${btn.dataset.id}/fund-wallet`;
+            document.getElementById('fundForm').action = `{{ url('app/hmo') }}/${btn.dataset.id}/fund-wallet`;
         });
     });
 </script>
