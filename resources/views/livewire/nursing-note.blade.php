@@ -57,9 +57,9 @@
 </div>
 
 <script>
-    document.addEventListener('livewire:initialized', () => {
-       @this.on('closeModal', (event) => {
-           $('#new-nursing-note-modal').modal('hide');
-       });
+    document.addEventListener('livewire:load', () => {
+        window.livewire.on('closeModal', () => {
+            $('#new-nursing-note-modal').modal('hide');
+        });
     });
 </script>

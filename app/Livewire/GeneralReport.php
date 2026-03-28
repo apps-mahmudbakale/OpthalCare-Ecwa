@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Reports;
+namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -37,6 +37,6 @@ class GeneralReport extends Component
     $diagnoses = []; // Fetch filtered diagnoses here
     $admissions = []; // Fetch filtered admissions here
 
-    return view('livewire.reports.general-report', compact('visits', 'diagnoses', 'admissions'));
+    return view('livewire.general-report', compact('visits', 'diagnoses', 'admissions'));
   }
 }

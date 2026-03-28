@@ -198,21 +198,21 @@
 
                     <!-- Lab Requests Tab -->
                     <div class="tab-pane fade" id="navs-pills-justified-lab" role="tabpanel">
-                        <a href="" data-bs-toggle="modal" data-bs-target="#new-lab-modal"
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#new-lab-modal"
                             class="btn btn-primary mb-2 float-end">New Entry</a>
                         <livewire:lab-requests :patientId="$patient->id" />
                     </div>
 
                     <!-- Imaging Tab -->
                     <div class="tab-pane fade" id="navs-pills-justified-imaging" role="tabpanel">
-                        <a href="" data-bs-toggle="modal" data-bs-target="#new-imaging-modal"
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#new-imaging-modal"
                             class="btn btn-primary mb-2 float-end">New Entry</a>
                         <livewire:radiology-request :patientId="$patient->id" />
                     </div>
 
                     <!-- Drug Prescriptions Tab -->
                     <div class="tab-pane fade" id="navs-pills-justified-drugs" role="tabpanel">
-                        <a href="" data-bs-toggle="modal" data-bs-target="#new-drugs-modal"
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#new-drugs-modal"
                             class="btn btn-primary mb-2 float-end">New Entry</a>
                         <livewire:drugs-request :patientId="$patient->id" />
                     </div>
@@ -317,14 +317,20 @@
     </script>
 @endsection
 @include('_partials._modals.modal-new-diagnosis')
+@include('_partials._modals.modal-new-lab')
+@include('_partials._modals.modal-new-drugs')
+@include('_partials._modals.modal-new-imaging')
+@include('_partials._modals.modal-new-vitals')
 @include('_partials._modals.global-modal')
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function() {
-        $('.dropdown-item').on('click', function() {
+        $(document).on('click', '[data-request-url][data-target="#global-modal-lg"], .dropdown-item[data-request-url]', function(e) {
+            e.preventDefault();
             var requestUrl = $(this).data('request-url');
+            if (!requestUrl) return;
             $.ajax({
                 url: requestUrl,
                 type: 'GET',

@@ -45,8 +45,8 @@ class NursingTask extends Component
         ]);
 
         $this->reset('task');
-        $this->dispatch('closeModal');
-        $this->dispatch('notify', ['type' => 'success', 'message' => 'Nursing task added successfully.']);
+        $this->emit('closeModal');
+        $this->emit('notify', ['type' => 'success', 'message' => 'Nursing task added successfully.']);
     }
 
     public function toggleStatus($taskId)

@@ -48,6 +48,7 @@
                                 
                                 <a href="javascript:void(0);" 
                                    data-request-url="{{ route('app.radiology.edit', $request->id) }}"
+                                   data-target="#global-modal-lg"
                                    class="btn btn-sm btn-icon btn-outline-secondary" title="Add Findings/Notes">
                                     <i class="ti ti-edit ti-xs"></i>
                                 </a>

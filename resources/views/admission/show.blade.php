@@ -80,6 +80,12 @@
                                     <li><a class="dropdown-item"
                                             data-request-url="{{ route('app.patient.fund.wallet', $admission->patient->id) }}"
                                             data-target="#global-modal-lg">Fund Wallet</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="#"
+                                            data-bs-toggle="modal" data-bs-target="#discharge-modal">
+                                            <i class="ti ti-logout me-1"></i> Discharge Patient</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -244,7 +250,7 @@
                     <div class="tab-pane fade" id="navs-pills-justified-vitals" role="tabpanel">
                         <div class="row">
                             <div class="col-md-12">
-                                <a href="" data-bs-toggle="modal" data-bs-target="#new-vitals-modal"
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#new-vitals-modal"
                                     class="btn btn-primary mb-2 float-end">New Entry</a>
                             </div>
                             <div class="col-md-6">
@@ -316,38 +322,27 @@
 
                     </div>
                     <div class="tab-pane fade" id="navs-pills-justified-allergies" role="tabpanel">
-                        <a href="" data-bs-toggle="modal" data-bs-target="#new-allergies-modal"
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#new-allergies-modal"
                             class="btn btn-primary mb-2 float-end">New Entry</a>
-
+                        <livewire:allergies :patientId="$admission->patient_id" />
                     </div>
                     <div class="tab-pane fade" id="navs-pills-justified-diagnosis" role="tabpanel">
-                        <button type="button" class="btn btn-primary mb-2 float-end" data-bs-toggle="modal"
-                            data-bs-target="#new-diagnosis-modal">
-                            New Entry
-                        </button>
-                        <table class="table"></table>
-                        <div class="col-md-12">
-
-                        </div>
+                        <livewire:diagnoses :patientId="$admission->patient_id" />
                     </div>
                     <div class="tab-pane fade" id="navs-pills-justified-lab" role="tabpanel">
                         <a href="" data-bs-toggle="modal" data-bs-target="#new-lab-modal"
                             class="btn btn-primary mb-2 float-end">New Entry</a>
-                        <table class="table"></table>
-                       
-
+                        <livewire:lab-requests :patientId="$admission->patient_id" />
                     </div>
                     <div class="tab-pane fade" id="navs-pills-justified-drugs" role="tabpanel">
                         <a href="" data-bs-toggle="modal" data-bs-target="#new-drugs-modal"
                             class="btn btn-primary mb-2 float-end">New Entry</a>
-
-
+                        <livewire:drugs-request :patientId="$admission->patient_id" />
                     </div>
                     <div class="tab-pane fade" id="navs-pills-justified-imaging" role="tabpanel">
                         <a href="" data-bs-toggle="modal" data-bs-target="#new-imaging-modal"
                             class="btn btn-primary mb-2 float-end">New Entry</a>
-                        <table class="table"></table>
-
+                        <livewire:radiology-request :patientId="$admission->patient_id" />
                     </div>
                     <div class="tab-pane fade" id="navs-pills-justified-documents" role="tabpanel">
                         <a href="" data-bs-toggle="modal" data-bs-target="#new-documents-modal"
@@ -362,7 +357,7 @@
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody class="table-border-bottom-0"></tbody>
                         </table>
 
                     </div>
@@ -451,13 +446,52 @@
     </script>
 @endsection
 @include('_partials._modals.modal-new-diagnosis')
+@include('_partials._modals.modal-new-vitals')
+@include('_partials._modals.modal-new-allergies')
+@include('_partials._modals.modal-edit-allergies')
+
+<!-- Discharge Modal -->
+<div class="modal fade" id="discharge-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Discharge Patient</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ route('app.admissions.discharge', $admission->id) }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <p>You are about to discharge <strong>{{ $admission->patient->user->firstname }} {{ $admission->patient->user->lastname }}</strong> from ward <strong>{{ $admission->ward->name ?? '' }}</strong>.</p>
+                    <div class="mb-3">
+                        <label class="form-label">Discharge Summary / Notes</label>
+                        <textarea name="discharge_note" class="form-control" rows="4" placeholder="Enter discharge summary..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Discharge Date</label>
+                        <input type="date" name="discharged_at" class="form-control" value="{{ now()->format('Y-m-d') }}">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Confirm Discharge</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@include('_partials._modals.modal-new-lab')
+@include('_partials._modals.modal-new-drugs')
+@include('_partials._modals.modal-new-imaging')
+@include('_partials._modals.modal-new-documents')
 @include('_partials._modals.global-modal')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function() {
-        $('.dropdown-item').on('click', function() {
+        $(document).on('click', '[data-request-url][data-target="#global-modal-lg"], .dropdown-item[data-request-url]', function(e) {
+            e.preventDefault();
             var requestUrl = $(this).data('request-url');
+            if (!requestUrl) return;
             $.ajax({
                 url: requestUrl,
                 type: 'GET',

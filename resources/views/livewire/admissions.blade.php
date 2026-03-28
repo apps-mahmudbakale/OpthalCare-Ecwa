@@ -1,93 +1,209 @@
 <div>
-  <div class="card">
-    <!-- Filter Header -->
-    <div class="card-header">
-      <div class="d-flex justify-content-between flex-wrap">
-        <!-- Patient Filter -->
-        <div class="form-group mr-2 flex-fill">
-          <label for="patient_id">Filter By Patient</label>
-          <select wire:model="patient_id" id="patient_id" class="form-control">
-            <option value="">All Patients</option>
-            @foreach($patients as $patient)
-            <option value="{{ $patient->id }}">
-              {{ $patient->user->firstname }} {{ $patient->user->lastname }}
-            </option>
-            @endforeach
-          </select>
-        </div>
-
-        <!-- Ward Filter -->
-        <div class="form-group flex-fill">
-          <label for="ward_id">Filter By Ward</label>
-          <select wire:model="ward_id" id="ward_id" class="form-control">
-            <option value="">All Wards</option>
-            @foreach($wards as $ward)
-            <option value="{{ $ward->id }}">{{ $ward->name }}</option>
-            @endforeach
-          </select>
-        </div>
-      </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold mb-0"><span class="text-muted fw-light">Hospital /</span> Admissions</h4>
     </div>
 
-    <!-- Table -->
-    <div class="table-responsive">
-      <table class="table table-striped">
-        <thead>
-        <tr>
-          <th>Date Admitted</th>
-          <th>Patient</th>
-          <th>Ward</th>
-          <th>Bed</th>
-          <th class="text-right">*</th>
-        </tr>
-        </thead>
-        <tbody>
-        @forelse($admissions as $admission)
-        <tr>
-          <td>{{ $admission->created_at->format('Y-m-d') ?? 'N/A' }}</td>
-          <td>{{ $admission->patient->user->firstname ?? '' }} {{ $admission->patient->user->lastname ?? '' }}</td>
-          <td>{{ $admission->ward->name ?? 'N/A' }}</td>
-          <td>{{ $admission->bed->name ?? 'N/A' }}</td>
-          <td class="text-right">
-                  <a href="{{route('app.admissions.show', $admission->id)}}">
-                    Open Instance
-                  </a>
-          </td>
-        </tr>
-        @empty
-        <tr>
-          <td colspan="6" class="text-center">No active admissions found.</td>
-        </tr>
-        @endforelse
-        </tbody>
-      </table>
-
-      <!-- Pagination -->
-      <div class="d-flex justify-content-center mt-3">
-        {{ $admissions->links() }}
-      </div>
+    {{-- Stat Cards --}}
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body py-3">
+                    <div class="badge rounded-pill bg-label-primary p-2 mb-2">
+                        <i class="ti ti-bed ti-sm"></i>
+                    </div>
+                    <h4 class="mb-0">{{ $activeCount }}</h4>
+                    <small class="text-muted">Active</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body py-3">
+                    <div class="badge rounded-pill bg-label-success p-2 mb-2">
+                        <i class="ti ti-logout ti-sm"></i>
+                    </div>
+                    <h4 class="mb-0">{{ $dischargedCount }}</h4>
+                    <small class="text-muted">Discharged</small>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  @include('_partials._modals.global-modal')
+    <div class="card">
+
+        {{-- Tabs --}}
+        <div class="card-header pb-0">
+            <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                <li class="nav-item">
+                    <button wire:click="$set('tab', 'active')"
+                        class="nav-link {{ $tab === 'active' ? 'active' : '' }}">
+                        <i class="ti ti-bed me-1"></i> Active
+                        <span class="badge bg-primary ms-1">{{ $activeCount }}</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button wire:click="$set('tab', 'discharged')"
+                        class="nav-link {{ $tab === 'discharged' ? 'active' : '' }}">
+                        <i class="ti ti-logout me-1"></i> Discharged
+                        <span class="badge bg-success ms-1">{{ $dischargedCount }}</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        {{-- Filters --}}
+        <div class="card-header border-bottom">
+            <div class="row g-2 align-items-end">
+                <div class="col-12 col-md-4">
+                    <label class="form-label small mb-1">Search Patient</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text"><i class="ti ti-search"></i></span>
+                        <input type="text" wire:model.debounce.400ms="search"
+                               class="form-control" placeholder="First or last name...">
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <label class="form-label small mb-1">Ward</label>
+                    <select wire:model="ward_id" class="form-select form-select-sm">
+                        <option value="">All Wards</option>
+                        @foreach($wards as $ward)
+                            <option value="{{ $ward->id }}">{{ $ward->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-6 col-md-3">
+                    <label class="form-label small mb-1">Patient</label>
+                    <select wire:model="patient_id" class="form-select form-select-sm">
+                        <option value="">All Patients</option>
+                        @foreach($patients as $patient)
+                            <option value="{{ $patient->id }}">
+                                {{ $patient->user->firstname }} {{ $patient->user->lastname }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-12 col-md-2 d-flex align-items-end">
+                    <button wire:click="$set('search', ''); $set('patient_id', ''); $set('ward_id', '')"
+                        class="btn btn-sm btn-outline-secondary w-100">
+                        <i class="ti ti-x me-1"></i> Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {{-- Active Table --}}
+        @if($tab === 'active')
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="min-width:180px">Patient</th>
+                        <th style="min-width:140px">Ward</th>
+                        <th style="min-width:80px">Bed</th>
+                        <th style="min-width:110px">Admitted</th>
+                        <th style="min-width:90px">Status</th>
+                        <th style="min-width:80px" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($admissions as $admission)
+                        @php
+                            $badges = [
+                                'pending'  => 'bg-label-warning',
+                                'prepared' => 'bg-label-info',
+                                'billed'   => 'bg-label-primary',
+                                'active'   => 'bg-label-success',
+                            ];
+                            $badge = $badges[$admission->status] ?? 'bg-label-secondary';
+                        @endphp
+                        <tr>
+                            <td>
+                                <span class="fw-semibold">
+                                    {{ $admission->patient->user->firstname ?? '' }}
+                                    {{ $admission->patient->user->lastname ?? '' }}
+                                </span>
+                                <br>
+                                <small class="text-muted">{{ $admission->patient->hospital_no ?? '' }}</small>
+                            </td>
+                            <td>{{ $admission->ward->name ?? 'N/A' }}</td>
+                            <td>{{ $admission->bed->name ?? 'N/A' }}</td>
+                            <td>{{ $admission->created_at->format('d M Y') }}</td>
+                            <td><span class="badge {{ $badge }}">{{ ucfirst($admission->status) }}</span></td>
+                            <td class="text-center">
+                                <a href="{{ route('app.admissions.show', $admission->id) }}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="ti ti-eye me-1"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="ti ti-inbox ti-lg d-block mb-2"></i>
+                                No active admissions found.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        @endif
+
+        {{-- Discharged Table --}}
+        @if($tab === 'discharged')
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="min-width:180px">Patient</th>
+                        <th style="min-width:140px">Ward</th>
+                        <th style="min-width:80px">Bed</th>
+                        <th style="min-width:110px">Admitted</th>
+                        <th style="min-width:110px">Discharged On</th>
+                        <th style="min-width:80px" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($admissions as $admission)
+                        <tr>
+                            <td>
+                                <span class="fw-semibold">
+                                    {{ $admission->patient->user->firstname ?? '' }}
+                                    {{ $admission->patient->user->lastname ?? '' }}
+                                </span>
+                                <br>
+                                <small class="text-muted">{{ $admission->patient->hospital_no ?? '' }}</small>
+                            </td>
+                            <td>{{ $admission->ward->name ?? 'N/A' }}</td>
+                            <td>{{ $admission->bed->name ?? 'N/A' }}</td>
+                            <td>{{ $admission->created_at->format('d M Y') }}</td>
+                            <td>
+                                {{ $admission->discharged_at
+                                    ? \Carbon\Carbon::parse($admission->discharged_at)->format('d M Y')
+                                    : 'N/A' }}
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ route('app.admissions.show', $admission->id) }}"
+                                   class="btn btn-sm btn-outline-secondary">
+                                    <i class="ti ti-eye me-1"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="ti ti-inbox ti-lg d-block mb-2"></i>
+                                No discharged admissions found.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        @endif
+
+        <div class="card-footer">
+            {{ $admissions->links() }}
+        </div>
+    </div>
 </div>
-
-<!-- Modal script -->
-<script>
-  $(document).ready(function () {
-    $('.dropdown-item').on('click', function () {
-      var requestUrl = $(this).data('request-url');
-      $.ajax({
-        url: requestUrl,
-        type: 'GET',
-        success: function (response) {
-          $('#global-modal .modal-body').html(response);
-          $('#global-modal').modal('show');
-        },
-        error: function (xhr, status, error) {
-          console.error(error);
-        }
-      });
-    });
-  });
-</script>

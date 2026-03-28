@@ -225,6 +225,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::get('admission/bill/{admission}', [AdmissionController::class, 'bill'])->name('admissions.bill');
   Route::post('admission/bill', [AdmissionController::class, 'billAdmission'])->name('admissions.bill.post');
   Route::get('admission-bed/{ref}', [AdmissionController::class, 'assignBed'])->name('admissions.bed');
+  Route::post('admissions/{admission}/discharge', [AdmissionController::class, 'discharge'])->name('admissions.discharge');
   Route::resource('billing', BillingController::class);
   Route::resource('antenatals', AntenatalController::class);
   Route::get('antenatal-export', [AntenatalController::class, 'export'])->name('antenatal.export');

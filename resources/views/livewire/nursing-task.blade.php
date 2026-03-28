@@ -63,9 +63,11 @@
 </div>
 
 <script>
-    document.addEventListener('livewire:initialized', () => {
-       @this.on('closeModal', (event) => {
-           $('#new-nursing-task-modal').modal('hide');
-       });
+    document.addEventListener('livewire:load', () => {
+        window.livewire.on('closeModal', () => {
+            $('#new-nursing-task-modal').modal('hide');
+        });
+    });
+</script>
     });
 </script>

@@ -230,4 +230,26 @@ class AdmissionController extends Controller
   {
     //
   }
+
+  public function discharge(Request $request, Admission $admission)
+  {
+      $request->validate([
+          'discharge_note' => 'nullable|string',
+          'discharged_at'  => 'required|date',
+      ]);
+
+      // Free up the bed
+      if ($admission->bed_id) {
+          Bed::where('id', $admission->bed_id)->update(['status' => 'available']);
+      }
+
+      $admission->update([
+          'status'         => 'discharged',
+          'discharge_note' => $request->discharge_note,
+          'discharged_at'  => $request->discharged_at,
+      ]);
+
+      return redirect()->route('app.admissions.index')
+          ->with('success', 'Patient discharged successfully.');
+  }
 }

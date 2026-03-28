@@ -44,8 +44,8 @@ class NursingNote extends Component
         ]);
 
         $this->reset('note');
-        $this->dispatch('closeModal');
-        $this->dispatch('notify', ['type' => 'success', 'message' => 'Nursing note saved successfully.']);
+        $this->emit('closeModal');
+        $this->emit('notify', ['type' => 'success', 'message' => 'Nursing note saved successfully.']);
     }
 
     public function render()

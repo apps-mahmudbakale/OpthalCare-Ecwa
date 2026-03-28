@@ -9,11 +9,18 @@
         use App\Models\Patient;
         use App\Models\Admission;
 
-        $patientId = optional(request()->route('patient'))->id;
+        $patientId = null;
+        $route = request()->route();
 
-        if (!$patientId && request()->route('admission')) {
-        $admission = Admission::find(request()->route('admission')->id);
-        $patientId = optional($admission)->patient_id;
+        if ($route) {
+            if ($route->parameter('patient')) {
+                $param = $route->parameter('patient');
+                $patientId = is_object($param) ? $param->id : $param;
+            } elseif ($route->parameter('admission')) {
+                $param = $route->parameter('admission');
+                $admission = is_object($param) ? $param : Admission::find($param);
+                $patientId = $admission?->patient_id;
+            }
         }
 
         $patient = Patient::find($patientId);
@@ -24,8 +31,9 @@
           <h3 class="mb-2">New Allergies for {{ $user->firstname ?? '' }}</h3>
         </div>
 
-        <form action="{{ route('app.allergies.store', ['patient_id' => $patientId]) }}" method="POST" class="row g-3">
+        <form action="{{ route('app.allergies.store') }}" method="POST" class="row g-3">
           @csrf
+          <input type="hidden" name="patient_id" value="{{ $patientId }}">
 
           <div class="col-12 col-md-12">
             <label class="form-label">Type</label>

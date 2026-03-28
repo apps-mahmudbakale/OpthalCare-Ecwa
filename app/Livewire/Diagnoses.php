@@ -8,34 +8,44 @@ use Livewire\Component;
 class Diagnoses extends Base
 {
   public $sortBy = 'created_at';
-  public $patientId; // Add patientId property to hold the patient ID
+  public $patientId;
+
+  protected $listeners = ['deleteDiagnosisRecord' => 'delete'];
 
   public function mount($patientId)
   {
     $this->patientId = $patientId;
   }
+
   public function render()
   {
-    if ($this->search) {
-      $diagnoses = Diagnosis::query()
-        ->where('patient_id', $this->patientId)
-        ->where('status', 'like', '%' . $this->search . '%')
-        ->orWhere('ICD10', 'like', '%' . $this->search . '%')
-        ->paginate(10);
+    $query = Diagnosis::query()->where('patient_id', $this->patientId);
 
-      return view(
-        'livewire.diagnoses',
-        ['diagnoses' => $diagnoses]
-      );
-    } else {
-      $diagnoses = Diagnosis::query()
-        ->where('patient_id', $this->patientId)
-        ->orderBy($this->sortBy, $this->sortDirection)
-        ->paginate($this->perPage);
-      return view(
-        'livewire.diagnoses',
-        ['diagnoses' => $diagnoses]
-      );
+    if ($this->search) {
+      $query->where(function ($q) {
+        $q->where('status', 'like', '%' . $this->search . '%')
+          ->orWhere('history', 'like', '%' . $this->search . '%')
+          ->orWhere('assessment', 'like', '%' . $this->search . '%')
+          ->orWhereHas('ICD', function ($q) {
+            $q->where('number', 'like', '%' . $this->search . '%')
+              ->orWhere('name', 'like', '%' . $this->search . '%');
+          });
+      });
+    }
+
+    $diagnoses = $query->orderBy($this->sortBy, $this->sortDirection)
+      ->paginate($this->perPage);
+
+    return view('livewire.diagnoses', ['diagnoses' => $diagnoses]);
+  }
+
+  public function delete($id)
+  {
+    $diagnosis = Diagnosis::find($id);
+    if ($diagnosis) {
+      $diagnosis->delete();
+      $this->emit('diagnosisDeleted');
+      session()->flash('success', 'Diagnosis Deleted Successfully!');
     }
   }
 }

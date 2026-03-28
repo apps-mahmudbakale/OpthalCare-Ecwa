@@ -37,17 +37,16 @@
                         <td>{{ $hmo->phone }}</td>
                         <td>{{ $hmo->address }}</td>
                         <td>
-                            <div class="d-inline-block"><a href="javascript:;"
-                                    class="dropdown hide-arrow" data-bs-toggle="dropdown"><i
-                                        class="text-primary ti ti-dots-vertical"></i></a>
-                                <ul class="dropdown-menu dropdown-menu-end m-0">
-                                    <li><a href="" wire:click.prevent="selectHmo({{ $hmo->id }})"
-                                            class="dropdown-item">Edit</a></li>
-                                    <div class="dropdown-divider"></div>
-                                    <li><a id="delete{{ $hmo->id }}"
-                                            data-value="{{ $hmo->id }}"
-                                            class="dropdown-item text-danger delete-record">Delete</a></li>
-                                </ul>
+                            <div class="d-flex gap-1">
+                                <button type="button" wire:click="selectHmo({{ $hmo->id }})"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="ti ti-edit ti-xs"></i> Edit
+                                </button>
+                                <button type="button" id="delete{{ $hmo->id }}"
+                                    data-value="{{ $hmo->id }}"
+                                    class="btn btn-sm btn-outline-danger delete-record">
+                                    <i class="ti ti-trash ti-xs"></i> Delete
+                                </button>
                             </div>
                             <script>
                                 document.querySelector('#delete{{ $hmo->id }}').addEventListener('click', function(e) {
@@ -93,11 +92,15 @@
         </div>
     </div>
     <script>
-        window.addEventListener('HmoEditModal', event => {
-           $('#editHmoGroup').modal('show');
-           console.log(event);
-       });
-   </script>
+        document.addEventListener('livewire:load', function () {
+            window.livewire.on('HmoEditModal', () => {
+                $('#editHmoGroup').modal('show');
+            });
+            window.livewire.on('closeModal', () => {
+                $('#editHmoGroup').modal('hide');
+            });
+        });
+    </script>
    @include('_partials/_modals.modal-new-HmoGroup')
    @include('_partials/_modals.modal-edit-HmoGroup')
 </div>

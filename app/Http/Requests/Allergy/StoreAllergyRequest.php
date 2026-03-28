@@ -22,6 +22,7 @@ class StoreAllergyRequest extends FormRequest
     public function rules(): array
     {
         return [
+          'patient_id' => ['required', 'exists:patients,id'],
           'type' => ['required'],
           'allergen' => ['required'],
           'reaction_to_allergen' => ['required']

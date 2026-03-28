@@ -20,7 +20,7 @@ class AntenatalRecords extends Component
     public function delete($id)
     {
         AntenatalRecord::findOrFail($id)->delete();
-        $this->dispatch('notify', ['type' => 'success', 'message' => 'Record deleted.']);
+        $this->emit('notify', ['type' => 'success', 'message' => 'Record deleted.']);
     }
 
     public function render()

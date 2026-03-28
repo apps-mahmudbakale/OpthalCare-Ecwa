@@ -22,7 +22,7 @@ class HmoGroups extends Base
         $this->HmoPhone = $hmo->phone;
         $this->HmoEmail = $hmo->email;
         $this->HmoAddress = $hmo->address;
-        $this->dispatchBrowserEvent('HmoEditModal');
+        $this->emit('HmoEditModal');
     }
 
     public function updateHmo()
@@ -34,7 +34,8 @@ class HmoGroups extends Base
             'address' => $this->HmoAddress
         ]);
 
-        redirect()->route('app.settings.index')->with('success', 'HMO Updated');
+        $this->emit('closeModal');
+        session()->flash('success', 'HMO Updated Successfully');
     }
 
     public function render()

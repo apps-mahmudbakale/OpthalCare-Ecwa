@@ -12,7 +12,12 @@ class Allergies extends Base
   public $type;
   public $allergen;
   public $reactionToAllergen;
-   public $patientId;
+  public $patientId;
+
+  public function mount($patientId = null)
+  {
+    $this->patientId = $patientId;
+  }
 
   public function selectAllergy($allergy_id)
   {
@@ -32,7 +37,7 @@ class Allergies extends Base
       'reaction_to_allergen' => $this->reactionToAllergen,
     ]);
 
-    return redirect()->route('app.patients.show', $this->patientId )->with('success', 'Allergy Updated Successfully');
+    return redirect()->back()->with('success', 'Allergy Updated Successfully');
   }
     public function render()
     {

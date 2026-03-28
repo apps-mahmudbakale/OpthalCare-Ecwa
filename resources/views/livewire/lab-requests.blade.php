@@ -48,6 +48,7 @@
                                 
                                 <a href="javascript:void(0);" 
                                    data-request-url="{{ route('app.lab.edit', $request->id) }}"
+                                   data-target="#global-modal-lg"
                                    class="btn btn-sm btn-icon btn-outline-secondary" title="Edit">
                                     <i class="ti ti-edit ti-xs"></i>
                                 </a>

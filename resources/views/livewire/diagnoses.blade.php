@@ -29,6 +29,7 @@
                             <div class="btn-group" role="group">
                                 <a href="javascript:void(0);" 
                                    data-request-url="{{route('app.diagnosis.show', $diagnosis->id)}}" 
+                                   data-target="#global-modal-lg"
                                    class="btn btn-sm btn-icon btn-outline-secondary" title="View">
                                     <i class="ti ti-eye ti-xs"></i>
                                 </a>
@@ -40,6 +41,7 @@
                                 
                                 <a href="javascript:void(0);" 
                                    data-request-url="{{ route('app.diagnosis.edit', $diagnosis->id) }}"
+                                   data-target="#global-modal-lg"
                                    class="btn btn-sm btn-icon btn-outline-secondary" title="Edit">
                                     <i class="ti ti-edit ti-xs"></i>
                                 </a>

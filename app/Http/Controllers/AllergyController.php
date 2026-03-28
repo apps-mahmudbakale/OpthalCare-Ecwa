@@ -30,7 +30,7 @@ class AllergyController extends Controller
   public function store(StoreAllergyRequest $request)
   {
     $allergy = Allergy::create($request->all());
-    return redirect()->route('app.patients.show', $allergy->patient_id)->with('success', 'Allergy Created Successfully');
+    return redirect()->back()->with('success', 'Allergy Created Successfully');
   }
 
   /**
@@ -56,7 +56,7 @@ class AllergyController extends Controller
   public function update(Request $request, Allergy $allergy)
   {
     $allergy->update($request->all());
-    return redirect()->route('app.patients.show', $allergy->patient_id)->with('success', 'Allergy Updated Successfully');
+    return redirect()->back()->with('success', 'Allergy Updated Successfully');
   }
 
   /**
