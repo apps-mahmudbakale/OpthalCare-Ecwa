@@ -23,16 +23,14 @@
     <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/quill/katex.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/quill/quill.js') }}"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
 @endsection
 
 @section('content')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="{{ asset('assets/js/extended-ui-sweetalert2.js') }}"></script>
     <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Patients/</span> Patient Profile</h4>
     <!-- Header -->
     <div class="row">
-        <script src="https://code.highcharts.com/highcharts.js"></script>
         <div class="col-12">
             <div class="card mb-4">
                 <div class="user-profile-header d-flex flex-column flex-sm-row text-sm-start text-center mb-4">
@@ -484,8 +482,6 @@
 @include('_partials._modals.modal-new-imaging')
 @include('_partials._modals.modal-new-documents')
 @include('_partials._modals.global-modal')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function() {
         $(document).on('click', '[data-request-url][data-target="#global-modal-lg"], .dropdown-item[data-request-url]', function(e) {
