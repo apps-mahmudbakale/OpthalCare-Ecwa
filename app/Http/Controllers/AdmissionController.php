@@ -26,9 +26,35 @@ class AdmissionController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index()
+  public function index(Request $request)
   {
-    return view('admission.index');
+    $activeStatuses = ['pending', 'prepared', 'billed', 'active'];
+    $tab       = $request->get('tab', 'active');
+    $search    = $request->get('search', '');
+    $ward_id   = $request->get('ward_id', '');
+    $patient_id = $request->get('patient_id', '');
+
+    $query = Admission::with(['patient.user', 'ward', 'bed'])
+        ->when($tab === 'active',     fn($q) => $q->whereIn('admissions.status', $activeStatuses))
+        ->when($tab === 'discharged', fn($q) => $q->where('admissions.status', 'discharged'))
+        ->when($ward_id,    fn($q) => $q->where('admissions.ward_id', $ward_id))
+        ->when($patient_id, fn($q) => $q->where('admissions.patient_id', $patient_id))
+        ->when($search, fn($q) => $q->whereHas('patient.user', fn($sq) =>
+            $sq->where('firstname', 'like', "%$search%")
+               ->orWhere('lastname',  'like', "%$search%")
+        ))
+        ->latest('admissions.created_at');
+
+    $admissions      = $query->paginate(15)->withQueryString();
+    $activeCount     = Admission::whereIn('status', $activeStatuses)->count();
+    $dischargedCount = Admission::where('status', 'discharged')->count();
+    $patients        = Patient::with('user')->get();
+    $wards           = \App\Models\Ward::all();
+
+    return view('admission.index', compact(
+        'admissions', 'activeCount', 'dischargedCount',
+        'patients', 'wards', 'tab', 'search', 'ward_id', 'patient_id'
+    ));
   }
 
   /**
