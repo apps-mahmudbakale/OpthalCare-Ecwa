@@ -226,6 +226,17 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::post('admission/bill', [AdmissionController::class, 'billAdmission'])->name('admissions.bill.post');
   Route::get('admission-bed/{ref}', [AdmissionController::class, 'assignBed'])->name('admissions.bed');
   Route::post('admissions/{admission}/discharge', [AdmissionController::class, 'discharge'])->name('admissions.discharge');
+
+  // Admission Notes (Progress / Nursing Notes & Tasks)
+  Route::post('notes/progress', [App\Http\Controllers\AdmissionNotesController::class, 'storeProgressNote'])->name('notes.progress.store');
+  Route::delete('notes/progress/{progressNote}', [App\Http\Controllers\AdmissionNotesController::class, 'destroyProgressNote'])->name('notes.progress.destroy');
+
+  Route::post('notes/nursing', [App\Http\Controllers\AdmissionNotesController::class, 'storeNursingNote'])->name('notes.nursing.store');
+  Route::delete('notes/nursing/{nursingNote}', [App\Http\Controllers\AdmissionNotesController::class, 'destroyNursingNote'])->name('notes.nursing.destroy');
+
+  Route::post('notes/task', [App\Http\Controllers\AdmissionNotesController::class, 'storeNursingTask'])->name('notes.task.store');
+  Route::post('notes/task/{nursingTask}/toggle', [App\Http\Controllers\AdmissionNotesController::class, 'toggleNursingTask'])->name('notes.task.toggle');
+  Route::delete('notes/task/{nursingTask}', [App\Http\Controllers\AdmissionNotesController::class, 'destroyNursingTask'])->name('notes.task.destroy');
   Route::resource('billing', BillingController::class);
   Route::resource('antenatals', AntenatalController::class);
   Route::get('antenatal-export', [AntenatalController::class, 'export'])->name('antenatal.export');

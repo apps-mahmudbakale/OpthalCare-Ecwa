@@ -177,23 +177,112 @@
                 <div class="tab-content">
                     <!-- Procedure Note Tab -->
                     <div class="tab-pane fade active show" id="navs-pills-justified-procedure-notes" role="tabpanel">
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#new-progress-note-modal"
-                            class="btn btn-primary mb-2 float-end">New Entry</a>
-                        <livewire:progress-note :procedureRequestId="$procedureRequest->id" />
+                        <div class="p-3">
+                            <button class="btn btn-primary mb-3 float-end" data-bs-toggle="modal" data-bs-target="#modal-progress-note">
+                                <i class="ti ti-plus me-1"></i> New Entry
+                            </button>
+                            <div class="clearfix"></div>
+                            <div class="mt-3">
+                                @forelse($progressNotes as $item)
+                                <div class="d-flex mb-3">
+                                    <div class="flex-shrink-0 me-3">
+                                        <span class="avatar-initial rounded-circle bg-label-primary d-flex align-items-center justify-content-center fw-bold" style="width:38px;height:38px;">
+                                            {{ strtoupper(substr($item->user->firstname,0,1)) }}{{ strtoupper(substr($item->user->lastname,0,1)) }}
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="card border-0 shadow-sm" style="border-left:3px solid #696cff !important;background:#fff !important;">
+                                            <div class="card-body py-2 px-3">
+                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                    <span class="fw-semibold" style="color:#566a7f">{{ $item->user->firstname }} {{ $item->user->lastname }}</span>
+                                                    <small style="color:#a1acb8">{{ $item->created_at->format('d M Y, H:i') }}</small>
+                                                </div>
+                                                <p class="mb-0" style="white-space:pre-wrap;color:#566a7f">{{ $item->note }}</p>
+                                            </div>
+                                        </div>
+                                        @if(!$loop->last)<div style="border-left:2px dashed #d9dbe0;height:16px;margin-left:11px;"></div>@endif
+                                    </div>
+                                </div>
+                                @empty
+                                <div class="text-center text-muted py-4"><i class="ti ti-note ti-lg d-block mb-2"></i>No procedure notes yet.</div>
+                                @endforelse
+                                {{ $progressNotes->links() }}
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Nursing Note Tab -->
                     <div class="tab-pane fade" id="navs-pills-justified-nursing-note" role="tabpanel">
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#new-nursing-note-modal"
-                            class="btn btn-primary mb-2 float-end">New Entry</a>
-                        <livewire:nursing-note :procedureRequestId="$procedureRequest->id" />
+                        <div class="p-3">
+                            <button class="btn btn-primary mb-3 float-end" data-bs-toggle="modal" data-bs-target="#modal-nursing-note">
+                                <i class="ti ti-plus me-1"></i> New Entry
+                            </button>
+                            <div class="clearfix"></div>
+                            <div class="table-responsive mt-3">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light">
+                                        <tr><th>Date</th><th>Recorded By</th><th>Note</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse($nursingNotes as $item)
+                                        <tr>
+                                            <td style="white-space:nowrap">{{ $item->created_at->format('d M Y H:i') }}</td>
+                                            <td style="white-space:nowrap">{{ $item->user->firstname }} {{ $item->user->lastname }}</td>
+                                            <td style="white-space:pre-wrap">{{ $item->note }}</td>
+                                        </tr>
+                                        @empty
+                                        <tr><td colspan="3" class="text-center text-muted py-4">No nursing notes yet.</td></tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                                {{ $nursingNotes->links() }}
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Procedure Checklist Tab -->
                     <div class="tab-pane fade" id="navs-pills-justified-procedure-checklist" role="tabpanel">
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#new-nursing-task-modal"
-                            class="btn btn-primary mb-2 float-end">New Entry</a>
-                        <livewire:nursing-task :procedureRequestId="$procedureRequest->id" />
+                        <div class="p-3">
+                            <button class="btn btn-primary mb-3 float-end" data-bs-toggle="modal" data-bs-target="#modal-nursing-task">
+                                <i class="ti ti-plus me-1"></i> New Entry
+                            </button>
+                            <div class="clearfix"></div>
+                            <div class="table-responsive mt-3">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light">
+                                        <tr><th>Date</th><th>Recorded By</th><th>Task</th><th>Status</th><th></th></tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse($nursingTasks as $item)
+                                        <tr>
+                                            <td style="white-space:nowrap">{{ $item->created_at->format('d M Y H:i') }}</td>
+                                            <td style="white-space:nowrap">{{ $item->user->firstname }} {{ $item->user->lastname }}</td>
+                                            <td style="white-space:pre-wrap">{{ $item->task }}</td>
+                                            <td>
+                                                <form action="{{ route('app.notes.task.toggle', $item->id) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-{{ $item->status === 'Completed' ? 'success' : 'warning' }}">
+                                                        {{ $item->status }}
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form action="{{ route('app.notes.task.destroy', $item->id) }}" method="POST" class="d-inline">
+                                                    @csrf @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete?')">
+                                                        <i class="ti ti-trash ti-xs"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        @empty
+                                        <tr><td colspan="5" class="text-center text-muted py-4">No tasks yet.</td></tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                                {{ $nursingTasks->links() }}
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Lab Requests Tab -->
@@ -322,6 +411,78 @@
 @include('_partials._modals.modal-new-imaging')
 @include('_partials._modals.modal-new-vitals')
 @include('_partials._modals.global-modal')
+
+{{-- Progress Note Modal --}}
+<div class="modal fade" id="modal-progress-note" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Procedure Note</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ route('app.notes.progress.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="procedure_request_id" value="{{ $procedureRequest->id }}">
+                <div class="modal-body">
+                    <label class="form-label">Note</label>
+                    <textarea name="note" class="form-control" rows="8" placeholder="Enter procedure note..." required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Note</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Nursing Note Modal --}}
+<div class="modal fade" id="modal-nursing-note" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Nursing Note</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ route('app.notes.nursing.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="procedure_request_id" value="{{ $procedureRequest->id }}">
+                <div class="modal-body">
+                    <label class="form-label">Note</label>
+                    <textarea name="note" class="form-control" rows="8" placeholder="Enter nursing note..." required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Note</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Nursing Task Modal --}}
+<div class="modal fade" id="modal-nursing-task" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Checklist Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ route('app.notes.task.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="procedure_request_id" value="{{ $procedureRequest->id }}">
+                <div class="modal-body">
+                    <label class="form-label">Task Description</label>
+                    <textarea name="task" class="form-control" rows="5" placeholder="Enter task details..." required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>

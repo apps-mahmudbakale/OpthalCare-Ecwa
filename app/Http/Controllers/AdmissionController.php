@@ -178,15 +178,26 @@ class AdmissionController extends Controller
     $patient = Patient::where('id', $admission->patient_id)->first();
     $wallet_balance = $patient->wallet ? $patient->wallet->balance : 0;
     $outstanding_balance = Billing::where('user_id', $admission->patient_id)->where('status', 0)->sum('amount');
+
+    $progressNotes = \App\Models\ProgressNote::with('user')
+        ->where('admission_id', $admission->id)->latest()->paginate(10, ['*'], 'progress_page');
+    $nursingNotes = \App\Models\NursingNote::with('user')
+        ->where('admission_id', $admission->id)->latest()->paginate(10, ['*'], 'nursing_page');
+    $nursingTasks = \App\Models\NursingTask::with('user')
+        ->where('admission_id', $admission->id)->latest()->paginate(10, ['*'], 'task_page');
+
     return view('admission.show', [
-      'admission' => $admission,
-      'patient' => $patient,
-      'blood_pressure' => $chart->build($patient->id),
-      'pulse' => $pulse->build($patient->id),
-      'temperature' => $temperature->build($patient->id),
-      'weight' => $weight->build($patient->id),
+      'admission'           => $admission,
+      'patient'             => $patient,
+      'blood_pressure'      => $chart->build($patient->id),
+      'pulse'               => $pulse->build($patient->id),
+      'temperature'         => $temperature->build($patient->id),
+      'weight'              => $weight->build($patient->id),
       'outstanding_balance' => $outstanding_balance,
-      'wallet_balance' => $wallet_balance,
+      'wallet_balance'      => $wallet_balance,
+      'progressNotes'       => $progressNotes,
+      'nursingNotes'        => $nursingNotes,
+      'nursingTasks'        => $nursingTasks,
     ]);
   }
 
