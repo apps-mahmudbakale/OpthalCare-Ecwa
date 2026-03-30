@@ -289,21 +289,107 @@
                     <div class="tab-pane fade" id="navs-pills-justified-lab" role="tabpanel">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#new-lab-modal"
                             class="btn btn-primary mb-2 float-end">New Entry</a>
-                        <livewire:lab-requests :patientId="$patient->id" />
+                        <div class="table-responsive mt-3">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr><th>Date</th><th>Investigation</th><th>Status</th><th class="text-center">Actions</th></tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($labRequests as $req)
+                                    <tr>
+                                        <td>{{ $req->created_at->format('d M Y') }}<br><small class="text-muted">{{ $req->created_at->format('h:i A') }}</small></td>
+                                        <td>{{ $req->test->name ?? 'N/A' }}</td>
+                                        <td>
+                                            @php $lbadge = ['Pending'=>'bg-label-warning','Specimen Collected'=>'bg-label-info','Result Ready'=>'bg-label-success']; @endphp
+                                            <span class="badge {{ $lbadge[$req->status] ?? 'bg-label-secondary' }}">{{ $req->status }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                @if($req->status == 'Result Ready')
+                                                <a href="javascript:void(0);" data-request-url="{{ route('app.lab.print.result', ['lab'=>$req->id,'modal'=>1]) }}" data-target="#global-modal-lg" class="btn btn-sm btn-icon btn-outline-secondary" title="View"><i class="ti ti-eye ti-xs"></i></a>
+                                                <a href="{{ route('app.lab.print.result', $req->id) }}" target="_blank" class="btn btn-sm btn-icon btn-outline-secondary" title="Print"><i class="ti ti-printer ti-xs"></i></a>
+                                                @endif
+                                                <a href="javascript:void(0);" data-request-url="{{ route('app.lab.edit', $req->id) }}" data-target="#global-modal-lg" class="btn btn-sm btn-icon btn-outline-secondary" title="Edit"><i class="ti ti-edit ti-xs"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr><td colspan="4" class="text-center text-muted py-4">No lab requests found.</td></tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                            {{ $labRequests->links() }}
+                        </div>
                     </div>
 
                     <!-- Imaging Tab -->
                     <div class="tab-pane fade" id="navs-pills-justified-imaging" role="tabpanel">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#new-imaging-modal"
                             class="btn btn-primary mb-2 float-end">New Entry</a>
-                        <livewire:radiology-request :patientId="$patient->id" />
+                        <div class="table-responsive mt-3">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr><th>Date</th><th>Investigation</th><th>Status</th><th class="text-center">Actions</th></tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($imagingRequests as $req)
+                                    <tr>
+                                        <td>{{ $req->created_at->format('d M Y') }}<br><small class="text-muted">{{ $req->created_at->format('h:i A') }}</small></td>
+                                        <td>{{ $req->test->name ?? 'N/A' }}</td>
+                                        <td>
+                                            @php $rbadge = ['Pending'=>'bg-label-warning','Specimen Collected'=>'bg-label-info','Result Ready'=>'bg-label-success']; @endphp
+                                            <span class="badge {{ $rbadge[$req->status] ?? 'bg-label-secondary' }}">{{ $req->status }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                @if($req->status == 'Result Ready')
+                                                <a href="javascript:void(0);" data-request-url="{{ route('app.radiology.print.result', ['lab'=>$req->id,'modal'=>1]) }}" data-target="#global-modal-lg" class="btn btn-sm btn-icon btn-outline-secondary" title="View"><i class="ti ti-eye ti-xs"></i></a>
+                                                <a href="{{ route('app.radiology.print.result', $req->id) }}" target="_blank" class="btn btn-sm btn-icon btn-outline-secondary" title="Print"><i class="ti ti-printer ti-xs"></i></a>
+                                                @endif
+                                                <a href="javascript:void(0);" data-request-url="{{ route('app.radiology.edit', $req->id) }}" data-target="#global-modal-lg" class="btn btn-sm btn-icon btn-outline-secondary" title="Edit"><i class="ti ti-edit ti-xs"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr><td colspan="4" class="text-center text-muted py-4">No imaging requests found.</td></tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                            {{ $imagingRequests->links() }}
+                        </div>
                     </div>
 
                     <!-- Drug Prescriptions Tab -->
                     <div class="tab-pane fade" id="navs-pills-justified-drugs" role="tabpanel">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#new-drugs-modal"
                             class="btn btn-primary mb-2 float-end">New Entry</a>
-                        <livewire:drugs-request :patientId="$patient->id" />
+                        <div class="table-responsive mt-3">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr><th>Date</th><th>Drug</th><th>Dose</th><th>Qty</th><th>Status</th><th class="text-center">Actions</th></tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($drugRequests as $req)
+                                    <tr>
+                                        <td>{{ $req->created_at->format('d M Y') }}<br><small class="text-muted">{{ $req->created_at->format('h:i A') }}</small></td>
+                                        <td><span class="badge bg-label-primary">{{ $req->drug->name ?? 'N/A' }}</span></td>
+                                        <td>{{ $req->dose }}</td>
+                                        <td>{{ $req->qty }}</td>
+                                        <td>
+                                            @php $dbadge = ['Pending'=>'bg-label-warning','Filled'=>'bg-label-success','Cancelled'=>'bg-label-danger']; @endphp
+                                            <span class="badge {{ $dbadge[$req->status] ?? 'bg-label-secondary' }}">{{ $req->status }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{{ route('app.pharmacy.request.print', $req->id) }}" target="_blank" class="btn btn-sm btn-icon btn-outline-secondary" title="Print"><i class="ti ti-printer ti-xs"></i></a>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr><td colspan="6" class="text-center text-muted py-4">No drug prescriptions found.</td></tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                            {{ $drugRequests->links() }}
+                        </div>
                     </div>
 
                     <div class="tab-pane fade" id="navs-pills-justified-vitals" role="tabpanel">

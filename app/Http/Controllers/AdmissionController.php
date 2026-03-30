@@ -185,6 +185,9 @@ class AdmissionController extends Controller
         ->where('admission_id', $admission->id)->latest()->paginate(10, ['*'], 'nursing_page');
     $nursingTasks = \App\Models\NursingTask::with('user')
         ->where('admission_id', $admission->id)->latest()->paginate(10, ['*'], 'task_page');
+    $labRequests     = \App\Models\LabRequest::with('test')->where('patient_id', $admission->patient_id)->latest()->paginate(10, ['*'], 'lab_page');
+    $imagingRequests = \App\Models\RadiologyRequest::with('test')->where('patient_id', $admission->patient_id)->latest()->paginate(10, ['*'], 'imaging_page');
+    $drugRequests    = \App\Models\DrugRequest::with('drug')->where('patient_id', $admission->patient_id)->latest()->paginate(10, ['*'], 'drug_page');
 
     return view('admission.show', [
       'admission'           => $admission,
@@ -198,6 +201,9 @@ class AdmissionController extends Controller
       'progressNotes'       => $progressNotes,
       'nursingNotes'        => $nursingNotes,
       'nursingTasks'        => $nursingTasks,
+      'labRequests'         => $labRequests,
+      'imagingRequests'     => $imagingRequests,
+      'drugRequests'        => $drugRequests,
     ]);
   }
 
