@@ -257,7 +257,7 @@ class AdmissionController extends Controller
 
       // Free up the bed
       if ($admission->bed_id) {
-          Bed::where('id', $admission->bed_id)->update(['status' => 'available']);
+          Bed::where('id', $admission->bed_id)->update(['available' => 1]);
       }
 
       $admission->update([
