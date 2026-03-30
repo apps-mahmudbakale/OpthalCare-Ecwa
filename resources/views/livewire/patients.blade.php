@@ -201,53 +201,41 @@
         inputAttributes: {
           autocapitalize: 'off'
         },
+        inputPlaceholder: 'e.g. OPC-123456',
         confirmButtonText: 'Get Access',
         showLoaderOnConfirm: true,
         preConfirm: async (accessCode) => {
+          if (!accessCode) {
+            return Swal.showValidationMessage('Please enter an access code');
+          }
           try {
-            const apiUrl = `{{ route('bill.services.verify', ['0', 'create', '']) }}/${accessCode}`;
+            const apiUrl = `{{ url('/api/billservices/0/create') }}/${encodeURIComponent(accessCode)}`;
             const response = await fetch(apiUrl);
-
-            if (!response.ok) {
-              return Swal.showValidationMessage(`
-                Request failed: ${response.statusText}
-              `);
-            }
-
             const result = await response.json();
 
-            // Check if the access code verification was successful
             if (result.success) {
-              return result;  // If successful, return the result
+              return result;
             } else {
               return Swal.showValidationMessage(`Error: ${result.message}`);
             }
-
           } catch (error) {
-            Swal.showValidationMessage(`
-              Request failed: ${error}
-            `);
+            Swal.showValidationMessage(`Request failed: ${error}`);
           }
         },
         allowOutsideClick: () => !Swal.isLoading()
       }).then((result) => {
         if (result.isConfirmed) {
-          // Encrypt the response (for demonstration, using base64 encoding)
-          console.log(result.value.data);
           const encryptedData = btoa(JSON.stringify(result.value.data));
-
-          // Redirect to the patient.create route with encrypted data
           window.location.href = `{{ route('app.patients.create') }}?data=${encodeURIComponent(encryptedData)}`;
         }
       });
     }
   });
+</script>
 <script>
   $(document).ready(function() {
     $(document).on('click', '.dropdown-item[data-request-url]', function(e) {
-
       var requestUrl = $(this).data('request-url');
-
       if (requestUrl) {
         $.ajax({
           url: requestUrl,
