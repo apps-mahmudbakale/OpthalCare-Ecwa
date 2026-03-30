@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class NursingNote extends Model
 {
     use HasFactory;
-    protected $fillable = ['admission_id', 'procedure_request_id', 'patient_id', 'user_id', 'note', 'status'];
+    protected $fillable = ['admission_id', 'procedure_request_id', 'patient_id', 'user_id', 'note'];
 
     public function admission()
     {
