@@ -254,8 +254,9 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::get('report/radiology', [ReportController::class, 'radiologyReport'])->name('reports.radiology');
   Route::get('report/procedures', [ReportController::class, 'procedureReport'])->name('reports.procedure');
   Route::get('report/billings', [ReportController::class, 'billingReport'])->name('reports.billing');
-  Route::get('report/hmo', App\Livewire\HmoReport::class)->name('reports.hmo');
-  Route::get('report/hmo-reconciliation', App\Livewire\HmoReconciliation::class)->name('reports.hmo-reconciliation');
+  Route::get('report/hmo', [App\Http\Controllers\HmoReportController::class, 'analytics'])->name('reports.hmo');
+  Route::get('report/hmo-reconciliation', [App\Http\Controllers\HmoReportController::class, 'reconciliation'])->name('reports.hmo-reconciliation');
+  Route::get('report/hmo-reconciliation/export', [App\Http\Controllers\HmoReportController::class, 'export'])->name('reports.hmo-reconciliation.export');
   Route::get('hmo/finance', [App\Http\Controllers\HmoFinanceController::class, 'index'])->name('hmo.finance');
   Route::post('hmo/{hmo}/fund-wallet', [App\Http\Controllers\HmoFinanceController::class, 'fund'])->name('hmo.finance.fund');
   Route::get('hmo/{hmo}/wallet-history', [App\Http\Controllers\HmoFinanceController::class, 'history'])->name('hmo.finance.history');

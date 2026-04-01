@@ -15,12 +15,14 @@ class HmoReconciliationExport implements FromQuery, WithHeadings, WithMapping
     protected $planId;
     protected $dateFrom;
     protected $dateTo;
+    protected $status;
 
-    public function __construct($planId = null, $dateFrom = null, $dateTo = null)
+    public function __construct($planId = null, $dateFrom = null, $dateTo = null, $status = null)
     {
-        $this->planId = $planId;
+        $this->planId   = $planId;
         $this->dateFrom = $dateFrom;
-        $this->dateTo = $dateTo;
+        $this->dateTo   = $dateTo;
+        $this->status   = $status;
     }
 
     public function query()
@@ -32,11 +34,12 @@ class HmoReconciliationExport implements FromQuery, WithHeadings, WithMapping
         if ($this->planId) {
             $query->where('plan_id', $this->planId);
         }
-
+        if (!is_null($this->status)) {
+            $query->where('status', $this->status);
+        }
         if ($this->dateFrom) {
             $query->whereDate('created_at', '>=', $this->dateFrom);
         }
-
         if ($this->dateTo) {
             $query->whereDate('created_at', '<=', $this->dateTo);
         }

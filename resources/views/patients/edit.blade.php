@@ -256,7 +256,7 @@
   state_r.addEventListener('change', () => {
     var state_value = state_r.value;
 
-    fetch('/getLGA/' + state_value)
+    fetch('{{ url('getLGA') }}/' + state_value)
       .then((res) => res.json())
       .then(data => {
         console.log(data);
@@ -290,7 +290,7 @@
   state_o.addEventListener('change', () => {
     var state_value = state_o.value;
 
-    fetch('/getLGA/' + state_value)
+    fetch('{{ url('getLGA') }}/' + state_value)
       .then((res) => res.json())
       .then(data => {
         console.log(data);
