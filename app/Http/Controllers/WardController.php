@@ -35,8 +35,19 @@ class WardController extends Controller
 
   public function getBedsByWard($wardId)
   {
-//    $wardId = $request->input('ward_id');
-    $beds = Ward::find($wardId)->beds()->where('available', true)->get();
+    // Get IDs of beds currently occupied by non-discharged admissions
+    $occupiedBedIds = \App\Models\Admission::where('ward_id', $wardId)
+        ->whereNotIn('status', ['discharged'])
+        ->whereNotNull('bed_id')
+        ->pluck('bed_id')
+        ->toArray();
+
+    $beds = Ward::find($wardId)
+        ->beds()
+        ->where('available', true)
+        ->whereNotIn('id', $occupiedBedIds)
+        ->get();
+
     return $beds;
   }
 

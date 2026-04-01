@@ -17,9 +17,25 @@ class BillingController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index()
+  public function index(Request $request)
   {
-    return view('billing.index');
+    $search    = $request->get('search', '');
+    $status    = $request->filled('status') ? (int)$request->get('status') : null;
+    $dateFrom  = $request->get('date_from', '');
+    $dateTo    = $request->get('date_to', '');
+
+    $query = Billing::query()
+        ->whereNull('plan_id')
+        ->when(!is_null($status), fn($q) => $q->where('status', $status),
+                                  fn($q) => $q->where('status', 0))
+        ->when($search, fn($q) => $q->where('service', 'like', "%$search%"))
+        ->when($dateFrom, fn($q) => $q->whereDate('created_at', '>=', $dateFrom))
+        ->when($dateTo,   fn($q) => $q->whereDate('created_at', '<=', $dateTo))
+        ->latest();
+
+    $billings = $query->paginate(20)->withQueryString();
+
+    return view('billing.index', compact('billings', 'search', 'status', 'dateFrom', 'dateTo'));
   }
 
   /**

@@ -33,9 +33,45 @@ class PatientController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index(Request $request)
   {
-    return view('patients.index');
+    $search       = $request->get('search', '');
+    $filterGender = $request->get('gender', '');
+    $filterTag    = $request->get('tag_id', '');
+    $filterAge    = $request->get('age', '');
+
+    $query = Patient::query()->with('user', 'hmoPlan.hmo');
+
+    if ($search) {
+      $query->join('users', 'patients.user_id', '=', 'users.id')
+        ->where(function ($q) use ($search) {
+          $q->where('patients.hospital_no', 'like', "%$search%")
+            ->orWhere('patients.phone', 'like', "%$search%")
+            ->orWhere('users.firstname', 'like', "%$search%")
+            ->orWhere('users.lastname', 'like', "%$search%")
+            ->orWhere('patients.middlename', 'like', "%$search%");
+        })->select('patients.*');
+    }
+
+    if ($filterGender) {
+      $query->where('gender', $filterGender);
+    }
+
+    if ($filterTag) {
+      $query->whereHas('tags', fn($q) => $q->where('tag_id', $filterTag));
+    }
+
+    if ($filterAge) {
+      $age      = (int) $filterAge;
+      $fromDate = \Carbon\Carbon::now()->subYears($age + 1)->addDay();
+      $toDate   = \Carbon\Carbon::now()->subYears($age);
+      $query->whereBetween('date_of_birth', [$fromDate, $toDate]);
+    }
+
+    $patients = $query->orderBy('patients.hospital_no', 'desc')->paginate(20)->withQueryString();
+    $tags     = \App\Models\Tag::all();
+
+    return view('patients.index', compact('patients', 'tags', 'search', 'filterGender', 'filterTag', 'filterAge'));
   }
 
   /**
