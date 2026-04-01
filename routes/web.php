@@ -308,7 +308,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::post('lab-template/store', [LabTemplateController::class, 'store'])
     ->name('lab-template.store');
 });
-Route::get('getLGA/{state}', [DashboardController::class, 'getLGA']);
+Route::get('getLGA/{state}', [DashboardController::class, 'getLGA'])->name('getLGA');
 Route::post('getDrugsCategorybyStore', [DrugController::class, 'getDrugsCategorybyStore']);
 Route::post('getDrugsbyStore', [DrugController::class, 'getDrugsbyStore'])->name('get.drugs.by.store');
 Route::post('/getDrugsByCategory', [\App\Http\Controllers\DrugController::class, 'getByCategory']);

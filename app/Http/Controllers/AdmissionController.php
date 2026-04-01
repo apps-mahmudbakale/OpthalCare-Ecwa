@@ -74,37 +74,26 @@ class AdmissionController extends Controller
   public function storeAdmissionRequest(Request $request)
   {
       $request->validate([
-          'patient_id'           => 'required|exists:patients,id',
-          'ward_id'              => 'required|exists:wards,id',
-          'bed_id'               => 'required|exists:beds,id',
+          'patient_id' => 'required|exists:patients,id',
+          'ward_id' => 'required|exists:wards,id',
+          'bed_id' => 'required|exists:beds,id',
           'reason_for_admission' => 'required|string',
       ]);
-
-      // Check bed is not already occupied by an active admission
-      $occupied = Admission::where('bed_id', $request->bed_id)
-          ->whereNotIn('status', ['discharged'])
-          ->exists();
-
-      if ($occupied) {
-          return redirect()->back()
-              ->with('error', 'This bed is already occupied. Please select another bed.')
-              ->withInput();
-      }
 
       $ref = str()->upper(str()->random(6));
 
       Admission::create([
-          'patient_id'           => $request->patient_id,
-          'ward_id'              => $request->ward_id,
-          'bed_id'               => $request->bed_id,
+          'patient_id' => $request->patient_id,
+          'ward_id' => $request->ward_id,
+          'bed_id' => $request->bed_id,
           'reason_for_admission' => $request->reason_for_admission,
-          'user_id'              => auth()->id(),
-          'status'               => 'pending',
-          'ref'                  => $ref,
+          'user_id' => auth()->id(),
+          'status' => 'pending',
+          'ref' => $ref,
       ]);
 
-      // Mark bed as unavailable
-      Bed::where('id', $request->bed_id)->update(['available' => false]);
+      // Mark bed as occupied
+      Bed::where('id', $request->bed_id)->update(['available' => 0]);
 
       return redirect()->back()->with('success', 'Admission request submitted successfully.');
   }
@@ -267,29 +256,19 @@ class AdmissionController extends Controller
   {
     $billing = Billing::where('bill_ref', $request->ref)->first();
 
-    if ($billing && $billing->status == 0) {
+    if ($billing->status == 0){
       return redirect()->back()->with('error', 'Patient Admission Bill not settled');
     }
 
-    // Check bed is not occupied by another active admission
-    $occupied = Admission::where('bed_id', $request->bed_id)
-        ->where('id', '!=', $admission->id)
-        ->whereNotIn('status', ['discharged'])
-        ->exists();
-
-    if ($occupied) {
-        return redirect()->back()->with('error', 'This bed is already occupied. Please select another bed.');
-    }
-
-    // Free old bed if changing
+    // Mark old bed as available if changing beds
     if ($admission->bed_id && $admission->bed_id != $request->bed_id) {
-        Bed::where('id', $admission->bed_id)->update(['available' => true]);
+        Bed::where('id', $admission->bed_id)->update(['available' => 1]);
     }
 
-    // Mark new bed as unavailable
-    Bed::where('id', $request->bed_id)->update(['available' => false]);
+    // Mark new bed as occupied
+    Bed::where('id', $request->bed_id)->update(['available' => 0]);
 
-    $admission->update([
+    Admission::where('ref', $request->ref)->update([
       'ward_id' => $request->ward_id,
       'bed_id'  => $request->bed_id,
       'status'  => 'active'

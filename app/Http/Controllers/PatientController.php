@@ -37,8 +37,9 @@ class PatientController extends Controller
   {
     $search       = $request->get('search', '');
     $filterGender = $request->get('gender', '');
-    $filterTag    = $request->get('tag_id', '');
+    $filterTag    = $request->get('tag', '');
     $filterAge    = $request->get('age', '');
+    $filterHmo    = $request->get('hmo_plan_id', '');
 
     $query = Patient::query()->with('user', 'hmoPlan.hmo');
 
@@ -54,7 +55,7 @@ class PatientController extends Controller
     }
 
     if ($filterGender) {
-      $query->where('gender', $filterGender);
+      $query->where('patients.gender', $filterGender);
     }
 
     if ($filterTag) {
@@ -65,13 +66,18 @@ class PatientController extends Controller
       $age      = (int) $filterAge;
       $fromDate = \Carbon\Carbon::now()->subYears($age + 1)->addDay();
       $toDate   = \Carbon\Carbon::now()->subYears($age);
-      $query->whereBetween('date_of_birth', [$fromDate, $toDate]);
+      $query->whereBetween('patients.date_of_birth', [$fromDate, $toDate]);
     }
 
-    $patients = $query->orderBy('patients.hospital_no', 'desc')->paginate(20)->withQueryString();
-    $tags     = \App\Models\Tag::all();
+    if ($filterHmo) {
+      $query->where('patients.hmo_plan_id', $filterHmo);
+    }
 
-    return view('patients.index', compact('patients', 'tags', 'search', 'filterGender', 'filterTag', 'filterAge'));
+    $patients  = $query->orderBy('patients.hospital_no', 'desc')->paginate(20)->withQueryString();
+    $tags      = \App\Models\Tag::all();
+    $hmoPlans  = \App\Models\HmoPlan::with('hmo')->get();
+
+    return view('patients.index', compact('patients', 'tags', 'hmoPlans', 'search', 'filterGender', 'filterTag', 'filterAge', 'filterHmo'));
   }
 
   /**

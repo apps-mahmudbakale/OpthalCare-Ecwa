@@ -53,7 +53,7 @@
 
       if (wardId) {
         $.ajax({
-          url: 'getBedsByWard/' + wardId,
+          url: '{{ url('app/getBedsByWard') }}/' + wardId,
           type: 'GET',
           success: function (response) {
             bedSelect.empty().append('<option value="">Select Bed</option>');

@@ -15,26 +15,9 @@ class LabRequestController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index(Request $request)
+  public function index()
   {
-    $search     = $request->get('search', '');
-    $status     = $request->get('status', '');
-    $dateFrom   = $request->get('date_from', '');
-    $dateTo     = $request->get('date_to', '');
-
-    $query = LabRequest::query()->with(['patient.user', 'test'])
-        ->when($search, fn($q) => $q->whereHas('patient.user', fn($sq) =>
-            $sq->where('firstname', 'like', "%$search%")->orWhere('lastname', 'like', "%$search%")
-        )->orWhereHas('test', fn($sq) => $sq->where('name', 'like', "%$search%")))
-        ->when($status, fn($q) => $q->where('status', $status))
-        ->when($dateFrom, fn($q) => $q->whereDate('created_at', '>=', $dateFrom))
-        ->when($dateTo,   fn($q) => $q->whereDate('created_at', '<=', $dateTo))
-        ->orderByRaw("CASE WHEN status='Pending' THEN 1 WHEN status='Specimen Collected' THEN 2 ELSE 3 END")
-        ->latest();
-
-    $labRequests = $query->paginate(20)->withQueryString();
-
-    return view('laboratory.index', compact('labRequests', 'search', 'status', 'dateFrom', 'dateTo'));
+    return view('laboratory.index');
   }
 
   /**

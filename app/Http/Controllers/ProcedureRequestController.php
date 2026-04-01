@@ -17,29 +17,12 @@ use App\Services\ServiceRequestHandler;
 
 class ProcedureRequestController extends Controller
 {
-    public function index(\Illuminate\Http\Request $request)
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
     {
-        $patientId  = $request->get('patient_id', '');
-        $categoryId = $request->get('category_id', '');
-        $dateFrom   = $request->get('date_from', now()->toDateString());
-        $dateTo     = $request->get('date_to', now()->toDateString());
-
-        $requests = \App\Models\ProcedureRequest::query()
-            ->with(['patient.user', 'procedure.category'])
-            ->when($patientId,  fn($q) => $q->where('patient_id', $patientId))
-            ->when($categoryId, fn($q) => $q->whereHas('procedure', fn($sq) => $sq->where('category_id', $categoryId)))
-            ->when($dateFrom && $dateTo, fn($q) => $q->whereBetween('created_at', [
-                \Carbon\Carbon::parse($dateFrom)->startOfDay(),
-                \Carbon\Carbon::parse($dateTo)->endOfDay(),
-            ]))
-            ->latest()
-            ->paginate(20)
-            ->withQueryString();
-
-        $patients   = \App\Models\Patient::with('user')->get();
-        $categories = \App\Models\ProcedureCategory::all();
-
-        return view('procedure.index', compact('requests', 'patients', 'categories', 'patientId', 'categoryId', 'dateFrom', 'dateTo'));
+        //
     }
 
     /**
