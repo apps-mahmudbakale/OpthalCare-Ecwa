@@ -157,16 +157,14 @@ class PatientController extends Controller
       'status' => 'Concluded'
     ]);
 
-    // Check in the patient after creation
+    // Auto check-in after paid registration — already paid so mark as cleared
     $checkInService = new CheckInService();
-    if ($checkInService->hasCheckedInToday($patient->id)) {
-      // If already checked in (unlikely for a new patient), log it or handle silently
-      \Log::warning("Patient {$patient->id} already checked in today.");
-    } else {
-      CheckIn::create([
-        'patient_id' => $patient->id,
-        'check_in_date' => now()->toDateString(),
-      ]);
+    if (!$checkInService->hasCheckedInToday($patient->id)) {
+        CheckIn::create([
+            'patient_id'     => $patient->id,
+            'check_in_date'  => now()->toDateString(),
+            'cleared'        => true,
+        ]);
     }
 
     // Redirect with success message
