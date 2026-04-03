@@ -134,4 +134,27 @@ class ProcedureRequestController extends Controller
     {
         //
     }
+
+    public function conclude(Request $request, ProcedureRequest $procedureRequest)
+    {
+        $request->validate([
+            'conclusion_note' => 'nullable|string',
+        ]);
+
+        $procedureRequest->update([
+            'status' => 'Concluded',
+        ]);
+
+        // Save conclusion as a progress note if provided
+        if ($request->filled('conclusion_note')) {
+            \App\Models\ProgressNote::create([
+                'procedure_request_id' => $procedureRequest->id,
+                'patient_id'           => $procedureRequest->patient_id,
+                'user_id'              => auth()->id(),
+                'note'                 => $request->conclusion_note,
+            ]);
+        }
+
+        return back()->with('success', 'Procedure concluded successfully.');
+    }
 }

@@ -51,7 +51,9 @@
                                         <span class="badge bg-primary">{{ $patient->gender }}</span>
                                         <span class="badge bg-primary">{{ $patient->getAge() }}</span>
                                         <span class="badge bg-primary">Procedure: {{ $procedureRequest->procedure->name }}</span>
-                                        <span class="badge bg-secondary">Status: {{ $procedureRequest->status }}</span>
+                                        <span class="badge bg-{{ $procedureRequest->status === 'Concluded' ? 'success' : ($procedureRequest->status === 'In Progress' ? 'info' : 'warning') }}">
+                                            {{ $procedureRequest->status }}
+                                        </span>
                                     </li>
                                 </ul>
                             </div>
@@ -74,6 +76,15 @@
                                     <li><a class="dropdown-item"
                                             data-request-url="{{ route('app.patient.fund.wallet', $patient->id) }}"
                                             data-target="#global-modal-lg">Fund Wallet</a></li>
+                                    @if($procedureRequest->status !== 'Concluded')
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item text-success" href="#"
+                                           data-bs-toggle="modal" data-bs-target="#conclude-modal">
+                                            <i class="ti ti-check me-1"></i> Conclude Procedure
+                                        </a>
+                                    </li>
+                                    @endif
                                 </ul>
                             </div>
                         </div>
@@ -497,6 +508,37 @@
 @include('_partials._modals.modal-new-imaging')
 @include('_partials._modals.modal-new-vitals')
 @include('_partials._modals.global-modal')
+
+{{-- Conclude Procedure Modal --}}
+@if($procedureRequest->status !== 'Concluded')
+<div class="modal fade" id="conclude-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Conclude Procedure</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ route('app.procedure-requests.conclude', $procedureRequest->id) }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <p>You are about to mark <strong>{{ $procedureRequest->procedure->name }}</strong> as <span class="text-success fw-bold">Concluded</span>.</p>
+                    <div class="mb-3">
+                        <label class="form-label">Conclusion Note <small class="text-muted">(optional)</small></label>
+                        <textarea name="conclusion_note" class="form-control" rows="4"
+                            placeholder="Enter any final notes or findings..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="ti ti-check me-1"></i> Confirm Conclusion
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
 
 {{-- Progress Note Modal --}}
 <div class="modal fade" id="modal-progress-note" tabindex="-1" aria-hidden="true">

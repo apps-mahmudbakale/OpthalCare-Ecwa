@@ -192,6 +192,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
 
   Route::resource('procedure-requests', ProcedureRequestController::class);
   Route::get('procedure-prepare/{id}', [ProcedureRequestController::class, 'prepare'])->name('procedure.prepare');
+  Route::post('procedure-requests/{procedureRequest}/conclude', [ProcedureRequestController::class, 'conclude'])->name('procedure-requests.conclude');
 
   Route::get('/getBedsByWard/{wardId}', [WardController::class, 'getBedsByWard'])->name('getBedsByWard');
 
