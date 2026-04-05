@@ -1,72 +1,217 @@
 @extends('layouts/layoutMaster')
-
-@section('title', 'Revenue Report')
-
-@section('vendor-style')
-<link rel="stylesheet" href="{{ asset('assets/vendor/libs/fullcalendar/fullcalendar.css') }}" />
-<link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
-<link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}" />
-<link rel="stylesheet" href="{{ asset('assets/vendor/libs/quill/editor.css') }}" />
-<link rel="stylesheet" href="{{ asset('assets/vendor/libs/@form-validation/umd/styles/index.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}" />
-@endsection
-
-@section('page-style')
-<link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/app-calendar.css') }}" />
-@endsection
-
-@section('vendor-script')
-<script src="{{ asset('assets/vendor/libs/fullcalendar/fullcalendar.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/@form-validation/umd/bundle/popular.min.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/@form-validation/umd/plugin-bootstrap5/index.min.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/@form-validation/umd/plugin-auto-focus/index.min.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/moment/moment.js') }}"></script>
-@endsection
-
-@section('page-script')
-<script src="{{ asset('assets/js/app-calendar-events.js') }}"></script>
-<script src="{{ asset('assets/js/app-calendar.js') }}"></script>
-@endsection
+@section('title', 'Billing Reports')
 
 @section('content')
-<div class="page-section">
-  <div class="section-block">
-    <h4>Billing Reports</h4>
-    <div class="nav-align-top nav-tabs-shadow mb-6">
-      <ul class="nav nav-tabs nav-fill" role="tablist">
-        <li class="nav-item" role="presentation">
-          <button type="button" class="nav-link waves-effect active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-justified-revenue" aria-controls="navs-justified-revenue" aria-selected="true">
-            <span class="d-none d-sm-block"><i class="tf-icons ti ti-report-money ti-sm ti-sm me-1_5"></i> Revenue</span>
-            <i class="ti ti-report-money ti-sm d-sm-none"></i>
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-justified-cashpoints" aria-controls="navs-justified-cashpoints" aria-selected="true">
-            <span class="d-none d-sm-block"><i class="tf-icons ti ti-cash-banknote ti-sm ti-sm me-1_5"></i> Cashpoints</span>
-            <i class="ti ti-cash-banknote ti-sm d-sm-none"></i>
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button type="button" class="nav-link waves-effect" role="tab" data-bs-toggle="tab" data-bs-target="#navs-justified-cashier" aria-controls="navs-justified-cashier" aria-selected="true">
-            <span class="d-none d-sm-block"><i class="tf-icons ti ti-clock ti-sm ti-sm me-1_5"></i> Cashier's End of Day</span>
-            <i class="ti ti-clock ti-sm d-sm-none"></i>
-          </button>
-        </li>
-      </ul>
-      <div class="tab-content">
-        <div class="tab-pane fade active show" id="navs-justified-revenue" role="tabpanel">
-          <livewire:revenue-report />
-        </div>
-        <div class="tab-pane fade" id="navs-justified-cashpoints" role="tabpanel">
-         <livewire:cashpoint-report />
-        </div>
-        <div class="tab-pane fade" id="navs-justified-cashier" role="tabpanel">
-          <livewire:end-day-report />
-        </div>
-      </div>
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Reports /</span> Billing</h4>
+
+{{-- Tabs --}}
+<ul class="nav nav-tabs mb-0" role="tablist">
+    <li class="nav-item">
+        <a href="{{ request()->fullUrlWithQuery(['tab' => 'revenue']) }}"
+           class="nav-link {{ $tab === 'revenue' ? 'active' : '' }}">
+            <i class="ti ti-report-money me-1"></i> Revenue
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{{ request()->fullUrlWithQuery(['tab' => 'cashpoints']) }}"
+           class="nav-link {{ $tab === 'cashpoints' ? 'active' : '' }}">
+            <i class="ti ti-cash-banknote me-1"></i> Cashpoints
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{{ request()->fullUrlWithQuery(['tab' => 'endday']) }}"
+           class="nav-link {{ $tab === 'endday' ? 'active' : '' }}">
+            <i class="ti ti-clock me-1"></i> Cashier End of Day
+        </a>
+    </li>
+</ul>
+
+{{-- ── REVENUE TAB ── --}}
+@if($tab === 'revenue')
+<div class="card border-top-0 rounded-top-0">
+    <div class="card-header border-bottom">
+        <form method="GET" action="{{ route('app.reports.billing') }}" class="row g-2 align-items-end">
+            <input type="hidden" name="tab" value="revenue">
+            <div class="col-md-2">
+                <label class="form-label small mb-1">Service</label>
+                <select name="service" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    <option value="admissions"   {{ $service === 'admissions'   ? 'selected' : '' }}>Admission</option>
+                    <option value="consultations"{{ $service === 'consultations'? 'selected' : '' }}>Consultation</option>
+                    <option value="laboratory"   {{ $service === 'laboratory'   ? 'selected' : '' }}>Laboratory</option>
+                    <option value="procedure"    {{ $service === 'procedure'    ? 'selected' : '' }}>Procedure</option>
+                    <option value="pharmacy"     {{ $service === 'pharmacy'     ? 'selected' : '' }}>Pharmacy</option>
+                    <option value="radiology"    {{ $service === 'radiology'    ? 'selected' : '' }}>Radiology</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small mb-1">Cash Point</label>
+                <select name="cashpoint" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    @foreach($cashPoints as $cp)
+                        <option value="{{ $cp->id }}" {{ $cashpoint == $cp->id ? 'selected' : '' }}>{{ strtoupper($cp->name) }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small mb-1">Payment Method</label>
+                <select name="method" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    <option value="cash"     {{ $method === 'cash'     ? 'selected' : '' }}>Cash</option>
+                    <option value="pos"      {{ $method === 'pos'      ? 'selected' : '' }}>POS</option>
+                    <option value="transfer" {{ $method === 'transfer' ? 'selected' : '' }}>Transfer</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small mb-1">Date</label>
+                <input type="date" name="date" value="{{ $date }}" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-4 d-flex gap-2 align-items-end">
+                <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                <a href="{{ route('app.reports.billing', ['tab' => 'revenue']) }}" class="btn btn-sm btn-outline-secondary">Clear</a>
+                <a href="{{ route('app.reports.billing.export-revenue', request()->except('page')) }}" class="btn btn-sm btn-success ms-auto">
+                    <i class="ti ti-download me-1"></i> Export
+                </a>
+            </div>
+        </form>
     </div>
-  </div>
+    <div class="table-responsive">
+        <table class="table table-sm table-striped align-middle mb-0">
+            <thead class="table-light">
+                <tr><th>Date</th><th>Service</th><th>Cash Point</th><th>Method</th><th>Amount (₦)</th></tr>
+            </thead>
+            <tbody>
+                @forelse($revenue as $item)
+                <tr>
+                    <td>{{ $item->created_at->format('d M Y h:i A') }}</td>
+                    <td>{{ $item->billing->service ?? '-' }}</td>
+                    <td>{{ $item->cashPoint->name ?? '-' }}</td>
+                    <td>{{ ucfirst($item->payment_method ?? 'Cash') }}</td>
+                    <td>{{ number_format($item->paying_amount, 2) }}</td>
+                </tr>
+                @empty
+                <tr><td colspan="5" class="text-center text-muted py-4">No records found.</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">{{ $revenue->links() }}</div>
 </div>
+@endif
+
+{{-- ── CASHPOINTS TAB ── --}}
+@if($tab === 'cashpoints')
+<div class="card border-top-0 rounded-top-0">
+    <div class="card-header border-bottom">
+        <form method="GET" action="{{ route('app.reports.billing') }}" class="row g-2 align-items-end">
+            <input type="hidden" name="tab" value="cashpoints">
+            <div class="col-md-3">
+                <label class="form-label small mb-1">Cashier</label>
+                <select name="cashier" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    @foreach($allCashiers as $u)
+                        <option value="{{ $u->id }}" {{ $cashier == $u->id ? 'selected' : '' }}>{{ $u->firstname }} {{ $u->lastname }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small mb-1">Cash Point</label>
+                <select name="cashpoint" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    @foreach($cashPoints as $cp)
+                        <option value="{{ $cp->id }}" {{ $cashpoint == $cp->id ? 'selected' : '' }}>{{ strtoupper($cp->name) }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small mb-1">Date</label>
+                <input type="date" name="date" value="{{ $date }}" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-4 d-flex gap-2 align-items-end">
+                <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                <a href="{{ route('app.reports.billing', ['tab' => 'cashpoints']) }}" class="btn btn-sm btn-outline-secondary">Clear</a>
+                <a href="{{ route('app.reports.billing.export-cashpoint', request()->except('page')) }}" class="btn btn-sm btn-success ms-auto">
+                    <i class="ti ti-download me-1"></i> Export
+                </a>
+            </div>
+        </form>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-sm table-striped align-middle mb-0">
+            <thead class="table-light">
+                <tr><th>Cash Point</th><th>Total Revenue (₦)</th></tr>
+            </thead>
+            <tbody>
+                @forelse($cashpointRevenue as $row)
+                <tr>
+                    <td>{{ strtoupper($row->cashPoint->name ?? 'N/A') }}</td>
+                    <td class="fw-bold">{{ number_format($row->total_revenue, 2) }}</td>
+                </tr>
+                @empty
+                <tr><td colspan="2" class="text-center text-muted py-4">No records found.</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+@endif
+
+{{-- ── END OF DAY TAB ── --}}
+@if($tab === 'endday')
+<div class="card border-top-0 rounded-top-0">
+    <div class="card-header border-bottom">
+        <form method="GET" action="{{ route('app.reports.billing') }}" class="row g-2 align-items-end">
+            <input type="hidden" name="tab" value="endday">
+            <div class="col-md-4">
+                <label class="form-label small mb-1">Cashier</label>
+                <select name="cashier" class="form-select form-select-sm">
+                    <option value="">All Cashiers</option>
+                    @foreach($allCashiers as $u)
+                        <option value="{{ $u->id }}" {{ $cashier == $u->id ? 'selected' : '' }}>{{ $u->firstname }} {{ $u->lastname }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small mb-1">Date</label>
+                <input type="date" name="date" value="{{ $date }}" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-5 d-flex gap-2 align-items-end">
+                <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                <a href="{{ route('app.reports.billing', ['tab' => 'endday']) }}" class="btn btn-sm btn-outline-secondary">Clear</a>
+                <a href="{{ route('app.reports.billing.export-endday', request()->except('page')) }}" class="btn btn-sm btn-success ms-auto">
+                    <i class="ti ti-download me-1"></i> Export
+                </a>
+            </div>
+        </form>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-sm table-bordered align-middle mb-0">
+            <thead class="table-light">
+                <tr><th>Cashier</th><th>Payment Method</th><th>Total Amount (₦)</th></tr>
+            </thead>
+            <tbody>
+                @forelse($endDayRevenue as $userId => $methods)
+                    @php $user = $cashierUsers[$userId] ?? null; @endphp
+                    @if($user)
+                        @foreach($methods as $m)
+                        <tr>
+                            <td>{{ $user->firstname }} {{ $user->lastname }}</td>
+                            <td>{{ ucfirst($m->payment_method ?? 'Cash') }}</td>
+                            <td>{{ number_format($m->total, 2) }}</td>
+                        </tr>
+                        @endforeach
+                        <tr class="table-light fw-bold">
+                            <td colspan="2">Total for {{ $user->firstname }}</td>
+                            <td>{{ number_format($methods->sum('total'), 2) }}</td>
+                        </tr>
+                    @endif
+                @empty
+                <tr><td colspan="3" class="text-center text-muted py-4">No records found.</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+@endif
+
 @endsection

@@ -119,18 +119,22 @@ $configData = Helper::appClasses();
       </a>
     </li>
 @endcan
+    @can('read-procedures')
     <li class="menu-item {{ request()->is('app/procedures*') ? 'active' : '' }}">
       <a href="{{ route('app.procedures.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-medical-cross"></i>
         <div>Procedures</div>
       </a>
     </li>
+    @endcan
+    @can('read-antenatal')
     <li class="menu-item {{ request()->is('app/antenatal*') ? 'active' : '' }}">
       <a href="{{ route('app.antenatals.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-heart-plus"></i>
         <div>Antenatal</div>
       </a>
     </li>
+    @endcan
 @can('read-billing')
     <li class="menu-item {{ request()->is('app/billing*') ? 'active' : '' }}">
       <a href="{{ route('app.billing.index') }}" class="menu-link">
@@ -139,6 +143,7 @@ $configData = Helper::appClasses();
       </a>
     </li>
 @endcan
+    @can('read-hmo-management')
     <li class="menu-item {{ request()->is('app/hmo*') ? 'active open' : '' }}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons ti ti-building-hospital"></i>
@@ -157,6 +162,7 @@ $configData = Helper::appClasses();
         </li>
       </ul>
     </li>
+    @endcan
     @can('read-report')
     <li class="menu-item {{ request()->is('app/reports*') || request()->is('app/report/hmo*') ? 'active open' : '' }}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">

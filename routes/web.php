@@ -255,6 +255,9 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::get('report/radiology', [ReportController::class, 'radiologyReport'])->name('reports.radiology');
   Route::get('report/procedures', [ReportController::class, 'procedureReport'])->name('reports.procedure');
   Route::get('report/billings', [ReportController::class, 'billingReport'])->name('reports.billing');
+  Route::get('report/billings/export-revenue', [ReportController::class, 'exportRevenue'])->name('reports.billing.export-revenue');
+  Route::get('report/billings/export-cashpoint', [ReportController::class, 'exportCashpoint'])->name('reports.billing.export-cashpoint');
+  Route::get('report/billings/export-endday', [ReportController::class, 'exportEndDay'])->name('reports.billing.export-endday');
   Route::get('report/hmo', [App\Http\Controllers\HmoReportController::class, 'analytics'])->name('reports.hmo');
   Route::get('report/hmo-reconciliation', [App\Http\Controllers\HmoReportController::class, 'reconciliation'])->name('reports.hmo-reconciliation');
   Route::get('report/hmo-reconciliation/export', [App\Http\Controllers\HmoReportController::class, 'export'])->name('reports.hmo-reconciliation.export');

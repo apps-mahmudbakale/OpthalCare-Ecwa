@@ -46,6 +46,9 @@ class RolesAndPermissionsSeeder extends Seeder
       'patients',
       'opticals',
       'settings',
+      'hmo-management',
+      'antenatal',
+      'procedures',
     ];
 
     // Create CRUD permissions

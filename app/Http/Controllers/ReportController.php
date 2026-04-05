@@ -118,9 +118,83 @@ class ReportController extends Controller
 
   public function billingReport(Request $request)
   {
-    return view('report.billing');
+    $tab       = $request->get('tab', 'revenue');
+    $date      = $request->get('date', '');
+    $service   = $request->get('service', '');
+    $cashpoint = $request->get('cashpoint', '');
+    $method    = $request->get('method', '');
+    $cashier   = $request->get('cashier', '');
+
+    $cashPoints = CashPoint::all();
+    $allCashiers = \App\Models\User::orderBy('firstname')->get();
+
+    // Revenue tab
+    $revenueQuery = Payment::query()->with(['billing', 'cashPoint'])
+        ->when($service,   fn($q) => $q->whereHas('billing', fn($sq) =>
+            $sq->whereRaw("LOWER(SUBSTRING_INDEX(service, ':', 1)) = ?", [strtolower($service)])))
+        ->when($cashpoint, fn($q) => $q->where('cashpoint_id', $cashpoint))
+        ->when($method,    fn($q) => $q->where('payment_method', $method))
+        ->when($date,      fn($q) => $q->whereDate('created_at', $date))
+        ->latest();
+    $revenue = $revenueQuery->paginate(15, ['*'], 'rev_page')->withQueryString();
+
+    // Cashpoints tab
+    $cashpointRevenue = Payment::selectRaw('cashpoint_id, SUM(paying_amount) as total_revenue')
+        ->when($cashier,   fn($q) => $q->where('user_id', $cashier))
+        ->when($cashpoint, fn($q) => $q->where('cashpoint_id', $cashpoint))
+        ->when($date,      fn($q) => $q->whereDate('created_at', $date))
+        ->groupBy('cashpoint_id')
+        ->with('cashPoint')
+        ->get();
+
+    // End of day tab
+    $endDayRevenue = Payment::selectRaw('user_id, payment_method, SUM(paying_amount) as total')
+        ->when($cashier, fn($q) => $q->where('user_id', $cashier))
+        ->when($date,    fn($q) => $q->whereDate('created_at', $date))
+        ->groupBy('user_id', 'payment_method')
+        ->get()
+        ->groupBy('user_id');
+
+    $cashierUsers = \App\Models\User::whereIn('id', $endDayRevenue->keys()->all())->get()->keyBy('id');
+
+    return view('report.billing', compact(
+        'tab', 'date', 'service', 'cashpoint', 'method', 'cashier',
+        'cashPoints', 'allCashiers', 'revenue', 'cashpointRevenue',
+        'endDayRevenue', 'cashierUsers'
+    ));
   }
 
+
+  public function exportRevenue(Request $request)
+  {
+    $data = Payment::with(['billing', 'cashPoint'])
+        ->when($request->service,   fn($q) => $q->whereHas('billing', fn($sq) =>
+            $sq->whereRaw("LOWER(SUBSTRING_INDEX(service, ':', 1)) = ?", [strtolower($request->service)])))
+        ->when($request->cashpoint, fn($q) => $q->where('cashpoint_id', $request->cashpoint))
+        ->when($request->method,    fn($q) => $q->where('payment_method', $request->method))
+        ->when($request->date,      fn($q) => $q->whereDate('created_at', $request->date))
+        ->latest()->get();
+    return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\RevenueReportExport($data), 'revenue-report.xlsx');
+  }
+
+  public function exportCashpoint(Request $request)
+  {
+    $data = Payment::selectRaw('cashpoint_id, SUM(paying_amount) as total_revenue')
+        ->when($request->cashier,   fn($q) => $q->where('user_id', $request->cashier))
+        ->when($request->cashpoint, fn($q) => $q->where('cashpoint_id', $request->cashpoint))
+        ->when($request->date,      fn($q) => $q->whereDate('created_at', $request->date))
+        ->groupBy('cashpoint_id')->with('cashPoint')->get();
+    return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\CashpointExport($data), 'cashpoint-report.xlsx');
+  }
+
+  public function exportEndDay(Request $request)
+  {
+    $data = Payment::selectRaw('user_id, payment_method, SUM(paying_amount) as total')
+        ->when($request->cashier, fn($q) => $q->where('user_id', $request->cashier))
+        ->when($request->date,    fn($q) => $q->whereDate('created_at', $request->date))
+        ->groupBy('user_id', 'payment_method')->with('user')->get();
+    return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\CashierSummaryExport($data), 'cashier-summary.xlsx');
+  }
 
   /**
    * Store a newly created resource in storage.
