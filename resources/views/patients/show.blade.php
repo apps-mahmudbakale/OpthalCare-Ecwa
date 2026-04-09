@@ -327,10 +327,46 @@
                         @include('_partials._modals.modal-new-imaging')
                     </div>
                     <div class="tab-pane fade" id="navs-pills-justified-procedures" role="tabpanel">
-                        <a href="" data-bs-toggle="modal" data-bs-target="#new-procedure-modal"
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#new-procedure-modal"
                             class="btn btn-primary mb-2 float-end">New Entry</a>
-                        <table class="table"></table>
-                        <livewire:procedure-requests :patientId="request()->route()->patient->id" />
+                        <div class="table-responsive mt-3">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Procedure</th>
+                                        <th>Status</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($procedureRequests as $req)
+                                    @php
+                                        $pBadge = [
+                                            'Pending'    => 'bg-label-warning',
+                                            'In Progress'=> 'bg-label-info',
+                                            'Concluded'  => 'bg-label-success',
+                                            'Cancelled'  => 'bg-label-danger',
+                                        ];
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $req->created_at->format('d M Y') }}</td>
+                                        <td>{{ $req->procedure->name ?? 'N/A' }}</td>
+                                        <td><span class="badge {{ $pBadge[$req->status] ?? 'bg-label-secondary' }}">{{ $req->status }}</span></td>
+                                        <td class="text-center">
+                                            <a href="{{ route('app.procedure-requests.show', $req->id) }}"
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="ti ti-eye ti-xs me-1"></i> Open
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr><td colspan="4" class="text-center text-muted py-4">No procedure requests found.</td></tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                            {{ $procedureRequests->links() }}
+                        </div>
                         @include('_partials._modals.modal-new-procedure')
                     </div>
                     <div class="tab-pane fade" id="navs-pills-justified-documents" role="tabpanel">

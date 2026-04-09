@@ -262,6 +262,8 @@ class PatientController extends Controller
       'outstanding_balance' => $outstanding_balance,
       'wallet_balance' => $wallet_balance,
       'isCheckedIn' => $isCheckedIn,
+      'procedureRequests' => \App\Models\ProcedureRequest::with('procedure')
+            ->where('patient_id', $patient->id)->latest()->paginate(10, ['*'], 'proc_page'),
     ]);
   }
 
