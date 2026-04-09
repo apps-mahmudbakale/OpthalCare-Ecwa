@@ -76,11 +76,17 @@
                                 @endhasanyrole
                                 @endif
                                 <li>
-                                    <a class="dropdown-item cancel-request text-bg-danger"
-                                        wire:click="cancelRequest({{ $radiologyRequest->id }})" data-toggle="question"
-                                        data-question="Cancel Request?">
-                                        Cancel Request
-                                    </a>
+                                    @if($radiologyRequest->status === 'Pending')
+                                    <form action="{{ route('app.radiology.destroy', $radiologyRequest->id) }}" method="POST"
+                                          onsubmit="return confirm('Cancel this imaging request and remove its bill?')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="dropdown-item text-danger">
+                                            Cancel Request
+                                        </button>
+                                    </form>
+                                    @else
+                                    <span class="dropdown-item text-muted">Cannot cancel ({{ $radiologyRequest->status }})</span>
+                                    @endif
                                 </li>
                             </ul>
                         </div>

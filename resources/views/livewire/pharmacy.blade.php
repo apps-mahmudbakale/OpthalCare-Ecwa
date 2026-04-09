@@ -59,12 +59,11 @@
 
               <div class="dropdown-divider"></div>
               <li>
-                <button class="dropdown-item" data-toggle="question"
-                        data-question="Cancel All Prescription Lines in this Request?"
-                        data-remote="/pharmacy/request/{{ $request->id }}/cancel"
-                        type="button">
-                  Cancel
-                </button>
+                <form action="{{ route('app.pharmacy.drug-request.cancel-batch', $requestRef) }}" method="POST"
+                      onsubmit="return confirm('Cancel all prescriptions in this request and remove their bills?')">
+                    @csrf @method('DELETE')
+                    <button type="submit" class="dropdown-item text-danger">Cancel</button>
+                </form>
               </li>
             </ul>
           </div>

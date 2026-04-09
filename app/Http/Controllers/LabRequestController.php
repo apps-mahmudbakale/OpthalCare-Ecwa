@@ -169,8 +169,21 @@ class LabRequestController extends Controller
    */
   public function destroy($id)
   {
-    $request = LabRequest::find($id);
-    $request->delete();
-    return response()->json(['success' => true]);
+    $labRequest = LabRequest::with('test')->find($id);
+    if (!$labRequest) {
+        return back()->with('error', 'Lab request not found.');
+    }
+
+    // Void the unpaid bill so patient doesn't owe
+    if ($labRequest->test) {
+        \App\Models\Billing::where('bill_ref', $labRequest->request_ref)
+            ->where('service', 'Laboratory:' . $labRequest->test->name)
+            ->where('status', 0)
+            ->delete();
+    }
+
+    // Keep the record but mark as Cancelled for audit trail
+    $labRequest->update(['status' => 'Cancelled']);
+    return back()->with('success', 'Lab request cancelled and bill removed.');
   }
 }

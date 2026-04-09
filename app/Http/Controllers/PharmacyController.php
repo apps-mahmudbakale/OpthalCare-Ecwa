@@ -89,8 +89,45 @@ class PharmacyController extends Controller
   }
 
 
-  public function update(Request $request, $id)
+  public function destroyRequest($id)
   {
+    $drugRequest = DrugRequest::with('drug')->find($id);
+    if (!$drugRequest) {
+        return back()->with('error', 'Drug request not found.');
+    }
+
+    if ($drugRequest->drug && $drugRequest->status === 'Pending') {
+        \App\Models\Billing::where('bill_ref', $drugRequest->request_ref)
+            ->where('service', 'Pharmacy:' . $drugRequest->drug->name)
+            ->where('status', 0)
+            ->delete();
+    }
+
+    $drugRequest->update(['status' => 'Cancelled']);
+    return back()->with('success', 'Drug request cancelled and bill removed.');
+  }
+
+  public function cancelBatch($requestRef)
+  {
+    $drugRequests = DrugRequest::with('drug')
+        ->where('request_ref', $requestRef)
+        ->where('status', 'Pending')
+        ->get();
+
+    foreach ($drugRequests as $drugRequest) {
+        if ($drugRequest->drug) {
+            \App\Models\Billing::where('bill_ref', $requestRef)
+                ->where('service', 'Pharmacy:' . $drugRequest->drug->name)
+                ->where('status', 0)
+                ->delete();
+        }
+        $drugRequest->update(['status' => 'Cancelled']);
+    }
+
+    return back()->with('success', 'Prescription cancelled and bills removed.');
+  }
+
+  public function update(Request $request, $id)  {
 
     $collectedBys = $request->collected_by;
     $qtys = $request->qty;

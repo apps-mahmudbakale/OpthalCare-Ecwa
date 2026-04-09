@@ -53,6 +53,7 @@
                                     'Result Ready' => 'bg-label-success',
                                     'Specimen Collected' => 'bg-label-warning',
                                     'Pending' => 'bg-label-primary',
+                                    'Cancelled' => 'bg-label-danger',
                                     default => 'bg-label-secondary'
                                 };
                             @endphp
@@ -73,8 +74,17 @@
                                         <li><a href="{{ route('app.lab.specimen', $labRequest->id) }}" class="dropdown-item py-2"><i class="ti ti-flask me-2"></i>Receive Specimens</a></li>
                                     @endif
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item text-danger py-2" href="javascript:void(0);"><i class="ti ti-trash me-2"></i>Cancel Request</a></li>
-                                </ul>
+                                    @if($labRequest->status === 'Pending')
+                                    <li>
+                                        <form action="{{ route('app.lab.destroy', $labRequest->id) }}" method="POST"
+                                              onsubmit="return confirm('Cancel this lab request and remove its bill?')">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="dropdown-item text-danger py-2">
+                                                <i class="ti ti-trash me-2"></i>Cancel Request
+                                            </button>
+                                        </form>
+                                    </li>
+                                    @endif                                </ul>
                             </div>
                         </td>
                     </tr>

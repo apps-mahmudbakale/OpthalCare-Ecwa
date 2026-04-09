@@ -25,6 +25,7 @@
                                     'Pending' => 'bg-label-warning',
                                     'Specimen Collected' => 'bg-label-info',
                                     'Result Ready' => 'bg-label-success',
+                                    'Cancelled' => 'bg-label-danger',
                                 ];
                                 $class = $statusBadge[$request->status] ?? 'bg-label-secondary';
                             @endphp
@@ -39,24 +40,26 @@
                                        class="btn btn-sm btn-icon btn-outline-secondary" title="View Result">
                                         <i class="ti ti-eye ti-xs"></i>
                                     </a>
-
                                     <a href="{{ route('app.radiology.print.result', $request->id) }}" target="_blank"
                                         class="btn btn-sm btn-icon btn-outline-secondary" title="Print Result">
                                         <i class="ti ti-printer ti-xs"></i>
                                     </a>
                                 @endif
-                                
                                 <a href="javascript:void(0);" 
                                    data-request-url="{{ route('app.radiology.edit', $request->id) }}"
                                    data-target="#global-modal-lg"
                                    class="btn btn-sm btn-icon btn-outline-secondary" title="Add Findings/Notes">
                                     <i class="ti ti-edit ti-xs"></i>
                                 </a>
-                                
-                                <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-outline-danger delete-radiology-request"
-                                   data-id="{{ $request->id }}" title="Delete">
-                                    <i class="ti ti-trash ti-xs"></i>
-                                </a>
+                                @if($request->status === 'Pending')
+                                <form action="{{ route('app.radiology.destroy', $request->id) }}" method="POST" class="d-inline"
+                                      onsubmit="return confirm('Cancel this imaging request and remove its bill?')">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-icon btn-outline-danger" title="Cancel">
+                                        <i class="ti ti-trash ti-xs"></i>
+                                    </button>
+                                </form>
+                                @endif
                             </div>
                         </td>
                     </tr>
@@ -74,39 +77,4 @@
             {{ $requests->links() }}
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            $(document).on('click', '.delete-radiology-request', function () {
-                var id = $(this).data('id');
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes, delete it!',
-                    customClass: {
-                        confirmButton: 'btn btn-primary me-3',
-                        cancelButton: 'btn btn-label-secondary'
-                    },
-                    buttonsStyling: false
-                }).then(function (result) {
-                    if (result.value) {
-                        window.livewire.emit('deleteImagingRequest', id);
-                    }
-                });
-            });
-
-            window.livewire.on('imagingRequestDeleted', function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Deleted!',
-                    text: 'Radiology request has been deleted.',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    }
-                });
-            });
-        });
-    </script>
 </div>

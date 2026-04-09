@@ -341,7 +341,7 @@
                                         <td>{{ $req->created_at->format('d M Y') }}<br><small class="text-muted">{{ $req->created_at->format('h:i A') }}</small></td>
                                         <td>{{ $req->test->name ?? 'N/A' }}</td>
                                         <td>
-                                            @php $lbadge = ['Pending'=>'bg-label-warning','Specimen Collected'=>'bg-label-info','Result Ready'=>'bg-label-success']; @endphp
+                                            @php $lbadge = ['Pending'=>'bg-label-warning','Specimen Collected'=>'bg-label-info','Result Ready'=>'bg-label-success','Cancelled'=>'bg-label-danger']; @endphp
                                             <span class="badge {{ $lbadge[$req->status] ?? 'bg-label-secondary' }}">{{ $req->status }}</span>
                                         </td>
                                         <td class="text-center">
@@ -351,6 +351,12 @@
                                                 <a href="{{ route('app.lab.print.result', $req->id) }}" target="_blank" class="btn btn-sm btn-icon btn-outline-secondary" title="Print"><i class="ti ti-printer ti-xs"></i></a>
                                                 @endif
                                                 <a href="javascript:void(0);" data-request-url="{{ route('app.lab.edit', $req->id) }}" data-target="#global-modal-lg" class="btn btn-sm btn-icon btn-outline-secondary" title="Edit"><i class="ti ti-edit ti-xs"></i></a>
+                                                @if($req->status === 'Pending')
+                                                <form action="{{ route('app.lab.destroy', $req->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this lab request and its bill?')">
+                                                    @csrf @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-icon btn-outline-danger" title="Delete"><i class="ti ti-trash ti-xs"></i></button>
+                                                </form>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
@@ -383,6 +389,12 @@
                                         </td>
                                         <td class="text-center">
                                             <a href="{{ route('app.pharmacy.request.print', $req->id) }}" target="_blank" class="btn btn-sm btn-icon btn-outline-secondary" title="Print"><i class="ti ti-printer ti-xs"></i></a>
+                                            @if($req->status === 'Pending')
+                                            <form action="{{ route('app.pharmacy.drug-request.destroy', $req->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this drug request and its bill?')">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-icon btn-outline-danger" title="Delete"><i class="ti ti-trash ti-xs"></i></button>
+                                            </form>
+                                            @endif
                                         </td>
                                     </tr>
                                     @empty
@@ -407,7 +419,7 @@
                                         <td>{{ $req->created_at->format('d M Y') }}<br><small class="text-muted">{{ $req->created_at->format('h:i A') }}</small></td>
                                         <td>{{ $req->test->name ?? 'N/A' }}</td>
                                         <td>
-                                            @php $rbadge = ['Pending'=>'bg-label-warning','Specimen Collected'=>'bg-label-info','Result Ready'=>'bg-label-success']; @endphp
+                                            @php $rbadge = ['Pending'=>'bg-label-warning','Specimen Collected'=>'bg-label-info','Result Ready'=>'bg-label-success','Cancelled'=>'bg-label-danger']; @endphp
                                             <span class="badge {{ $rbadge[$req->status] ?? 'bg-label-secondary' }}">{{ $req->status }}</span>
                                         </td>
                                         <td class="text-center">
@@ -417,6 +429,12 @@
                                                 <a href="{{ route('app.radiology.print.result', $req->id) }}" target="_blank" class="btn btn-sm btn-icon btn-outline-secondary" title="Print"><i class="ti ti-printer ti-xs"></i></a>
                                                 @endif
                                                 <a href="javascript:void(0);" data-request-url="{{ route('app.radiology.edit', $req->id) }}" data-target="#global-modal-lg" class="btn btn-sm btn-icon btn-outline-secondary" title="Edit"><i class="ti ti-edit ti-xs"></i></a>
+                                                @if($req->status === 'Pending')
+                                                <form action="{{ route('app.radiology.destroy', $req->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this imaging request and its bill?')">
+                                                    @csrf @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-icon btn-outline-danger" title="Delete"><i class="ti ti-trash ti-xs"></i></button>
+                                                </form>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

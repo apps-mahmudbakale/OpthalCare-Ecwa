@@ -185,6 +185,16 @@ class RadiologyRequestController extends Controller
    */
   public function destroy(RadiologyRequest $radiologyRequest)
   {
-    //
+    $radiologyRequest->load('test');
+
+    if ($radiologyRequest->test) {
+        \App\Models\Billing::where('bill_ref', $radiologyRequest->request_ref)
+            ->where('service', 'Radiology:' . $radiologyRequest->test->name)
+            ->where('status', 0)
+            ->delete();
+    }
+
+    $radiologyRequest->update(['status' => 'Cancelled']);
+    return back()->with('success', 'Imaging request cancelled and bill removed.');
   }
 }

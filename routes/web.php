@@ -131,6 +131,8 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::get('settings/pharmacy/drug-store/edit/{id}', [DrugStoreController::class, 'edit'])->name('drugs-store.edit');
 
   Route::get('pharmacy/request/{id}', [PharmacyController::class, 'print'])->name('pharmacy.request.print');
+  Route::delete('pharmacy/drug-request/{id}', [PharmacyController::class, 'destroyRequest'])->name('pharmacy.drug-request.destroy');
+  Route::delete('pharmacy/batch/{requestRef}', [PharmacyController::class, 'cancelBatch'])->name('pharmacy.drug-request.cancel-batch');
   Route::post('lab-category', [LaboratoryController::class, 'storeCategory'])->name('lab-category.store');
   Route::get('lab-category/{category}', [LaboratoryController::class, 'editCategory'])->name('lab-category.edit');
   Route::put('lab-category/{category}', [LaboratoryController::class, 'UpdateCategory'])->name('lab-category.update');

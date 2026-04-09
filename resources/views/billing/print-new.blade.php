@@ -84,7 +84,7 @@
  </table>
   <p style="text-align: center"><b>Access Code: <br> {{$tempPatient->accesscode}} </b></p>
   <p class="centered">Thanks for your purchase!
-    <br>Reflex Vision & Diagnostic</p>
+    <br>&copy; 2020 - {{ date('Y') }} - Gamji Premier Clinic</p>
 </div>
 <button id="btnPrint" class="hidden-print">Print</button>
 <script src="script.js"></script>
