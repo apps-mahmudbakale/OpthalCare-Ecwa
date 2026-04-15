@@ -78,9 +78,9 @@ class PaymentController extends Controller
 
 
         $paymentData = [
-          'cashpoint_id' => $request->location_id,
-          'payment_method_id' => $request->payment_method_id,
-          'user_id' => Auth::id(),
+          'cashpoint_id'   => $request->location_id,
+          'payment_method' => $paymentMethod->name,
+          'user_id'        => Auth::id(),
         ];
 
         $payment = null;
@@ -204,11 +204,11 @@ class PaymentController extends Controller
 
         // Create payment
         $payment = $this->createPaymentAndUpdateBilling([
-          'billing_id' => $request->billing_id,
-          'cashpoint_id' => $request->location_id,
-          'payment_method_id' => $request->payment_method_id,
-          'paying_amount' => $request->amount,
-          'user_id' => Auth::id(),
+          'billing_id'     => $request->billing_id,
+          'cashpoint_id'   => $request->location_id,
+          'payment_method' => $paymentMethod->name,
+          'paying_amount'  => $request->amount,
+          'user_id'        => Auth::id(),
         ], $request->billing_id);
 
         $billing = Billing::where('id', $request->billing_id)->first();

@@ -57,9 +57,9 @@
                 <label class="form-label small mb-1">Payment Method</label>
                 <select name="method" class="form-select form-select-sm">
                     <option value="">All</option>
-                    <option value="cash"     {{ $method === 'cash'     ? 'selected' : '' }}>Cash</option>
-                    <option value="pos"      {{ $method === 'pos'      ? 'selected' : '' }}>POS</option>
-                    <option value="transfer" {{ $method === 'transfer' ? 'selected' : '' }}>Transfer</option>
+                    @foreach($paymentMethods as $pm)
+                        <option value="{{ $pm->name }}" {{ $method === $pm->name ? 'selected' : '' }}>{{ $pm->name }}</option>
+                    @endforeach
                 </select>
             </div>
             <div class="col-md-2">
@@ -93,9 +93,23 @@
                 <tr><td colspan="5" class="text-center text-muted py-4">No records found.</td></tr>
                 @endforelse
             </tbody>
+            @if($revenue->count())
+            <tfoot class="table-light fw-bold">
+                <tr>
+                    <td colspan="4" class="text-end">Page Total:</td>
+                    <td>₦{{ number_format($revenue->sum('paying_amount'), 2) }}</td>
+                </tr>
+            </tfoot>
+            @endif
         </table>
     </div>
-    <div class="card-footer">{{ $revenue->links() }}</div>
+    <div class="card-footer d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <small class="text-muted">
+            Showing {{ $revenue->firstItem() ?? 0 }} to {{ $revenue->lastItem() ?? 0 }}
+            of {{ $revenue->total() }} entries
+        </small>
+        <div>{{ $revenue->links() }}</div>
+    </div>
 </div>
 @endif
 
@@ -114,7 +128,7 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <label class="form-label small mb-1">Cash Point</label>
                 <select name="cashpoint" class="form-select form-select-sm">
                     <option value="">All</option>
@@ -124,10 +138,19 @@
                 </select>
             </div>
             <div class="col-md-2">
+                <label class="form-label small mb-1">Payment Method</label>
+                <select name="method" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    @foreach($paymentMethods as $pm)
+                        <option value="{{ $pm->name }}" {{ $method === $pm->name ? 'selected' : '' }}>{{ $pm->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2">
                 <label class="form-label small mb-1">Date</label>
                 <input type="date" name="date" value="{{ $date }}" class="form-control form-control-sm">
             </div>
-            <div class="col-md-4 d-flex gap-2 align-items-end">
+            <div class="col-md-3 d-flex gap-2 align-items-end">
                 <button type="submit" class="btn btn-sm btn-primary">Filter</button>
                 <a href="{{ route('app.reports.billing', ['tab' => 'cashpoints']) }}" class="btn btn-sm btn-outline-secondary">Clear</a>
                 <a href="{{ route('app.reports.billing.export-cashpoint', request()->except('page')) }}" class="btn btn-sm btn-success ms-auto">
@@ -162,7 +185,7 @@
     <div class="card-header border-bottom">
         <form method="GET" action="{{ route('app.reports.billing') }}" class="row g-2 align-items-end">
             <input type="hidden" name="tab" value="endday">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label class="form-label small mb-1">Cashier</label>
                 <select name="cashier" class="form-select form-select-sm">
                     <option value="">All Cashiers</option>
@@ -171,7 +194,16 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
+                <label class="form-label small mb-1">Payment Method</label>
+                <select name="method" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    @foreach($paymentMethods as $pm)
+                        <option value="{{ $pm->name }}" {{ $method === $pm->name ? 'selected' : '' }}>{{ $pm->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2">
                 <label class="form-label small mb-1">Date</label>
                 <input type="date" name="date" value="{{ $date }}" class="form-control form-control-sm">
             </div>

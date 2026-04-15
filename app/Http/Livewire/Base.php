@@ -22,6 +22,11 @@ class Base extends Component
         $this->resetPage();
     }
 
+    public function updatingPerPage()
+    {
+        $this->resetPage();
+    }
+
 
     public function sortBy($field)
     {

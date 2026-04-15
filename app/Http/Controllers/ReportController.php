@@ -127,6 +127,7 @@ class ReportController extends Controller
 
     $cashPoints = CashPoint::all();
     $allCashiers = \App\Models\User::orderBy('firstname')->get();
+    $paymentMethods = \App\Models\PaymentMethod::orderBy('name')->get();
 
     // Revenue tab
     $revenueQuery = Payment::query()->with(['billing', 'cashPoint'])
@@ -142,6 +143,7 @@ class ReportController extends Controller
     $cashpointRevenue = Payment::selectRaw('cashpoint_id, SUM(paying_amount) as total_revenue')
         ->when($cashier,   fn($q) => $q->where('user_id', $cashier))
         ->when($cashpoint, fn($q) => $q->where('cashpoint_id', $cashpoint))
+        ->when($method,    fn($q) => $q->where('payment_method', $method))
         ->when($date,      fn($q) => $q->whereDate('created_at', $date))
         ->groupBy('cashpoint_id')
         ->with('cashPoint')
@@ -150,6 +152,7 @@ class ReportController extends Controller
     // End of day tab
     $endDayRevenue = Payment::selectRaw('user_id, payment_method, SUM(paying_amount) as total')
         ->when($cashier, fn($q) => $q->where('user_id', $cashier))
+        ->when($method,  fn($q) => $q->where('payment_method', $method))
         ->when($date,    fn($q) => $q->whereDate('created_at', $date))
         ->groupBy('user_id', 'payment_method')
         ->get()
@@ -159,7 +162,7 @@ class ReportController extends Controller
 
     return view('report.billing', compact(
         'tab', 'date', 'service', 'cashpoint', 'method', 'cashier',
-        'cashPoints', 'allCashiers', 'revenue', 'cashpointRevenue',
+        'cashPoints', 'allCashiers', 'paymentMethods', 'revenue', 'cashpointRevenue',
         'endDayRevenue', 'cashierUsers'
     ));
   }
@@ -182,6 +185,7 @@ class ReportController extends Controller
     $data = Payment::selectRaw('cashpoint_id, SUM(paying_amount) as total_revenue')
         ->when($request->cashier,   fn($q) => $q->where('user_id', $request->cashier))
         ->when($request->cashpoint, fn($q) => $q->where('cashpoint_id', $request->cashpoint))
+        ->when($request->method,    fn($q) => $q->where('payment_method', $request->method))
         ->when($request->date,      fn($q) => $q->whereDate('created_at', $request->date))
         ->groupBy('cashpoint_id')->with('cashPoint')->get();
     return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\CashpointExport($data), 'cashpoint-report.xlsx');
@@ -191,6 +195,7 @@ class ReportController extends Controller
   {
     $data = Payment::selectRaw('user_id, payment_method, SUM(paying_amount) as total')
         ->when($request->cashier, fn($q) => $q->where('user_id', $request->cashier))
+        ->when($request->method,  fn($q) => $q->where('payment_method', $request->method))
         ->when($request->date,    fn($q) => $q->whereDate('created_at', $request->date))
         ->groupBy('user_id', 'payment_method')->with('user')->get();
     return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\CashierSummaryExport($data), 'cashier-summary.xlsx');

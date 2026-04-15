@@ -75,8 +75,7 @@
                         <option value="{{ $ward->id }}" {{ $ward_id == $ward->id ? 'selected' : '' }}>{{ $ward->name }}</option>
                     @endforeach
                 </select>
-            </div>
-            <div class="col-6 col-md-3">
+            </div>            <div class="col-6 col-md-3">
                 <label class="form-label small mb-1">Patient</label>
                 <select name="patient_id" class="form-select form-select-sm">
                     <option value="">All Patients</option>

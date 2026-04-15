@@ -32,7 +32,7 @@
                     <tr class="odd">
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $test->name }}</td>
-                        <td>{{ $test->category->name }}</td>
+                        <td>{{ $test->category->name ?? '—' }}</td>
                         <td>{{ $test->price }}</td>
                         <td>
                             <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
