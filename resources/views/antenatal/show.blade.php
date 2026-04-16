@@ -93,7 +93,26 @@
 
     <!-- Record Detail Cards -->
     <div class="row mb-4">
-        <div class="col-md-4">
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center">
+                    <i class="ti ti-baby-carriage me-2 text-primary"></i>
+                    <h5 class="card-title mb-0">Obstetric History</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm mb-0">
+                        <tr><td class="text-muted">Gravida</td><td>{{ $record->gravida ?? '—' }}</td></tr>
+                        <tr><td class="text-muted">Parity</td><td>{{ $record->parity ?? '—' }}</td></tr>
+                        <tr><td class="text-muted">Alive</td><td>{{ $record->alive ?? '—' }}</td></tr>
+                        <tr><td class="text-muted">Miscarriage</td><td>{{ $record->miscarriage ?? '—' }}</td></tr>
+                        <tr><td class="text-muted">LMP</td><td>{{ $record->last_menstrual_period ? $record->last_menstrual_period->format('M d, Y') : '—' }}</td></tr>
+                        <tr><td class="text-muted">Current Pregnancy</td><td>{{ $record->current_pregnancy ?? '—' }}</td></tr>
+                        <tr><td class="text-muted">Package</td><td>{{ $record->enrolmentPackage?->name ?? '—' }}</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
             <div class="card h-100">
                 <div class="card-header d-flex align-items-center">
                     <i class="ti ti-stethoscope me-2 text-primary"></i>
@@ -104,7 +123,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card h-100">
                 <div class="card-header d-flex align-items-center">
                     <i class="ti ti-clipboard-list me-2 text-success"></i>
@@ -115,7 +134,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card h-100">
                 <div class="card-header d-flex align-items-center">
                     <i class="ti ti-notebook me-2 text-info"></i>
@@ -273,5 +292,8 @@
             arrowRight.on('click', function() { if (!$(this).prop('disabled')) { navScroller.animate({ scrollLeft: navScroller.scrollLeft() + scrollAmount }, 300); } });
         });
     </script>
+    @include('_partials._modals.global-modal')
+    @include('_partials._modals.modal-new-lab', ['patientId' => $patient->id, 'patient' => $patient])
+    @include('_partials._modals.modal-new-imaging', ['patientId' => $patient->id, 'patient' => $patient])
+    @include('_partials._modals.modal-new-drugs', ['patientId' => $patient->id, 'patient' => $patient])
 @endsection
-@include('_partials._modals.global-modal')

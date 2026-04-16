@@ -51,6 +51,45 @@
                                 <label class="form-label">Visit Date</label>
                                 <input type="text" name="visit_date" class="form-control flatpickr" placeholder="Select date" value="{{ date('Y-m-d') }}">
                             </div>
+
+                            {{-- Obstetric History --}}
+                            <div class="col-12 mb-2"><hr><h6 class="text-muted">Obstetric History</h6></div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Gravida</label>
+                                <input type="number" name="gravida" class="form-control" min="0" placeholder="0">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Parity</label>
+                                <input type="number" name="parity" class="form-control" min="0" placeholder="0">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Alive</label>
+                                <input type="number" name="alive" class="form-control" min="0" placeholder="0">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Miscarriage</label>
+                                <input type="number" name="miscarriage" class="form-control" min="0" placeholder="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Last Menstrual Period</label>
+                                <input type="text" name="last_menstrual_period" class="form-control flatpickr" placeholder="Select date">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Current Pregnancy</label>
+                                <input type="text" name="current_pregnancy" class="form-control" placeholder="e.g. 28 weeks, Twin, etc.">
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Enrolment Package</label>
+                                <select name="enrolment_package_id" class="form-select">
+                                    <option value="">-- None --</option>
+                                    @foreach(\App\Models\AntenatalPackage::orderBy('name')->get() as $pkg)
+                                        <option value="{{ $pkg->id }}">{{ $pkg->name }} (₦{{ number_format($pkg->price) }})</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            {{-- Clinical Notes --}}
+                            <div class="col-12 mb-2"><hr><h6 class="text-muted">Clinical Notes</h6></div>
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Complaint</label>
                                 <textarea name="complaint" class="form-control" rows="3" placeholder="Chief complaint..."></textarea>

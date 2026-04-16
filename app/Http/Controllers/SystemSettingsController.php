@@ -55,6 +55,11 @@ class SystemSettingsController extends Controller
     return view('settings.procedure.index');
   }
 
+  public function antenatalSettings()
+  {
+    return redirect()->route('app.antenatal-packages.index');
+  }
+
   public function updateSystemSettings(Request $request, SystemSettings $system)
   {
     // $this->validate($request, [

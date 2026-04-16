@@ -16,11 +16,24 @@ class AntenatalRecord extends Model
         'treatment_plan',
         'note',
         'visit_date',
+        'gravida',
+        'parity',
+        'last_menstrual_period',
+        'current_pregnancy',
+        'alive',
+        'miscarriage',
+        'enrolment_package_id',
     ];
 
     protected $casts = [
-        'visit_date' => 'date',
+        'visit_date'            => 'date',
+        'last_menstrual_period' => 'date',
     ];
+
+    public function enrolmentPackage()
+    {
+        return $this->belongsTo(\App\Models\AntenatalPackage::class, 'enrolment_package_id');
+    }
 
     public function patient()
     {

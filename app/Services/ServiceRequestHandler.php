@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Billing;
+use App\Services\AntenatalCoverageService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -56,30 +57,45 @@ class ServiceRequestHandler
 
     $amount = $this->calculateAmount($modelClass, $kind, $service, $qty);
 
-    $status = 0;
+    $status  = 0;
     $plan_id = null;
 
     // Fetch Patient to check HMO Plan mappings
     $patient = \App\Models\Patient::with('hmoPlan')->find($patientId);
-    
+
     if ($patient && $patient->hmoPlan) {
         $plan_id = $patient->hmo_plan_id;
 
-        // Check for Custom HMO Plan Price override
         $hmoService = \App\Models\HmoService::where('plan_id', $plan_id)
             ->where('type', $serviceCategory)
             ->where('service_id', $service->id)
             ->first();
 
-        // If the HMO Plan specifies a custom rate, override the base amount
         if ($hmoService) {
             $amount = $hmoService->price * $qty;
         }
-
-        // Note: HMO bills remain unpaid (status=0) until payment is confirmed from the provider
     }
 
-    return Billing::create([
+    // ── Antenatal package coverage check ──────────────────────────────────
+    $coverage = null;
+    $coverageService = new AntenatalCoverageService();
+    $coverage = $coverageService->getCoverage($patientId, $serviceCategory, $service->id);
+
+    \Illuminate\Support\Facades\Log::info('Antenatal coverage check', [
+        'patient_id'      => $patientId,
+        'serviceCategory' => $serviceCategory,
+        'service_id'      => $service->id,
+        'service_name'    => $serviceName,
+        'covered'         => $coverage ? true : false,
+    ]);
+
+    if ($coverage) {
+        $amount = 0;
+        $status = 1;
+    }
+    // ──────────────────────────────────────────────────────────────────────
+
+    $billing = Billing::create([
       'service'     => $serviceCategory . ':' . $serviceName,
       'service_id'  => $service->id,
       'user_id'     => $patientId,
@@ -90,6 +106,13 @@ class ServiceRequestHandler
       'plan_id'     => $plan_id,
       'status'      => $status,
     ]);
+
+    // Record usage so qty limit is tracked
+    if ($coverage) {
+        $coverageService->recordUsage($coverage, $billing->id);
+    }
+
+    return $billing;
   }
 
   /**

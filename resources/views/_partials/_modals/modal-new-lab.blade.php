@@ -2,21 +2,24 @@
 use App\Models\Patient;
 use App\Models\Admission;
 
-$patientId = null;
-$route = request()->route();
+// Use directly passed $patientId if available (e.g. from antenatal show)
+if (!isset($patientId)) {
+    $patientId = null;
+    $route = request()->route();
 
-if ($route) {
-    if ($route->parameter('patient')) {
-        $param = $route->parameter('patient');
-        $patientId = is_object($param) ? $param->id : $param;
-    } elseif ($route->parameter('admission')) {
-        $param = $route->parameter('admission');
-        $admission = is_object($param) ? $param : Admission::find($param);
-        $patientId = $admission?->patient_id;
+    if ($route) {
+        if ($route->parameter('patient')) {
+            $param = $route->parameter('patient');
+            $patientId = is_object($param) ? $param->id : $param;
+        } elseif ($route->parameter('admission')) {
+            $param = $route->parameter('admission');
+            $admission = is_object($param) ? $param : Admission::find($param);
+            $patientId = $admission?->patient_id;
+        }
     }
 }
 
-$patient = Patient::find($patientId);
+$patient = isset($patient) ? $patient : Patient::find($patientId);
 $user = optional($patient)->user;
 @endphp
 

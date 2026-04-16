@@ -33,6 +33,7 @@ use App\Http\Controllers\ReligionController;
 use App\Http\Controllers\VitalRefController;
 use App\Http\Controllers\AdmissionController;
 use App\Http\Controllers\AntenatalController;
+use App\Http\Controllers\AntenatalPackageController;
 use App\Http\Controllers\AntenatalRecordController;
 use App\Http\Controllers\CashPointController;
 use App\Http\Controllers\ConsumbleController;
@@ -281,6 +282,8 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::get('settings/laboratory', [SystemSettingsController::class, 'LaboratorySettings'])->name('settings.laboratory');
   Route::get('settings/radiology', [SystemSettingsController::class, 'RadiologySettings'])->name('settings.radiology');
   Route::get('settings/procedures', [SystemSettingsController::class, 'ProcedureSettings'])->name('settings.procedures');
+  Route::get('settings/antenatal', [AntenatalPackageController::class, 'index'])->name('settings.antenatal');
+  Route::resource('antenatal-packages', AntenatalPackageController::class)->except(['show', 'create', 'index']);
   Route::get('settings/dialysis', [SystemSettingsController::class, 'RadiologySettings'])->name('settings.dialysis');
   Route::resource('categories', ServiceCategoryController::class);
   Route::resource('positions', PositionController::class);
