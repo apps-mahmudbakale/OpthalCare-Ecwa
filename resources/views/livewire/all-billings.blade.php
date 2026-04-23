@@ -1,11 +1,18 @@
 <div>
 <div>
-  <div class="card-header">
-    <button class="btn btn-success mb-2 new-bill-btn"
-            data-request-url="{{ route('app.new.bill') }}"
-            data-toggle="modal" data-target="#global-modal">
-      New Bill
-    </button>
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <div>
+      <button class="btn btn-success mb-2 new-bill-btn"
+              data-request-url="{{ route('app.new.bill') }}"
+              data-toggle="modal" data-target="#global-modal">
+        New Bill
+      </button>
+    </div>
+    <div>
+      <a href="{{ route('app.payments.search-enrollment') }}" class="btn btn-outline-primary mb-2">
+        <i class="ti ti-printer me-1"></i> Reprint Enrollment
+      </a>
+    </div>
   </div>
 
   <!-- Search and Filter Section -->
@@ -158,6 +165,14 @@
               <i class="fa fa-ellipsis-v"></i>
             </button>
             <ul class="dropdown-menu">
+              @if($billing->status == 1)
+              <li>
+                <a class="dropdown-item" href="{{ route('app.payments.reprint', $billing->bill_ref) }}" target="_blank">
+                  <i class="fa fa-print"></i> Reprint Receipt
+                </a>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              @else
               <li>
                 <button class="dropdown-item billing-show-btn"
                         data-request-url="{{ route('app.billing.show', $billing->bill_ref) }}">
@@ -165,6 +180,7 @@
                 </button>
               </li>
               <li><hr class="dropdown-divider"></li>
+              @endif
               <li>
                 <button class="dropdown-item text-danger cancel-charge-btn"
                         data-billing-id="{{ $billing->id }}"

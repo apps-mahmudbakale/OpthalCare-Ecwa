@@ -297,6 +297,9 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::resource('payments', PaymentController::class);
   Route::post('payments/new-enroll', [PaymentController::class, 'storeEnroll'])->name('payments.new-enroll');
   Route::post('payments/new-enroll', [PaymentController::class, 'storeEnroll'])->name('payments.new-enroll');
+  Route::get('payments/reprint/{billRef}', [PaymentController::class, 'reprintReceipt'])->name('payments.reprint');
+  Route::get('payments/reprint-enrollment/{tempPatientId}', [PaymentController::class, 'reprintEnrollment'])->name('payments.reprint-enrollment');
+  Route::get('payments/search-enrollment', [PaymentController::class, 'searchEnrollment'])->name('payments.search-enrollment');
   Route::get('payment/new-method', [PaymentController::class, 'newMethod'])->name('payments.new-method');
   Route::post('payment/new-method', [PaymentController::class, 'saveMethod'])->name('payments.save-method');
   Route::get('payment/edit-method/{id}', [PaymentController::class, 'EditMethod'])->name('payments.edit-method');

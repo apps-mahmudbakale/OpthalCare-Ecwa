@@ -20,4 +20,13 @@ class TempPatient extends Model
 //      'date_of_birth',
       'accesscode'
     ];
+
+    /**
+     * Get the billing record for this temp patient
+     */
+    public function billing()
+    {
+        return $this->hasOne(Billing::class, 'user_id', 'id')
+                    ->where('service', 'LIKE', '%Enrollment%');
+    }
 }

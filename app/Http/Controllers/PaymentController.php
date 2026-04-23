@@ -234,4 +234,116 @@ class PaymentController extends Controller
 
       return redirect()->back()->with('success', 'Payment Method Deleted');
   }
+
+  /**
+   * Reprint receipt for a paid bill
+   */
+  public function reprintReceipt($billRef)
+  {
+    try {
+      // Find the billing record
+      $billing = Billing::where('bill_ref', $billRef)
+        ->where('status', 1) // Only paid bills
+        ->first();
+
+      if (!$billing) {
+        return redirect()->back()->with('error', 'No paid bill found with this reference.');
+      }
+
+      // Find the payment record
+      $payment = Payment::where('billing_id', $billing->id)->first();
+
+      if (!$payment) {
+        return redirect()->back()->with('error', 'No payment record found for this bill.');
+      }
+
+      $patient = Patient::findOrFail($billing->user_id);
+
+      // Check if it's a check-in consultation with clearance code
+      $clearanceCode = null;
+      if (strtolower($billing->service) === strtolower('consultation / check-in fee')) {
+        $checkIn = \App\Models\CheckIn::where('patient_id', $billing->user_id)
+                                      ->whereDate('check_in_date', $billing->created_at->toDateString())
+                                      ->where('cleared', false)
+                                      ->first();
+        if ($checkIn) {
+          $clearanceCode = $checkIn->clearance_code;
+        }
+      }
+
+      // Check if it's a follow-up consultation
+      if (strtolower($billing->service) === strtolower('consultations:Follow-Up')) {
+        $access = FollowUp::where('patient_id', $billing->user_id)
+                          ->whereDate('created_at', $billing->created_at->toDateString())
+                          ->first();
+        
+        if ($access) {
+          return view('billing.print-follow', compact('access', 'patient'));
+        }
+      }
+
+      return view('billing.print', [
+        'billing' => $billing,
+        'payment' => $payment,
+        'bill_ref' => $billRef,
+        'clearance_code' => $clearanceCode
+      ]);
+
+    } catch (\Exception $e) {
+      Log::error('Receipt reprint failed: ' . $e->getMessage());
+      return redirect()->back()->with('error', 'Failed to reprint receipt.');
+    }
+  }
+
+  /**
+   * Reprint enrollment receipt
+   */
+  public function reprintEnrollment($tempPatientId)
+  {
+    try {
+      $tempPatient = TempPatient::findOrFail($tempPatientId);
+
+      // Find the enrollment billing record
+      $billing = Billing::where('user_id', $tempPatient->id)
+        ->where('service', 'LIKE', '%Enrollment%')
+        ->where('status', 1) // Only paid
+        ->first();
+
+      if (!$billing) {
+        return redirect()->back()->with('error', 'No paid enrollment found for this patient.');
+      }
+
+      return view('billing.print-new', compact('tempPatient', 'billing'));
+
+    } catch (\Exception $e) {
+      Log::error('Enrollment receipt reprint failed: ' . $e->getMessage());
+      return redirect()->back()->with('error', 'Failed to reprint enrollment receipt.');
+    }
+  }
+
+  /**
+   * Search for enrollments to reprint
+   */
+  public function searchEnrollment(Request $request)
+  {
+    $search = $request->get('search', '');
+    
+    $enrollments = TempPatient::query()
+      ->when($search, function($query, $search) {
+        $query->where(function($q) use ($search) {
+          $q->where('first_name', 'LIKE', "%{$search}%")
+            ->orWhere('last_name', 'LIKE', "%{$search}%")
+            ->orWhere('accesscode', 'LIKE', "%{$search}%")
+            ->orWhere('phone', 'LIKE', "%{$search}%");
+        });
+      })
+      ->whereHas('billing', function($query) {
+        $query->where('status', 1); // Only show paid enrollments
+      })
+      ->with('billing')
+      ->orderBy('created_at', 'desc')
+      ->paginate(20);
+
+    return view('payments.search-enrollment', compact('enrollments', 'search'));
+  }
 }
