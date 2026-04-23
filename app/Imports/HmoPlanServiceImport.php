@@ -46,7 +46,8 @@ class HmoPlanServiceImport implements ToCollection, WithHeadingRow
     {
         foreach ($rows as $row) {
             $categoryRaw = strtolower(trim($row['category'] ?? ''));
-            $serviceName = strtolower(trim($row['service_name'] ?? ''));
+            $serviceName = trim($row['service_name'] ?? '');
+            $serviceNameLower = strtolower($serviceName);
             $priceRaw = $row['price'] ?? 0;
 
             if (empty($categoryRaw) || empty($serviceName)) {
@@ -58,10 +59,18 @@ class HmoPlanServiceImport implements ToCollection, WithHeadingRow
                 continue; // Category not recognized
             }
 
-            $serviceId = $this->cache[$categoryRaw][$serviceName] ?? null;
+            $serviceId = $this->cache[$categoryRaw][$serviceNameLower] ?? null;
 
+            // If service not found, create it based on category
             if (!$serviceId) {
-                continue; // Service not found inside this category
+                $serviceId = $this->createServiceByCategory($categoryRaw, $serviceName, $priceRaw);
+                
+                if (!$serviceId) {
+                    continue; // Failed to create service
+                }
+
+                // Update cache with newly created service
+                $this->cache[$categoryRaw][$serviceNameLower] = $serviceId;
             }
 
             $price = (float) preg_replace('/[^0-9.]/', '', $priceRaw);
@@ -77,6 +86,94 @@ class HmoPlanServiceImport implements ToCollection, WithHeadingRow
                     'price' => $price,
                 ]
             );
+        }
+    }
+
+    /**
+     * Create a service based on category if it doesn't exist
+     *
+     * @param string $category
+     * @param string $serviceName
+     * @param mixed $price
+     * @return int|null
+     */
+    protected function createServiceByCategory($category, $serviceName, $price)
+    {
+        $price = (float) preg_replace('/[^0-9.]/', '', $price);
+
+        try {
+            switch ($category) {
+                case 'laboratory':
+                    $service = Laboratory::create([
+                        'name' => $serviceName,
+                        'price' => $price,
+                        'category_id' => null, // Set to null or default category if needed
+                        'template_id' => null,
+                    ]);
+                    return $service->id;
+
+                case 'procedure':
+                case 'procedures':
+                    $service = Procedure::create([
+                        'name' => $serviceName,
+                        'price' => $price,
+                        'category_id' => null,
+                    ]);
+                    return $service->id;
+
+                case 'radiology':
+                    $service = Radiology::create([
+                        'name' => $serviceName,
+                        'price' => $price,
+                        'category_id' => null,
+                        'template_id' => null,
+                    ]);
+                    return $service->id;
+
+                case 'pharmacy':
+                    $service = Drug::create([
+                        'name' => $serviceName,
+                        'price' => $price,
+                        'quantity' => 0,
+                        'category_id' => null,
+                        'threshold' => 0,
+                        'is_active' => true,
+                        'store_id' => null,
+                        'expiry_date' => null,
+                    ]);
+                    return $service->id;
+
+                case 'admissions':
+                case 'admission':
+                    $service = Bed::create([
+                        'name' => $serviceName,
+                        'price' => $price,
+                    ]);
+                    return $service->id;
+
+                case 'consultations':
+                case 'consultation':
+                    $service = Speciality::create([
+                        'name' => $serviceName,
+                        'price' => $price,
+                    ]);
+                    return $service->id;
+
+                case 'ophthicals':
+                case 'antenatal':
+                    $service = Antenatal::create([
+                        'name' => $serviceName,
+                        'price' => $price,
+                    ]);
+                    return $service->id;
+
+                default:
+                    return null;
+            }
+        } catch (\Exception $e) {
+            // Log error if needed
+            \Log::error("Failed to create service: {$serviceName} in category: {$category}. Error: " . $e->getMessage());
+            return null;
         }
     }
 }

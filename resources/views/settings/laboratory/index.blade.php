@@ -53,7 +53,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <livewire:laboratories />
+                    @include('settings.laboratory._tests-table')
                 </div>
             </div>
         </div>
@@ -70,7 +70,7 @@
                         data-bs-target="#new-lab-category">New</a>
                 </div>
                 <div class="card-body">
-                    <livewire:lab-category />
+                    @include('settings.laboratory._categories-table')
                 </div>
             </div>
         </div>
@@ -85,7 +85,7 @@
                         data-bs-target="#new-lab-parameter">New</a>
                 </div>
                 <div class="card-body">
-                    <livewire:lab-parameter />
+                    @include('settings.laboratory._parameters-table')
                 </div>
             </div>
         </div>
@@ -100,7 +100,7 @@
                         data-bs-target="#new-lab-template">New</a>
                 </div>
                 <div class="card-body">
-                    <livewire:lab-template />
+                    @include('settings.laboratory._templates-table')
                 </div>
             </div>
         </div>

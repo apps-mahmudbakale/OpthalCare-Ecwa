@@ -19,6 +19,14 @@
     <!-- Services Table -->
     <div class="col-md-12">
         <div id="service-alert-container"></div>
+        
+        <!-- Pagination Info -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="text-muted">
+                Showing {{ $assignedServices->firstItem() ?? 0 }} to {{ $assignedServices->lastItem() ?? 0 }} of {{ $assignedServices->total() }} services
+            </div>
+        </div>
+        
         <div class="table-responsive text-nowrap">
             <table class="table table-hover">
                 <thead>
@@ -72,6 +80,54 @@
                 </tbody>
             </table>
         </div>
+        
+        <!-- Pagination Links -->
+        @if($assignedServices->hasPages())
+        <div class="mt-3 d-flex justify-content-center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-sm">
+                    {{-- Previous Page Link --}}
+                    @if ($assignedServices->onFirstPage())
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="ti ti-chevron-left"></i></span>
+                        </li>
+                    @else
+                        <li class="page-item">
+                            <a class="page-link pagination-link" href="{{ $assignedServices->previousPageUrl() }}" data-page="{{ $assignedServices->currentPage() - 1 }}">
+                                <i class="ti ti-chevron-left"></i>
+                            </a>
+                        </li>
+                    @endif
+
+                    {{-- Pagination Elements --}}
+                    @foreach ($assignedServices->getUrlRange(1, $assignedServices->lastPage()) as $page => $url)
+                        @if ($page == $assignedServices->currentPage())
+                            <li class="page-item active">
+                                <span class="page-link">{{ $page }}</span>
+                            </li>
+                        @else
+                            <li class="page-item">
+                                <a class="page-link pagination-link" href="{{ $url }}" data-page="{{ $page }}">{{ $page }}</a>
+                            </li>
+                        @endif
+                    @endforeach
+
+                    {{-- Next Page Link --}}
+                    @if ($assignedServices->hasMorePages())
+                        <li class="page-item">
+                            <a class="page-link pagination-link" href="{{ $assignedServices->nextPageUrl() }}" data-page="{{ $assignedServices->currentPage() + 1 }}">
+                                <i class="ti ti-chevron-right"></i>
+                            </a>
+                        </li>
+                    @else
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="ti ti-chevron-right"></i></span>
+                        </li>
+                    @endif
+                </ul>
+            </nav>
+        </div>
+        @endif
     </div>
 </div>
 
@@ -122,6 +178,23 @@ $(document).ready(function() {
 
     $('.delete-service-form').on('submit', function(e) {
         submitAjaxForm(e, this);
+    });
+
+    // Handle pagination links with AJAX
+    $(document).on('click', '.pagination-link', function(e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(response) {
+                $('#global-modal .modal-body').html(response);
+            },
+            error: function(xhr, status, error) {
+                console.error('Pagination error:', error);
+            }
+        });
     });
 
     // Fetching Logic for Services via BillingService endpoint

@@ -36,23 +36,19 @@ class Laboratories extends Base
   }
   public function render()
   {
-    if ($this->search) {
-      $tests = Laboratory::query()
-        ->where('name', 'like', '%' . $this->search . '%')
-        ->paginate(10);
+    $query = Laboratory::query();
 
-      return view(
-        'livewire.laboratories',
-        ['tests' => $tests]
-      );
-    } else {
-      $tests = Laboratory::query()
-        ->orderBy($this->sortBy, $this->sortDirection)
-        ->paginate($this->perPage);
-      return view(
-        'livewire.laboratories',
-        ['tests' => $tests]
-      );
+    // Apply search
+    if ($this->search) {
+      $query->where('name', 'like', '%' . $this->search . '%');
     }
+
+    // Apply sorting
+    $query->orderBy($this->sortBy, $this->sortDirection);
+
+    // Paginate
+    $tests = $query->paginate($this->perPage);
+
+    return view('livewire.laboratories', ['tests' => $tests]);
   }
 }

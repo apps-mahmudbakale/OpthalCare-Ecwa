@@ -9,10 +9,10 @@
     .invoice-box {
       max-width: 800px;
       margin: auto;
-      padding: 30px;
+      padding: 20px;
       box-shadow: 0 0 10px rgba(0, 0, 0, .15);
-      font-size: 12pt;
-      line-height: 24px;
+      font-size: 11pt;
+      line-height: 20px;
       font-family: 'Times New Roman', Times, serif;
       color: #555;
     }
@@ -48,7 +48,7 @@
     }
 
     .invoice-box table tr.details td {
-      padding-bottom: 20px;
+      padding-bottom: 10px;
     }
 
     .invoice-box table tr.item td {
@@ -95,7 +95,7 @@
     .footnote {
       font-size: smaller;
       text-align: center;
-      margin-top: 100px;
+      margin-top: 50px;
     }
 
     .text-muted {
@@ -103,7 +103,48 @@
     }
 
     .spacer {
-      margin-top: 50px
+      margin-top: 30px
+    }
+    
+    @media print {
+      /* Force single page */
+      html, body {
+        height: 100%;
+        overflow: hidden;
+      }
+      
+      .invoice-box {
+        page-break-inside: avoid;
+        page-break-after: avoid;
+        max-height: 100vh;
+        overflow: hidden;
+        padding: 15px;
+      }
+      
+      /* Prevent page breaks inside table rows */
+      .invoice-box table tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+      }
+      
+      /* Compact spacing for print */
+      .spacer {
+        margin-top: 20px;
+      }
+      
+      .invoice-box table tr.top table td.title img {
+        max-height: 60px !important;
+      }
+      
+      .invoice-box {
+        font-size: 10pt;
+        line-height: 18px;
+      }
+    }
+    
+    @page {
+      size: A4;
+      margin: 10mm 15mm;
     }
   </style>
   <link rel="stylesheet" href="/assets/vendor/fontawesome/css/all.css">

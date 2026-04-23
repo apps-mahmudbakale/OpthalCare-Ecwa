@@ -32,11 +32,14 @@ class HmoServiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(\App\Models\HmoPlan $plan)
+    public function index(Request $request, \App\Models\HmoPlan $plan)
     {
         $hmoPlan = $plan;
         // Don't eager load 'service' anymore since it's removed
-        $assignedServices = HmoService::where('plan_id', $hmoPlan->id)->get();
+        // Add pagination with 20 items per page
+        $assignedServices = HmoService::where('plan_id', $hmoPlan->id)
+            ->paginate(20)
+            ->appends($request->query());
         
         $categories = [
             'admissions' => 'Admissions',

@@ -8,17 +8,19 @@
 		.invoice-box {
 			margin: auto;
             border: 1px solid #999;
-			font-size: 12px;
+			font-size: 11px;
 			font-family: "Albert Sans", -apple-system, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
 			color: #111;
             min-height: calc(100vh - 60px);
 		}
         .hospital-address {
             margin: 0;
+            line-height: 1.3;
         }
 
         hr {
             border-width: 1px 0 0 0;
+            margin: 3px 0;
         }
 
 		.invoice-box table {
@@ -44,22 +46,24 @@
 
 		.invoice-box table tr.information table td {
             padding: 0 5px;
+            line-height: 1.4;
 		}
 
 		.invoice-box table tr.heading td {
 			background: #eee;
 			border-bottom: 1px solid #999;
 			font-weight: bold;
-            padding: 5px;
+            padding: 4px 5px;
 		}
 
 		.invoice-box table tr.details td {
-			padding-bottom: 20px;
+			padding-bottom: 10px;
 		}
 
 		.invoice-box table tr.item td {
 			border-bottom: 1px solid #999;
-            padding: 3px 10px;
+            padding: 2px 8px;
+            line-height: 1.3;
 		}
 
 		.invoice-box table tr.item.last td {
@@ -107,14 +111,56 @@
             }
         }
 		@media print {
+            /* Force single page */
+            html, body {
+                height: 100%;
+                overflow: hidden;
+            }
+            
+            .invoice-box {
+                page-break-inside: avoid;
+                page-break-after: avoid;
+                max-height: 100vh;
+                overflow: hidden;
+            }
+            
+            /* Prevent page breaks inside table rows */
+            .invoice-box table tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+            
+            /* Compact spacing for print */
+            .invoice-box table tr.item td {
+                padding: 1px 8px;
+                line-height: 1.2;
+            }
+            
+            .invoice-box table tr.heading td {
+                padding: 3px 5px;
+            }
+            
+            .letterhead img {
+                max-width: 12% !important;
+            }
+            
+            h2 {
+                margin: 1px 0 !important;
+                font-size: 16px !important;
+            }
+            
             body > footer {
-            text-align: center;
-            font-family: "Albert Sans", -apple-system, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-            font-size: smaller;
-            background-color: rgb(101, 101, 101);
-            color: #fff;
-            padding: 2px;
-            border: none !important;
+                text-align: center;
+                font-family: "Albert Sans", -apple-system, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+                font-size: 9px;
+                background-color: rgb(101, 101, 101);
+                color: #fff;
+                padding: 2px;
+                border: none !important;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
             }
 		}
         .letterhead {
@@ -122,6 +168,8 @@
             visibility: inherit;
         }
         @page {
+            size: A4;
+            margin: 10mm 15mm;
             @bottom-right {
                 content: "Page " counter(page) " of " counter(pages);
                 text-align: center;

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ward;
+use App\Models\Laboratory;
 use Illuminate\Http\Request;
 use App\Settings\SystemSettings;
 
@@ -40,9 +41,53 @@ class SystemSettingsController extends Controller
     return view('settings.pharmacy.index');
   }
 
-  public function LaboratorySettings()
+  public function LaboratorySettings(Request $request)
   {
-    return view('settings.laboratory.index');
+    // Lab Tests
+    $testsQuery = Laboratory::query()->with('category');
+    if ($request->has('test_search') && $request->test_search) {
+      $testsQuery->where('name', 'like', '%' . $request->test_search . '%');
+    }
+    $testSortBy = $request->get('test_sort_by', 'name');
+    $testSortDirection = $request->get('test_sort_direction', 'asc');
+    $testsQuery->orderBy($testSortBy, $testSortDirection);
+    $testPerPage = $request->get('test_per_page', 10);
+    $tests = $testsQuery->paginate($testPerPage, ['*'], 'test_page');
+
+    // Lab Categories
+    $categoriesQuery = \App\Models\LabCategory::query();
+    if ($request->has('category_search') && $request->category_search) {
+      $categoriesQuery->where('name', 'like', '%' . $request->category_search . '%');
+    }
+    $categorySortBy = $request->get('category_sort_by', 'name');
+    $categorySortDirection = $request->get('category_sort_direction', 'asc');
+    $categoriesQuery->orderBy($categorySortBy, $categorySortDirection);
+    $categoryPerPage = $request->get('category_per_page', 10);
+    $categories = $categoriesQuery->paginate($categoryPerPage, ['*'], 'category_page');
+
+    // Lab Parameters
+    $parametersQuery = \App\Models\LabParameter::query();
+    if ($request->has('parameter_search') && $request->parameter_search) {
+      $parametersQuery->where('name', 'like', '%' . $request->parameter_search . '%');
+    }
+    $parameterSortBy = $request->get('parameter_sort_by', 'name');
+    $parameterSortDirection = $request->get('parameter_sort_direction', 'asc');
+    $parametersQuery->orderBy($parameterSortBy, $parameterSortDirection);
+    $parameterPerPage = $request->get('parameter_per_page', 10);
+    $parameters = $parametersQuery->paginate($parameterPerPage, ['*'], 'parameter_page');
+
+    // Lab Templates
+    $templatesQuery = \App\Models\LabTemplate::query();
+    if ($request->has('template_search') && $request->template_search) {
+      $templatesQuery->where('name', 'like', '%' . $request->template_search . '%');
+    }
+    $templateSortBy = $request->get('template_sort_by', 'name');
+    $templateSortDirection = $request->get('template_sort_direction', 'asc');
+    $templatesQuery->orderBy($templateSortBy, $templateSortDirection);
+    $templatePerPage = $request->get('template_per_page', 10);
+    $templates = $templatesQuery->paginate($templatePerPage, ['*'], 'template_page');
+
+    return view('settings.laboratory.index', compact('tests', 'categories', 'parameters', 'templates'));
   }
 
   public function RadiologySettings()
