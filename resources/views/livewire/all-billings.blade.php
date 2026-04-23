@@ -115,15 +115,20 @@
   </div>
 
   <div class="table-responsive">
-    <table class="table">
+    <table class="table table-hover">
       <thead>
       <tr>
+        <th width="50" class="text-center">
+          <div class="form-check d-flex justify-content-center">
+            <input type="checkbox" id="selectAllBills" class="form-check-input" title="Select all unpaid bills" style="cursor: pointer;">
+          </div>
+        </th>
         <th>Patient</th>
         <th>Primary Insurance Plan</th>
         <th>Service</th>
-        <th class="text-right">Outstanding Amount</th>
-        <th>Status</th>
-        <th class="text-right">*</th>
+        <th class="text-end">Outstanding Amount</th>
+        <th class="text-center">Status</th>
+        <th class="text-center">Actions</th>
       </tr>
       </thead>
       <tbody>
@@ -142,33 +147,51 @@
       @endphp
       
       @foreach($group as $billing)
-      <tr>
-        <td class="align-middle">
-          <a href="#">
-            {{ $fullName }} [HRN{{ $hospitalNo }}]
-          </a>
-        </td>
-        <td>{{ $insurancePlan }}</td>
-        <td>{{ $billing->service }}</td>
-        <td class="text-right">{{ number_format($billing->amount) }}</td>
-        <td>
-          @if($billing->status == 1)
-            <span class="badge bg-label-success">Paid</span>
+      <tr class="billing-row" data-bill-ref="{{ $billing->bill_ref }}">
+        <td class="text-center align-middle">
+          @if($billing->status == 0)
+            <div class="form-check d-flex justify-content-center">
+              <input type="checkbox" 
+                     class="form-check-input bill-select-checkbox" 
+                     data-bill-id="{{ $billing->id }}"
+                     data-bill-ref="{{ $billing->bill_ref }}"
+                     data-patient-id="{{ $billing->user_id }}"
+                     data-amount="{{ $billing->amount }}"
+                     style="cursor: pointer;">
+            </div>
           @else
-            <span class="badge bg-label-warning">Unpaid</span>
+            <span class="text-muted">—</span>
           @endif
         </td>
-        <td class="align-middle text-right">
-          <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-icon btn-light waves-effect waves-light"
+        <td class="align-middle">
+          <a href="#" class="text-decoration-none">
+            <strong>{{ $fullName }}</strong><br>
+            <small class="text-muted">[HRN{{ $hospitalNo }}]</small>
+          </a>
+        </td>
+        <td class="align-middle">
+          <small>{{ $insurancePlan }}</small>
+        </td>
+        <td class="align-middle">{{ $billing->service }}</td>
+        <td class="text-end align-middle">₦{{ number_format($billing->amount, 2) }}</td>
+        <td class="text-center align-middle">
+          @if($billing->status == 1)
+            <span class="badge bg-success">Paid</span>
+          @else
+            <span class="badge bg-warning">Unpaid</span>
+          @endif
+        </td>
+        <td class="text-center align-middle">
+          <div class="dropdown">
+            <button type="button" class="btn btn-sm btn-icon btn-text-secondary rounded-pill dropdown-toggle hide-arrow"
                     data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="fa fa-ellipsis-v"></i>
+              <i class="ti ti-dots-vertical"></i>
             </button>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu dropdown-menu-end">
               @if($billing->status == 1)
               <li>
                 <a class="dropdown-item" href="{{ route('app.payments.reprint', $billing->bill_ref) }}" target="_blank">
-                  <i class="fa fa-print"></i> Reprint Receipt
+                  <i class="ti ti-printer me-2"></i> Reprint Receipt
                 </a>
               </li>
               <li><hr class="dropdown-divider"></li>
@@ -176,7 +199,7 @@
               <li>
                 <button class="dropdown-item billing-show-btn"
                         data-request-url="{{ route('app.billing.show', $billing->bill_ref) }}">
-                  <i class="fa fa-money-bill"></i> Receive Payment
+                  <i class="ti ti-cash me-2"></i> Receive Payment
                 </button>
               </li>
               <li><hr class="dropdown-divider"></li>
@@ -185,7 +208,7 @@
                 <button class="dropdown-item text-danger cancel-charge-btn"
                         data-billing-id="{{ $billing->id }}"
                         data-service="{{ $billing->service }}">
-                  <i class="fa fa-times-circle"></i> Cancel This Charge
+                  <i class="ti ti-trash me-2"></i> Cancel This Charge
                 </button>
               </li>
             </ul>
@@ -195,20 +218,150 @@
       @endforeach
       @empty
       <tr>
-        <td colspan="6" class="text-center py-4">
-          <i class="fa fa-inbox fa-3x text-muted mb-3"></i>
-          <p class="text-muted">No billing records found</p>
+        <td colspan="7" class="text-center py-5">
+          <i class="ti ti-file-invoice ti-lg text-muted mb-3 d-block" style="font-size: 3rem;"></i>
+          <p class="text-muted mb-0">No billing records found</p>
         </td>
       </tr>
       @endforelse
       </tbody>
     </table>
 
-    <hr class="my-2">
-    <div class="d-flex justify-content-around">
+    <!-- Pay Selected Button - Sticky Footer -->
+    <div id="paySelectedContainer" class="d-none">
+      <div class="card border-primary shadow-sm" style="position: sticky; bottom: 20px; z-index: 1000;">
+        <div class="card-body py-3">
+          <div class="row align-items-center">
+            <div class="col-md-8">
+              <div class="d-flex align-items-center">
+                <i class="ti ti-checkbox ti-md text-primary me-3"></i>
+                <div>
+                  <h6 class="mb-0">
+                    <span id="selectedCount" class="text-primary fw-bold">0</span> bill(s) selected
+                  </h6>
+                  <small class="text-muted">
+                    Total Amount: <strong id="selectedTotalAmount" class="text-dark">₦0.00</strong>
+                  </small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 text-end">
+              <button type="button" class="btn btn-primary waves-effect waves-light" id="paySelectedBtn">
+                <i class="ti ti-cash me-1"></i> Pay Selected Bills
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="my-3">
+    <div class="d-flex justify-content-center">
       {{ $billings->appends(request()->except('page'))->links() }}
     </div>
   </div>
 </div>
 
 @include('_partials._modals.global-modal')
+
+<script>
+$(document).ready(function() {
+    // Update selected bills display
+    function updateSelectedBills() {
+        const selectedCheckboxes = $('.bill-select-checkbox:checked');
+        const count = selectedCheckboxes.length;
+        let total = 0;
+        
+        selectedCheckboxes.each(function() {
+            total += parseFloat($(this).data('amount'));
+        });
+        
+        $('#selectedCount').text(count);
+        $('#selectedTotalAmount').text('₦' + total.toLocaleString('en-NG', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+        
+        if (count > 0) {
+            $('#paySelectedContainer').removeClass('d-none');
+        } else {
+            $('#paySelectedContainer').addClass('d-none');
+        }
+    }
+    
+    // Select all checkbox
+    $('#selectAllBills').on('change', function() {
+        $('.bill-select-checkbox').prop('checked', $(this).is(':checked'));
+        updateSelectedBills();
+    });
+    
+    // Individual checkbox change
+    $(document).on('change', '.bill-select-checkbox', function() {
+        const totalCheckboxes = $('.bill-select-checkbox').length;
+        const checkedCheckboxes = $('.bill-select-checkbox:checked').length;
+        $('#selectAllBills').prop('checked', totalCheckboxes === checkedCheckboxes);
+        updateSelectedBills();
+    });
+    
+    // Pay selected bills button
+    $('#paySelectedBtn').on('click', function() {
+        const selectedCheckboxes = $('.bill-select-checkbox:checked');
+        
+        if (selectedCheckboxes.length === 0) {
+            alert('Please select at least one bill to pay');
+            return;
+        }
+        
+        // Get selected bill IDs and details
+        const selectedBills = [];
+        let patientId = null;
+        let billRef = null;
+        
+        selectedCheckboxes.each(function() {
+            selectedBills.push($(this).data('bill-id'));
+            if (!patientId) patientId = $(this).data('patient-id');
+            if (!billRef) billRef = $(this).data('bill-ref');
+        });
+        
+        // Check if all selected bills are from the same patient
+        let samePatient = true;
+        selectedCheckboxes.each(function() {
+            if ($(this).data('patient-id') != patientId) {
+                samePatient = false;
+            }
+        });
+        
+        if (!samePatient) {
+            alert('Please select bills from the same patient only');
+            return;
+        }
+        
+        // Store selected bills in sessionStorage
+        sessionStorage.setItem('selectedBills', selectedBills.join(','));
+        
+        // Open payment modal
+        const url = '{{ url("app/billing") }}/' + billRef;
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(response) {
+                $('#global-modal .modal-body').html(response);
+                $('#global-modal').modal('show');
+                
+                // Set the selected bills in the hidden input
+                setTimeout(function() {
+                    $('#selectedBillsInput').val(selectedBills.join(','));
+                    
+                    // Calculate and set the amount
+                    let total = 0;
+                    selectedCheckboxes.each(function() {
+                        total += parseFloat($(this).data('amount'));
+                    });
+                    $('#payingAmount').val(total.toFixed(2));
+                }, 100);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading payment form:', error);
+                alert('Failed to load payment form');
+            }
+        });
+    });
+});
+</script>

@@ -294,7 +294,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::resource('cashpoints', CashPointController::class);
   Route::get('cashpoints/new-patient/{patient}', [CashPointController::class, 'newPatient'])->name('cashpoints.new-patient');
   Route::post('cashpoint/bill-patient', [CashPointController::class, 'billPatient'])->name('cashpoints.bill-patient');
-  Route::resource('payments', PaymentController::class);
+  Route::resource('payments', PaymentController::class)->only(['store']);
   Route::post('payments/new-enroll', [PaymentController::class, 'storeEnroll'])->name('payments.new-enroll');
   Route::post('payments/new-enroll', [PaymentController::class, 'storeEnroll'])->name('payments.new-enroll');
   Route::get('payments/reprint/{billRef}', [PaymentController::class, 'reprintReceipt'])->name('payments.reprint');

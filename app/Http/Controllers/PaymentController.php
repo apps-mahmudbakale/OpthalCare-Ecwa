@@ -47,9 +47,10 @@ class PaymentController extends Controller
   {
     $request->validate([
       'patient_id' => 'required|exists:patients,id',
-      'billing_id' => 'required|string', // Allow string for bill_ref like 64N2yT
+      'bill_ref' => 'required|string',
       'payment_method_id' => 'required|exists:payment_methods,id',
       'amount' => 'required|numeric|min:0',
+      'selected_bills' => 'nullable|string', // Comma-separated bill IDs
     ]);
 
     try {
@@ -57,25 +58,42 @@ class PaymentController extends Controller
         $paymentMethod = PaymentMethod::findOrFail($request->payment_method_id);
         $patient = Patient::findOrFail($request->patient_id);
 
-        // Find billings by bill_ref
-        $billings = Billing::where('bill_ref', $request->billing_id)
-          ->where('user_id', $patient->id) // Ensure billing belongs to patient
-          ->get();
+        // Determine which billings to pay
+        if ($request->filled('selected_bills')) {
+          // Pay only selected bills
+          $selectedBillIds = explode(',', $request->selected_bills);
+          $billings = Billing::whereIn('id', $selectedBillIds)
+            ->where('bill_ref', $request->bill_ref)
+            ->where('user_id', $patient->id)
+            ->where('status', 0) // Only unpaid
+            ->get();
+        } else {
+          // Fallback: pay all unpaid bills with this bill_ref
+          $billings = Billing::where('bill_ref', $request->bill_ref)
+            ->where('user_id', $patient->id)
+            ->where('status', 0)
+            ->get();
+        }
 
         if ($billings->isEmpty()) {
-          Log::warning("No billing found for bill_ref: {$request->billing_id}");
+          Log::warning("No unpaid billing found for bill_ref: {$request->bill_ref}");
           return redirect()->back()->with(['error' => 'Invalid or non-existent billing reference']);
+        }
+
+        // Calculate total amount of selected bills
+        $totalAmount = $billings->sum('amount');
+
+        // Validate that payment amount matches selected bills total
+        if (abs($totalAmount - $request->amount) > 0.01) {
+          return redirect()->back()->with(['error' => 'Payment amount does not match selected bills total']);
         }
 
         // Handle wallet payment
         if (strcasecmp($paymentMethod->name, 'wallet') === 0
           && !$this->processWalletPayment($patient, $request->amount)) {
-          dd($patient);
           return redirect()->route('app.patients.show', $patient->id)
             ->with(['error' => 'Insufficient balance']);
         }
-
-
 
         $paymentData = [
           'cashpoint_id'   => $request->location_id,
@@ -84,61 +102,57 @@ class PaymentController extends Controller
         ];
 
         $payment = null;
-        // Process multiple billings if they exist
-        if ($billings->count() > 1) {
-          foreach ($billings as $billing) {
-            $paymentData['billing_id'] = $billing->id;
-            $paymentData['paying_amount'] = $billing->amount;
-            $payment = $this->createPaymentAndUpdateBilling($paymentData, $billing->id);
-          }
-        } else {
-          // Single billing
-          $billing = $billings->first();
-          $paymentData['billing_id'] = $billing->id;
-          $paymentData['paying_amount'] = $request->amount;
-          $payment = $this->createPaymentAndUpdateBilling($paymentData, $billing->id);
-        }
-
-        $service = $billings->first(); // Use first billing for service check
-
-        // Handle Check-In Consultation Fee
         $clearanceCode = null;
-        if (strtolower($service->service) === strtolower('consultation / check-in fee')) {
-          $checkIn = \App\Models\CheckIn::where('patient_id', $service->user_id)
-                                        ->whereDate('check_in_date', today())
-                                        ->where('cleared', false)
-                                        ->first();
+        $followUpAccess = null;
 
-          if ($checkIn) {
+        // Process each selected billing
+        foreach ($billings as $billing) {
+          $paymentData['billing_id'] = $billing->id;
+          $paymentData['paying_amount'] = $billing->amount;
+          $payment = $this->createPaymentAndUpdateBilling($paymentData, $billing->id);
+
+          // Handle Check-In Consultation Fee
+          if (strtolower($billing->service) === strtolower('consultation / check-in fee')) {
+            $checkIn = \App\Models\CheckIn::where('patient_id', $billing->user_id)
+                                          ->whereDate('check_in_date', today())
+                                          ->where('cleared', false)
+                                          ->first();
+
+            if ($checkIn && !$clearanceCode) {
               $clearanceCode = strtoupper(str()->random(6));
               $checkIn->update(['clearance_code' => $clearanceCode]);
+            }
+          }
+
+          // Handle follow-up consultation
+          if (strtolower($billing->service) === strtolower('consultations:Follow-Up') && !$followUpAccess) {
+            $accessCode = 'OPC-' . substr(rand(100000, 999999) . time(), 0, 6);
+            $followUpAccess = FollowUp::create([
+              'patient_id' => $billing->user_id,
+              'access_code' => $accessCode,
+            ]);
           }
         }
 
-        // Handle follow-up consultation
-        if (strtolower($service->service) === strtolower('consultations:Follow-Up')) {
-          $accessCode = 'OPC-' . substr(rand(100000, 999999) . time(), 0, 6);
-          $access = FollowUp::create([
-            'patient_id' => $service->user_id,
-            'access_code' => $accessCode,
-          ]);
-
-          return view('billing.print-follow', compact('access', 'patient'));
+        // If follow-up was paid, show follow-up receipt
+        if ($followUpAccess) {
+          return view('billing.print-follow', compact('followUpAccess', 'patient'))->with('access', $followUpAccess);
         }
 
+        // Show regular receipt with all paid items
         return view('billing.print', [
-          'billing' => $service,
+          'billing' => $billings->first(),
           'payment' => $payment,
-          'bill_ref' => $request->billing_id,
+          'bill_ref' => $request->bill_ref,
           'clearance_code' => $clearanceCode
         ])->with(['success' => 'Payment added successfully']);
       });
     } catch (\Exception $e) {
       Log::error('Payment processing failed: ' . $e->getMessage(), [
-        'bill_ref' => $request->billing_id,
+        'bill_ref' => $request->bill_ref ?? 'N/A',
         'patient_id' => $request->patient_id
       ]);
-      return redirect()->back()->with(['error' => 'Payment processing failed: Invalid billing reference or server error']);
+      return redirect()->back()->with(['error' => 'Payment processing failed: ' . $e->getMessage()]);
     }
   }
 

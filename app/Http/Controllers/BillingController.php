@@ -72,8 +72,14 @@ class BillingController extends Controller
    */
   public function show($ref)
   {
+    // Get all bills with this reference
+    $allBills = Billing::where('bill_ref', $ref)->get();
+    
+    // Calculate total of unpaid bills
     $amount = Billing::where('bill_ref', $ref)
+      ->where('status', 0)
       ->sum('amount');
+      
     $billing = Billing::with('patient')->where('bill_ref', $ref)->first();
 
     return view('billing.show', compact('amount', 'ref', 'billing'));
