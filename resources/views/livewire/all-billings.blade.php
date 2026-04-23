@@ -1,11 +1,110 @@
 <div>
-  <div class="card-header d-flex justify-content-between align-items-center">
+<div>
+  <div class="card-header">
     <button class="btn btn-success mb-2 new-bill-btn"
             data-request-url="{{ route('app.new.bill') }}"
             data-toggle="modal" data-target="#global-modal">
       New Bill
     </button>
-    <input type="text" placeholder="Search" class="form-control w-25">
+  </div>
+
+  <!-- Search and Filter Section -->
+  <div class="card-body">
+    <form method="GET" action="{{ url()->current() }}">
+      <div class="row g-3 mb-3">
+        <!-- Search -->
+        <div class="col-md-3">
+          <label class="form-label">Search</label>
+          <input type="text" class="form-control" name="search" 
+                 value="{{ request('search') }}"
+                 placeholder="Patient name, service, bill ref...">
+        </div>
+
+        <!-- Status Filter -->
+        <div class="col-md-2">
+          <label class="form-label">Status</label>
+          <select class="form-select" name="status">
+            <option value="all" {{ request('status', 'unpaid') == 'all' ? 'selected' : '' }}>All</option>
+            <option value="paid" {{ request('status', 'unpaid') == 'paid' ? 'selected' : '' }}>Paid</option>
+            <option value="unpaid" {{ request('status', 'unpaid') == 'unpaid' ? 'selected' : '' }}>Unpaid</option>
+          </select>
+        </div>
+
+        <!-- Payer Filter -->
+        <div class="col-md-2">
+          <label class="form-label">Payer</label>
+          <select class="form-select" name="payer">
+            <option value="all" {{ request('payer', 'all') == 'all' ? 'selected' : '' }}>All</option>
+            <option value="self" {{ request('payer', 'all') == 'self' ? 'selected' : '' }}>Self Pay</option>
+            <option value="hmo" {{ request('payer', 'all') == 'hmo' ? 'selected' : '' }}>HMO</option>
+          </select>
+        </div>
+
+        <!-- Date From -->
+        <div class="col-md-2">
+          <label class="form-label">Date From</label>
+          <input type="date" class="form-control" name="date_from" value="{{ request('date_from') }}">
+        </div>
+
+        <!-- Date To -->
+        <div class="col-md-2">
+          <label class="form-label">Date To</label>
+          <input type="date" class="form-control" name="date_to" value="{{ request('date_to') }}">
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="col-md-1">
+          <label class="form-label">&nbsp;</label>
+          <div class="d-flex gap-1">
+            <button type="submit" class="btn btn-primary">
+              <i class="fa fa-search"></i>
+            </button>
+            <a href="{{ url()->current() }}" class="btn btn-outline-secondary">
+              <i class="fa fa-times"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <!-- Summary Cards -->
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <div class="alert alert-info mb-0">
+          <strong>Total:</strong> ₦{{ number_format($totalAmount, 2) }}
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="alert alert-success mb-0">
+          <strong>Paid:</strong> ₦{{ number_format($paidAmount, 2) }}
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="alert alert-warning mb-0">
+          <strong>Unpaid:</strong> ₦{{ number_format($unpaidAmount, 2) }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Info -->
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div>
+        <span class="text-muted">Showing {{ $billings->firstItem() ?? 0 }} to {{ $billings->lastItem() ?? 0 }} of {{ $billings->total() }} results</span>
+      </div>
+      <div>
+        <form method="GET" action="{{ url()->current() }}" class="d-inline">
+          @foreach(request()->except('per_page') as $key => $value)
+            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+          @endforeach
+          <select class="form-select form-select-sm" name="per_page" onchange="this.form.submit()" style="width: auto;">
+            <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 per page</option>
+            <option value="25" {{ request('per_page', 10) == 25 ? 'selected' : '' }}>25 per page</option>
+            <option value="50" {{ request('per_page', 10) == 50 ? 'selected' : '' }}>50 per page</option>
+            <option value="100" {{ request('per_page', 10) == 100 ? 'selected' : '' }}>100 per page</option>
+          </select>
+        </form>
+      </div>
+    </div>
   </div>
 
   <div class="table-responsive">
@@ -16,11 +115,12 @@
         <th>Primary Insurance Plan</th>
         <th>Service</th>
         <th class="text-right">Outstanding Amount</th>
+        <th>Status</th>
         <th class="text-right">*</th>
       </tr>
       </thead>
       <tbody>
-      @foreach ($billings as $billRef => $group)
+      @forelse ($billings as $billRef => $group)
       @php
       $first = $group->first();
       $patient = $first->patient;
@@ -33,6 +133,8 @@
       $insurancePlan = $first->hmoPlan ? ($first->hmoPlan->hmo->name . ' - ' . $first->hmoPlan->name) : 'Patient Self Pay';
       $formattedAmount = number_format($group->sum('amount'));
       @endphp
+      
+      @foreach($group as $billing)
       <tr>
         <td class="align-middle">
           <a href="#">
@@ -40,8 +142,15 @@
           </a>
         </td>
         <td>{{ $insurancePlan }}</td>
-        <td>{{ $service }}</td>
-        <td class="text-right">{{ $formattedAmount }}</td>
+        <td>{{ $billing->service }}</td>
+        <td class="text-right">{{ number_format($billing->amount) }}</td>
+        <td>
+          @if($billing->status == 1)
+            <span class="badge bg-label-success">Paid</span>
+          @else
+            <span class="badge bg-label-warning">Unpaid</span>
+          @endif
+        </td>
         <td class="align-middle text-right">
           <div class="btn-group">
             <button type="button" class="btn btn-sm btn-icon btn-light waves-effect waves-light"
@@ -51,8 +160,16 @@
             <ul class="dropdown-menu">
               <li>
                 <button class="dropdown-item billing-show-btn"
-                        data-request-url="{{ route('app.billing.show', $first->bill_ref) }}">
-                  Receive Payment
+                        data-request-url="{{ route('app.billing.show', $billing->bill_ref) }}">
+                  <i class="fa fa-money-bill"></i> Receive Payment
+                </button>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <button class="dropdown-item text-danger cancel-charge-btn"
+                        data-billing-id="{{ $billing->id }}"
+                        data-service="{{ $billing->service }}">
+                  <i class="fa fa-times-circle"></i> Cancel This Charge
                 </button>
               </li>
             </ul>
@@ -60,54 +177,22 @@
         </td>
       </tr>
       @endforeach
+      @empty
+      <tr>
+        <td colspan="6" class="text-center py-4">
+          <i class="fa fa-inbox fa-3x text-muted mb-3"></i>
+          <p class="text-muted">No billing records found</p>
+        </td>
+      </tr>
+      @endforelse
       </tbody>
     </table>
 
     <hr class="my-2">
     <div class="d-flex justify-content-around">
-      {{ $billings->links() }}
+      {{ $billings->appends(request()->except('page'))->links() }}
     </div>
   </div>
 </div>
 
 @include('_partials._modals.global-modal')
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('js/jquery.min.js') }}"></script>
-<script>
-  $(document).ready(function () {
-    const modal = $('#global-modal');
-
-    $('.new-bill-btn, .billing-show-btn').on('click', function (e) {
-      e.preventDefault();
-      let requestUrl = $(this).data('request-url');
-
-      $.get(requestUrl)
-        .done(response => {
-          modal.find('.modal-body').html(response);
-          modal.modal('show');
-        })
-        .fail(xhr => console.error(xhr.responseText));
-    });
-  });
-</script>
-
-<script>
-  $(document).ready(function() {
-    $('.dropdown-item').on('click', function() {
-      var requestUrl = $(this).data('request-url');
-
-      $.ajax({
-        url: requestUrl,
-        type: 'GET',
-        success: function(response) {
-          $('#global-modal .modal-body').html(response);
-          $('#global-modal').modal('show');
-        },
-        error: function(xhr, status, error) {
-          console.error(error);
-        }
-      });
-    });
-  });
-</script>

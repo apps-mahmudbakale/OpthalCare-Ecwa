@@ -28,15 +28,113 @@
 @section('page-script')
     <script src="{{ asset('assets/js/app-calendar-events.js') }}"></script>
     <script src="{{ asset('assets/js/app-calendar.js') }}"></script>
+    
+    <script>
+      // Wait for Swal to be available
+      function waitForSwal(callback) {
+        if (typeof Swal !== 'undefined') {
+          callback();
+        } else {
+          setTimeout(function() {
+            waitForSwal(callback);
+          }, 100);
+        }
+      }
+      
+      waitForSwal(function() {
+        console.log('Swal is now loaded!');
+        
+        $(document).ready(function () {
+          console.log('Document ready');
+          const modal = $('#global-modal');
+
+          // Handle "New Bill" and "Receive Payment" buttons
+          $(document).on('click', '.new-bill-btn, .billing-show-btn', function (e) {
+            e.preventDefault();
+            let requestUrl = $(this).data('request-url');
+
+            $.get(requestUrl)
+              .done(response => {
+                modal.find('.modal-body').html(response);
+                modal.modal('show');
+              })
+              .fail(xhr => console.error(xhr.responseText));
+          });
+
+          // Handle "Cancel System Charge" button
+          $(document).on('click', '.cancel-charge-btn', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const billingId = $(this).data('billing-id');
+            const serviceName = $(this).data('service');
+            
+            console.log('Cancel button clicked!', {billingId, serviceName});
+            
+            Swal.fire({
+              title: 'Cancel This Charge?',
+              html: '<strong>Service:</strong> ' + serviceName + '<br><br>' +
+                    'This will:<br>' +
+                    '• Delete this billing record<br>' +
+                    '• Delete the associated service request<br>' +
+                    '• Remove antenatal package usage if applicable<br><br>' +
+                    '<strong>This action cannot be undone!</strong>',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#d33',
+              cancelButtonColor: '#3085d6',
+              confirmButtonText: 'Yes, cancel it!',
+              cancelButtonText: 'No, keep it'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // Show loading
+                Swal.fire({
+                  title: 'Processing...',
+                  text: 'Cancelling charge and deleting request',
+                  allowOutsideClick: false,
+                  didOpen: () => {
+                    Swal.showLoading();
+                  }
+                });
+
+                // Send delete request
+                $.ajax({
+                  url: '/app/billing/' + billingId + '/cancel-line',
+                  type: 'DELETE',
+                  headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                  },
+                  success: function(response) {
+                    Swal.fire({
+                      title: 'Cancelled!',
+                      text: response.message,
+                      icon: 'success',
+                      confirmButtonText: 'OK'
+                    }).then(() => {
+                      location.reload();
+                    });
+                  },
+                  error: function(xhr) {
+                    Swal.fire({
+                      title: 'Error!',
+                      text: xhr.responseJSON?.message || 'Failed to cancel charge.',
+                      icon: 'error',
+                      confirmButtonText: 'OK'
+                    });
+                  }
+                });
+              }
+            });
+          });
+          
+          console.log('Event handlers attached');
+        });
+      });
+    </script>
 @endsection
 
 @section('content')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<script src="{{ asset('assets/js/extended-ui-sweetalert2.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <div class="card">
-        <livewire:all-billings :patientId="0" />
-
+        <livewire:all-billings />
     </div>
 @endsection

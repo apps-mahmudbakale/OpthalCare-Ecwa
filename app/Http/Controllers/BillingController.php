@@ -149,4 +149,204 @@ class BillingController extends Controller
           return back()->with('error', 'Failed to generate clearance code: ' . $e->getMessage());
       }
   }
+
+  /**
+   * Cancel all unpaid system charges for a bill reference and delete associated requests.
+   */
+  public function cancel($billRef)
+  {
+    try {
+      \DB::beginTransaction();
+
+      // Find all billings with this bill_ref (both paid and unpaid)
+      $billings = Billing::where('bill_ref', $billRef)->get();
+
+      if ($billings->isEmpty()) {
+        return response()->json([
+          'success' => false,
+          'message' => 'No charges found for this bill reference.'
+        ], 404);
+      }
+
+      // Track what we're deleting
+      $deletedBillings = 0;
+      $deletedRequests = 0;
+      $serviceTypes = [];
+
+      // Delete associated service requests based on service category
+      foreach ($billings as $billing) {
+        // Extract service category from the service field (format: "category:serviceName")
+        $serviceParts = explode(':', $billing->service);
+        $serviceCategory = strtolower($serviceParts[0] ?? '');
+        
+        if (!in_array($serviceCategory, $serviceTypes)) {
+          $serviceTypes[] = $serviceCategory;
+        }
+
+        // Delete the corresponding request based on service category
+        switch ($serviceCategory) {
+          case 'laboratory':
+            $deleted = \App\Models\LabRequest::where('request_ref', $billRef)->delete();
+            $deletedRequests += $deleted;
+            break;
+            
+          case 'pharmacy':
+            $deleted = \App\Models\DrugRequest::where('request_ref', $billRef)->delete();
+            $deletedRequests += $deleted;
+            break;
+            
+          case 'radiology':
+            $deleted = \App\Models\RadiologyRequest::where('request_ref', $billRef)->delete();
+            $deletedRequests += $deleted;
+            break;
+            
+          case 'procedure':
+            // Check both possible model names
+            $deleted = \App\Models\ProcedureRequest::where('request_ref', $billRef)->delete();
+            $deleted += \App\Models\ProceudreRequest::where('request_ref', $billRef)->delete();
+            $deletedRequests += $deleted;
+            break;
+            
+          case 'ophthicals':
+          case 'opticals':
+            $deleted = \App\Models\OpticalRequest::where('request_ref', $billRef)->delete();
+            $deletedRequests += $deleted;
+            break;
+        }
+      }
+
+      // Delete all billings (both paid and unpaid)
+      $deletedBillings = Billing::where('bill_ref', $billRef)->delete();
+
+      // Delete antenatal package usage records if any
+      \App\Models\AntenatalPackageUsage::where('billing_id', function($query) use ($billRef) {
+        $query->select('id')
+              ->from('billings')
+              ->where('bill_ref', $billRef);
+      })->delete();
+
+      \DB::commit();
+
+      $message = "Successfully cancelled: {$deletedBillings} billing record(s)";
+      if ($deletedRequests > 0) {
+        $message .= " and {$deletedRequests} service request(s)";
+      }
+      $message .= ".";
+
+      return response()->json([
+        'success' => true,
+        'message' => $message,
+        'details' => [
+          'billings_deleted' => $deletedBillings,
+          'requests_deleted' => $deletedRequests,
+          'service_types' => $serviceTypes
+        ]
+      ]);
+
+    } catch (\Exception $e) {
+      \DB::rollBack();
+      
+      return response()->json([
+        'success' => false,
+        'message' => 'Failed to cancel charges: ' . $e->getMessage()
+      ], 500);
+    }
+  }
+
+  /**
+   * Cancel a single billing line item and its associated request.
+   */
+  public function cancelLine($billingId)
+  {
+    try {
+      \DB::beginTransaction();
+
+      // Find the specific billing record
+      $billing = Billing::find($billingId);
+
+      if (!$billing) {
+        return response()->json([
+          'success' => false,
+          'message' => 'Billing record not found.'
+        ], 404);
+      }
+
+      // Extract service category from the service field (format: "category:serviceName")
+      $serviceParts = explode(':', $billing->service);
+      $serviceCategory = strtolower($serviceParts[0] ?? '');
+      $serviceName = $serviceParts[1] ?? $billing->service;
+
+      $deletedRequests = 0;
+
+      // Delete the corresponding request based on service category and service_id
+      switch ($serviceCategory) {
+        case 'laboratory':
+          $deleted = \App\Models\LabRequest::where('request_ref', $billing->bill_ref)
+                                           ->where('test_id', $billing->service_id)
+                                           ->delete();
+          $deletedRequests += $deleted;
+          break;
+          
+        case 'pharmacy':
+          $deleted = \App\Models\DrugRequest::where('request_ref', $billing->bill_ref)
+                                            ->where('drug_id', $billing->service_id)
+                                            ->delete();
+          $deletedRequests += $deleted;
+          break;
+          
+        case 'radiology':
+          $deleted = \App\Models\RadiologyRequest::where('request_ref', $billing->bill_ref)
+                                                  ->where('imaging_id', $billing->service_id)
+                                                  ->delete();
+          $deletedRequests += $deleted;
+          break;
+          
+        case 'procedure':
+          // Check both possible model names
+          $deleted = \App\Models\ProcedureRequest::where('request_ref', $billing->bill_ref)
+                                                  ->where('procedure_id', $billing->service_id)
+                                                  ->delete();
+          $deleted += \App\Models\ProceudreRequest::where('request_ref', $billing->bill_ref)
+                                                   ->where('procedure_id', $billing->service_id)
+                                                   ->delete();
+          $deletedRequests += $deleted;
+          break;
+          
+        case 'ophthicals':
+        case 'opticals':
+          $deleted = \App\Models\OpticalRequest::where('request_ref', $billing->bill_ref)
+                                                ->where('service_id', $billing->service_id)
+                                                ->delete();
+          $deletedRequests += $deleted;
+          break;
+      }
+
+      // Delete antenatal package usage for this specific billing
+      \App\Models\AntenatalPackageUsage::where('billing_id', $billing->id)->delete();
+
+      // Delete the billing record
+      $billing->delete();
+
+      \DB::commit();
+
+      $message = "Successfully cancelled charge for '{$serviceName}'";
+      if ($deletedRequests > 0) {
+        $message .= " and deleted the associated request";
+      }
+      $message .= ".";
+
+      return response()->json([
+        'success' => true,
+        'message' => $message
+      ]);
+
+    } catch (\Exception $e) {
+      \DB::rollBack();
+      
+      return response()->json([
+        'success' => false,
+        'message' => 'Failed to cancel charge: ' . $e->getMessage()
+      ], 500);
+    }
+  }
 }

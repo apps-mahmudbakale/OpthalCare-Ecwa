@@ -17,7 +17,12 @@ class Base extends Component
 
     public $search = '';
 
-    public function updatingSearch()
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
     {
         $this->resetPage();
     }

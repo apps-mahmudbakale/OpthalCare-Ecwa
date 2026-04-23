@@ -8,19 +8,56 @@ use Illuminate\Support\Facades\DB;
 
 class AllBillings extends Base
 {
-  public $sortBy = 'status';
+  public $sortBy = 'created_at';
 
   public function render()
   {
-    $query = Billing::query()->where('status', 0)->whereNull('plan_id');
+    $query = Billing::query()->with(['patient.user', 'hmoPlan.hmo']);
 
-    if ($this->search) {
-      $query->where('status', 'like', '%' . $this->search . '%');
+    // Apply status filter
+    $status = request('status', 'unpaid');
+    if ($status === 'paid') {
+      $query->where('status', 1);
+    } elseif ($status === 'unpaid') {
+      $query->where('status', 0);
     }
 
-    $paginated = $query->paginate($this->perPage);
+    // Apply payer filter
+    $payer = request('payer', 'all');
+    if ($payer === 'self') {
+      $query->whereNull('plan_id');
+    } elseif ($payer === 'hmo') {
+      $query->whereNotNull('plan_id');
+    }
 
-    // Group the paginated collection by request_ref
+    // Apply search
+    $search = request('search');
+    if ($search) {
+      $query->where(function ($q) use ($search) {
+        $q->where('service', 'like', '%' . $search . '%')
+          ->orWhere('bill_ref', 'like', '%' . $search . '%')
+          ->orWhereHas('patient.user', function ($userQuery) use ($search) {
+            $userQuery->where('firstname', 'like', '%' . $search . '%')
+              ->orWhere('lastname', 'like', '%' . $search . '%')
+              ->orWhere('middlename', 'like', '%' . $search . '%');
+          });
+      });
+    }
+
+    // Apply date range filter
+    if (request('date_from')) {
+      $query->whereDate('created_at', '>=', request('date_from'));
+    }
+    if (request('date_to')) {
+      $query->whereDate('created_at', '<=', request('date_to'));
+    }
+
+    $query->orderBy($this->sortBy, $this->sortDirection);
+
+    $perPage = request('per_page', 10);
+    $paginated = $query->paginate($perPage);
+
+    // Group the paginated collection by bill_ref
     $grouped = $paginated->getCollection()->groupBy('bill_ref');
 
     // Create a new paginator instance with the grouped data
@@ -32,6 +69,19 @@ class AllBillings extends Base
       ['path' => request()->url(), 'query' => request()->query()]
     );
 
-    return view('livewire.all-billings', ['billings' => $billings]);
+    // Calculate summary statistics
+    $summaryQuery = Billing::query();
+    if ($payer === 'self') {
+      $summaryQuery->whereNull('plan_id');
+    } elseif ($payer === 'hmo') {
+      $summaryQuery->whereNotNull('plan_id');
+    }
+
+    return view('livewire.all-billings', [
+      'billings' => $billings,
+      'totalAmount' => (clone $summaryQuery)->sum('amount'),
+      'paidAmount' => (clone $summaryQuery)->where('status', 1)->sum('amount'),
+      'unpaidAmount' => (clone $summaryQuery)->where('status', 0)->sum('amount'),
+    ]);
   }
 }
