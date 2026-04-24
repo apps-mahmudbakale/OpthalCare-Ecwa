@@ -60,14 +60,23 @@ class AllBillings extends Base
     // Group the paginated collection by bill_ref
     $grouped = $paginated->getCollection()->groupBy('bill_ref');
 
+    // Preserve pagination query parameters
+    $queryParams = request()->except('page');
+
     // Create a new paginator instance with the grouped data
     $billings = new \Illuminate\Pagination\LengthAwarePaginator(
       $grouped,
       $paginated->total(),
       $paginated->perPage(),
       $paginated->currentPage(),
-      ['path' => request()->url(), 'query' => request()->query()]
+      [
+        'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
+        'pageName' => 'page',
+      ]
     );
+
+    // Manually append query parameters
+    $billings->appends($queryParams);
 
     // Calculate summary statistics
     $summaryQuery = Billing::query();
