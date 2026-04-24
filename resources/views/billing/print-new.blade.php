@@ -65,7 +65,7 @@
 <body>
 <div class="ticket">
   <img src="{{ !empty(app(App\Settings\SystemSettings::class)->logo) ? asset('storage/system/' . app(App\Settings\SystemSettings::class)->logo) : asset('assets/img/logo.png') }}"
-       style="width: 130%; height:120%;">
+       style="width: 50%; height:120%;">
   <p class="centered">New Enrollment Receipt
   </p>
  <table>

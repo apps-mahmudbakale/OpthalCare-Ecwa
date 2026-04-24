@@ -61,7 +61,7 @@
     <img src="{{ !empty(app(App\Settings\SystemSettings::class)->logo)
         ? asset('storage/system/' . app(App\Settings\SystemSettings::class)->logo)
         : asset('assets/img/logo.png') }}"
-         style="width:80%; margin:0 auto"
+         style="width:50%; margin:0 auto"
          alt="Logo">
   </p>
 

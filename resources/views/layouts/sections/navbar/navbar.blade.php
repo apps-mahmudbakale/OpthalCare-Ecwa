@@ -154,7 +154,7 @@
         <!-- Quick links -->
 
         <!-- Notification -->
-        <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-1">
+        <!-- <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-1">
             <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown"
                 data-bs-auto-close="outside" aria-expanded="false">
                 <i class="ti ti-bell ti-md"></i>
@@ -368,7 +368,7 @@
                     </a>
                 </li>
             </ul>
-        </li>
+        </li> -->
         <!--/ Notification -->
 
         <!-- User -->
@@ -388,6 +388,7 @@
                                 <div class="avatar avatar-online">
                                     <img src="{{ Auth::user() ? Auth::user()->profile_photo_url : asset('assets/img/avatars/1.png') }}"
                                         alt class="h-auto rounded-circle">
+                                        <small class="text-muted">{{auth()->user()->firstname." ". auth()->user()->lastname}}</small>
                                 </div>
                             </div>
                             <div class="flex-grow-1">
@@ -398,7 +399,7 @@
                                         John Doe
                                     @endif
                                 </span>
-                                <small class="text-muted">Admin</small>
+                                <small class="text-muted">{{auth()->user()->firstname." ". auth()->user()->lastname}}</small>
                             </div>
                         </div>
                     </a>
@@ -406,13 +407,7 @@
                 <li>
                     <div class="dropdown-divider"></div>
                 </li>
-                <li>
-                    <a class="dropdown-item"
-                        href="{{ Route::has('profile.show') ? route('profile.show') : url('pages/profile-user') }}">
-                        <i class="ti ti-user-check me-2 ti-sm"></i>
-                        <span class="align-middle">My Profile</span>
-                    </a>
-                </li>
+              
                 {{-- @if (Auth::check() && Laravel\Jetstream\Jetstream::hasApiFeatures()) --}}
                 {{-- <li>
                 <a class="dropdown-item" href="{{ route('api-tokens.index') }}">
