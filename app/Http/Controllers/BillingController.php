@@ -17,9 +17,78 @@ class BillingController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index()
+  public function index(Request $request)
   {
-    return view('billing.index');
+    $query = Billing::query()->with(['patient.user', 'hmoPlan.hmo']);
+
+    // Apply status filter
+    $status = $request->get('status', 'unpaid');
+    if ($status === 'paid') {
+      $query->where('status', 1);
+    } elseif ($status === 'unpaid') {
+      $query->where('status', 0);
+    }
+
+    // Apply payer filter
+    $payer = $request->get('payer', 'all');
+    if ($payer === 'self') {
+      $query->whereNull('plan_id');
+    } elseif ($payer === 'hmo') {
+      $query->whereNotNull('plan_id');
+    }
+
+    // Apply search
+    $search = $request->get('search');
+    if ($search) {
+      $query->where(function ($q) use ($search) {
+        $q->where('service', 'like', '%' . $search . '%')
+          ->orWhere('bill_ref', 'like', '%' . $search . '%')
+          ->orWhereHas('patient.user', function ($userQuery) use ($search) {
+            $userQuery->where('firstname', 'like', '%' . $search . '%')
+              ->orWhere('lastname', 'like', '%' . $search . '%')
+              ->orWhere('middlename', 'like', '%' . $search . '%');
+          });
+      });
+    }
+
+    // Apply date range filter
+    if ($request->get('date_from')) {
+      $query->whereDate('created_at', '>=', $request->get('date_from'));
+    }
+    if ($request->get('date_to')) {
+      $query->whereDate('created_at', '<=', $request->get('date_to'));
+    }
+
+    $query->orderBy('created_at', 'desc');
+
+    $perPage = $request->get('per_page', 10);
+    $paginated = $query->paginate($perPage);
+
+    // Group the paginated collection by bill_ref
+    $grouped = $paginated->getCollection()->groupBy('bill_ref');
+
+    // Create a new paginator instance with the grouped data
+    $billings = new \Illuminate\Pagination\LengthAwarePaginator(
+      $grouped,
+      $paginated->total(),
+      $paginated->perPage(),
+      $paginated->currentPage(),
+      ['path' => $request->url(), 'query' => $request->query()]
+    );
+
+    // Calculate summary statistics
+    $summaryQuery = Billing::query();
+    if ($payer === 'self') {
+      $summaryQuery->whereNull('plan_id');
+    } elseif ($payer === 'hmo') {
+      $summaryQuery->whereNotNull('plan_id');
+    }
+
+    $totalAmount = (clone $summaryQuery)->sum('amount');
+    $paidAmount = (clone $summaryQuery)->where('status', 1)->sum('amount');
+    $unpaidAmount = (clone $summaryQuery)->where('status', 0)->sum('amount');
+
+    return view('billing.all-billings', compact('billings', 'totalAmount', 'paidAmount', 'unpaidAmount'));
   }
 
   /**
@@ -207,10 +276,16 @@ class BillingController extends Controller
             break;
             
           case 'procedure':
-            // Check both possible model names
-            $deleted = \App\Models\ProcedureRequest::where('request_ref', $billRef)->delete();
-            $deleted += \App\Models\ProceudreRequest::where('request_ref', $billRef)->delete();
-            $deletedRequests += $deleted;
+            // Try ProcedureRequest first (correct spelling, has request_ref)
+            try {
+              $deleted = \App\Models\ProcedureRequest::where('request_ref', $billRef)->delete();
+              $deletedRequests += $deleted;
+            } catch (\Exception $e) {
+              // Ignore if table doesn't exist or column not found
+            }
+            
+            // ProceudreRequest (typo) doesn't have request_ref, so we can't delete by bill_ref
+            // We would need patient_id which we don't have in this context
             break;
             
           case 'ophthicals':
@@ -308,14 +383,29 @@ class BillingController extends Controller
           break;
           
         case 'procedure':
-          // Check both possible model names
-          $deleted = \App\Models\ProcedureRequest::where('request_ref', $billing->bill_ref)
-                                                  ->where('procedure_id', $billing->service_id)
-                                                  ->delete();
-          $deleted += \App\Models\ProceudreRequest::where('request_ref', $billing->bill_ref)
-                                                   ->where('procedure_id', $billing->service_id)
-                                                   ->delete();
-          $deletedRequests += $deleted;
+          // Try ProcedureRequest first (correct spelling, has request_ref)
+          try {
+            $deleted = \App\Models\ProcedureRequest::where('request_ref', $billing->bill_ref)
+                                                    ->where('procedure_id', $billing->service_id)
+                                                    ->delete();
+            $deletedRequests += $deleted;
+          } catch (\Exception $e) {
+            // Ignore if table doesn't exist or column not found
+          }
+          
+          // Try ProceudreRequest (typo spelling, doesn't have request_ref)
+          // This table uses different structure, so we skip it or handle differently
+          try {
+            // Only delete if we can match by procedure_id and patient
+            if (isset($billing->user_id)) {
+              $deleted = \App\Models\ProceudreRequest::where('procedure_id', $billing->service_id)
+                                                     ->where('patient_id', $billing->user_id)
+                                                     ->delete();
+              $deletedRequests += $deleted;
+            }
+          } catch (\Exception $e) {
+            // Ignore if table doesn't exist
+          }
           break;
           
         case 'ophthicals':
