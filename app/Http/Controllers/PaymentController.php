@@ -157,6 +157,112 @@ class PaymentController extends Controller
   }
 
   /**
+   * Store bulk payment for multiple bills (even with different bill_refs)
+   */
+  public function bulkStore(Request $request)
+  {
+    $request->validate([
+      'patient_id' => 'required|exists:patients,id',
+      'selected_bill_ids' => 'required|string', // Comma-separated bill IDs
+      'payment_method_id' => 'required|exists:payment_methods,id',
+      'amount' => 'required|numeric|min:0',
+    ]);
+
+    try {
+      return DB::transaction(function () use ($request) {
+        $paymentMethod = PaymentMethod::findOrFail($request->payment_method_id);
+        $patient = Patient::findOrFail($request->patient_id);
+
+        // Get selected bills
+        $selectedBillIds = explode(',', $request->selected_bill_ids);
+        $billings = Billing::whereIn('id', $selectedBillIds)
+          ->where('user_id', $patient->id)
+          ->where('status', 0) // Only unpaid
+          ->get();
+
+        if ($billings->isEmpty()) {
+          return response()->json(['success' => false, 'message' => 'No unpaid bills found'], 404);
+        }
+
+        // Calculate total amount
+        $totalAmount = $billings->sum('amount');
+
+        // Validate payment amount
+        if (abs($totalAmount - $request->amount) > 0.01) {
+          return response()->json(['success' => false, 'message' => 'Payment amount does not match selected bills total'], 400);
+        }
+
+        // Handle wallet payment
+        if (strcasecmp($paymentMethod->name, 'wallet') === 0
+          && !$this->processWalletPayment($patient, $request->amount)) {
+          return response()->json(['success' => false, 'message' => 'Insufficient wallet balance'], 400);
+        }
+
+        $paymentData = [
+          'cashpoint_id'   => $request->location_id,
+          'payment_method' => $paymentMethod->name,
+          'user_id'        => Auth::id(),
+        ];
+
+        $payment = null;
+        $clearanceCode = null;
+        $followUpAccess = null;
+
+        // Create a unique bill_ref for this bulk payment
+        $bulkBillRef = 'BULK-' . strtoupper(str()->random(6));
+
+        // Process each selected billing
+        foreach ($billings as $billing) {
+          $paymentData['billing_id'] = $billing->id;
+          $paymentData['paying_amount'] = $billing->amount;
+          $payment = $this->createPaymentAndUpdateBilling($paymentData, $billing->id);
+
+          // Handle Check-In Consultation Fee
+          if (strtolower($billing->service) === strtolower('consultation / check-in fee')) {
+            $checkIn = \App\Models\CheckIn::where('patient_id', $billing->user_id)
+                                          ->whereDate('check_in_date', today())
+                                          ->where('cleared', false)
+                                          ->first();
+
+            if ($checkIn && !$clearanceCode) {
+              $clearanceCode = strtoupper(str()->random(6));
+              $checkIn->update(['clearance_code' => $clearanceCode]);
+            }
+          }
+
+          // Handle follow-up consultation
+          if (strtolower($billing->service) === strtolower('consultations:Follow-Up') && !$followUpAccess) {
+            $accessCode = 'OPC-' . substr(rand(100000, 999999) . time(), 0, 6);
+            $followUpAccess = FollowUp::create([
+              'patient_id' => $billing->user_id,
+              'access_code' => $accessCode,
+            ]);
+          }
+        }
+
+        // Generate receipt URL
+        $receiptUrl = route('app.payments.bulk-receipt', [
+          'billIds' => $request->selected_bill_ids,
+          'paymentId' => $payment->id
+        ]);
+
+        return response()->json([
+          'success' => true,
+          'message' => 'Payment processed successfully',
+          'receipt_url' => $receiptUrl,
+          'clearance_code' => $clearanceCode
+        ]);
+      });
+    } catch (\Exception $e) {
+      Log::error('Bulk payment processing failed: ' . $e->getMessage(), [
+        'bill_ids' => $request->selected_bill_ids ?? 'N/A',
+        'patient_id' => $request->patient_id
+      ]);
+      return response()->json(['success' => false, 'message' => 'Payment processing failed: ' . $e->getMessage()], 500);
+    }
+  }
+
+  /**
    * Show form for creating new payment method
    */
   public function newMethod()
@@ -359,5 +465,36 @@ class PaymentController extends Controller
       ->paginate(20);
 
     return view('payments.search-enrollment', compact('enrollments', 'search'));
+  }
+
+  /**
+   * Show bulk payment receipt
+   */
+  public function bulkReceipt(Request $request)
+  {
+    try {
+      $billIds = explode(',', $request->get('billIds'));
+      $paymentId = $request->get('paymentId');
+
+      $billings = Billing::whereIn('id', $billIds)
+        ->where('status', 1)
+        ->get();
+
+      if ($billings->isEmpty()) {
+        return redirect()->back()->with('error', 'No paid bills found.');
+      }
+
+      $payment = Payment::findOrFail($paymentId);
+      $patient = Patient::findOrFail($billings->first()->user_id);
+
+      // Create a virtual bill_ref for display
+      $bill_ref = 'BULK-' . $payment->id;
+
+      return view('billing.print-bulk', compact('billings', 'payment', 'patient', 'bill_ref'));
+
+    } catch (\Exception $e) {
+      Log::error('Bulk receipt display failed: ' . $e->getMessage());
+      return redirect()->back()->with('error', 'Failed to display receipt.');
+    }
   }
 }

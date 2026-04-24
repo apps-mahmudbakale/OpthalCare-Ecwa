@@ -242,6 +242,8 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::post('notes/task/{nursingTask}/toggle', [App\Http\Controllers\AdmissionNotesController::class, 'toggleNursingTask'])->name('notes.task.toggle');
   Route::delete('notes/task/{nursingTask}', [App\Http\Controllers\AdmissionNotesController::class, 'destroyNursingTask'])->name('notes.task.destroy');
   Route::resource('billing', BillingController::class);
+  Route::get('billing/misc-charge/form', [BillingController::class, 'miscChargeForm'])->name('billing.misc-charge-form');
+  Route::post('billing/misc-charge/store', [BillingController::class, 'storeMiscCharge'])->name('billing.misc-charge-store');
   Route::delete('billing/{billRef}/cancel', [BillingController::class, 'cancel'])->name('billing.cancel');
   Route::delete('billing/{billingId}/cancel-line', [BillingController::class, 'cancelLine'])->name('billing.cancel-line');
   Route::resource('antenatals', AntenatalController::class);
@@ -295,6 +297,8 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::get('cashpoints/new-patient/{patient}', [CashPointController::class, 'newPatient'])->name('cashpoints.new-patient');
   Route::post('cashpoint/bill-patient', [CashPointController::class, 'billPatient'])->name('cashpoints.bill-patient');
   Route::resource('payments', PaymentController::class)->only(['store']);
+  Route::post('payments/bulk-store', [PaymentController::class, 'bulkStore'])->name('payments.bulk-store');
+  Route::get('payments/bulk-receipt', [PaymentController::class, 'bulkReceipt'])->name('payments.bulk-receipt');
   Route::post('payments/new-enroll', [PaymentController::class, 'storeEnroll'])->name('payments.new-enroll');
   Route::post('payments/new-enroll', [PaymentController::class, 'storeEnroll'])->name('payments.new-enroll');
   Route::get('payments/reprint/{billRef}', [PaymentController::class, 'reprintReceipt'])->name('payments.reprint');

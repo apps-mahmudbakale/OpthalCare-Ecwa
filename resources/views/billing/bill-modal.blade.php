@@ -12,19 +12,25 @@
                 <option value="procedure">Medical Procedure</option>
                 <option value="pharmacy">Pharmacy</option>
                 <option value="radiology">Radiology</option>
+                <option value="miscellaneous">Miscellaneous Charge</option>
             </select>
             <label for="service-category">Service Category</label>
         </div>
     </div>
 
     <!-- Select for Services -->
-    <div class="form-group">
+    <div class="form-group" id="service-select-group">
         <div class="form-label-group">
             <select name="service_id" class="custom-select" id="service_id" required="required">
                 <option value="">Choose a service...</option> <!-- Default option -->
             </select>
             <label for="service_id">Service</label>
         </div>
+    </div>
+
+    <!-- Miscellaneous Charge Form (hidden by default) -->
+    <div id="misc-charge-container" style="display: none;">
+        <!-- Misc charge form will be loaded here -->
     </div>
 
   <div class="form-group">
@@ -144,6 +150,31 @@
         // Change event for service category
         $('#service-category').change(function() {
             const selectedCategory = $(this).val(); // Get the selected value
+
+            // Handle miscellaneous charge
+            if (selectedCategory === 'miscellaneous') {
+                $('#service-select-group').hide();
+                $('#service_id').prop('required', false);
+                $('#misc-charge-container').show();
+                
+                // Load misc charge form
+                $.ajax({
+                    url: '{{ route('app.billing.misc-charge-form') }}',
+                    type: 'GET',
+                    success: function(response) {
+                        $('#misc-charge-container').html(response);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error loading misc charge form:', error);
+                    }
+                });
+                return;
+            }
+
+            // Show service select for other categories
+            $('#service-select-group').show();
+            $('#service_id').prop('required', true);
+            $('#misc-charge-container').hide().empty();
 
             // Send the selected category to the API endpoint
             $.ajax({

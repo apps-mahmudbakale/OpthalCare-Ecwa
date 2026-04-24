@@ -35,9 +35,38 @@ class ServiceRequestHandler
     string $serviceCategory,
     string $kind,
     string $billingRef,
-    ?int $qty = null
+    ?int $qty = null,
+    ?float $customAmount = null
   ): ?Billing {
     $qty = $qty ?? 1;
+
+    // Handle miscellaneous charges (no service model lookup needed)
+    if ($serviceCategory === 'miscellaneous') {
+      if ($customAmount === null) {
+        throw new \InvalidArgumentException('Custom amount is required for miscellaneous charges');
+      }
+
+      $status  = 0;
+      $plan_id = null;
+
+      // Fetch Patient to check HMO Plan
+      $patient = \App\Models\Patient::with('hmoPlan')->find($patientId);
+      if ($patient && $patient->hmoPlan) {
+        $plan_id = $patient->hmo_plan_id;
+      }
+
+      return Billing::create([
+        'service'     => 'Miscellaneous:' . $serviceName,
+        'service_id'  => 0, // No service ID for misc charges
+        'user_id'     => $patientId,
+        'quantity'    => $qty,
+        'amount'      => $customAmount * $qty,
+        'bill_ref'    => $billingRef,
+        'payer_id'    => Auth::id(),
+        'plan_id'     => $plan_id,
+        'status'      => $status,
+      ]);
+    }
 
     // Resolve model class efficiently
     $modelClass = $this->resolveServiceModel($serviceName);

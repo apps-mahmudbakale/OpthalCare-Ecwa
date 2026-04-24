@@ -1,11 +1,5 @@
-@extends('layouts/layoutMaster')
-
-@section('title', 'All Billings')
-
-@section('content')
-<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Billing /</span> All Billings</h4>
-
-<div class="card">
+<div>
+<div>
   <div class="card-header d-flex justify-content-between align-items-center">
     <div>
       <button class="btn btn-success mb-2 new-bill-btn"
@@ -344,36 +338,5 @@ $(document).ready(function() {
             }
         });
     });
-    
-    // Handle cancel charge button
-    $(document).on('click', '.cancel-charge-btn', function() {
-        const billingId = $(this).data('billing-id');
-        const service = $(this).data('service');
-        
-        if (!confirm(`Are you sure you want to cancel the charge for "${service}"?`)) {
-            return;
-        }
-        
-        $.ajax({
-            url: '{{ url("app/billing") }}/' + billingId + '/cancel-line',
-            type: 'DELETE',
-            data: {
-                _token: '{{ csrf_token() }}'
-            },
-            success: function(response) {
-                if (response.success) {
-                    alert(response.message);
-                    location.reload();
-                } else {
-                    alert('Error: ' + response.message);
-                }
-            },
-            error: function(xhr) {
-                alert('Failed to cancel charge: ' + (xhr.responseJSON?.message || 'Unknown error'));
-            }
-        });
-    });
 });
 </script>
-
-@endsection
