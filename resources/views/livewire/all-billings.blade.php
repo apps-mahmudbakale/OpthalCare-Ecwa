@@ -257,7 +257,7 @@
     </table>
 
     <hr class="my-2">
-    <div class="d-flex justify-content-around">
+    <div class="d-flex justify-content-center">
       {{ $billings->appends(request()->except('page'))->links() }}
     </div>
   </div>
