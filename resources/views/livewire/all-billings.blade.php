@@ -101,7 +101,9 @@
       <div>
         <form method="GET" action="{{ url()->current() }}" class="d-inline">
           @foreach(request()->except('per_page') as $key => $value)
-            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+            @if(!is_array($value))
+              <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+            @endif
           @endforeach
           <select class="form-select form-select-sm" name="per_page" onchange="this.form.submit()" style="width: auto;">
             <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 per page</option>

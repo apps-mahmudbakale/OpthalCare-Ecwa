@@ -60,8 +60,15 @@ class AllBillings extends Base
     // Group the paginated collection by bill_ref
     $grouped = $paginated->getCollection()->groupBy('bill_ref');
 
-    // Preserve pagination query parameters
-    $queryParams = request()->except('page');
+    // Build query parameters for pagination, ensuring all values are strings
+    $queryParams = [];
+    foreach (request()->except('page') as $key => $value) {
+      if (is_array($value)) {
+        // Skip arrays or convert them appropriately
+        continue;
+      }
+      $queryParams[$key] = $value;
+    }
 
     // Create a new paginator instance with the grouped data
     $billings = new \Illuminate\Pagination\LengthAwarePaginator(
@@ -75,8 +82,10 @@ class AllBillings extends Base
       ]
     );
 
-    // Manually append query parameters
-    $billings->appends($queryParams);
+    // Append query parameters
+    if (!empty($queryParams)) {
+      $billings->appends($queryParams);
+    }
 
     // Calculate summary statistics
     $summaryQuery = Billing::query();
