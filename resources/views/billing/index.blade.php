@@ -135,6 +135,6 @@
 
 @section('content')
     <div class="card">
-        <livewire:all-billings />
+        @include('billing.all-billings-content')
     </div>
 @endsection
