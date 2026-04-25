@@ -66,8 +66,6 @@
         </div>
     </div>
 </div>
-@include('_partials._modals.modal-new-lab-template')
-@include('_partials._modals.global-modal')
 
 <script>
     $(document).ready(function() {

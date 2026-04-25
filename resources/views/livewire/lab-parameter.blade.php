@@ -79,8 +79,6 @@
     </div>
 
 </div>
-@include('_partials._modals.modal-new-lab-parameter')
-@include('_partials._modals.global-modal')
 
 <script>
     $(document).ready(function() {

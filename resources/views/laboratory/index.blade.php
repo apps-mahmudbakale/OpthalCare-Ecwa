@@ -33,7 +33,5 @@
 
 
 @section('content')
-    <div class="card">
-        <livewire:all-lab />
-    </div>
+    @include('laboratory.all-lab-content')
 @endsection

@@ -78,8 +78,6 @@
     </div>
 
 </div>
-@include('_partials._modals.modal-new-lab-category')
-@include('_partials._modals.global-modal')
 
 <script>
   $(document).ready(function () {

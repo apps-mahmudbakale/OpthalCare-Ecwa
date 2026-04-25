@@ -15,9 +15,38 @@ class LabRequestController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index()
+  public function index(Request $request)
   {
-    return view('laboratory.index');
+    $perPage = $request->get('per_page', 10);
+    $search = $request->get('search');
+    $patientId = $request->get('patient_id');
+    $categoryId = $request->get('category_id');
+    $startDate = $request->get('start_date');
+    $endDate = $request->get('end_date');
+
+    $labRequests = LabRequest::query()
+      ->where('status', '!=', 'Result Ready')
+      ->when($patientId, function ($query) use ($patientId) {
+        $query->where('patient_id', $patientId);
+      })
+      ->when($categoryId, function ($query) use ($categoryId) {
+        $query->where('category_id', $categoryId);
+      })
+      ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+        $query->whereBetween('request_date', [$startDate, $endDate]);
+      })
+      ->when($search, function ($query) use ($search) {
+        $query->whereHas('patient.user', function($q) use ($search) {
+          $q->where('firstname', 'like', '%' . $search . '%')
+            ->orWhere('lastname', 'like', '%' . $search . '%');
+        })->orWhereHas('test', function($q) use ($search) {
+          $q->where('name', 'like', '%' . $search . '%');
+        });
+      })
+      ->latest()
+      ->paginate($perPage);
+
+    return view('laboratory.index', compact('labRequests'));
   }
 
   /**

@@ -105,4 +105,12 @@
             </div>
         </div>
     </div>
+
+    {{-- Modals --}}
+    @include('_partials._modals.modal-new-lab-test')
+    @include('_partials._modals.modal-import-lab-test')
+    @include('_partials._modals.modal-new-lab-category')
+    @include('_partials._modals.modal-new-lab-parameter')
+    @include('_partials._modals.modal-new-lab-template')
+    @include('_partials._modals.global-modal')
 @endsection
