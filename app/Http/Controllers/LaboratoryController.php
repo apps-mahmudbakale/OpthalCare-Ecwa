@@ -20,8 +20,15 @@ class LaboratoryController extends Controller
     return view('settings.laboratory.editCategory', compact('category'));
   }
 
-  public function editTemplate($id){
+  public function editTemplate(Request $request, $id){
     $template = LabTemplate::find($id);
+    
+    // If it's an AJAX request, return the modal view
+    if ($request->ajax() || $request->wantsJson()) {
+      return view('settings.laboratory.editTemplateModal', compact('template'));
+    }
+    
+    // Otherwise return the full page view
     return view('settings.laboratory.editTemplate', compact('template'));
   }
 
@@ -130,6 +137,14 @@ class LaboratoryController extends Controller
     LabTemplateItem::where('lab_template_id', $template->id)
       ->whereNotIn('id', $processedIds)
       ->delete();
+
+    // If it's an AJAX request, return JSON
+    if ($request->ajax() || $request->wantsJson()) {
+      return response()->json([
+        'success' => true,
+        'message' => 'Lab Test Template Updated Successfully!'
+      ]);
+    }
 
     return redirect()->route('app.settings.laboratory')->with('success', 'Lab Test Template Updated !');
   }

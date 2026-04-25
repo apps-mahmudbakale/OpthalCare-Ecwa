@@ -586,9 +586,10 @@ $(document).ready(function() {
                 selectedBills.forEach(function(bill) {
                     $.ajax({
                         url: '{{ url('app/billing') }}/' + bill.id + '/cancel-line',
-                        type: 'DELETE',
+                        type: 'POST',
                         data: {
-                            _token: '{{ csrf_token() }}'
+                            _token: '{{ csrf_token() }}',
+                            _method: 'DELETE'
                         },
                         success: function(response) {
                             completed++;
@@ -628,5 +629,52 @@ $(document).ready(function() {
             });
         }
     }
+
+    // Handle single charge cancellation
+    $(document).on('click', '.cancel-charge-btn', function(e) {
+        e.preventDefault();
+        const billingId = $(this).data('billing-id');
+        const service = $(this).data('service');
+
+        Swal.fire({
+            title: 'Confirm Cancellation',
+            text: `Are you sure you want to cancel this charge: ${service}?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, cancel it!',
+            cancelButtonText: 'No, keep it'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{{ url('app/billing') }}/' + billingId + '/cancel-line',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        _method: 'DELETE'
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Cancelled!',
+                            text: 'The charge has been cancelled.',
+                            timer: 2000
+                        }).then(() => {
+                            location.reload();
+                        });
+                    },
+                    error: function(xhr) {
+                        const message = xhr.responseJSON?.message || 'Failed to cancel the charge.';
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: message
+                        });
+                    }
+                });
+            }
+        });
+    });
 });
 </script>

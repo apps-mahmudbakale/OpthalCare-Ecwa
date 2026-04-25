@@ -34,8 +34,9 @@
                             <div class="d-inline-block"><a href="javascript:;" class="dropdown hide-arrow"
                                     data-bs-toggle="dropdown"><i class="text-primary ti ti-dots-vertical"></i></a>
                                 <ul class="dropdown-menu dropdown-menu-end m-0">
-                                    <li><a href="{{ route('app.lab-template.edit', $template->id) }}"
-                                            class="dropdown-item">Edit</a></li>
+                                    <li><a href="javascript:;" 
+                                           data-request-url="{{ route('app.lab-template.edit', $template->id) }}"
+                                           class="dropdown-item edit-template-btn">Edit</a></li>
                                     <div class="dropdown-divider"></div>
                                     <li><a href="#" onclick="return submitDeleteForm({{ $template->id }});"
                                             class="dropdown-item text-danger">Delete</a></li>
@@ -70,9 +71,11 @@
 <script>
     $(document).ready(function() {
         // Handle edit modal
-        $('.dropdown-item[data-request-url]').on('click', function() {
+        $('.edit-template-btn').on('click', function(e) {
+            e.preventDefault();
             var requestUrl = $(this).data('request-url');
-            if (!requestUrl) return true; // Skip if no request-url data attribute
+            
+            if (!requestUrl) return false;
 
             $.ajax({
                 url: requestUrl,
@@ -83,11 +86,11 @@
                 },
                 error: function(xhr, status, error) {
                     console.error(error);
+                    alert('Failed to load template edit form.');
                 }
             });
             return false;
         });
-
     });
 </script>
 {{-- JavaScript for delete confirmation --}}
