@@ -85,11 +85,6 @@
             </div>
         </div>
     </div>
-    <script>
-        window.addEventListener('WardEditModal', function() {
-            $('#edit-ward-modal').modal('show');
-        });
-    </script>
     @include('_partials._modals.modal-new-ward')
     @include('_partials._modals.modal-edit-ward')
 </div>

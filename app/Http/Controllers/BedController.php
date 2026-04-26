@@ -13,9 +13,23 @@ class BedController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index()
+  public function index(Request $request)
   {
-    //
+    $perPage = $request->get('per_page', 10);
+    $search = $request->get('search');
+
+    $beds = Bed::query()
+      ->with('ward')
+      ->when($search, function ($query) use ($search) {
+        $query->where('name', 'like', '%' . $search . '%')
+          ->orWhereHas('ward', function($q) use ($search) {
+            $q->where('name', 'like', '%' . $search . '%');
+          });
+      })
+      ->orderBy('name', 'asc')
+      ->paginate($perPage);
+
+    return view('settings.admission.beds', compact('beds'));
   }
 
   /**
@@ -31,9 +45,15 @@ class BedController extends Controller
    */
   public function store(Request $request)
   {
+    $request->validate([
+      'name' => 'required|string|max:255',
+      'ward_id' => 'required|exists:wards,id',
+      'price' => 'required|numeric|min:0'
+    ]);
+
     $bed = Bed::create($request->all());
 
-    return redirect()->route('app.settings.admission')->with('success', 'Bed Added');
+    return redirect()->route('app.beds.index')->with('success', 'Bed Added Successfully');
   }
 
   public function export()
@@ -62,17 +82,28 @@ class BedController extends Controller
   /**
    * Show the form for editing the specified resource.
    */
-  public function edit(string $id)
+  public function edit($id)
   {
-    //
+    $bed = Bed::with('ward')->findOrFail($id);
+    $wards = \App\Models\Ward::all();
+    return view('settings.admission.edit-bed', compact('bed', 'wards'));
   }
 
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, string $id)
+  public function update(Request $request, $id)
   {
-    //
+    $request->validate([
+      'name' => 'required|string|max:255',
+      'ward_id' => 'required|exists:wards,id',
+      'price' => 'required|numeric|min:0'
+    ]);
+
+    $bed = Bed::findOrFail($id);
+    $bed->update($request->all());
+
+    return redirect()->route('app.beds.index')->with('success', 'Bed Updated Successfully');
   }
 
   /**
@@ -82,6 +113,6 @@ class BedController extends Controller
   {
     $bed->delete();
 
-    return redirect()->route('app.settings.admission')->with('success', 'Bed Delete');
+    return redirect()->back()->with('success', 'Bed Deleted Successfully');
   }
 }

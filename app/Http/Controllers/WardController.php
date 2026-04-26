@@ -10,9 +10,19 @@ class WardController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index()
+  public function index(Request $request)
   {
-    //
+    $perPage = $request->get('per_page', 10);
+    $search = $request->get('search');
+
+    $wards = Ward::query()
+      ->when($search, function ($query) use ($search) {
+        $query->where('name', 'like', '%' . $search . '%');
+      })
+      ->orderBy('name', 'asc')
+      ->paginate($perPage);
+
+    return view('settings.admission.wards', compact('wards'));
   }
 
   /**
@@ -28,9 +38,13 @@ class WardController extends Controller
    */
   public function store(Request $request)
   {
+    $request->validate([
+      'name' => 'required|string|max:255'
+    ]);
+
     $ward = Ward::create($request->all());
 
-    return redirect()->route('app.settings.admission')->with('success', 'Ward Added');
+    return redirect()->route('app.wards.index')->with('success', 'Ward Added Successfully');
   }
 
   public function getBedsByWard($wardId)
@@ -51,17 +65,25 @@ class WardController extends Controller
   /**
    * Show the form for editing the specified resource.
    */
-  public function edit(string $id)
+  public function edit($id)
   {
-    //
+    $ward = Ward::findOrFail($id);
+    return view('settings.admission.edit-ward', compact('ward'));
   }
 
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, string $id)
+  public function update(Request $request, $id)
   {
-    //
+    $request->validate([
+      'name' => 'required|string|max:255'
+    ]);
+
+    $ward = Ward::findOrFail($id);
+    $ward->update($request->all());
+
+    return redirect()->route('app.wards.index')->with('success', 'Ward Updated Successfully');
   }
 
   /**
@@ -71,6 +93,6 @@ class WardController extends Controller
   {
     $ward->delete();
 
-    return redirect()->back()->with('success', 'Ward Deleted');
+    return redirect()->back()->with('success', 'Ward Deleted Successfully');
   }
 }

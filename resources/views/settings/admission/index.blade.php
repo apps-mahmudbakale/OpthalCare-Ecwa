@@ -68,26 +68,48 @@
     </div>
 @include('_partials._modals.global-modal')
 @endsection
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+@section('page-script')
 <script>
   $(document).ready(function() {
-    $('#beds-import').on('click', function() {
+    console.log('Admission settings JavaScript loaded');
+
+    // Handle beds import button
+    $('#beds-import').on('click', function(e) {
+      e.preventDefault();
       var requestUrl = $(this).data('request-url');
+      console.log('Beds import clicked, URL:', requestUrl);
 
       $.ajax({
         url: requestUrl,
         type: 'GET',
         success: function(response) {
-          // Assuming the response contains the HTML for the modal content
           $('#global-modal .modal-body').html(response);
           $('#global-modal').modal('show');
         },
         error: function(xhr, status, error) {
-          // Handle errors
-          console.error(error);
+          console.error('Error loading beds import form:', error);
+          alert('Failed to load import form. Please try again.');
         }
       });
     });
+
+    // Listen for Livewire Ward Edit event
+    window.addEventListener('WardEditModal', function(event) {
+      console.log('WardEditModal event received');
+      $('#edit-ward-modal').modal('show');
+    });
+
+    // Listen for Livewire Bed Edit event
+    window.addEventListener('BedEditModal', function(event) {
+      console.log('BedEditModal event received');
+      $('#edit-bed-modal').modal('show');
+    });
+
+    // Livewire hook - listen for events after Livewire updates
+    Livewire.hook('message.processed', (message, component) => {
+      console.log('Livewire message processed');
+    });
   });
 </script>
+@endsection

@@ -91,11 +91,6 @@
             </div>
         </div>
     </div>
-    <script>
-        window.addEventListener('BedEditModal', function() {
-            $('#edit-bed-modal').modal('show');
-        });
-    </script>
     @include('_partials._modals.modal-new-bed')
     @include('_partials._modals.modal-edit-bed')
 </div>

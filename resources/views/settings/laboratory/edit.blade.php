@@ -13,7 +13,6 @@
     <label class="form-label">Lab Category</label>
     <select name="category_id" class="form-control">
     <option value="">Select Category</option>
-
     @foreach (\App\Models\LabCategory::all() as $category)
         <option value="{{ $category->id }}"
             {{ ($lab->category_id ?? null) == $category->id ? 'selected' : '' }}>
