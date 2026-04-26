@@ -585,11 +585,10 @@ $(document).ready(function() {
 
                 selectedBills.forEach(function(bill) {
                     $.ajax({
-                        url: '{{ url('app/billing') }}/' + bill.id + '/cancel-line',
+                        url: '{{ route('app.billing.cancel-line', ':id') }}'.replace(':id', bill.id),
                         type: 'POST',
                         data: {
-                            _token: '{{ csrf_token() }}',
-                            _method: 'DELETE'
+                            _token: '{{ csrf_token() }}'
                         },
                         success: function(response) {
                             completed++;
@@ -648,11 +647,10 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '{{ url('app/billing') }}/' + billingId + '/cancel-line',
+                    url: '{{ route('app.billing.cancel-line', ':id') }}'.replace(':id', billingId),
                     type: 'POST',
                     data: {
-                        _token: '{{ csrf_token() }}',
-                        _method: 'DELETE'
+                        _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {
                         Swal.fire({

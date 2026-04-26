@@ -99,7 +99,7 @@
 
                 // Send delete request
                 $.ajax({
-                  url: '/app/billing/' + billingId + '/cancel-line',
+                  url: '{{ route('app.billing.cancel-line', ':id') }}'.replace(':id', billingId),
                   type: 'POST',
                   headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
