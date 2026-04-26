@@ -21,7 +21,7 @@
         <input type="hidden" name="patient_id" value="{{ $request->patient_id }}">
         <input type="hidden" name="lab_id" value="{{ $request->id }}">
         <input type="hidden" name="lab_test_id" value="{{ $labTest->id }}">
-        <input type="hidden" name="lab_template_id" value="{{ $template->id }}">
+        <input type="hidden" name="lab_template_id" value="{{ $template ? $template->id : '' }}">
 
         <table class="table table-bordered">
             <thead>
