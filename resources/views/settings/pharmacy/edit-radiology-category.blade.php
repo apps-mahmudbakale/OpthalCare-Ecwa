@@ -2,7 +2,7 @@
 <div class="text-center mb-4">
     <h3 class="mb-2">Edit Radiology Category</h3>
 </div>
-<form action="{{ route('radiology-category.update', $category->id) }}" method="POST" class="row g-3">
+<form action="{{ route('app.radiology-category.update', $category->id) }}" method="POST" class="row g-3">
     @csrf
     @method('PUT')
     <div class="col-12 col-md-12">

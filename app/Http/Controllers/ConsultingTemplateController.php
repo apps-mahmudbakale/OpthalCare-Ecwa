@@ -10,9 +10,20 @@ class ConsultingTemplateController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index()
+  public function index(Request $request)
   {
-    //
+    $perPage = $request->get('per_page', 10);
+    $search = $request->get('search');
+
+    $consultingTemplates = ConsultingTemplate::query()
+      ->when($search, function ($query) use ($search) {
+        $query->where('name', 'like', '%' . $search . '%')
+          ->orWhere('body', 'like', '%' . $search . '%');
+      })
+      ->orderBy('name', 'asc')
+      ->paginate($perPage);
+
+    return view('settings.consultation.consulting-templates', compact('consultingTemplates'));
   }
 
   /**
@@ -28,9 +39,14 @@ class ConsultingTemplateController extends Controller
    */
   public function store(Request $request)
   {
+    $request->validate([
+      'name' => 'required|string|max:255',
+      'body' => 'required|string'
+    ]);
+
     $template = ConsultingTemplate::create($request->all());
 
-    return redirect()->route('app.settings.consultations')->with('success', 'Consulting Template Added !');
+    return redirect()->route('app.consulting-templates.index')->with('success', 'Consulting Template Added Successfully');
   }
 
   /**
@@ -44,17 +60,26 @@ class ConsultingTemplateController extends Controller
   /**
    * Show the form for editing the specified resource.
    */
-  public function edit(ConsultingTemplate $consultingTemplate)
+  public function edit($id)
   {
-    //
+    $consultingTemplate = ConsultingTemplate::findOrFail($id);
+    return view('settings.consultation.edit-consulting-template', compact('consultingTemplate'));
   }
 
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, ConsultingTemplate $consultingTemplate)
+  public function update(Request $request, $id)
   {
-    //
+    $request->validate([
+      'name' => 'required|string|max:255',
+      'body' => 'required|string'
+    ]);
+
+    $consultingTemplate = ConsultingTemplate::findOrFail($id);
+    $consultingTemplate->update($request->all());
+
+    return redirect()->route('app.consulting-templates.index')->with('success', 'Consulting Template Updated Successfully');
   }
 
   /**
@@ -63,6 +88,6 @@ class ConsultingTemplateController extends Controller
   public function destroy(ConsultingTemplate $consultingTemplate)
   {
     $consultingTemplate->delete();
-    return redirect()->route('app.settings.consultations')->with('success', 'Consulting Template Deleted!');
+    return redirect()->back()->with('success', 'Consulting Template Deleted Successfully');
   }
 }

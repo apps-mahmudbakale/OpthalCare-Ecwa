@@ -10,9 +10,19 @@ class ConsultingRoomController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index()
+  public function index(Request $request)
   {
-    //
+    $perPage = $request->get('per_page', 10);
+    $search = $request->get('search');
+
+    $consultingRooms = ConsultingRoom::query()
+      ->when($search, function ($query) use ($search) {
+        $query->where('name', 'like', '%' . $search . '%');
+      })
+      ->orderBy('name', 'asc')
+      ->paginate($perPage);
+
+    return view('settings.consultation.consulting-rooms', compact('consultingRooms'));
   }
 
   /**
@@ -28,9 +38,13 @@ class ConsultingRoomController extends Controller
    */
   public function store(Request $request)
   {
+    $request->validate([
+      'name' => 'required|string|max:255'
+    ]);
+
     $consultingRoom = ConsultingRoom::create($request->all());
 
-    return redirect()->route('app.settings.consultations')->with('success', 'Consulting Room Added !');
+    return redirect()->route('app.consulting-rooms.index')->with('success', 'Consulting Room Added Successfully');
   }
 
   /**
@@ -44,17 +58,25 @@ class ConsultingRoomController extends Controller
   /**
    * Show the form for editing the specified resource.
    */
-  public function edit(ConsultingRoom $consultingRoom)
+  public function edit($id)
   {
-    //
+    $consultingRoom = ConsultingRoom::findOrFail($id);
+    return view('settings.consultation.edit-consulting-room', compact('consultingRoom'));
   }
 
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, ConsultingRoom $consultingRoom)
+  public function update(Request $request, $id)
   {
-    //
+    $request->validate([
+      'name' => 'required|string|max:255'
+    ]);
+
+    $consultingRoom = ConsultingRoom::findOrFail($id);
+    $consultingRoom->update($request->all());
+
+    return redirect()->route('app.consulting-rooms.index')->with('success', 'Consulting Room Updated Successfully');
   }
 
   /**
@@ -64,6 +86,6 @@ class ConsultingRoomController extends Controller
   {
     $consultingRoom->delete();
 
-    return redirect()->route('app.settings.consultations')->with('success', 'Consulting Room Deleted');
+    return redirect()->back()->with('success', 'Consulting Room Deleted Successfully');
   }
 }

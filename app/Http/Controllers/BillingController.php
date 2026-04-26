@@ -307,9 +307,7 @@ class BillingController extends Controller
             break;
             
           case 'procedure':
-            // Check both possible model names
             $deleted = \App\Models\ProcedureRequest::where('request_ref', $billRef)->delete();
-            $deleted += \App\Models\ProceudreRequest::where('request_ref', $billRef)->delete();
             $deletedRequests += $deleted;
             break;
             
@@ -364,11 +362,14 @@ class BillingController extends Controller
    */
   public function cancelLine($billingId)
   {
+    
     try {
       \DB::beginTransaction();
 
       // Find the specific billing record
       $billing = Billing::find($billingId);
+
+      // dd($billing);
 
       if (!$billing) {
         return response()->json([
@@ -408,13 +409,9 @@ class BillingController extends Controller
           break;
           
         case 'procedure':
-          // Check both possible model names
           $deleted = \App\Models\ProcedureRequest::where('request_ref', $billing->bill_ref)
                                                   ->where('procedure_id', $billing->service_id)
                                                   ->delete();
-          $deleted += \App\Models\ProceudreRequest::where('request_ref', $billing->bill_ref)
-                                                   ->where('procedure_id', $billing->service_id)
-                                                   ->delete();
           $deletedRequests += $deleted;
           break;
           

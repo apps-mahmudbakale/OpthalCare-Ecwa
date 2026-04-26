@@ -10,9 +10,19 @@ class SpecialityController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index()
+  public function index(Request $request)
   {
-    //
+    $perPage = $request->get('per_page', 10);
+    $search = $request->get('search');
+
+    $specialities = Speciality::query()
+      ->when($search, function ($query) use ($search) {
+        $query->where('name', 'like', '%' . $search . '%');
+      })
+      ->orderBy('name', 'asc')
+      ->paginate($perPage);
+
+    return view('settings.consultation.specialities', compact('specialities'));
   }
 
   /**
@@ -28,9 +38,13 @@ class SpecialityController extends Controller
    */
   public function store(Request $request)
   {
+    $request->validate([
+      'name' => 'required|string|max:255'
+    ]);
+
     $speciality = Speciality::create($request->all());
 
-    return redirect()->route('app.settings.consultations')->with('success', 'Speciality Added !');
+    return redirect()->route('app.specialities.index')->with('success', 'Speciality Added Successfully');
   }
 
   /**
@@ -44,17 +58,25 @@ class SpecialityController extends Controller
   /**
    * Show the form for editing the specified resource.
    */
-  public function edit(Speciality $speciality)
+  public function edit($id)
   {
-    //
+    $speciality = Speciality::findOrFail($id);
+    return view('settings.consultation.edit-speciality', compact('speciality'));
   }
 
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, Speciality $speciality)
+  public function update(Request $request, $id)
   {
-    //
+    $request->validate([
+      'name' => 'required|string|max:255'
+    ]);
+
+    $speciality = Speciality::findOrFail($id);
+    $speciality->update($request->all());
+
+    return redirect()->route('app.specialities.index')->with('success', 'Speciality Updated Successfully');
   }
 
   /**
@@ -64,6 +86,6 @@ class SpecialityController extends Controller
   {
     $speciality->delete();
 
-    return redirect()->route('app.settings.consultations')->with('success', 'Speciality Deleted');
+    return redirect()->back()->with('success', 'Speciality Deleted Successfully');
   }
 }

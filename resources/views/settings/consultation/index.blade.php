@@ -116,67 +116,114 @@
     </h4>
 
     <div class="row">
-        <!-- Monthly Campaign State -->
+        <!-- Specialities Card -->
         <div class="col-xl-6 col-md-6 mb-4">
             <div class="card">
-                <div class="card-header d-flex justify-content-between">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <div class="card-title mb-0">
                         <h5 class="mb-0">Specialities</h5>
+                        <small class="text-muted">Manage medical specialities</small>
                     </div>
-                    <a class="btn btn-label-dark waves-effect" href="javascript:void(0);" data-bs-toggle="modal"
-                        data-bs-target="#new-speciality-modal">New</a>
+                    <a class="btn btn-primary" href="{{ route('app.specialities.index') }}">
+                        <i class="ti ti-settings me-1"></i> Manage Specialities
+                    </a>
                 </div>
                 <div class="card-body">
-                    <livewire:specialities />
+                    <div class="d-flex align-items-center">
+                        <div class="avatar me-3">
+                            <span class="avatar-initial rounded bg-label-primary">
+                                <i class="ti ti-stethoscope ti-lg"></i>
+                            </span>
+                        </div>
+                        <div>
+                            <h4 class="mb-0">{{ \App\Models\Speciality::count() }}</h4>
+                            <small class="text-muted">Total Specialities</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <!--/ Monthly Campaign State -->
 
-        <!-- Active Projects -->
+        <!-- Consulting Rooms Card -->
         <div class="col-xl-6 col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <div class="card-title mb-0">
                         <h5 class="mb-0">Consulting Rooms</h5>
-                        {{-- <small class="text-muted">Average 72% Completed</small> --}}
+                        <small class="text-muted">Manage consultation rooms</small>
                     </div>
-                    <a class="btn btn-label-dark waves-effect" href="javascript:void(0);" data-bs-toggle="modal"
-                        data-bs-target="#new-consulting-room-modal">New</a>
+                    <a class="btn btn-primary" href="{{ route('app.consulting-rooms.index') }}">
+                        <i class="ti ti-settings me-1"></i> Manage Rooms
+                    </a>
                 </div>
                 <div class="card-body">
-                    <livewire:consulting-rooms />
+                    <div class="d-flex align-items-center">
+                        <div class="avatar me-3">
+                            <span class="avatar-initial rounded bg-label-success">
+                                <i class="ti ti-door ti-lg"></i>
+                            </span>
+                        </div>
+                        <div>
+                            <h4 class="mb-0">{{ \App\Models\ConsultingRoom::count() }}</h4>
+                            <small class="text-muted">Total Rooms</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- Active Projects -->
+
+        <!-- Appointment Types Card -->
         <div class="col-xl-6 col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <div class="card-title mb-0">
                         <h5 class="mb-0">Appointment Types</h5>
+                        <small class="text-muted">Manage appointment categories</small>
                     </div>
-                    <a class="btn btn-label-dark waves-effect" href="javascript:void(0);" data-bs-toggle="modal"
-                        data-bs-target="#new-appointment-type">New</a>
+                    <a class="btn btn-primary" href="{{ route('app.appointment-type.index') }}">
+                        <i class="ti ti-settings me-1"></i> Manage Types
+                    </a>
                 </div>
                 <div class="card-body">
-                    <livewire:appointment-types />
+                    <div class="d-flex align-items-center">
+                        <div class="avatar me-3">
+                            <span class="avatar-initial rounded bg-label-info">
+                                <i class="ti ti-calendar ti-lg"></i>
+                            </span>
+                        </div>
+                        <div>
+                            <h4 class="mb-0">{{ \App\Models\AppointmentType::count() }}</h4>
+                            <small class="text-muted">Total Types</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- Active Projects -->
+
+        <!-- Consulting Templates Card -->
         <div class="col-xl-6 col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <div class="card-title mb-0">
                         <h5 class="mb-0">Consulting Templates</h5>
-                        {{-- <small class="text-muted">Average 72% Completed</small> --}}
+                        <small class="text-muted">Manage consultation templates</small>
                     </div>
-                    <a class="btn btn-label-dark waves-effect" href="javascript:void(0);" data-bs-toggle="modal"
-                        data-bs-target="#new-consulting-template-modal">New</a>
+                    <a class="btn btn-primary" href="{{ route('app.consulting-templates.index') }}">
+                        <i class="ti ti-settings me-1"></i> Manage Templates
+                    </a>
                 </div>
                 <div class="card-body">
-                    <livewire:consulting-templates />
+                    <div class="d-flex align-items-center">
+                        <div class="avatar me-3">
+                            <span class="avatar-initial rounded bg-label-warning">
+                                <i class="ti ti-file-text ti-lg"></i>
+                            </span>
+                        </div>
+                        <div>
+                            <h4 class="mb-0">{{ \App\Models\ConsultingTemplate::count() }}</h4>
+                            <small class="text-muted">Total Templates</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
