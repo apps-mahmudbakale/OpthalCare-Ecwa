@@ -215,4 +215,31 @@ class LabRequestController extends Controller
     $labRequest->update(['status' => 'Cancelled']);
     return back()->with('success', 'Lab request cancelled and bill removed.');
   }
+
+  /**
+   * Bulk print multiple lab results in a single sheet
+   */
+  public function bulkPrintResults(Request $request)
+  {
+    $request->validate([
+      'lab_ids' => 'required|array|min:1',
+      'lab_ids.*' => 'exists:lab_requests,id'
+    ]);
+
+    // Get all lab requests with their results and related data
+    $labRequests = LabRequest::with([
+      'patient.user', 
+      'test', 
+      'findings.items.templateItem.parameter'
+    ])
+    ->whereIn('id', $request->lab_ids)
+    ->where('status', 'Result Ready')
+    ->get();
+
+    if ($labRequests->isEmpty()) {
+      return back()->with('error', 'No valid lab results found for printing.');
+    }
+
+    return view('laboratory.bulk-print', compact('labRequests'));
+  }
 }

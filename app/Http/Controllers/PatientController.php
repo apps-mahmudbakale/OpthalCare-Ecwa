@@ -241,12 +241,45 @@ class PatientController extends Controller
       if (app(SystemSettings::class)->check_in) {
         $checkInFee = (float)(app(SystemSettings::class)->checkin_fee ?? 0);
         
-        if ($checkInFee > 0) {
-            // For auto check-in, if fee is required, don't auto check-in. Tell them to use manual checkin button
-            return back()->with('check-in', 'Check-In fee required. Please click the Check-In button to initiate billing.');
-        } else {
+        // Check if patient has HMO plan
+        if ($patient->hmo_plan_id) {
+          // HMO patients can be auto-checked in without payment
+          if ($checkInFee > 0 || ($patient->hmoPlan && $patient->hmoPlan->enrollment_amount > 0)) {
+            // Create cleared checkin for HMO patient
+            CheckIn::create([
+              'patient_id' => $patient->id,
+              'check_in_date' => now()->toDateString(),
+              'cleared' => true
+            ]);
+            
+            // Create unpaid billing record for HMO
+            $hmoFee = $checkInFee > 0 ? $checkInFee : $patient->hmoPlan->enrollment_amount;
+            Billing::create([
+              'service' => 'Consultation / Check-In Fee',
+              'service_id' => 0,
+              'user_id' => $patient->id,
+              'quantity' => 1,
+              'amount' => $hmoFee,
+              'bill_ref' => str()->random(6),
+              'status' => 0, // Unpaid but patient is checked in
+              'payer_id' => $patient->id,
+              'plan_id' => $patient->hmo_plan_id,
+            ]);
+            $isCheckedIn = true;
+          } else {
+            // Free check-in for HMO patients
             $checkInService->checkIn($patient->id);
             $isCheckedIn = true;
+          }
+        } else {
+          // Private patients must pay first - don't auto check-in
+          if ($checkInFee > 0) {
+            return back()->with('check-in', 'Check-In fee of ₦' . number_format($checkInFee, 2) . ' required. Please click the Check-In button to initiate payment.');
+          } else {
+            // Free check-in for private patients if no fee configured
+            $checkInService->checkIn($patient->id);
+            $isCheckedIn = true;
+          }
         }
       } else {
         return back()->with('check-in', 'Please Check-In the Patient');
@@ -371,12 +404,13 @@ class PatientController extends Controller
         if ($patientModel && $patientModel->hmoPlan && $patientModel->hmoPlan->enrollment_amount > 0) {
             $checkInFee = (float)$patientModel->hmoPlan->enrollment_amount;
         } else {
+            // Free check-in
             CheckIn::create([
                 'patient_id' => $patient,
                 'check_in_date' => now()->toDateString(),
                 'cleared' => true
             ]);
-            return back()->with('success', 'Patient checked in Successfully');
+            return back()->with('success', 'Patient checked in Successfully (Free)');
         }
     }
 
@@ -386,14 +420,14 @@ class PatientController extends Controller
                               ->first();
 
     if ($existingPending && !$existingPending->cleared) {
-       return back()->with('error', 'Patient already has a pending check-in. Please clear the pending bill.');
+       return back()->with('error', 'Patient already has a pending check-in. Please clear the pending bill first.');
     }
 
-    // Handle HMO Patients
+    // Handle HMO Patients - Allow check-in without payment
     if ($patientModel && $patientModel->hmo_plan_id) {
         \DB::beginTransaction();
         try {
-            // Create cleared checkin for HMO patient
+            // Create cleared checkin for HMO patient (they can check in without paying)
             CheckIn::create([
                 'patient_id' => $patient,
                 'check_in_date' => now()->toDateString(),
@@ -406,25 +440,25 @@ class PatientController extends Controller
                 'service_id' => 0, // 0 or null for check-in
                 'user_id' => $patient,
                 'quantity' => 1,
-                'amount' => $checkInFee, // Fetched from HMO specific fee if global is 0
+                'amount' => $checkInFee,
                 'bill_ref' => str()->random(6),
-                'status' => 0, // Unpaid
+                'status' => 0, // Unpaid but patient is checked in
                 'payer_id' => $patient,
                 'plan_id' => $patientModel->hmo_plan_id,
             ]);
 
             \DB::commit();
-            return back()->with('success', 'Patient checked in successfully via HMO Plan.');
+            return back()->with('success', 'HMO Patient checked in successfully. Bill created for HMO processing.');
         } catch (\Exception $e) {
             \DB::rollBack();
             return back()->with('error', 'Failed to initiate HMO check-in: ' . $e->getMessage());
         }
     }
 
-    // Handle Private/Non-HMO Patients
+    // Handle Private/Non-HMO Patients - Require payment before check-in
     \DB::beginTransaction();
     try {
-        // Create pending checkin
+        // Create pending checkin (not cleared until payment)
         $checkIn = CheckIn::create([
           'patient_id' => $patient,
           'check_in_date' => now()->toDateString(),
@@ -444,7 +478,7 @@ class PatientController extends Controller
         ]);
 
         \DB::commit();
-        return back()->with('error', 'Check-In initiated. Patient must pay the consultation fee of ₦' . number_format($checkInFee, 2) . ' to receive a clearance code.');
+        return back()->with('warning', 'Check-In initiated for Private Patient. Payment of ₦' . number_format($checkInFee, 2) . ' required before patient can be fully checked in.');
     } catch (\Exception $e) {
         \DB::rollBack();
         return back()->with('error', 'Failed to initiate check-in: ' . $e->getMessage());

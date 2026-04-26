@@ -164,6 +164,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::get('lab/specimen/{lab}', [LabRequestController::class, 'specimen'])->name('lab.specimen');
   Route::post('lab/add-result', [LabRequestController::class, 'addResult'])->name('lab.add.result');
   Route::get('lab/result/{lab}', [LabRequestController::class, 'showResult'])->name('lab.print.result');
+  Route::post('lab/bulk-print', [LabRequestController::class, 'bulkPrintResults'])->name('lab.bulk-print');
   Route::resource('vitals', VitalsController::class);
   Route::resource('vision-acuity', VisionAcuityController::class);
   Route::resource('iop', IOPController::class);

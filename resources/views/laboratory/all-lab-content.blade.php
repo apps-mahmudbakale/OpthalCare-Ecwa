@@ -28,9 +28,36 @@
 
     <!-- .table-responsive -->
     <div class="table-responsive">
+        <!-- Bulk Actions Bar -->
+        <div id="bulk-actions-bar" class="alert alert-info d-none mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="ti ti-info-circle me-2"></i>
+                    <span id="selected-count">0</span> lab result(s) selected
+                </div>
+                <div>
+                    <button type="button" class="btn btn-success btn-sm me-2" onclick="selectAllReady()">
+                        <i class="ti ti-check-all me-1"></i> Select All Ready
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm me-2" onclick="bulkPrintResults()">
+                        <i class="ti ti-printer me-1"></i> Print Selected Results
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearSelection()">
+                        <i class="ti ti-x me-1"></i> Clear Selection
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <table class="table table-hover table-striped mb-0">
             <thead class="table-light">
                 <tr>
+                    <th width="40">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="select-all" onchange="toggleSelectAll()">
+                            <label class="form-check-label" for="select-all"></label>
+                        </div>
+                    </th>
                     <th>Date</th>
                     <th>Patient</th>
                     <th>Lab Test</th>
@@ -42,6 +69,17 @@
             <tbody>
                 @forelse ($labRequests as $labRequest)
                     <tr>
+                        <td class="align-middle">
+                            @if($labRequest->status == 'Result Ready')
+                                <div class="form-check">
+                                    <input class="form-check-input lab-checkbox" type="checkbox" 
+                                           value="{{ $labRequest->id }}" 
+                                           id="lab-{{ $labRequest->id }}"
+                                           onchange="updateBulkActions()">
+                                    <label class="form-check-label" for="lab-{{ $labRequest->id }}"></label>
+                                </div>
+                            @endif
+                        </td>
                         <td class="align-middle small text-nowrap">
                             {{ \Carbon\Carbon::parse($labRequest->created_at)->format('d M Y, g:i A') }}
                         </td>
@@ -101,7 +139,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="text-center py-5 text-muted">
+                        <td colspan="7" class="text-center py-5 text-muted">
                             <i class="ti ti-info-circle ti-lg mb-2"></i>
                             <p class="mb-0">No lab requests found matching your criteria.</p>
                         </td>
@@ -167,4 +205,168 @@
       }
     });
   });
+</script>
+
+<script>
+// Bulk selection functionality
+
+// Add CSS for better checkbox styling
+const style = document.createElement('style');
+style.textContent = `
+    .lab-checkbox, #select-all {
+        width: 1.25rem;
+        height: 1.25rem;
+        cursor: pointer;
+    }
+    
+    .lab-checkbox:checked, #select-all:checked {
+        background-color: #696cff;
+        border-color: #696cff;
+    }
+    
+    .form-check {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 1.5rem;
+    }
+    
+    .table tbody tr:hover .lab-checkbox {
+        transform: scale(1.1);
+        transition: transform 0.2s ease;
+    }
+    
+    #bulk-actions-bar {
+        border-left: 4px solid #696cff;
+        background: linear-gradient(135deg, #f8f9ff 0%, #e7e9ff 100%);
+        border-color: #696cff;
+    }
+`;
+document.head.appendChild(style);
+
+function toggleSelectAll() {
+    const selectAllCheckbox = document.getElementById('select-all');
+    const labCheckboxes = document.querySelectorAll('.lab-checkbox');
+    
+    labCheckboxes.forEach(checkbox => {
+        checkbox.checked = selectAllCheckbox.checked;
+    });
+    
+    updateBulkActions();
+}
+
+function updateBulkActions() {
+    const selectedCheckboxes = document.querySelectorAll('.lab-checkbox:checked');
+    const selectAllCheckbox = document.getElementById('select-all');
+    const bulkActionsBar = document.getElementById('bulk-actions-bar');
+    const selectedCount = document.getElementById('selected-count');
+    
+    // Update selected count
+    selectedCount.textContent = selectedCheckboxes.length;
+    
+    // Show/hide bulk actions bar
+    if (selectedCheckboxes.length > 0) {
+        bulkActionsBar.classList.remove('d-none');
+    } else {
+        bulkActionsBar.classList.add('d-none');
+    }
+    
+    // Update select all checkbox state
+    const allCheckboxes = document.querySelectorAll('.lab-checkbox');
+    if (selectedCheckboxes.length === 0) {
+        selectAllCheckbox.indeterminate = false;
+        selectAllCheckbox.checked = false;
+    } else if (selectedCheckboxes.length === allCheckboxes.length) {
+        selectAllCheckbox.indeterminate = false;
+        selectAllCheckbox.checked = true;
+    } else {
+        selectAllCheckbox.indeterminate = true;
+    }
+}
+
+function clearSelection() {
+    const checkboxes = document.querySelectorAll('.lab-checkbox, #select-all');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    updateBulkActions();
+}
+
+function selectAllReady() {
+    // Select all checkboxes for results that are ready (have checkboxes)
+    const readyCheckboxes = document.querySelectorAll('.lab-checkbox');
+    readyCheckboxes.forEach(checkbox => {
+        checkbox.checked = true;
+    });
+    updateBulkActions();
+}
+
+function bulkPrintResults() {
+    const selectedCheckboxes = document.querySelectorAll('.lab-checkbox:checked');
+    
+    if (selectedCheckboxes.length === 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'No Selection',
+            text: 'Please select at least one lab result to print.',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+    
+    const selectedIds = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
+    
+    // Show loading state
+    Swal.fire({
+        title: 'Preparing Print...',
+        text: `Generating bulk print for ${selectedIds.length} lab result(s)`,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    
+    // Create a form to submit the selected IDs
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{{ route("app.lab.bulk-print") }}';
+    form.target = '_blank'; // Open in new tab
+    
+    // Add CSRF token
+    const csrfToken = document.createElement('input');
+    csrfToken.type = 'hidden';
+    csrfToken.name = '_token';
+    csrfToken.value = '{{ csrf_token() }}';
+    form.appendChild(csrfToken);
+    
+    // Add selected IDs
+    selectedIds.forEach(id => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'lab_ids[]';
+        input.value = id;
+        form.appendChild(input);
+    });
+    
+    // Submit the form
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+    
+    // Close loading after a short delay
+    setTimeout(() => {
+        Swal.close();
+        
+        // Show success message
+        Swal.fire({
+            icon: 'success',
+            title: 'Print Generated!',
+            text: `Bulk print opened in new tab with ${selectedIds.length} lab result(s)`,
+            timer: 3000,
+            showConfirmButton: false
+        });
+    }, 1000);
+}
 </script>
