@@ -44,7 +44,7 @@
     <!-- DataTable with Buttons -->
     <div class="card">
         <div class="card-datatable table-responsive pt-0">
-            <livewire:users/>
+            @include('users.users-content')
         </div>
     </div>
     <!--/DataTable with Buttons -->

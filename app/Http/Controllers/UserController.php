@@ -14,9 +14,33 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('users.index');
+        $query = User::query()->whereDoesntHave('roles', function ($q) {
+            $q->where('name', 'patient');
+        });
+
+        // Apply search
+        $search = $request->get('search');
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('firstname', 'like', '%' . $search . '%')
+                  ->orWhere('lastname', 'like', '%' . $search . '%')
+                  ->orWhere('email', 'like', '%' . $search . '%')
+                  ->orWhere('phone', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Apply sorting
+        $sortBy = $request->get('sort_by', 'firstname');
+        $sortDirection = $request->get('sort_direction', 'asc');
+        $query->orderBy($sortBy, $sortDirection);
+
+        // Apply pagination
+        $perPage = $request->get('per_page', 10);
+        $users = $query->paginate($perPage);
+
+        return view('users.index', compact('users'));
     }
 
     /**

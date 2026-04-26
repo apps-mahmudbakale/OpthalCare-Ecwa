@@ -126,7 +126,9 @@ class ReportController extends Controller
     $cashier   = $request->get('cashier', '');
 
     $cashPoints = CashPoint::all();
-    $allCashiers = \App\Models\User::orderBy('firstname')->get();
+    $allCashiers = \App\Models\User::whereDoesntHave('roles', function ($query) {
+        $query->where('name', 'patient');
+    })->orderBy('firstname')->get();
     $paymentMethods = \App\Models\PaymentMethod::orderBy('name')->get();
 
     // Revenue tab

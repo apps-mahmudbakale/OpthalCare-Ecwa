@@ -49,7 +49,9 @@ class EndDayReport extends Component
     return view('livewire.end-day-report', [
         'revenue' => $revenue,
         'cashiers' => $users,
-        'allCashiers' => \App\Models\User::all(), // for dropdown
+        'allCashiers' => \App\Models\User::whereDoesntHave('roles', function ($query) {
+            $query->where('name', 'patient');
+        })->get(), // for dropdown
       ]
     );
   }
