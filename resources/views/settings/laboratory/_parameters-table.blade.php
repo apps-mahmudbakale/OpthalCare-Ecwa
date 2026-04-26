@@ -91,23 +91,3 @@
         </div>
     </div>
 </div>
-
-@push('scripts')
-<script>
-  function submitDeleteParameterForm(id) {
-    if (confirm('Are you sure you want to delete this parameter?')) {
-      document.getElementById('delete-parameter-form-' + id).submit();
-    }
-  }
-  
-  $(document).ready(function() {
-    $('.edit-parameter-btn').on('click', function() {
-      var requestUrl = $(this).data('request-url');
-      $.get(requestUrl).done(response => {
-        $('#global-modal .modal-body').html(response);
-        $('#global-modal').modal('show');
-      });
-    });
-  });
-</script>
-@endpush

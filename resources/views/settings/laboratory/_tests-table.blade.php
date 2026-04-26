@@ -132,36 +132,3 @@
 @include('_partials._modals.modal-new-lab-test')
 @include('_partials._modals.modal-import-lab-test')
 @include('_partials._modals.global-modal')
-
-@push('scripts')
-<script>
-  $(document).ready(function () {
-    // Handle edit modal
-    $('.edit-lab-btn').on('click', function() {
-      var requestUrl = $(this).data('request-url');
-      
-      $.ajax({
-        url: requestUrl,
-        type: 'GET',
-        success: function(response) {
-          $('#global-modal .modal-body').html(response);
-          $('#global-modal').modal('show');
-        },
-        error: function(xhr, status, error) {
-          console.error(error);
-        }
-      });
-    });
-  });
-  
-  // JavaScript for delete confirmation
-  function submitDeleteForm(id) {
-    if (confirm('Are you sure you want to delete this Lab Test?')) {
-      const form = document.getElementById('delete-form-' + id);
-      if (form) {
-        form.submit();
-      }
-    }
-  }
-</script>
-@endpush

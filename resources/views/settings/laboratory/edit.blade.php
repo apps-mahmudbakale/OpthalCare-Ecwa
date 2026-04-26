@@ -11,12 +11,16 @@
   </div>
   <div class="col-12 col-md-12">
     <label class="form-label">Lab Category</label>
-    <select name="category_id" id="" class="form-control">
-      <option selected value="{{ $lab->category->id }}">{{ $lab->category->name }}</option>
-      @foreach (\App\Models\LabCategory::all() as $category)
-        <option value="{{ $category->id }}">{{ $category->name }}</option>
-      @endforeach
-    </select>
+    <select name="category_id" class="form-control">
+    <option value="">Select Category</option>
+
+    @foreach (\App\Models\LabCategory::all() as $category)
+        <option value="{{ $category->id }}"
+            {{ ($lab->category_id ?? null) == $category->id ? 'selected' : '' }}>
+            {{ $category->name }}
+        </option>
+    @endforeach
+</select>
   </div>
   <div class="col-12 col-md-12">
     <label class="form-label"> Price</label>

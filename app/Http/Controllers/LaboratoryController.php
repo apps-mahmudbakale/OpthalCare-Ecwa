@@ -35,6 +35,7 @@ class LaboratoryController extends Controller
   public function edit($id)
   {
     $lab = Laboratory::find($id);
+    // dd($lab);
     return view('settings.laboratory.edit', compact('lab'));
   }
 

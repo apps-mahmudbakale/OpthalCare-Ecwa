@@ -91,23 +91,3 @@
         </div>
     </div>
 </div>
-
-@push('scripts')
-<script>
-  function submitDeleteTemplateForm(id) {
-    if (confirm('Are you sure you want to delete this template?')) {
-      document.getElementById('delete-template-form-' + id).submit();
-    }
-  }
-  
-  $(document).ready(function() {
-    $('.edit-template-btn').on('click', function() {
-      var requestUrl = $(this).data('request-url');
-      $.get(requestUrl).done(response => {
-        $('#global-modal .modal-body').html(response);
-        $('#global-modal').modal('show');
-      });
-    });
-  });
-</script>
-@endpush
