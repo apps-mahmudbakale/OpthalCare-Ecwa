@@ -360,7 +360,7 @@ class BillingController extends Controller
   /**
    * Cancel a single billing line item and its associated request.
    */
-  public function cancelLine($billingId)
+  public function cancelLine(Request $request, $billingId)
   {
     
     try {

@@ -586,7 +586,7 @@ $(document).ready(function() {
                 selectedBills.forEach(function(bill) {
                     $.ajax({
                         url: '{{ url('app/billing') }}/' + bill.id + '/cancel-line',
-                        type: 'DELETE',
+                        type: 'POST',
                         data: {
                             _token: '{{ csrf_token() }}'
                         },

@@ -245,7 +245,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::get('billing/misc-charge/form', [BillingController::class, 'miscChargeForm'])->name('billing.misc-charge-form');
   Route::post('billing/misc-charge/store', [BillingController::class, 'storeMiscCharge'])->name('billing.misc-charge-store');
   Route::delete('billing/{billRef}/cancel', [BillingController::class, 'cancel'])->name('billing.cancel');
-  Route::delete('billing/{billingId}/cancel-line', [BillingController::class, 'cancelLine'])->name('billing.cancel-line');
+  Route::post('billing/{billingId}/cancel-line', [BillingController::class, 'cancelLine'])->name('billing.cancel-line');
   Route::resource('antenatals', AntenatalController::class);
   Route::get('antenatal-export', [AntenatalController::class, 'export'])->name('antenatal.export');
   Route::get('antenatal-import', [AntenatalController::class, 'importView'])->name('antenatal.import');

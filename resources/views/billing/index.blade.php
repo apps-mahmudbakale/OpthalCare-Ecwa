@@ -100,7 +100,7 @@
                 // Send delete request
                 $.ajax({
                   url: '/app/billing/' + billingId + '/cancel-line',
-                  type: 'DELETE',
+                  type: 'POST',
                   headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                   },
