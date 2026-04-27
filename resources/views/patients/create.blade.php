@@ -34,6 +34,18 @@
                       <input type="hidden" name="temp_id" value="{{$data->id ?? ''}}">
                         <div class="row g-3">
                             <div class="col-md-4">
+                                <label class="form-label" for="patient_type">Patient Type <span class="text-danger">*</span></label>
+                                <select name="patient_type" id="patient_type" class="form-control @error('patient_type') is-invalid @enderror">
+                                    <option value="registered" selected>Registered</option>
+                                    <option value="walkin">Walk-in</option>
+                                </select>
+                                @if ($errors->has('patient_type'))
+                                    <div class="text-danger">
+                                        {{ $errors->first('patient_type') }}
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="col-md-4">
                                 <label class="form-label" for="firstname">First Name <span
                                         class="text-danger">*</span></label>
                                 <input type="text" name="firstname" value="{{ old('firstname') ?? $data->first_name ?? '' }}" id="firstname"

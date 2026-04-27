@@ -122,6 +122,7 @@ class PatientController extends Controller
       'phone' => 'required|string|max:20',
       'date_of_birth' => 'required|date',
       'email' => 'nullable|email|max:255|unique:users,email',
+      'patient_type' => 'required|in:registered,walkin',
     ];
 
     // Optional fields (no 'required' rule)
@@ -153,6 +154,8 @@ class PatientController extends Controller
       'date_of_birth.required' => 'The date of birth field is required.',
       'email.email' => 'The email must be a valid email address.',
       'email.unique' => 'The email has already been taken.',
+      'patient_type.required' => 'The patient type field is required.',
+      'patient_type.in' => 'The patient type must be either registered or walkin.',
     ];
 
     // Validate the request
@@ -183,8 +186,8 @@ class PatientController extends Controller
     // Generate a unique hospital number
     $hospital_no = UniqueIdGenerator::generate(['table' => 'patients', 'length' => 4]);
     
-    // Determine patient type
-    $patientType = $request->input('patient_type', 'registered');
+    // Get patient type from form (already validated)
+    $patientType = $request->input('patient_type');
 
     // Create the patient record
     $patient = Patient::create(array_merge(
