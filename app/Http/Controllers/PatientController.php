@@ -40,6 +40,7 @@ class PatientController extends Controller
     $filterTag    = $request->get('tag', '');
     $filterAge    = $request->get('age', '');
     $filterHmo    = $request->get('hmo_plan_id', '');
+    $filterType   = $request->get('patient_type', ''); // Add patient type filter
 
     $query = Patient::query()->with('user', 'hmoPlan.hmo');
 
@@ -72,12 +73,16 @@ class PatientController extends Controller
     if ($filterHmo) {
       $query->where('patients.hmo_plan_id', $filterHmo);
     }
+    
+    if ($filterType) {
+      $query->where('patients.patient_type', $filterType);
+    }
 
     $patients  = $query->orderBy('patients.hospital_no', 'desc')->paginate(20)->withQueryString();
     $tags      = \App\Models\Tag::all();
     $hmoPlans  = \App\Models\HmoPlan::with('hmo')->get();
 
-    return view('patients.index', compact('patients', 'tags', 'hmoPlans', 'search', 'filterGender', 'filterTag', 'filterAge', 'filterHmo'));
+    return view('patients.index', compact('patients', 'tags', 'hmoPlans', 'search', 'filterGender', 'filterTag', 'filterAge', 'filterHmo', 'filterType'));
   }
 
   /**
@@ -93,11 +98,13 @@ class PatientController extends Controller
     $hmos = \App\Models\HmoPlan::all();
 
     $data = null;
+    $patientType = $request->get('type', 'registered'); // Default to registered
+    
     if (!empty($request->data)) {
         $data = json_decode(base64_decode($request->data));
     }
 
-    return view('patients.create', compact('religions', 'states', 'hmos', 'data'));
+    return view('patients.create', compact('religions', 'states', 'hmos', 'data', 'patientType'));
   }
 
   /**
@@ -175,11 +182,18 @@ class PatientController extends Controller
 
     // Generate a unique hospital number
     $hospital_no = UniqueIdGenerator::generate(['table' => 'patients', 'length' => 4]);
+    
+    // Determine patient type
+    $patientType = $request->input('patient_type', 'registered');
 
     // Create the patient record
     $patient = Patient::create(array_merge(
       $request->except(['password', 'next_of_kin_name', 'next_of_kin_relation', 'next_of_kin_phone', 'next_of_kin_address']),
-      ['hospital_no' => $hospital_no, 'user_id' => $user->id]
+      [
+        'hospital_no' => $hospital_no, 
+        'user_id' => $user->id,
+        'patient_type' => $patientType
+      ]
     ));
 
     // Create the next of kin record
@@ -237,52 +251,58 @@ class PatientController extends Controller
     $wallet_balance = $patient->wallet ? $patient->wallet->balance : 0;
     $isCheckedIn = $patient->isCheckedInToday();
 
+    // Check if auto check-in is enabled in system settings
+    $autoCheckInEnabled = app(SystemSettings::class)->check_in;
+
     if (!$isCheckedIn) {
-      if (app(SystemSettings::class)->check_in) {
-        $checkInFee = (float)(app(SystemSettings::class)->checkin_fee ?? 0);
-        
-        // Check if patient has HMO plan
-        if ($patient->hmo_plan_id) {
-          // HMO patients can be auto-checked in without payment
-          if ($checkInFee > 0 || ($patient->hmoPlan && $patient->hmoPlan->enrollment_amount > 0)) {
-            // Create cleared checkin for HMO patient
-            CheckIn::create([
-              'patient_id' => $patient->id,
-              'check_in_date' => now()->toDateString(),
-              'cleared' => true
-            ]);
-            
-            // Create unpaid billing record for HMO
-            $hmoFee = $checkInFee > 0 ? $checkInFee : $patient->hmoPlan->enrollment_amount;
-            Billing::create([
-              'service' => 'Consultation / Check-In Fee',
-              'service_id' => 0,
-              'user_id' => $patient->id,
-              'quantity' => 1,
-              'amount' => $hmoFee,
-              'bill_ref' => str()->random(6),
-              'status' => 0, // Unpaid but patient is checked in
-              'payer_id' => $patient->id,
-              'plan_id' => $patient->hmo_plan_id,
-            ]);
-            $isCheckedIn = true;
-          } else {
-            // Free check-in for HMO patients
-            $checkInService->checkIn($patient->id);
-            $isCheckedIn = true;
-          }
+      // If auto check-in is DISABLED, require manual check-in - don't allow access
+      if (!$autoCheckInEnabled) {
+        return redirect()->route('app.patients.index')
+          ->with('error', 'Auto check-in is disabled. Please manually check in the patient using the Check-In button before accessing their profile.');
+      }
+      
+      // Auto check-in is ENABLED - proceed with auto check-in logic
+      $checkInFee = (float)(app(SystemSettings::class)->checkin_fee ?? 0);
+      
+      // Check if patient has HMO plan
+      if ($patient->hmo_plan_id) {
+        // HMO patients can be auto-checked in without payment
+        if ($checkInFee > 0 || ($patient->hmoPlan && $patient->hmoPlan->enrollment_amount > 0)) {
+          // Create cleared checkin for HMO patient
+          CheckIn::create([
+            'patient_id' => $patient->id,
+            'check_in_date' => now()->toDateString(),
+            'cleared' => true
+          ]);
+          
+          // Create unpaid billing record for HMO
+          $hmoFee = $checkInFee > 0 ? $checkInFee : $patient->hmoPlan->enrollment_amount;
+          Billing::create([
+            'service' => 'Consultation / Check-In Fee',
+            'service_id' => 0,
+            'user_id' => $patient->id,
+            'quantity' => 1,
+            'amount' => $hmoFee,
+            'bill_ref' => str()->random(6),
+            'status' => 0, // Unpaid but patient is checked in
+            'payer_id' => $patient->id,
+            'plan_id' => $patient->hmo_plan_id,
+          ]);
+          $isCheckedIn = true;
         } else {
-          // Private patients must pay first - don't auto check-in
-          if ($checkInFee > 0) {
-            return back()->with('check-in', 'Check-In fee of ₦' . number_format($checkInFee, 2) . ' required. Please click the Check-In button to initiate payment.');
-          } else {
-            // Free check-in for private patients if no fee configured
-            $checkInService->checkIn($patient->id);
-            $isCheckedIn = true;
-          }
+          // Free check-in for HMO patients
+          $checkInService->checkIn($patient->id);
+          $isCheckedIn = true;
         }
       } else {
-        return back()->with('check-in', 'Please Check-In the Patient');
+        // Private patients must pay first - don't auto check-in
+        if ($checkInFee > 0) {
+          return back()->with('check-in', 'Check-In fee of ₦' . number_format($checkInFee, 2) . ' required. Please click the Check-In button to initiate payment.');
+        } else {
+          // Free check-in for private patients if no fee configured
+          $checkInService->checkIn($patient->id);
+          $isCheckedIn = true;
+        }
       }
     }
 

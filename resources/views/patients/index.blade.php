@@ -19,6 +19,12 @@
         <form method="GET" action="{{ route('app.patients.index') }}" class="d-flex flex-wrap gap-2 align-items-end flex-grow-1">
             <input type="text" name="search" value="{{ $search }}" class="form-control form-control-sm" placeholder="Search name, HRN, phone..." style="width:200px;">
 
+            <select name="patient_type" class="form-select form-select-sm" style="width:150px;">
+                <option value="">All Types</option>
+                <option value="registered" {{ $filterType === 'registered' ? 'selected' : '' }}>Registered</option>
+                <option value="walk-in" {{ $filterType === 'walk-in' ? 'selected' : '' }}>Walk-in</option>
+            </select>
+
             <select name="gender" class="form-select form-select-sm" style="width:130px;">
                 <option value="">All Genders</option>
                 <option value="Male"   {{ $filterGender === 'Male'   ? 'selected' : '' }}>Male</option>
@@ -57,7 +63,8 @@
                 New Patient
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="{{ route('app.patients.create') }}">Free Registration (Walk-in/HMO)</a></li>
+                <li><a class="dropdown-item" href="{{ route('app.patients.create', ['type' => 'registered']) }}">Registered Patient</a></li>
+                <li><a class="dropdown-item" href="{{ route('app.patients.create', ['type' => 'walk-in']) }}">Walk-in Patient</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="javascript:void(0);" id="new-patient-code">Paid Registration (Access Code)</a></li>
             </ul>
@@ -99,13 +106,18 @@
                             [{{ app(App\Settings\SystemSettings::class)->number_prefix ?: 'HRN' }}{{ $patient->hospital_no }}]
                         </a>
                     </h6>
-                    <p class="text-muted mb-0">{{ $patient->gender }}, {{ $patient->getAge() }}</p>
+                    <p class="text-muted mb-0">
+                        {{ $patient->gender }}, {{ $patient->getAge() }}
+                        @if($patient->patient_type === 'walk-in')
+                            <span class="badge bg-label-warning ms-1">Walk-in</span>
+                        @endif
+                    </p>
                     <p class="text-muted mb-0">{{ $patient->phone }}</p>
                     <p class="mb-0">
                         @if($patient->hmoPlan)
                             <span class="badge bg-info">{{ $patient->hmoPlan->hmo->name ?? 'HMO' }} - {{ $patient->hmoPlan->name }}</span>
                         @else
-                            <span class="badge bg-dark">WALK-IN — Self Pay</span>
+                            <span class="badge bg-dark">Self Pay</span>
                         @endif
                     </p>
                 </figcaption>

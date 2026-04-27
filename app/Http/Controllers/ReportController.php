@@ -132,7 +132,7 @@ class ReportController extends Controller
     $paymentMethods = \App\Models\PaymentMethod::orderBy('name')->get();
 
     // Revenue tab
-    $revenueQuery = Payment::query()->with(['billing', 'cashPoint'])
+    $revenueQuery = Payment::query()->with(['billing', 'billing.patient.user', 'cashPoint'])
         ->when($service,   fn($q) => $q->whereHas('billing', fn($sq) =>
             $sq->whereRaw("LOWER(SUBSTRING_INDEX(service, ':', 1)) = ?", [strtolower($service)])))
         ->when($cashpoint, fn($q) => $q->where('cashpoint_id', $cashpoint))
@@ -172,7 +172,7 @@ class ReportController extends Controller
 
   public function exportRevenue(Request $request)
   {
-    $data = Payment::with(['billing', 'cashPoint'])
+    $data = Payment::with(['billing', 'billing.patient.user', 'cashPoint'])
         ->when($request->service,   fn($q) => $q->whereHas('billing', fn($sq) =>
             $sq->whereRaw("LOWER(SUBSTRING_INDEX(service, ':', 1)) = ?", [strtolower($request->service)])))
         ->when($request->cashpoint, fn($q) => $q->where('cashpoint_id', $request->cashpoint))
