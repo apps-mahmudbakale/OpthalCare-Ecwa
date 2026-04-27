@@ -19,13 +19,16 @@ class LabRequestController extends Controller
   {
     $perPage = $request->get('per_page', 10);
     $search = $request->get('search');
+    $status = $request->get('status');
     $patientId = $request->get('patient_id');
     $categoryId = $request->get('category_id');
     $startDate = $request->get('start_date');
     $endDate = $request->get('end_date');
 
     $labRequests = LabRequest::query()
-      ->where('status', '!=', 'Result Ready')
+      ->when($status, function ($query) use ($status) {
+        $query->where('status', $status);
+      })
       ->when($patientId, function ($query) use ($patientId) {
         $query->where('patient_id', $patientId);
       })

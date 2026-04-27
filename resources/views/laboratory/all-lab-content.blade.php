@@ -11,16 +11,31 @@
                         <option value="100" {{ request('per_page', 10) == 100 ? 'selected' : '' }}>100</option>
                     </select>
                 </div>
+                <div class="col-md-3">
+                    <label class="form-label small mb-1">Status</label>
+                    <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="">All Status</option>
+                        <option value="Pending" {{ request('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="Specimen Collected" {{ request('status') == 'Specimen Collected' ? 'selected' : '' }}>Specimen Collected</option>
+                        <option value="Result Ready" {{ request('status') == 'Result Ready' ? 'selected' : '' }}>Result Ready</option>
+                        <option value="Cancelled" {{ request('status') == 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
+                    </select>
+                </div>
                 <div class="col-md-4">
                     <label class="form-label small mb-1">Search</label>
                     <input type="search" name="search" class="form-control form-control-sm" 
                            value="{{ request('search') }}" placeholder="Patient name or test...">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label small mb-1">&nbsp;</label>
-                    <button type="submit" class="btn btn-primary btn-sm w-100">
-                        <i class="ti ti-search"></i> Search
-                    </button>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm flex-grow-1">
+                            <i class="ti ti-search"></i> Search
+                        </button>
+                        <a href="{{ route('app.lab.index') }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="ti ti-x"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </form>
