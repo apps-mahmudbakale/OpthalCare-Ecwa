@@ -78,28 +78,27 @@
     <div class="table-responsive">
         <table class="table table-sm table-striped align-middle mb-0">
             <thead class="table-light">
-                <tr><th>Date</th><th>Bill Ref</th><th>Patient Name</th><th>Patient ID</th><th>Service</th><th>Cash Point</th><th>Method</th><th>Amount (₦)</th></tr>
+                <tr><th>Payment ID</th><th>Date</th><th>Bill Ref</th><th>Service</th><th>Cash Point</th><th>Method</th><th>Amount (₦)</th></tr>
             </thead>
             <tbody>
                 @forelse($revenue as $item)
                 <tr>
+                    <td><span class="badge bg-primary">{{ $item->id }}</span></td>
                     <td>{{ $item->created_at->format('d M Y h:i A') }}</td>
                     <td><span class="badge bg-light text-dark">{{ $item->billing->bill_ref ?? '-' }}</span></td>
-                    <td>{{ $item->billing->patient->user->firstname ?? '-' }} {{ $item->billing->patient->user->lastname ?? '' }}</td>
-                    <td>{{ $item->billing->patient->hospital_number ?? '-' }}</td>
                     <td>{{ $item->billing->service ?? '-' }}</td>
                     <td>{{ $item->cashPoint->name ?? '-' }}</td>
                     <td>{{ ucfirst($item->payment_method ?? 'Cash') }}</td>
                     <td>{{ number_format($item->paying_amount, 2) }}</td>
                 </tr>
                 @empty
-                <tr><td colspan="8" class="text-center text-muted py-4">No records found.</td></tr>
+                <tr><td colspan="7" class="text-center text-muted py-4">No records found.</td></tr>
                 @endforelse
             </tbody>
             @if($revenue->count())
             <tfoot class="table-light fw-bold">
                 <tr>
-                    <td colspan="7" class="text-end">Page Total:</td>
+                    <td colspan="6" class="text-end">Page Total:</td>
                     <td>₦{{ number_format($revenue->sum('paying_amount'), 2) }}</td>
                 </tr>
             </tfoot>

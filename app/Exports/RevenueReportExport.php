@@ -18,10 +18,9 @@ class RevenueReportExport implements FromCollection, WithHeadings
   {
     return $this->data->map(function ($item) {
       return [
+        'Payment ID' => $item->id,
         'Date' => $item->created_at->format('d M Y h:i A'),
         'Bill Ref' => $item->billing->bill_ref ?? '',
-        'Patient Name' => ($item->billing->patient->user->firstname ?? '') . ' ' . ($item->billing->patient->user->lastname ?? ''),
-        'Patient ID' => $item->billing->patient->hospital_number ?? '',
         'Service' => $item->billing->service ?? '',
         'Cash Point' => strtoupper($item->cashPoint->name ?? ''),
         'Payment Method' => ucfirst($item->payment_method ?? 'Cash'),
@@ -32,6 +31,6 @@ class RevenueReportExport implements FromCollection, WithHeadings
 
   public function headings(): array
   {
-    return ['Date', 'Bill Ref', 'Patient Name', 'Patient ID', 'Service', 'Cash Point', 'Payment Method', 'Amount'];
+    return ['Payment ID', 'Date', 'Bill Ref', 'Service', 'Cash Point', 'Payment Method', 'Amount'];
   }
 }
