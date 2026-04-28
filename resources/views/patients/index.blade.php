@@ -22,7 +22,7 @@
             <select name="patient_type" class="form-select form-select-sm" style="width:150px;">
                 <option value="">All Types</option>
                 <option value="registered" {{ $filterType === 'registered' ? 'selected' : '' }}>Registered</option>
-                <option value="walk-in" {{ $filterType === 'walk-in' ? 'selected' : '' }}>Walk-in</option>
+                <option value="Walk-in" {{ $filterType === 'Walk-in' ? 'selected' : '' }}>Walk-in</option>
             </select>
 
             <select name="gender" class="form-select form-select-sm" style="width:130px;">
@@ -108,7 +108,7 @@
                     </h6>
                     <p class="text-muted mb-0">
                         {{ $patient->gender }}, {{ $patient->getAge() }}
-                        @if($patient->patient_type === 'walk-in')
+                        @if($patient->patient_type === 'walkin')
                             <span class="badge bg-label-warning ms-1">Walk-in</span>
                         @endif
                     </p>
