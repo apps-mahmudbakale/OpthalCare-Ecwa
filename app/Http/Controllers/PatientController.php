@@ -216,18 +216,39 @@ class PatientController extends Controller
       'status' => 'Concluded'
     ]);
 
-    // Auto check-in after paid registration — already paid so mark as cleared
+    // Check if auto check-in is enabled and handle payment requirements
+    $autoCheckInEnabled = app(App\Settings\SystemSettings::class)->check_in;
+    $checkInFee = (float)(app(App\Settings\SystemSettings::class)->checkin_fee ?? 0);
     $checkInService = new CheckInService();
-    if (!$checkInService->hasCheckedInToday($patient->id)) {
-        CheckIn::create([
-            'patient_id'     => $patient->id,
-            'check_in_date'  => now()->toDateString(),
-            'cleared'        => true,
-        ]);
+    
+    if ($autoCheckInEnabled && !$checkInService->hasCheckedInToday($patient->id)) {
+        // Check if patient has HMO plan
+        if ($patient->hmo_plan_id) {
+            // HMO patients can be auto-checked in without payment
+            CheckIn::create([
+                'patient_id'     => $patient->id,
+                'check_in_date'  => now()->toDateString(),
+                'cleared'        => true,
+            ]);
+            return redirect()->route('app.patients.index')->with('success', 'Patient Created and Checked In Successfully');
+        } else {
+            // Private patients must pay first - don't auto check-in
+            if ($checkInFee > 0) {
+                return redirect()->route('app.patients.index')->with('warning', 'Patient Created. Check-In fee of ₦' . number_format($checkInFee, 2) . ' required. Please click the Check-In button to initiate payment.');
+            } else {
+                // No check-in fee, so auto check-in
+                CheckIn::create([
+                    'patient_id'     => $patient->id,
+                    'check_in_date'  => now()->toDateString(),
+                    'cleared'        => true,
+                ]);
+                return redirect()->route('app.patients.index')->with('success', 'Patient Created and Checked In Successfully');
+            }
+        }
     }
 
-    // Redirect with success message
-    return redirect()->route('app.patients.index')->with('success', 'Patient Created and Checked In Successfully');
+    // Redirect with success message (auto check-in disabled)
+    return redirect()->route('app.patients.index')->with('success', 'Patient Created Successfully');
   }
 
 
