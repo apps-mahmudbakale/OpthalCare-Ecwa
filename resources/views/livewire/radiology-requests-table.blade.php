@@ -55,7 +55,7 @@
                                     <li><a class="dropdown-item" target="_blank"
                                             href="{{ route('app.radiology.print.result', $radiologyRequest->id) }}">Print</a>
                                     </li>
-                                    @hasanyrole('admin|doctor')
+                                    @hasanyrole('admin|doctor|Doctor')
                                     <li>
                                         <button class="dropdown-item add-notes-btn"
                                             data-request-url="{{ route('app.radiology.edit.result', $radiologyRequest->id) }}"

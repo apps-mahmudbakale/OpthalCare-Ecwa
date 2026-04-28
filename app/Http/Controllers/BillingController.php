@@ -7,8 +7,11 @@ use App\Models\Drug;
 use App\Models\Billing;
 use App\Models\Laboratory;
 use App\Models\Radiology;
-use App\Models\Speciality;
+use App\Models\RadiologyRequest;
+use App\Models\LabRequest;
 use App\Models\DrugRequest;
+use App\Models\OpticalRequest;
+use App\Models\Speciality;
 use Illuminate\Http\Request;
 use App\Services\ServiceRequestHandler;
 
@@ -95,7 +98,7 @@ class BillingController extends Controller
    */
   public function store(Request $request)
   {
-//    dd($request->all());
+  //  dd($request->all());
     $request_ref = str()->random(6);
     if ($request->service_category == 'consultations') {
       $consult = Speciality::find($request->service_id);
@@ -107,19 +110,69 @@ class BillingController extends Controller
 
     } elseif ($request->service_category == 'laboratory') {
       $lab = Laboratory::find($request->service_id);
+      
+      // Create lab request record
+      LabRequest::create([
+        'patient_id'   => $request->patient_id,
+        'user_id'      => auth()->user()->id,
+        'test_id'      => $lab->id,
+        'priority'     => 'normal',
+        'request_note' => 'Nil',
+        'status'       => 'Pending',
+        'request_ref'  => $request_ref,
+      ]);
+      
       $serviceHandler = new ServiceRequestHandler();
       $billingRecord = $serviceHandler->handleServiceRequest($lab->name, $request->patient_id, 'laboratory', 'fresh', $request_ref, 1);
+      
     } elseif ($request->service_category == 'pharmacy') {
       $drug = Drug::find($request->service_id);
+      
+      // Create drug request record
+      DrugRequest::create([
+        'patient_id'   => $request->patient_id,
+        'user_id'      => auth()->user()->id,
+        'drug_id'      => $drug->id,
+        'qty'          => 1, // Default quantity
+        'dose'         => 'As prescribed',
+        'status'       => 'Pending',
+        'request_ref'  => $request_ref,
+      ]);
+      
       $serviceHandler = new ServiceRequestHandler();
       $billingRecord = $serviceHandler->handleServiceRequest($drug->name, $request->patient_id, 'pharmacy', 'fresh', $request_ref, 1);
+      
     }elseif ($request->service_category == 'ophthicals') {
-      //  dd($request->all());
       $optic = Antenatal::find($request->service_id);
+      
+      // Create optical request record
+      OpticalRequest::create([
+        'patient_id'   => $request->patient_id,
+        'user_id'      => auth()->user()->id,
+        'service_id'   => $optic->id,
+        'lens'         => 'Standard',
+        'ref'          => $request_ref,
+        'comments'     => 'Nil',
+        'status'       => 'Pending',
+      ]);
+      
       $serviceHandler = new ServiceRequestHandler();
       $billingRecord = $serviceHandler->handleServiceRequest($optic->name, $request->patient_id, 'ophthicals', 'fresh',  $request_ref, 1);
+      
     }elseif ($request->service_category == 'radiology'){
       $imaging = Radiology::find($request->service_id);
+      
+      // Create radiology request record
+      RadiologyRequest::create([
+        'patient_id'   => $request->patient_id,
+        'user_id'      => auth()->user()->id,
+        'imaging_id'   => $imaging->id,
+        'priority'     => 'low',
+        'request_note' => 'Nil',
+        'status'       => 'Pending',
+        'request_ref'  => $request_ref,
+      ]);
+      
       $serviceHandler = new ServiceRequestHandler();
       $billingRecord = $serviceHandler->handleServiceRequest($imaging->name, $request->patient_id, 'radiology', 'fresh',  $request_ref, 1);
     }
