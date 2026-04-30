@@ -20,6 +20,10 @@ class Billing extends Model
     'plan_id',
     'status',
     'clearance_code',
+    'created_by',
+    'created_from',
+    'creation_notes',
+    'created_ip',
   ];
 
   public function patient()
@@ -30,5 +34,10 @@ class Billing extends Model
   public function hmoPlan()
   {
     return $this->belongsTo(HmoPlan::class, 'plan_id');
+  }
+
+  public function createdBy()
+  {
+    return $this->belongsTo(User::class, 'created_by');
   }
 }

@@ -36,7 +36,9 @@ class ServiceRequestHandler
     string $kind,
     string $billingRef,
     ?int $qty = null,
-    ?float $customAmount = null
+    ?float $customAmount = null,
+    ?string $createdFrom = 'manual',
+    ?string $notes = null
   ): ?Billing {
     $qty = $qty ?? 1;
 
@@ -65,6 +67,10 @@ class ServiceRequestHandler
         'payer_id'    => Auth::id(),
         'plan_id'     => $plan_id,
         'status'      => $status,
+        'created_by'  => Auth::id(),
+        'created_from' => $createdFrom,
+        'creation_notes' => $notes,
+        'created_ip'  => request()->ip(),
       ]);
     }
 
@@ -134,6 +140,10 @@ class ServiceRequestHandler
       'payer_id'    => Auth::id(),
       'plan_id'     => $plan_id,
       'status'      => $status,
+      'created_by'  => Auth::id(),
+      'created_from' => $createdFrom,
+      'creation_notes' => $notes,
+      'created_ip'  => request()->ip(),
     ]);
 
     // Record usage so qty limit is tracked

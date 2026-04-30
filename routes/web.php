@@ -243,6 +243,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::post('notes/task/{nursingTask}/toggle', [App\Http\Controllers\AdmissionNotesController::class, 'toggleNursingTask'])->name('notes.task.toggle');
   Route::delete('notes/task/{nursingTask}', [App\Http\Controllers\AdmissionNotesController::class, 'destroyNursingTask'])->name('notes.task.destroy');
   Route::resource('billing', BillingController::class);
+  Route::get('billing-audit-log', [BillingController::class, 'auditLog'])->name('billing.audit-log');
   Route::get('billing/misc-charge/form', [BillingController::class, 'miscChargeForm'])->name('billing.misc-charge-form');
   Route::post('billing/misc-charge/store', [BillingController::class, 'storeMiscCharge'])->name('billing.misc-charge-store');
   Route::delete('billing/{billRef}/cancel', [BillingController::class, 'cancel'])->name('billing.cancel');

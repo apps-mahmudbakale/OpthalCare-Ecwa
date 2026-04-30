@@ -22,7 +22,7 @@ class BillingController extends Controller
    */
   public function index()
   {
-    $query = Billing::query()->with(['patient.user', 'hmoPlan.hmo']);
+    $query = Billing::query()->with(['patient.user', 'hmoPlan.hmo', 'createdBy']);
 
     // Apply status filter
     $status = request('status', 'unpaid');
@@ -50,6 +50,10 @@ class BillingController extends Controller
             $userQuery->where('firstname', 'like', '%' . $search . '%')
               ->orWhere('lastname', 'like', '%' . $search . '%')
               ->orWhere('middlename', 'like', '%' . $search . '%');
+          })
+          ->orWhereHas('createdBy', function ($userQuery) use ($search) {
+            $userQuery->where('firstname', 'like', '%' . $search . '%')
+              ->orWhere('lastname', 'like', '%' . $search . '%');
           });
       });
     }
@@ -104,9 +108,17 @@ class BillingController extends Controller
       $consult = Speciality::find($request->service_id);
 
       $serviceHandler = new ServiceRequestHandler();
-      $billingRecord = $serviceHandler->handleServiceRequest($consult->name, $request->patient_id, 'consultations', $request->service_type, $request_ref, 1);
-      // Generate unique access code
-//      $accessCode = 'FU-' . strtoupper(Str::random(6));
+      $billingRecord = $serviceHandler->handleServiceRequest(
+        $consult->name, 
+        $request->patient_id, 
+        'consultations', 
+        $request->service_type, 
+        $request_ref, 
+        1,
+        null,
+        'manual_billing',
+        'Service requested via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname
+      );
 
     } elseif ($request->service_category == 'laboratory') {
       $lab = Laboratory::find($request->service_id);
@@ -123,7 +135,17 @@ class BillingController extends Controller
       ]);
       
       $serviceHandler = new ServiceRequestHandler();
-      $billingRecord = $serviceHandler->handleServiceRequest($lab->name, $request->patient_id, 'laboratory', 'fresh', $request_ref, 1);
+      $billingRecord = $serviceHandler->handleServiceRequest(
+        $lab->name, 
+        $request->patient_id, 
+        'laboratory', 
+        'fresh', 
+        $request_ref, 
+        1,
+        null,
+        'manual_billing',
+        'Lab test requested via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname
+      );
       
     } elseif ($request->service_category == 'pharmacy') {
       $drug = Drug::find($request->service_id);
@@ -140,7 +162,17 @@ class BillingController extends Controller
       ]);
       
       $serviceHandler = new ServiceRequestHandler();
-      $billingRecord = $serviceHandler->handleServiceRequest($drug->name, $request->patient_id, 'pharmacy', 'fresh', $request_ref, 1);
+      $billingRecord = $serviceHandler->handleServiceRequest(
+        $drug->name, 
+        $request->patient_id, 
+        'pharmacy', 
+        'fresh', 
+        $request_ref, 
+        1,
+        null,
+        'manual_billing',
+        'Drug requested via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname
+      );
       
     }elseif ($request->service_category == 'ophthicals') {
       $optic = Antenatal::find($request->service_id);
@@ -157,7 +189,17 @@ class BillingController extends Controller
       ]);
       
       $serviceHandler = new ServiceRequestHandler();
-      $billingRecord = $serviceHandler->handleServiceRequest($optic->name, $request->patient_id, 'ophthicals', 'fresh',  $request_ref, 1);
+      $billingRecord = $serviceHandler->handleServiceRequest(
+        $optic->name, 
+        $request->patient_id, 
+        'ophthicals', 
+        'fresh',  
+        $request_ref, 
+        1,
+        null,
+        'manual_billing',
+        'Optical service requested via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname
+      );
       
     }elseif ($request->service_category == 'radiology'){
       $imaging = Radiology::find($request->service_id);
@@ -174,15 +216,56 @@ class BillingController extends Controller
       ]);
       
       $serviceHandler = new ServiceRequestHandler();
-      $billingRecord = $serviceHandler->handleServiceRequest($imaging->name, $request->patient_id, 'radiology', 'fresh',  $request_ref, 1);
+      $billingRecord = $serviceHandler->handleServiceRequest(
+        $imaging->name, 
+        $request->patient_id, 
+        'radiology', 
+        'fresh',  
+        $request_ref, 
+        1,
+        null,
+        'manual_billing',
+        'Radiology service requested via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname
+      );
     }
     return redirect()->back()->with('success', 'Bill Added Successfully!');
 
   }
 
   /**
-   * Display the specified resource.
+   * Display billing audit log
    */
+  public function auditLog()
+  {
+    $query = Billing::query()
+      ->with(['patient.user', 'createdBy'])
+      ->whereNotNull('created_by')
+      ->orderBy('created_at', 'desc');
+
+    // Apply filters
+    if (request('user_id')) {
+      $query->where('created_by', request('user_id'));
+    }
+
+    if (request('date_from')) {
+      $query->whereDate('created_at', '>=', request('date_from'));
+    }
+
+    if (request('date_to')) {
+      $query->whereDate('created_at', '<=', request('date_to'));
+    }
+
+    if (request('created_from')) {
+      $query->where('created_from', request('created_from'));
+    }
+
+    $billings = $query->paginate(20);
+    $users = \App\Models\User::whereHas('roles', function($q) {
+      $q->whereIn('name', ['admin', 'doctor', 'nurse', 'cashier']);
+    })->get();
+
+    return view('billing.audit-log', compact('billings', 'users'));
+  }
   public function show($ref)
   {
     // Get all bills with this reference
