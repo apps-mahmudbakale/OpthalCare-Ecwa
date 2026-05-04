@@ -73,7 +73,11 @@ class RadiologyRequestController extends Controller
         'Radiology',
         'fresh',
         $request_ref,
-        1
+        1,
+        null,
+        'radiology_request',
+        'Radiology requested via radiology interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname,
+        $imaging->id
       );
     }
 

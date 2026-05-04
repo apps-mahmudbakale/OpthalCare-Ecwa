@@ -32,7 +32,18 @@ class PharmacyController extends Controller
       ]);
       $drug = Drug::find($request->drug_id[$index]);
       $serviceHandler = new ServiceRequestHandler();
-      $billingRecord = $serviceHandler->handleServiceRequest($drug->name, $request->patient_id, 'Pharmacy', 'fresh', $request_ref, $request->qty[$index]);
+      $billingRecord = $serviceHandler->handleServiceRequest(
+        $drug->name, 
+        $request->patient_id, 
+        'Pharmacy', 
+        'fresh', 
+        $request_ref, 
+        $request->qty[$index],
+        null,
+        'pharmacy_request',
+        'Drug requested via pharmacy interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname,
+        $drug->id
+      );
     }
     return redirect()->back()->with('success', 'Drugs Requested!');
   }

@@ -340,7 +340,10 @@ class BillingController extends Controller
         'fresh', 
         $request_ref, 
         1,
-        $request->amount // Pass custom amount
+        $request->amount, // Pass custom amount
+        'misc_billing',
+        'Miscellaneous charge added via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname,
+        0 // No service ID for misc charges
       );
 
       return redirect()->back()->with('success', 'Miscellaneous charge added successfully!');
