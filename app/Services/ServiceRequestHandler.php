@@ -43,6 +43,8 @@ class ServiceRequestHandler
   ): ?Billing {
     $qty = $qty ?? 1;
 
+    dd($serviceId);
+
     // Handle miscellaneous charges (no service model lookup needed)
     if ($serviceCategory === 'miscellaneous') {
       if ($customAmount === null) {
