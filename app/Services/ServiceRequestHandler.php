@@ -38,7 +38,8 @@ class ServiceRequestHandler
     ?int $qty = null,
     ?float $customAmount = null,
     ?string $createdFrom = 'manual',
-    ?string $notes = null
+    ?string $notes = null,
+    ?int $serviceId = null
   ): ?Billing {
     $qty = $qty ?? 1;
 
@@ -59,7 +60,7 @@ class ServiceRequestHandler
 
       return Billing::create([
         'service'     => 'Miscellaneous:' . $serviceName,
-        'service_id'  => 0, // No service ID for misc charges
+        'service_id'  => $serviceId ?? 0, // Use provided service ID or 0 for misc charges
         'user_id'     => $patientId,
         'quantity'    => $qty,
         'amount'      => $customAmount * $qty,
@@ -74,20 +75,36 @@ class ServiceRequestHandler
       ]);
     }
 
-    // Resolve model class efficiently
-    $modelClass = $this->resolveServiceModel($serviceName);
+    // If service ID is provided, use it directly for more accurate lookup
+    if ($serviceId) {
+      $modelClass = $this->resolveServiceModelByCategory($serviceCategory);
+      if (!$modelClass) {
+        return null; // Service category not supported
+      }
 
-    if (!$modelClass) {
-      return null; // Service not found in any registered model
-    }
+      // Fetch service by ID (more reliable than name)
+      $service = $modelClass::select($this->getRequiredColumns($modelClass))
+        ->where('id', $serviceId)
+        ->first();
 
-    // Fetch service with only needed columns
-    $service = $modelClass::select($this->getRequiredColumns($modelClass))
-      ->where('name', $serviceName)
-      ->first();
+      if (!$service) {
+        return null; // Service not found
+      }
+    } else {
+      // Fallback to name-based lookup (legacy support)
+      $modelClass = $this->resolveServiceModel($serviceName);
+      if (!$modelClass) {
+        return null; // Service not found in any registered model
+      }
 
-    if (!$service) {
-      return null;
+      // Fetch service with only needed columns
+      $service = $modelClass::select($this->getRequiredColumns($modelClass))
+        ->where('name', $serviceName)
+        ->first();
+
+      if (!$service) {
+        return null;
+      }
     }
 
     $amount = $this->calculateAmount($modelClass, $kind, $service, $qty);
@@ -175,6 +192,26 @@ class ServiceRequestHandler
 
       return null;
     });
+  }
+
+  /**
+   * Resolve model class by service category (more reliable than name lookup).
+   */
+  protected function resolveServiceModelByCategory(string $serviceCategory): ?string
+  {
+    $categoryModelMap = [
+      'consultations' => \App\Models\Speciality::class,
+      'laboratory'    => \App\Models\Laboratory::class,
+      'radiology'     => \App\Models\Radiology::class,
+      'pharmacy'      => \App\Models\Drug::class,
+      'procedure'     => \App\Models\Procedure::class,
+      'ophthicals'    => \App\Models\Antenatal::class,
+      'opticals'      => \App\Models\Antenatal::class,
+      'bed'           => \App\Models\Bed::class,
+      'antenatal'     => \App\Models\Antenatal::class,
+    ];
+
+    return $categoryModelMap[$serviceCategory] ?? null;
   }
 
   /**
