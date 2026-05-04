@@ -44,6 +44,7 @@ class RadiologyRequestController extends Controller
     ]);
 
 
+    dd($request->all());
 
     $request_ref = str()->upper(str()->random(6));
     $serviceHandler = new ServiceRequestHandler();
