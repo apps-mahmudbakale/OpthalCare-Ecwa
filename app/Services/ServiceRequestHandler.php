@@ -88,7 +88,6 @@ class ServiceRequestHandler
         ->where('id', $serviceId)
         ->first();
 
-          dd($service);
 
       if (!$service) {
         return null; // Service not found
