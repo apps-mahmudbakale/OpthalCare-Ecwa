@@ -43,7 +43,6 @@ class ServiceRequestHandler
   ): ?Billing {
     $qty = $qty ?? 1;
 
-    dd($serviceId);
 
     // Handle miscellaneous charges (no service model lookup needed)
     if ($serviceCategory === 'miscellaneous') {
@@ -88,6 +87,8 @@ class ServiceRequestHandler
       $service = $modelClass::select($this->getRequiredColumns($modelClass))
         ->where('id', $serviceId)
         ->first();
+
+          dd($service);
 
       if (!$service) {
         return null; // Service not found
