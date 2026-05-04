@@ -130,13 +130,8 @@ class AdmissionController extends Controller
               $drug->name,
               $request->patient_id,
               'Pharmacy',
-              'fresh',
               $request_ref,
-              $request->drugs['qty'][$index],
-              null,
-              'admission_billing',
-              'Drug requested during admission by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname,
-              $drug->id
+              $request->drugs['qty'][$index]
             );
           }
         }
@@ -161,13 +156,8 @@ class AdmissionController extends Controller
               $lab->name,
               $request->patient_id,
               'Laboratory',
-              'fresh',
               $request_ref,
-              1,
-              null,
-              'admission_billing',
-              'Lab test requested during admission by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname,
-              $lab->id
+              1
             );
           }
         }

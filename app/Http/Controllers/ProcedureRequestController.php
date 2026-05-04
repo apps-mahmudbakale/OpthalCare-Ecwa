@@ -74,11 +74,7 @@ class ProcedureRequestController extends Controller
                 'Procedure',
                 'fresh',
                 $request_ref,
-                1,
-                null,
-                'procedure_request',
-                'Procedure requested via procedure interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname,
-                $procedure->id
+                1
             );
         }
 

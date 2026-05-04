@@ -81,18 +81,7 @@ class LabRequestController extends Controller
       $lab = Laboratory::find($testId); // fix: find by single $testId, not full array
       if ($lab) { // always good to check if lab exists
         $serviceHandler = new ServiceRequestHandler();
-        $billingRecord = $serviceHandler->handleServiceRequest(
-          $lab->name, 
-          $request->patient_id, 
-          'Laboratory', 
-          'fresh', 
-          $request_ref, 
-          1,
-          null,
-          'lab_request',
-          'Lab test requested via laboratory interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname,
-          $lab->id
-        );
+        $billingRecord = $serviceHandler->handleServiceRequest($lab->name, $request->patient_id, 'Laboratory', 'fresh', $request_ref, 1);
       }
     }
 

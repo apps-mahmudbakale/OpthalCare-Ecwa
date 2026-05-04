@@ -60,18 +60,7 @@ class CashPointController extends Controller
       if (method_exists($billserviceInstance, $request->service_category)) {
         $result = $billserviceInstance->{$request->service_category."Services"}($request->service_id);
 
-        $billingRecord = $serviceHandler->handleServiceRequest(
-          $result->name, 
-          $request->patient_id, 
-          ucfirst($request->service_category), 
-          'fresh', 
-          $request_ref, 
-          1,
-          null,
-          'cashpoint_billing',
-          'Service requested via cashpoint by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname,
-          $result->id
-        );
+        $billingRecord = $serviceHandler->handleServiceRequest($result->name, $request->patient_id, ucfirst($request->service_category), 'fresh', $request_ref, 1);
         return  view('billing.new-enroll-pay', compact('billingRecord'));
 
       } else {

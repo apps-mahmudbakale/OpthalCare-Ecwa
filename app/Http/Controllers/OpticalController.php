@@ -59,11 +59,7 @@ class OpticalController extends Controller
                             'Opticals',
                             'fresh',
                             $request_ref,
-                            1,
-                            null,
-                            'optical_request',
-                            'Optical service requested via optical interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname,
-                            $serviceItem->id
+                            1
                         );
                     }
                 }

@@ -117,8 +117,7 @@ class BillingController extends Controller
         1,
         null,
         'manual_billing',
-        'Service requested via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname,
-        $consult->id
+        'Service requested via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname
       );
 
     } elseif ($request->service_category == 'laboratory') {
@@ -145,8 +144,7 @@ class BillingController extends Controller
         1,
         null,
         'manual_billing',
-        'Lab test requested via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname,
-        $lab->id
+        'Lab test requested via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname
       );
       
     } elseif ($request->service_category == 'pharmacy') {
@@ -173,8 +171,7 @@ class BillingController extends Controller
         1,
         null,
         'manual_billing',
-        'Drug requested via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname,
-        $drug->id
+        'Drug requested via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname
       );
       
     }elseif ($request->service_category == 'ophthicals') {
@@ -201,8 +198,7 @@ class BillingController extends Controller
         1,
         null,
         'manual_billing',
-        'Optical service requested via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname,
-        $optic->id
+        'Optical service requested via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname
       );
       
     }elseif ($request->service_category == 'radiology'){
@@ -229,8 +225,7 @@ class BillingController extends Controller
         1,
         null,
         'manual_billing',
-        'Radiology service requested via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname,
-        $imaging->id
+        'Radiology service requested via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname
       );
     }
     return redirect()->back()->with('success', 'Bill Added Successfully!');
@@ -340,10 +335,7 @@ class BillingController extends Controller
         'fresh', 
         $request_ref, 
         1,
-        $request->amount, // Pass custom amount
-        'misc_billing',
-        'Miscellaneous charge added via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname,
-        0 // No service ID for misc charges
+        $request->amount // Pass custom amount
       );
 
       return redirect()->back()->with('success', 'Miscellaneous charge added successfully!');
