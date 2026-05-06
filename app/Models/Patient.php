@@ -132,5 +132,15 @@ class Patient extends Model
       ->first();
   }
 
+  public function deliveries()
+  {
+    return $this->hasMany(Delivery::class);
+  }
+
+  public function antenatalRecords()
+  {
+    return $this->hasMany(AntenatalRecord::class);
+  }
+
 
 }

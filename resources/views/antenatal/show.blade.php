@@ -192,6 +192,13 @@
                             <i class="tf-icons ti ti-activity-heartbeat ti-xs me-1"></i> Vitals
                         </button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#navs-pills-justified-delivery" aria-controls="navs-pills-justified-delivery"
+                            aria-selected="false" tabindex="-1">
+                            <i class="tf-icons ti ti-baby-carriage ti-xs me-1"></i> Delivery
+                        </button>
+                    </li>
                 </ul>
                 <button class="nav-scroller-arrow nav-scroller-arrow-right btn btn-sm btn-icon btn-light"
                     style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); z-index: 10;">
@@ -258,6 +265,13 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Delivery Tab -->
+                    <div class="tab-pane fade" id="navs-pills-justified-delivery" role="tabpanel">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#new-delivery-modal"
+                            class="btn btn-primary mb-2 float-end">New Delivery Record</a>
+                        <livewire:delivery-records :patientId="$patient->id" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -296,4 +310,5 @@
     @include('_partials._modals.modal-new-lab', ['patientId' => $patient->id, 'patient' => $patient])
     @include('_partials._modals.modal-new-imaging', ['patientId' => $patient->id, 'patient' => $patient])
     @include('_partials._modals.modal-new-drugs', ['patientId' => $patient->id, 'patient' => $patient])
+    @include('_partials._modals.modal-new-delivery', ['patientId' => $patient->id, 'patient' => $patient, 'record' => $record])
 @endsection

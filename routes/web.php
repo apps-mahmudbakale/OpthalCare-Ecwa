@@ -256,6 +256,11 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::post('antenatal-records', [AntenatalRecordController::class, 'store'])->name('antenatal-records.store');
   Route::get('antenatal-records/{antenatalRecord}', [AntenatalRecordController::class, 'show'])->name('antenatal-records.show');
   Route::delete('antenatal-records/{antenatalRecord}', [AntenatalRecordController::class, 'destroy'])->name('antenatal-records.destroy');
+  
+  // Delivery Records
+  Route::post('deliveries', [App\Http\Controllers\DeliveryController::class, 'store'])->name('deliveries.store');
+  Route::get('deliveries/{delivery}', [App\Http\Controllers\DeliveryController::class, 'show'])->name('deliveries.show');
+  Route::delete('deliveries/{delivery}', [App\Http\Controllers\DeliveryController::class, 'destroy'])->name('deliveries.destroy');
   Route::resource('specialities', SpecialityController::class);
   Route::resource('reports', ReportController::class);
   Route::get('report/general', [ReportController::class, 'generalReport'])->name('reports.general');

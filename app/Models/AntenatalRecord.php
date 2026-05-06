@@ -44,4 +44,9 @@ class AntenatalRecord extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function deliveries()
+    {
+        return $this->hasMany(Delivery::class);
+    }
 }
