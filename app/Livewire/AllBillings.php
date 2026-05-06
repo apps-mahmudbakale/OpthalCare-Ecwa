@@ -12,7 +12,9 @@ class AllBillings extends Base
 
   public function render()
   {
-    $query = Billing::query()->with(['patient.user', 'hmoPlan.hmo']);
+    $query = Billing::query()
+      ->with(['patient.user', 'hmoPlan.hmo'])
+      ->whereNull('plan_id'); // Only show self-pay bills (exclude HMO bills)
 
     // Apply status filter
     $status = request('status', 'unpaid');
@@ -22,13 +24,8 @@ class AllBillings extends Base
       $query->where('status', 0);
     }
 
-    // Apply payer filter
-    $payer = request('payer', 'all');
-    if ($payer === 'self') {
-      $query->whereNull('plan_id');
-    } elseif ($payer === 'hmo') {
-      $query->whereNotNull('plan_id');
-    }
+    // Remove payer filter since we're only showing self-pay bills
+    // The payer filter is no longer needed as HMO bills are excluded
 
     // Apply search
     $search = request('search');
@@ -87,13 +84,8 @@ class AllBillings extends Base
       $billings->appends($queryParams);
     }
 
-    // Calculate summary statistics
-    $summaryQuery = Billing::query();
-    if ($payer === 'self') {
-      $summaryQuery->whereNull('plan_id');
-    } elseif ($payer === 'hmo') {
-      $summaryQuery->whereNotNull('plan_id');
-    }
+    // Calculate summary statistics (only for self-pay bills)
+    $summaryQuery = Billing::query()->whereNull('plan_id');
 
     return view('livewire.all-billings', [
       'billings' => $billings,

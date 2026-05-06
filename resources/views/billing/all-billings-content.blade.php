@@ -37,24 +37,14 @@
           </select>
         </div>
 
-        <!-- Payer Filter -->
-        <div class="col-md-2">
-          <label class="form-label">Payer</label>
-          <select class="form-select" name="payer">
-            <option value="all" {{ request('payer', 'all') == 'all' ? 'selected' : '' }}>All</option>
-            <option value="self" {{ request('payer', 'all') == 'self' ? 'selected' : '' }}>Self Pay</option>
-            <option value="hmo" {{ request('payer', 'all') == 'hmo' ? 'selected' : '' }}>HMO</option>
-          </select>
-        </div>
-
         <!-- Date From -->
-        <div class="col-md-2">
+        <div class="col-md-3">
           <label class="form-label">Date From</label>
           <input type="date" class="form-control" name="date_from" value="{{ request('date_from') }}">
         </div>
 
         <!-- Date To -->
-        <div class="col-md-2">
+        <div class="col-md-3">
           <label class="form-label">Date To</label>
           <input type="date" class="form-control" name="date_to" value="{{ request('date_to') }}">
         </div>

@@ -79,7 +79,10 @@ class AntenatalRecordController extends Controller
     {
         $patient = Patient::findOrFail($antenatalRecord->patient_id);
         $wallet_balance = $patient->wallet ? $patient->wallet->balance : 0;
-        $outstanding_balance = Billing::where('user_id', $patient->id)->where('status', 0)->sum('amount');
+        $outstanding_balance = Billing::where('user_id', $patient->id)
+                                      ->where('status', 0)
+                                      ->whereNull('plan_id') // Exclude HMO bills
+                                      ->sum('amount');
 
         return view('antenatal.show', [
             'record'              => $antenatalRecord,

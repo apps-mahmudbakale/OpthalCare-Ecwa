@@ -91,7 +91,10 @@ class ProcedureRequestController extends Controller
 
         $patient = Patient::where('id', $procedureRequest->patient_id)->first();
         $wallet_balance = $patient->wallet ? $patient->wallet->balance : 0;
-        $outstanding_balance = Billing::where('user_id', $procedureRequest->patient_id)->where('status', 0)->sum('amount');
+        $outstanding_balance = Billing::where('user_id', $procedureRequest->patient_id)
+                                      ->where('status', 0)
+                                      ->whereNull('plan_id') // Exclude HMO bills
+                                      ->sum('amount');
         
         return view('procedure.show', [
             'procedureRequest' => $procedureRequest,

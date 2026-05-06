@@ -1,66 +1,41 @@
 <div>
-    <!-- Search and Filter Section -->
-    <div class="card mb-3">
-        <div class="card-body">
-            <div class="row g-3">
-                <!-- Search -->
-                <div class="col-md-4">
-                    <label class="form-label">Search</label>
-                    <input type="text" class="form-control" wire:model.debounce.500ms="search" 
-                           placeholder="Search by service or bill ref...">
-                </div>
-
-                <!-- Status Filter -->
-                <div class="col-md-2">
-                    <label class="form-label">Status</label>
-                    <select class="form-select" wire:model="statusFilter">
-                        <option value="all">All</option>
-                        <option value="paid">Paid</option>
-                        <option value="unpaid">Unpaid</option>
-                    </select>
-                </div>
-
-                <!-- Date From -->
-                <div class="col-md-2">
-                    <label class="form-label">Date From</label>
-                    <input type="date" class="form-control" wire:model="dateFrom">
-                </div>
-
-                <!-- Date To -->
-                <div class="col-md-2">
-                    <label class="form-label">Date To</label>
-                    <input type="date" class="form-control" wire:model="dateTo">
-                </div>
-
-                <!-- Clear Filters -->
-                <div class="col-md-2">
-                    <label class="form-label">&nbsp;</label>
-                    <button type="button" class="btn btn-outline-secondary w-100" wire:click="clearFilters">
-                        <i class="fa fa-times"></i> Clear
-                    </button>
-                </div>
+    @if(isset($isHmoPatient) && $isHmoPatient)
+        <!-- HMO Patient Message -->
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="ti ti-shield-check ti-lg text-info mb-3"></i>
+                <h5 class="text-info">HMO Patient</h5>
+                <p class="text-muted mb-0">
+                    This patient is covered by an HMO plan. All bills are handled through the HMO billing system.
+                </p>
+                <a href="{{ route('hmo.billing') }}" class="btn btn-info btn-sm mt-3">
+                    <i class="ti ti-external-link ti-xs me-1"></i>
+                    View HMO Billing
+                </a>
             </div>
+        </div>
+    @else
+        <!-- Regular Billing Content -->
+        <!-- Search and Filter Section -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row g-3">
+                    <!-- Search -->
+                    <div class="col-md-6">
+                        <label class="form-label">Search</label>
+                        <input type="text" class="form-control" wire:model.debounce.500ms="search" 
+                               placeholder="Search by service or bill ref...">
+                    </div>
 
-            <!-- Summary Cards -->
-            <div class="row mt-3">
-                <div class="col-md-4">
-                    <div class="alert alert-info mb-0">
-                        <strong>Total:</strong> ₦{{ number_format($totalAmount, 2) }}
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="alert alert-success mb-0">
-                        <strong>Paid:</strong> ₦{{ number_format($paidAmount, 2) }}
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="alert alert-warning mb-0">
-                        <strong>Unpaid:</strong> ₦{{ number_format($unpaidAmount, 2) }}
+                    <!-- Clear Filters -->
+                    <div class="col-md-6 d-flex align-items-end">
+                        <button type="button" class="btn btn-outline-secondary" wire:click="clearFilters">
+                            <i class="ti ti-x"></i> Clear
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
     <!-- Results Info -->
     <div class="d-flex justify-content-between align-items-center mb-2">
@@ -154,10 +129,11 @@
         </tbody>
     </table>
 
-    <!-- Pagination -->
-    <div class="mt-3">
-        {{ $billings->links() }}
-    </div>
+        <!-- Pagination -->
+        <div class="mt-3">
+            {{ $billings->links() }}
+        </div>
+    @endif
 </div>
 @include('_partials._modals.global-modal')
 <script>

@@ -55,6 +55,7 @@ class ServiceRequestHandler
       $patient = \App\Models\Patient::with('hmoPlan')->find($patientId);
       if ($patient && $patient->hmoPlan) {
         $plan_id = $patient->hmo_plan_id;
+        // For HMO patients, bill goes to HMO plan (not patient)
       }
 
       return Billing::create([
@@ -95,20 +96,13 @@ class ServiceRequestHandler
     $status  = 0;
     $plan_id = null;
 
-    // Fetch Patient to check HMO Plan mappings
+    // Fetch Patient to check HMO Plan
     $patient = \App\Models\Patient::with('hmoPlan')->find($patientId);
 
     if ($patient && $patient->hmoPlan) {
         $plan_id = $patient->hmo_plan_id;
-
-        $hmoService = \App\Models\HmoService::where('plan_id', $plan_id)
-            ->where('type', $serviceCategory)
-            ->where('service_id', $service->id)
-            ->first();
-
-        if ($hmoService) {
-            $amount = $hmoService->price * $qty;
-        }
+        // For HMO patients, bill goes to HMO plan (not patient)
+        // Keep the normal service price but mark it for HMO billing
     }
 
     // ── Antenatal package coverage check ──────────────────────────────────

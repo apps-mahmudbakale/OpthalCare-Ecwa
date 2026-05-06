@@ -22,7 +22,9 @@ class BillingController extends Controller
    */
   public function index()
   {
-    $query = Billing::query()->with(['patient.user', 'hmoPlan.hmo', 'createdBy']);
+    $query = Billing::query()
+      ->with(['patient.user', 'hmoPlan.hmo', 'createdBy'])
+      ->whereNull('plan_id'); // Only show self-pay bills (exclude HMO bills)
 
     // Apply status filter
     $status = request('status', 'unpaid');
@@ -32,13 +34,8 @@ class BillingController extends Controller
       $query->where('status', 0);
     }
 
-    // Apply payer filter
-    $payer = request('payer', 'all');
-    if ($payer === 'self') {
-      $query->whereNull('plan_id');
-    } elseif ($payer === 'hmo') {
-      $query->whereNotNull('plan_id');
-    }
+    // Remove payer filter since we're only showing self-pay bills
+    // The payer filter is no longer needed as HMO bills are excluded
 
     // Apply search
     $search = request('search');
@@ -74,13 +71,8 @@ class BillingController extends Controller
     // Group the paginated collection by bill_ref
     $billings = $paginated->getCollection()->groupBy('bill_ref');
 
-    // Calculate summary statistics
-    $summaryQuery = Billing::query();
-    if ($payer === 'self') {
-      $summaryQuery->whereNull('plan_id');
-    } elseif ($payer === 'hmo') {
-      $summaryQuery->whereNotNull('plan_id');
-    }
+    // Calculate summary statistics (only for self-pay bills)
+    $summaryQuery = Billing::query()->whereNull('plan_id');
 
     $totalAmount = (clone $summaryQuery)->sum('amount');
     $paidAmount = (clone $summaryQuery)->where('status', 1)->sum('amount');

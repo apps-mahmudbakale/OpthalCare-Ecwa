@@ -206,7 +206,10 @@ class AdmissionController extends Controller
   {
     $patient = Patient::where('id', $admission->patient_id)->first();
     $wallet_balance = $patient->wallet ? $patient->wallet->balance : 0;
-    $outstanding_balance = Billing::where('user_id', $admission->patient_id)->where('status', 0)->sum('amount');
+    $outstanding_balance = Billing::where('user_id', $admission->patient_id)
+                                  ->where('status', 0)
+                                  ->whereNull('plan_id') // Exclude HMO bills
+                                  ->sum('amount');
 
     $progressNotes = \App\Models\ProgressNote::with('user')
         ->where('admission_id', $admission->id)->latest()->paginate(10, ['*'], 'progress_page');

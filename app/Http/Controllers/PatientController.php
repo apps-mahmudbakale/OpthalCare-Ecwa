@@ -250,7 +250,10 @@ class PatientController extends Controller
   public function show(BloodPressureChart $chart, PulseChart $pulse, TemperatureChart $temperature, WeightChart $weight, Patient $patient)
   {
     $checkInService = new CheckInService();
-    $outstanding_balance = Billing::where('user_id', $patient->id)->where('status', 0)->sum('amount');
+    $outstanding_balance = Billing::where('user_id', $patient->id)
+                                  ->where('status', 0)
+                                  ->whereNull('plan_id') // Exclude HMO bills
+                                  ->sum('amount');
     $wallet_balance = $patient->wallet ? $patient->wallet->balance : 0;
     $isCheckedIn = $patient->isCheckedInToday();
 
