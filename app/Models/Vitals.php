@@ -14,4 +14,9 @@ class Vitals extends Model
     'parameter',
     'value',
   ];
+
+  public function patient()
+  {
+    return $this->belongsTo(Patient::class);
+  }
 }

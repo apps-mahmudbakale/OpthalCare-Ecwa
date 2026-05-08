@@ -16,6 +16,7 @@ class AntenatalRecord extends Model
         'treatment_plan',
         'note',
         'visit_date',
+        'visit_type',
         'gravida',
         'parity',
         'last_menstrual_period',
@@ -23,6 +24,17 @@ class AntenatalRecord extends Model
         'alive',
         'miscarriage',
         'enrolment_package_id',
+        // Follow-up fields
+        'height_of_fundus',
+        'presentation_and_position',
+        'fetal_heart',
+        'urine',
+        'blood_pressure',
+        'weight',
+        'edema',
+        'followup_complaint',
+        'followup_treatment',
+        'followup_notes',
     ];
 
     protected $casts = [
@@ -48,5 +60,38 @@ class AntenatalRecord extends Model
     public function deliveries()
     {
         return $this->hasMany(Delivery::class);
+    }
+
+    /**
+     * Check if the patient has any new antenatal visits
+     */
+    public static function patientHasNewVisit($patientId)
+    {
+        return self::where('patient_id', $patientId)
+            ->where('visit_type', 'new')
+            ->exists();
+    }
+
+    /**
+     * Get the latest antenatal record for a patient
+     */
+    public static function getLatestForPatient($patientId)
+    {
+        return self::where('patient_id', $patientId)
+            ->orderBy('visit_date', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->first();
+    }
+
+    /**
+     * Get follow-up records for a patient
+     */
+    public static function getFollowupsForPatient($patientId)
+    {
+        return self::where('patient_id', $patientId)
+            ->where('visit_type', 'followup')
+            ->orderBy('visit_date', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 }

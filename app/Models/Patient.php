@@ -142,5 +142,10 @@ class Patient extends Model
     return $this->hasMany(AntenatalRecord::class);
   }
 
+  public function vitals()
+  {
+    return $this->hasMany(Vitals::class);
+  }
+
 
 }

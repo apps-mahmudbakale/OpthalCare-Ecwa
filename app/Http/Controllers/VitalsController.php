@@ -37,12 +37,21 @@ class VitalsController extends Controller
     // Save the form data to the database
     foreach ($parameters as $key => $parameter) {
       $value = $values[$key] ?? null; // Get th
-      Vitals::create([
-        'parameter' => $parameter,
-        'value' => $value,
-        'patient_id' => $patient
-      ]);
+      if (!empty($parameter) && !empty($value)) { // Only save if both parameter and value are provided
+        Vitals::create([
+          'parameter' => $parameter,
+          'value' => $value,
+          'patient_id' => $patient
+        ]);
+      }
     }
+
+    // Check if request came from antenatal context
+    $referer = $request->header('referer');
+    if ($referer && strpos($referer, 'antenatal-records') !== false) {
+      return redirect()->back()->with('success', 'Vital signs recorded successfully!');
+    }
+
     return redirect()->route('app.patients.show', $patient)->with('success', 'Vital Recorded!');
   }
 

@@ -147,6 +147,84 @@
         </div>
     </div>
 
+    @if($record->visit_type === 'followup')
+    <!-- Follow-up Information Cards -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="ti ti-info-circle me-2"></i>
+                <strong>Follow-up Visit</strong> - This is a follow-up antenatal visit
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center">
+                    <i class="ti ti-ruler me-2 text-primary"></i>
+                    <h5 class="card-title mb-0">Physical Examination</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm mb-0">
+                        <tr><td class="text-muted">Fundus Height</td><td>{{ $record->height_of_fundus ?? '—' }}</td></tr>
+                        <tr><td class="text-muted">Presentation</td><td>{{ $record->presentation_and_position ?? '—' }}</td></tr>
+                        <tr><td class="text-muted">Fetal Heart</td><td>{{ $record->fetal_heart ?? '—' }}</td></tr>
+                        <tr><td class="text-muted">Urine</td><td>{{ $record->urine ?? '—' }}</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center">
+                    <i class="ti ti-activity me-2 text-success"></i>
+                    <h5 class="card-title mb-0">Vital Signs</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm mb-0">
+                        <tr><td class="text-muted">Blood Pressure</td><td>{{ $record->blood_pressure ?? '—' }}</td></tr>
+                        <tr><td class="text-muted">Weight</td><td>{{ $record->weight ? $record->weight . ' kg' : '—' }}</td></tr>
+                        <tr><td class="text-muted">Edema</td><td>{{ $record->edema ?? '—' }}</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center">
+                    <i class="ti ti-stethoscope me-2 text-primary"></i>
+                    <h5 class="card-title mb-0">Follow-up Complaint</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">{{ $record->followup_complaint ?? 'No complaint recorded.' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center">
+                    <i class="ti ti-clipboard-list me-2 text-success"></i>
+                    <h5 class="card-title mb-0">Follow-up Treatment</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">{{ $record->followup_treatment ?? 'No treatment recorded.' }}</p>
+                </div>
+            </div>
+        </div>
+        @if($record->followup_notes)
+        <div class="col-md-12 mt-3">
+            <div class="card">
+                <div class="card-header d-flex align-items-center">
+                    <i class="ti ti-notebook me-2 text-info"></i>
+                    <h5 class="card-title mb-0">Follow-up Notes</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">{{ $record->followup_notes }}</p>
+                </div>
+            </div>
+        </div>
+        @endif
+    </div>
+    @endif
+
     <!-- Tabs -->
     <div class="row">
         <div class="col-md-12">
@@ -162,6 +240,13 @@
                             data-bs-target="#navs-pills-justified-all-visits" aria-controls="navs-pills-justified-all-visits"
                             aria-selected="true">
                             <i class="tf-icons ti ti-list ti-xs me-1"></i> All Antenatal Visits
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#navs-pills-justified-followup" aria-controls="navs-pills-justified-followup"
+                            aria-selected="false" tabindex="-1">
+                            <i class="tf-icons ti ti-calendar-check ti-xs me-1"></i> Follow Up
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -214,6 +299,13 @@
                         <livewire:antenatal-records :patientId="$patient->id" />
                     </div>
 
+                    <!-- Follow Up Tab -->
+                    <div class="tab-pane fade" id="navs-pills-justified-followup" role="tabpanel">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#new-followup-modal"
+                            class="btn btn-primary mb-2 float-end">New Follow Up</a>
+                        <livewire:antenatal-followups :patientId="$patient->id" />
+                    </div>
+
                     <!-- Lab Requests Tab -->
                     <div class="tab-pane fade" id="navs-pills-justified-lab" role="tabpanel">
                         <a href="" data-bs-toggle="modal" data-bs-target="#new-lab-modal"
@@ -237,30 +329,55 @@
 
                     <!-- Vitals Tab -->
                     <div class="tab-pane fade" id="navs-pills-justified-vitals" role="tabpanel">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-body">{!! $blood_pressure->container() !!}</div>
-                                    <script src="{{ $blood_pressure->cdn() }}"></script>
-                                    {{ $blood_pressure->script() }}
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#new-vitals-modal"
+                            class="btn btn-primary mb-2 float-end">New Entry</a>
+                        
+                        <!-- Vitals History -->
+                        <div class="mb-4">
+                            <h5 class="mb-3">Vital Signs History</h5>
+                            <livewire:antenatal-vitals :patientId="$patient->id" />
+                        </div>
+
+                        <!-- Charts -->
+                        <div class="mb-4">
+                            <h5 class="mb-3">Vital Signs Charts</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="card-title mb-0">Blood Pressure Trend</h6>
+                                        </div>
+                                        <div class="card-body">{!! $blood_pressure->container() !!}</div>
+                                        <script src="{{ $blood_pressure->cdn() }}"></script>
+                                        {{ $blood_pressure->script() }}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-body">{!! $pulse->container() !!}</div>
-                                    {{ $pulse->script() }}
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="card-title mb-0">Pulse Trend</h6>
+                                        </div>
+                                        <div class="card-body">{!! $pulse->container() !!}</div>
+                                        {{ $pulse->script() }}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-body">{!! $temperature->container() !!}</div>
-                                    {{ $temperature->script() }}
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="card-title mb-0">Temperature Trend</h6>
+                                        </div>
+                                        <div class="card-body">{!! $temperature->container() !!}</div>
+                                        {{ $temperature->script() }}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-body">{!! $weight->container() !!}</div>
-                                    {{ $weight->script() }}
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="card-title mb-0">Weight Trend</h6>
+                                        </div>
+                                        <div class="card-body">{!! $weight->container() !!}</div>
+                                        {{ $weight->script() }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -311,4 +428,6 @@
     @include('_partials._modals.modal-new-imaging', ['patientId' => $patient->id, 'patient' => $patient])
     @include('_partials._modals.modal-new-drugs', ['patientId' => $patient->id, 'patient' => $patient])
     @include('_partials._modals.modal-new-delivery', ['patientId' => $patient->id, 'patient' => $patient, 'record' => $record])
+    @include('_partials._modals.modal-new-antenatal-vitals', ['patient' => $patient, 'record' => $record])
+    @include('_partials._modals.modal-new-followup', ['patientId' => $patient->id, 'patient' => $patient])
 @endsection

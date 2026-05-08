@@ -96,6 +96,7 @@
                             @else
                                 <a class="dropdown-item" href="{{ route('app.patient.checkIn', $patient->id) }}">Check In</a>
                             @endif
+                            <a class="dropdown-item text-danger" href="javascript:void(0);" onclick="confirmDeletePatient({{ $patient->id }})">Delete Profile</a>
                         </div>
                     </div>
                 </div>
@@ -160,6 +161,153 @@ function requestClearanceCode(patientId) {
             form.submit();
         }
     });
+}
+
+function confirmDeletePatient(patientId) {
+    // First check if patient has records
+    fetch(`{{ url('/app/patients') }}/${patientId}`, {
+        method: 'DELETE',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.has_records) {
+            // Patient has records, show options
+            const recordsCount = data.records_count;
+            let recordsList = '';
+            
+            Object.keys(recordsCount).forEach(key => {
+                if (recordsCount[key] > 0) {
+                    const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    recordsList += `• ${label}: ${recordsCount[key]}\n`;
+                }
+            });
+
+            Swal.fire({
+                title: 'Patient Has Medical Records',
+                html: `
+                    <div class="text-left">
+                        <p>This patient has the following medical records:</p>
+                        <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                            <pre style="margin: 0; font-size: 12px;">${recordsList}</pre>
+                        </div>
+                        <p class="text-danger"><strong>Warning:</strong> Choosing "Delete All" will permanently remove the patient and ALL their medical records. This action cannot be undone.</p>
+                    </div>
+                `,
+                icon: 'warning',
+                showCancelButton: true,
+                showDenyButton: true,
+                confirmButtonText: 'Delete All Records',
+                denyButtonText: 'Keep Records (Cancel)',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#dc3545',
+                denyButtonColor: '#6c757d',
+                cancelButtonColor: '#6c757d',
+                width: 600
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Force delete with all records
+                    performDelete(patientId, true);
+                }
+            });
+        } else if (data.success) {
+            // No records, patient deleted successfully
+            Swal.fire({
+                icon: 'success',
+                title: 'Deleted!',
+                text: data.message,
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => {
+                location.reload();
+            });
+        } else {
+            // Error occurred
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: data.message
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'An error occurred while checking patient records.'
+        });
+    });
+}
+
+function performDelete(patientId, forceDelete = false) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `{{ url('/app/patients') }}/${patientId}`;
+    
+    const csrfToken = document.createElement('input');
+    csrfToken.type = 'hidden';
+    csrfToken.name = '_token';
+    csrfToken.value = '{{ csrf_token() }}';
+    form.appendChild(csrfToken);
+    
+    const methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = '_method';
+    methodInput.value = 'DELETE';
+    form.appendChild(methodInput);
+    
+    if (forceDelete) {
+        const forceInput = document.createElement('input');
+        forceInput.type = 'hidden';
+        forceInput.name = 'force_delete';
+        forceInput.value = '1';
+        form.appendChild(forceInput);
+    }
+    
+    document.body.appendChild(form);
+    
+    fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Deleted!',
+                text: data.message,
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => {
+                location.reload();
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: data.message
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'An error occurred while deleting the patient.'
+        });
+    });
+    
+    document.body.removeChild(form);
 }
 
 document.addEventListener('click', function(event) {

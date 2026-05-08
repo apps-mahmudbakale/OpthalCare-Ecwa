@@ -66,7 +66,7 @@
                       Check In
                     </a>
                     @endif
-                    <a class="dropdown-item text-danger" href="javascript:void(0);">Delete Profile</a>
+                    <a class="dropdown-item text-danger" href="javascript:void(0);" wire:click="confirmDelete({{ $patient->id }})">Delete Profile</a>
                   </div>
                 </div>
               </div>
@@ -253,9 +253,94 @@
   });
 </script>
 
+<script>
+  // Handle delete confirmation
+  window.addEventListener('confirm-delete', event => {
+    Swal.fire({
+      title: event.detail.title,
+      text: event.detail.text,
+      icon: event.detail.type,
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: event.detail.confirmButtonText,
+      cancelButtonText: event.detail.cancelButtonText
+    }).then((result) => {
+      if (result.isConfirmed) {
+        @this.call('delete');
+      }
+    });
+  });
+
+  // Handle delete confirmation with records
+  window.addEventListener('confirm-delete-with-records', event => {
+    const recordsCount = event.detail.recordsCount;
+    let recordsList = '';
+    
+    Object.keys(recordsCount).forEach(key => {
+      if (recordsCount[key] > 0) {
+        const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        recordsList += `• ${label}: ${recordsCount[key]}\n`;
+      }
+    });
+
+    Swal.fire({
+      title: 'Patient Has Medical Records',
+      html: `
+        <div class="text-left">
+          <p><strong>${event.detail.patientName}</strong> has the following medical records:</p>
+          <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">
+            <pre style="margin: 0; font-size: 12px;">${recordsList}</pre>
+          </div>
+          <p class="text-danger"><strong>Warning:</strong> Choosing "Delete All" will permanently remove the patient and ALL their medical records. This action cannot be undone.</p>
+        </div>
+      `,
+      icon: 'warning',
+      showCancelButton: true,
+      showDenyButton: true,
+      confirmButtonText: 'Delete All Records',
+      denyButtonText: 'Keep Records (Cancel)',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#dc3545',
+      denyButtonColor: '#6c757d',
+      cancelButtonColor: '#6c757d',
+      customClass: {
+        popup: 'swal-wide'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Force delete with all records
+        @this.call('forceDeletePatient', event.detail.patientId);
+      } else if (result.isDenied) {
+        // User chose to keep records, do nothing
+        return;
+      }
+    });
+  });
+
+  // Handle alerts
+  window.addEventListener('alert', event => {
+    Swal.fire({
+      icon: event.detail.type,
+      title: event.detail.type === 'success' ? 'Success!' : 'Error!',
+      text: event.detail.message,
+      timer: 3000,
+      showConfirmButton: false
+    });
+  });
+</script>
+
 <style>
   .custom-dropdown {
     max-height: 200px; /* Limit dropdown height */
     overflow-y: auto; /* Enable scroll */
+  }
+  
+  .swal-wide {
+    width: 600px !important;
+  }
+  
+  .swal-wide .swal2-html-container {
+    text-align: left !important;
   }
 </style>

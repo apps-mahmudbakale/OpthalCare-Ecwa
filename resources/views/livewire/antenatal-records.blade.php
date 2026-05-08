@@ -4,6 +4,7 @@
             <thead>
                 <tr>
                     <th>Visit Date</th>
+                    <th>Visit Type</th>
                     <th>Recorded By</th>
                     <th>Complaint</th>
                     <th>Treatment Plan</th>
@@ -15,6 +16,11 @@
                 @forelse($records as $record)
                 <tr>
                     <td>{{ $record->visit_date ? $record->visit_date->format('M d, Y') : $record->created_at->format('M d, Y') }}</td>
+                    <td>
+                        <span class="badge bg-{{ $record->visit_type === 'followup' ? 'info' : 'primary' }}">
+                            {{ $record->visit_type === 'followup' ? 'Follow Up' : 'New Visit' }}
+                        </span>
+                    </td>
                     <td>{{ $record->user->firstname ?? 'N/A' }} {{ $record->user->lastname ?? '' }}</td>
                     <td class="text-wrap" style="max-width: 200px;">{{ $record->complaint ?? '—' }}</td>
                     <td class="text-wrap" style="max-width: 200px;">{{ $record->treatment_plan ?? '—' }}</td>
@@ -43,7 +49,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="text-center">No antenatal records found.</td>
+                    <td colspan="7" class="text-center">No antenatal records found.</td>
                 </tr>
                 @endforelse
             </tbody>
@@ -65,6 +71,7 @@
                 <form method="POST" action="{{ route('app.antenatal-records.store') }}">
                     @csrf
                     <input type="hidden" name="patient_id" value="{{ $patientId }}">
+                    <input type="hidden" name="visit_type" value="new">
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
