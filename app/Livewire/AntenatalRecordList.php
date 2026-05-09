@@ -11,7 +11,7 @@ class AntenatalRecordList extends Component
     use WithPagination;
 
     public $search = '';
-    public $perPage = 10;
+    public $perPage = 25;
 
     public function updatingSearch()
     {
@@ -22,7 +22,8 @@ class AntenatalRecordList extends Component
     {
         $query = AntenatalRecord::query()
             ->with(['patient.user', 'user'])
-            ->latest();
+            ->orderBy('visit_date', 'desc')
+            ->orderBy('created_at', 'desc');
 
         if ($this->search) {
             $query->whereHas('patient.user', function ($q) {

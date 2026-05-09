@@ -2,6 +2,9 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Antenatal Records</h5>
         <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary" wire:click="$refresh">
+                <i class="ti ti-refresh"></i> Refresh
+            </button>
             <input type="text" wire:model="search" class="form-control form-control-sm" placeholder="Search patient..." style="width: 200px;">
         </div>
     </div>
@@ -11,6 +14,7 @@
                 <tr>
                     <th>Date</th>
                     <th>Patient</th>
+                    <th>Visit Type</th>
                     <th>Complaint</th>
                     <th>Treatment Plan</th>
                     <th>Recorded By</th>
@@ -22,8 +26,13 @@
                 <tr>
                     <td>{{ $record->visit_date ? $record->visit_date->format('M d, Y') : $record->created_at->format('M d, Y') }}</td>
                     <td>{{ $record->patient->user->firstname ?? 'N/A' }} {{ $record->patient->user->lastname ?? '' }}</td>
-                    <td class="text-wrap" style="max-width: 200px;">{{ Str::limit($record->complaint ?? '—', 50) }}</td>
-                    <td class="text-wrap" style="max-width: 200px;">{{ Str::limit($record->treatment_plan ?? '—', 50) }}</td>
+                    <td>
+                        <span class="badge bg-{{ $record->visit_type === 'followup' ? 'info' : 'primary' }}">
+                            {{ $record->visit_type === 'followup' ? 'Follow Up' : 'New Visit' }}
+                        </span>
+                    </td>
+                    <td class="text-wrap" style="max-width: 200px;">{{ strlen($record->complaint ?? '') > 50 ? substr($record->complaint ?? '—', 0, 50) . '...' : ($record->complaint ?? '—') }}</td>
+                    <td class="text-wrap" style="max-width: 200px;">{{ strlen($record->treatment_plan ?? '') > 50 ? substr($record->treatment_plan ?? '—', 0, 50) . '...' : ($record->treatment_plan ?? '—') }}</td>
                     <td>{{ $record->user->firstname ?? 'N/A' }} {{ $record->user->lastname ?? '' }}</td>
                     <td>
                         <div class="btn-group">
@@ -45,7 +54,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="text-center">No antenatal records found.</td>
+                    <td colspan="7" class="text-center">No antenatal records found.</td>
                 </tr>
                 @endforelse
             </tbody>

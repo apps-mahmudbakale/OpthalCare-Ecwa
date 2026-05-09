@@ -16,6 +16,25 @@
 @section('content')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="fw-bold py-3 mb-0"><span class="text-muted fw-light">Antenatal /</span> Records</h4>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#enroll-antenatal-modal">
@@ -36,6 +55,7 @@
                 </div>
                 <form method="POST" action="{{ route('app.antenatal-records.store') }}">
                     @csrf
+                    <input type="hidden" name="visit_type" value="new">
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -123,6 +143,15 @@
             $('.flatpickr').flatpickr({
                 dateFormat: 'Y-m-d'
             });
+
+            // Check for success message and close modal
+            @if(session('success'))
+                $('#enroll-antenatal-modal').modal('hide');
+                // Refresh the page to show the new record
+                setTimeout(function() {
+                    window.location.reload();
+                }, 1000);
+            @endif
         });
     </script>
 @endsection

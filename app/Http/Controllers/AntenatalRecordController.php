@@ -108,6 +108,12 @@ class AntenatalRecordController extends Controller
         }
 
         $visitType = $request->visit_type === 'followup' ? 'follow-up' : 'antenatal';
+        
+        // If enrolling from the antenatal index page, redirect there specifically
+        if ($request->visit_type === 'new' && !$request->has('from_patient_profile')) {
+            return redirect()->route('app.antenatals.index')->with('success', 'Patient enrolled successfully.');
+        }
+        
         return redirect()->back()->with('success', ucfirst($visitType) . ' record saved successfully.');
     }
 
