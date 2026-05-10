@@ -44,6 +44,11 @@ class PatientController extends Controller
 
     $query = Patient::query()->with('user', 'hmoPlan.hmo');
 
+    // Exclude walk-in patients by default unless specifically filtering for them
+    if ($filterType !== 'walkin') {
+      $query->where('patients.patient_type', '!=', 'walkin');
+    }
+
     if ($search) {
       $query->join('users', 'patients.user_id', '=', 'users.id')
         ->where(function ($q) use ($search) {

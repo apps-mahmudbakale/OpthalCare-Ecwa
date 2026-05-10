@@ -20,8 +20,10 @@ class AntenatalRecordList extends Component
 
     public function render()
     {
+        // Only show the first antenatal record per patient (visit_type = 'new')
         $query = AntenatalRecord::query()
             ->with(['patient.user', 'user'])
+            ->where('visit_type', 'new') // Only show new visits (first visits)
             ->orderBy('visit_date', 'desc')
             ->orderBy('created_at', 'desc');
 

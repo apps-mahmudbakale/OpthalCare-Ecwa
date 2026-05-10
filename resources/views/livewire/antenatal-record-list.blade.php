@@ -1,6 +1,6 @@
 <div>
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Antenatal Records</h5>
+        <h5 class="mb-0">Antenatal Enrollments (First Visits Only)</h5>
         <div class="d-flex gap-2">
             <button type="button" class="btn btn-sm btn-outline-secondary" wire:click="$refresh">
                 <i class="ti ti-refresh"></i> Refresh

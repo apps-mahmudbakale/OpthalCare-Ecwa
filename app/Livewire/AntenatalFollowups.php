@@ -35,7 +35,11 @@ class AntenatalFollowups extends Component
                       ->orWhere('followup_treatment', 'like', '%' . $this->search . '%')
                       ->orWhere('followup_notes', 'like', '%' . $this->search . '%')
                       ->orWhere('height_of_fundus', 'like', '%' . $this->search . '%')
-                      ->orWhere('presentation_and_position', 'like', '%' . $this->search . '%');
+                      ->orWhere('presentation_and_position', 'like', '%' . $this->search . '%')
+                      ->orWhere('fetal_heart', 'like', '%' . $this->search . '%')
+                      ->orWhere('blood_pressure', 'like', '%' . $this->search . '%')
+                      ->orWhere('urine', 'like', '%' . $this->search . '%')
+                      ->orWhere('edema', 'like', '%' . $this->search . '%');
                 });
             })
             ->orderBy('visit_date', 'desc')

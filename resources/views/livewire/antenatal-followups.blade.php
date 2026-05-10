@@ -2,22 +2,25 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Follow-up Records</h5>
         <div class="d-flex gap-2">
-            <input type="text" wire:model="search" class="form-control form-control-sm" placeholder="Search follow-ups..." style="width: 200px;">
+            <input type="text" wire:model="search" class="form-control form-control-sm" placeholder="Search complaint, treatment, notes, vitals..." style="width: 250px;">
         </div>
     </div>
     
     <div class="table-responsive">
-        <table class="table table-hover">
+        <table class="table table-hover table-sm">
             <thead>
                 <tr>
-                    <th>Visit Date</th>
-                    <th>Fundus Height</th>
-                    <th>Presentation</th>
-                    <th>Fetal Heart</th>
-                    <th>BP</th>
-                    <th>Weight</th>
-                    <th>Edema</th>
-                    <th>Actions</th>
+                    <th style="min-width: 100px;">Visit Date</th>
+                    <th style="min-width: 80px;">Fundus</th>
+                    <th style="min-width: 100px;">Presentation</th>
+                    <th style="min-width: 90px;">Fetal Heart</th>
+                    <th style="min-width: 80px;">BP</th>
+                    <th style="min-width: 70px;">Weight</th>
+                    <th style="min-width: 80px;">Edema</th>
+                    <th style="min-width: 120px;">Complaint</th>
+                    <th style="min-width: 120px;">Treatment</th>
+                    <th style="min-width: 120px;">Notes</th>
+                    <th style="min-width: 100px;">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,6 +35,27 @@
                         <td>{{ $followup->blood_pressure ?? '—' }}</td>
                         <td>{{ $followup->weight ? $followup->weight . ' kg' : '—' }}</td>
                         <td>{{ $followup->edema ?? '—' }}</td>
+                        <td class="text-wrap" style="max-width: 120px;">
+                            @php
+                                $complaint = $followup->followup_complaint ?? '—';
+                                $truncated = strlen($complaint) > 30 ? substr($complaint, 0, 30) . '...' : $complaint;
+                            @endphp
+                            <span title="{{ $complaint }}">{{ $truncated }}</span>
+                        </td>
+                        <td class="text-wrap" style="max-width: 120px;">
+                            @php
+                                $treatment = $followup->followup_treatment ?? '—';
+                                $truncated = strlen($treatment) > 30 ? substr($treatment, 0, 30) . '...' : $treatment;
+                            @endphp
+                            <span title="{{ $treatment }}">{{ $truncated }}</span>
+                        </td>
+                        <td class="text-wrap" style="max-width: 120px;">
+                            @php
+                                $notes = $followup->followup_notes ?? '—';
+                                $truncated = strlen($notes) > 30 ? substr($notes, 0, 30) . '...' : $notes;
+                            @endphp
+                            <span title="{{ $notes }}">{{ $truncated }}</span>
+                        </td>
                         <td>
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -70,7 +94,7 @@
                                         <div class="modal-body">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <h6 class="text-primary">Physical Examination</h6>
+                                                    <h6 class="text-primary mb-3">Physical Examination</h6>
                                                     <table class="table table-sm">
                                                         <tr><td class="text-muted">Height of Fundus:</td><td>{{ $followup->height_of_fundus ?? '—' }}</td></tr>
                                                         <tr><td class="text-muted">Presentation & Position:</td><td>{{ $followup->presentation_and_position ?? '—' }}</td></tr>
@@ -82,18 +106,24 @@
                                                     </table>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <h6 class="text-primary">Clinical Notes</h6>
+                                                    <h6 class="text-primary mb-3">Clinical Notes</h6>
                                                     <div class="mb-3">
-                                                        <label class="form-label text-muted">Complaint:</label>
-                                                        <p class="mb-2">{{ $followup->followup_complaint ?? 'No complaint recorded.' }}</p>
+                                                        <label class="form-label text-muted fw-bold">Complaint:</label>
+                                                        <div class="p-2 bg-light rounded">
+                                                            {{ $followup->followup_complaint ?? 'No complaint recorded.' }}
+                                                        </div>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label class="form-label text-muted">Treatment:</label>
-                                                        <p class="mb-2">{{ $followup->followup_treatment ?? 'No treatment recorded.' }}</p>
+                                                        <label class="form-label text-muted fw-bold">Treatment Plan:</label>
+                                                        <div class="p-2 bg-light rounded">
+                                                            {{ $followup->followup_treatment ?? 'No treatment recorded.' }}
+                                                        </div>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label class="form-label text-muted">Notes:</label>
-                                                        <p class="mb-0">{{ $followup->followup_notes ?? 'No notes recorded.' }}</p>
+                                                        <label class="form-label text-muted fw-bold">Notes:</label>
+                                                        <div class="p-2 bg-light rounded">
+                                                            {{ $followup->followup_notes ?? 'No notes recorded.' }}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -218,7 +248,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" class="text-center">No follow-up records found.</td>
+                        <td colspan="11" class="text-center">No follow-up records found.</td>
                     </tr>
                 @endforelse
             </tbody>

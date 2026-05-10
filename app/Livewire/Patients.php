@@ -24,6 +24,9 @@ class Patients extends Base
   {
     $query = Patient::query()->with('user', 'hmoPlan.hmo');
 
+    // Exclude walk-in patients from the list
+    $query->where('patient_type', '!=', 'walkin');
+
     if ($this->search) {
       $query->join('users', 'patients.user_id', '=', 'users.id')
         ->where(function($q) {

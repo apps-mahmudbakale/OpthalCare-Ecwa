@@ -36,7 +36,10 @@
     @endif
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold py-3 mb-0"><span class="text-muted fw-light">Antenatal /</span> Records</h4>
+        <div>
+            <h4 class="fw-bold py-3 mb-0"><span class="text-muted fw-light">Antenatal /</span> Records</h4>
+            <p class="text-muted mb-0">Showing first visits only. Follow-up visits are available in each patient's profile under the "Follow Up" tab.</p>
+        </div>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#enroll-antenatal-modal">
             <i class="ti ti-plus me-1"></i> Enroll Patient
         </button>
@@ -62,7 +65,7 @@
                                 <label class="form-label">Patient <span class="text-danger">*</span></label>
                                 <select name="patient_id" class="form-select select2" required>
                                     <option value="">Select Patient</option>
-                                    @foreach(\App\Models\Patient::with('user')->get() as $patient)
+                                    @foreach(\App\Models\Patient::with('user')->where('patient_type', '!=', 'walkin')->get() as $patient)
                                         <option value="{{ $patient->id }}">{{ $patient->user->firstname }} {{ $patient->user->lastname }}</option>
                                     @endforeach
                                 </select>

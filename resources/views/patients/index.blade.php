@@ -12,7 +12,12 @@
 @endsection
 
 @section('content')
-<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">App /</span> Patients</h4>
+<div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+        <h4 class="fw-bold py-3 mb-1"><span class="text-muted fw-light">App /</span> Patients</h4>
+        <p class="text-muted mb-0">Walk-in patients are excluded by default. Use the filter to view walk-in patients specifically.</p>
+    </div>
+</div>
 
 <div class="card mb-4">
     <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
@@ -20,9 +25,9 @@
             <input type="text" name="search" value="{{ $search }}" class="form-control form-control-sm" placeholder="Search name, HRN, phone..." style="width:200px;">
 
             <select name="patient_type" class="form-select form-select-sm" style="width:150px;">
-                <option value="">All Types</option>
-                <option value="registered" {{ $filterType === 'registered' ? 'selected' : '' }}>Registered</option>
-                <option value="Walk-in" {{ $filterType === 'Walk-in' ? 'selected' : '' }}>Walk-in</option>
+                <option value="">Registered (Default)</option>
+                <option value="registered" {{ $filterType === 'registered' ? 'selected' : '' }}>Registered Only</option>
+                <option value="walkin" {{ $filterType === 'walkin' ? 'selected' : '' }}>Walk-in Only</option>
             </select>
 
             <select name="gender" class="form-select form-select-sm" style="width:130px;">
