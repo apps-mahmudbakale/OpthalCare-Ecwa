@@ -193,6 +193,31 @@ class BillingController extends Controller
         'Optical service requested via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname
       );
       
+    }elseif ($request->service_category == 'procedure') {
+      $procedure = \App\Models\Procedure::find($request->service_id);
+      
+      // Create procedure request record
+      \App\Models\ProcedureRequest::create([
+        'patient_id'   => $request->patient_id,
+        'user_id'      => auth()->user()->id,
+        'procedure_id' => $procedure->id,
+        'status'       => 'Pending',
+        'request_ref'  => $request_ref,
+      ]);
+      
+      $serviceHandler = new ServiceRequestHandler();
+      $billingRecord = $serviceHandler->handleServiceRequest(
+        $procedure->name, 
+        $request->patient_id, 
+        'procedure', 
+        'fresh', 
+        $request_ref, 
+        1,
+        null,
+        'manual_billing',
+        'Procedure requested via billing interface by ' . auth()->user()->firstname . ' ' . auth()->user()->lastname
+      );
+      
     }elseif ($request->service_category == 'radiology'){
       $imaging = Radiology::find($request->service_id);
       
