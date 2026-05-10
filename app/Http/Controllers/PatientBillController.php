@@ -16,7 +16,8 @@ class PatientBillController extends Controller
       ->map(function($patient) {
         return [
           'id' => $patient->id,
-          'full_name' => $patient->user->firstname . ' ' . $patient->user->lastname
+          'full_name' => $patient->user->firstname . ' ' . $patient->user->lastname,
+          'hospital_no' => $patient->hospital_no
         ];
       });
 

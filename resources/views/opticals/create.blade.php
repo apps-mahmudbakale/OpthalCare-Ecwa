@@ -4,7 +4,7 @@
   <!-- Search Input for Patients -->
   <div class="form-group">
     <div class="form-label-group">
-      <input type="text" id="patient-search" class="form-control" placeholder="Search for patients...">
+      <input type="text" id="patient-search" class="form-control" placeholder="Search by name or hospital number...">
       <label for="patient-search">Search for Patients</label>
     </div>
   </div>
@@ -95,7 +95,9 @@
         const patients = data.map(item => {
           return {
             id: item.id,
-            full_name: item.full_name.toLowerCase()  // Store full name in lowercase for case-insensitive search
+            full_name: item.full_name.toLowerCase(), // Store full name in lowercase for case-insensitive search
+            hospital_no: item.hospital_no || '', // Include hospital number
+            display_name: `${item.full_name} (${item.hospital_no || 'No Hospital No'})` // Combined display name
           };
         });
 
@@ -105,14 +107,18 @@
           const $resultsContainer = $('#patient-results');
           $resultsContainer.empty();  // Clear current results
 
-          const filteredPatients = patients.filter(item => item.full_name.includes(searchTerm));
+          const filteredPatients = patients.filter(item => 
+            item.full_name.includes(searchTerm) || 
+            item.hospital_no.toLowerCase().includes(searchTerm)
+          );
 
           if (filteredPatients.length > 0) {
             filteredPatients.forEach(function(item) {
               const resultItem = $('<div></div>')
                 .addClass('result-item')
-                .text(item.full_name)
-                .data('id', item.id)  // Store the patient ID in the div
+                .html(`<strong>${item.display_name}</strong>`) // Show name and hospital number
+                .data('id', item.id) // Store the patient ID in the div
+                .data('name', item.full_name) // Store the original name
                 .css({
                   padding: '10px',
                   cursor: 'pointer',
@@ -127,7 +133,7 @@
                   }
                 )
                 .click(function() {
-                  $('#patient-search').val($(this).text());  // Set the input value
+                  $('#patient-search').val($(this).data('name'));  // Set the input value to just the name
                   $('#patient-id').val($(this).data('id'));  // Set the hidden input value to the patient ID
                   $resultsContainer.hide();  // Hide results
                 });

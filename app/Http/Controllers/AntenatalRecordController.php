@@ -60,6 +60,9 @@ class AntenatalRecordController extends Controller
             'followup_notes'        => 'nullable|string',
         ]);
 
+        // Get the patient to access their HMO plan
+        $patient = Patient::find($request->patient_id);
+
         $record = AntenatalRecord::create([
             'patient_id'            => $request->patient_id,
             'user_id'               => auth()->id(),
@@ -75,6 +78,7 @@ class AntenatalRecordController extends Controller
             'alive'                 => $request->alive,
             'miscarriage'           => $request->miscarriage,
             'enrolment_package_id'  => $request->enrolment_package_id,
+            'plan_id'               => $patient->hmo_plan_id, // Store patient's HMO plan ID
             // Follow-up fields
             'height_of_fundus'      => $request->height_of_fundus,
             'presentation_and_position' => $request->presentation_and_position,
@@ -101,7 +105,7 @@ class AntenatalRecordController extends Controller
                     'amount'     => $package->price,
                     'bill_ref'   => strtoupper(Str::random(6)),
                     'payer_id'   => auth()->id(),
-                    'plan_id'    => null,
+                    'plan_id'    => $patient->hmo_plan_id, // Use patient's HMO plan ID
                     'status'     => 0, // unpaid — cashier will collect
                 ]);
             }

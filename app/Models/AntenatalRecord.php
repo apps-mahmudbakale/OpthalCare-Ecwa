@@ -28,6 +28,7 @@ class AntenatalRecord extends Model
         'alive',
         'miscarriage',
         'enrolment_package_id',
+        'plan_id',
         // Follow-up fields
         'height_of_fundus',
         'presentation_and_position',
@@ -70,6 +71,11 @@ class AntenatalRecord extends Model
     public function concludedBy()
     {
         return $this->belongsTo(User::class, 'concluded_by');
+    }
+
+    public function hmoPlan()
+    {
+        return $this->belongsTo(\App\Models\HmoPlan::class, 'plan_id');
     }
 
     /**

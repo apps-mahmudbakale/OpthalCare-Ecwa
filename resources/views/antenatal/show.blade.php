@@ -160,6 +160,7 @@
                         <tr><td class="text-muted">LMP</td><td>{{ $record->last_menstrual_period ? $record->last_menstrual_period->format('M d, Y') : '—' }}</td></tr>
                         <tr><td class="text-muted">Current Pregnancy</td><td>{{ $record->current_pregnancy ?? '—' }}</td></tr>
                         <tr><td class="text-muted">Package</td><td>{{ $record->enrolmentPackage?->name ?? '—' }}</td></tr>
+                        <tr><td class="text-muted">HMO Plan</td><td>{{ $record->hmoPlan?->name ?? '—' }}</td></tr>
                     </table>
                 </div>
             </div>
