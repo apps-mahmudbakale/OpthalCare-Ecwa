@@ -23,8 +23,7 @@ class BillingController extends Controller
   public function index()
   {
     $query = Billing::query()
-      ->with(['patient.user', 'hmoPlan.hmo', 'createdBy'])
-      ->whereNull('plan_id'); // Only show self-pay bills (exclude HMO bills)
+      ->with(['patient.user', 'hmoPlan.hmo', 'createdBy']); // Only show self-pay bills (exclude HMO bills)
 
     // Apply status filter
     $status = request('status', 'unpaid');
