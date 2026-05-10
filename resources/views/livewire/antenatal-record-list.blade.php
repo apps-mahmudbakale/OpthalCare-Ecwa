@@ -11,35 +11,27 @@
 
     <!-- Status Tabs -->
     <div class="card-body border-bottom">
-        <ul class="nav nav-pills nav-fill" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button type="button" 
-                    class="nav-link {{ $status === 'active' ? 'active' : '' }}" 
-                    wire:click="setStatus('active')"
-                    role="tab">
-                    <i class="ti ti-heart-handshake me-1"></i>
-                    Active Enrollments
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button type="button" 
-                    class="nav-link {{ $status === 'concluded' ? 'active' : '' }}" 
-                    wire:click="setStatus('concluded')"
-                    role="tab">
-                    <i class="ti ti-check-circle me-1"></i>
-                    Concluded Enrollments
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button type="button" 
-                    class="nav-link {{ $status === 'all' ? 'active' : '' }}" 
-                    wire:click="setStatus('all')"
-                    role="tab">
-                    <i class="ti ti-list me-1"></i>
-                    All Enrollments
-                </button>
-            </li>
-        </ul>
+        <div class="d-flex gap-2">
+            <button type="button" 
+                class="btn btn-sm {{ $status === 'active' ? 'btn-primary' : 'btn-outline-primary' }}" 
+                wire:click="$set('status', 'active')">
+                <i class="ti ti-heart-handshake me-1"></i>
+                Active ({{ $activeCount }})
+            </button>
+            <button type="button" 
+                class="btn btn-sm {{ $status === 'concluded' ? 'btn-primary' : 'btn-outline-primary' }}" 
+                wire:click="$set('status', 'concluded')">
+                <i class="ti ti-check-circle me-1"></i>
+                Concluded ({{ $concludedCount }})
+            </button>
+            <button type="button" 
+                class="btn btn-sm {{ $status === 'all' ? 'btn-primary' : 'btn-outline-primary' }}" 
+                wire:click="$set('status', 'all')">
+                <i class="ti ti-list me-1"></i>
+                All ({{ $totalCount }})
+            </button>
+        </div>
+        <small class="text-muted mt-2 d-block">Current filter: <strong>{{ ucfirst($status) }}</strong> | Found: {{ $records->total() }} records</small>
     </div>
 
     <div class="table-responsive text-nowrap">

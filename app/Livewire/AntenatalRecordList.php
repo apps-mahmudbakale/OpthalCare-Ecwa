@@ -24,9 +24,8 @@ class AntenatalRecordList extends Component
         $this->resetPage();
     }
 
-    public function setStatus($status)
+    public function updatedStatus()
     {
-        $this->status = $status;
         $this->resetPage();
     }
 
@@ -38,6 +37,17 @@ class AntenatalRecordList extends Component
             ->where('visit_type', 'new') // Only show new visits (first visits)
             ->orderBy('visit_date', 'desc')
             ->orderBy('created_at', 'desc');
+
+        // Get counts for tabs
+        $activeCount = AntenatalRecord::where('visit_type', 'new')
+            ->where(function($q) {
+                $q->where('status', 'active')->orWhereNull('status');
+            })->count();
+        
+        $concludedCount = AntenatalRecord::where('visit_type', 'new')
+            ->where('status', 'concluded')->count();
+        
+        $totalCount = AntenatalRecord::where('visit_type', 'new')->count();
 
         // Filter by status
         if ($this->status === 'active') {
@@ -59,6 +69,9 @@ class AntenatalRecordList extends Component
 
         return view('livewire.antenatal-record-list', [
             'records' => $query->paginate($this->perPage),
+            'activeCount' => $activeCount,
+            'concludedCount' => $concludedCount,
+            'totalCount' => $totalCount,
         ]);
     }
 }
