@@ -1,6 +1,6 @@
 @extends('layouts/layoutMaster')
 
-@section('title', 'Antenatal Profile')
+@section('title', 'Antenatal Record Profile')
 
 @section('vendor-style')
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
@@ -15,7 +15,18 @@
 @section('content')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Antenatal /</span> Record Profile</h4>
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center">
+            <a href="{{ route('app.antenatals.index') }}" class="btn btn-sm btn-outline-secondary me-3">
+                <i class="ti ti-arrow-left me-1"></i> Back to Antenatal List
+            </a>
+            <div>
+                <h4 class="fw-bold mb-0"><span class="text-muted fw-light">Antenatal /</span> Record Profile</h4>
+                <p class="text-muted mb-0 small">Complete antenatal record for documentation and follow-up tracking</p>
+            </div>
+        </div>
+    </div>
 
     <!-- Header -->
     <div class="row">

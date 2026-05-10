@@ -9,7 +9,6 @@
                     <th>Complaint</th>
                     <th>Treatment Plan</th>
                     <th>Note</th>
-                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
@@ -25,27 +24,6 @@
                     <td class="text-wrap" style="max-width: 200px;">{{ $record->complaint ?? '—' }}</td>
                     <td class="text-wrap" style="max-width: 200px;">{{ $record->treatment_plan ?? '—' }}</td>
                     <td class="text-wrap" style="max-width: 200px;">{{ $record->note ?? '—' }}</td>
-                    <td>
-                        <div class="btn-group">
-                            <button type="button"
-                                class="btn btn-sm btn-icon btn-light waves-effect waves-light"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-ellipsis-v"></i>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('app.antenatal-records.show', $record->id) }}">Open Profile</a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <button class="dropdown-item text-danger" wire:click="delete({{ $record->id }})"
-                                        wire:confirm="Are you sure you want to delete this record?">
-                                        Delete
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
-                    </td>
                 </tr>
                 @empty
                 <tr>

@@ -42,7 +42,7 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('app.antenatal-records.show', $record->id) }}">Open Profile</a>
+                                    <a class="dropdown-item" href="{{ route('app.antenatal-records.show', $record->id) }}">Open Antenatal Profile</a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
