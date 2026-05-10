@@ -257,6 +257,7 @@ Route::group(['prefix' => 'app', 'as' => 'app.', 'middleware' => ['auth', 'acces
   Route::get('antenatal-records/{antenatalRecord}', [AntenatalRecordController::class, 'show'])->name('antenatal-records.show');
   Route::put('antenatal-records/{antenatalRecord}', [AntenatalRecordController::class, 'update'])->name('antenatal-records.update');
   Route::delete('antenatal-records/{antenatalRecord}', [AntenatalRecordController::class, 'destroy'])->name('antenatal-records.destroy');
+  Route::post('antenatal-records/{antenatalRecord}/conclude', [AntenatalRecordController::class, 'conclude'])->name('antenatal-records.conclude');
   
   // Delivery Records
   Route::post('deliveries', [App\Http\Controllers\DeliveryController::class, 'store'])->name('deliveries.store');

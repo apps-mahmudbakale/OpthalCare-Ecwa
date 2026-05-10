@@ -201,4 +201,25 @@ class AntenatalRecordController extends Controller
         $visitType = $request->visit_type === 'followup' ? 'follow-up' : 'antenatal';
         return redirect()->back()->with('success', ucfirst($visitType) . ' record updated successfully.');
     }
+
+    public function conclude(Request $request, AntenatalRecord $antenatalRecord)
+    {
+        $request->validate([
+            'conclusion_notes' => 'nullable|string|max:1000',
+        ]);
+
+        // Only allow concluding active enrollments
+        if ($antenatalRecord->isConcluded()) {
+            return redirect()->back()->withErrors(['error' => 'This enrollment is already concluded.']);
+        }
+
+        // Only allow concluding new visits (enrollment records)
+        if ($antenatalRecord->visit_type !== 'new') {
+            return redirect()->back()->withErrors(['error' => 'Only enrollment records can be concluded.']);
+        }
+
+        $antenatalRecord->conclude($request->conclusion_notes, auth()->id());
+
+        return redirect()->back()->with('success', 'Antenatal enrollment concluded successfully.');
+    }
 }

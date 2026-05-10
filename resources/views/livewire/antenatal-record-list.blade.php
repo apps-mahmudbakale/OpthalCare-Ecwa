@@ -1,6 +1,6 @@
 <div>
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Antenatal Enrollments (First Visits Only)</h5>
+        <h5 class="mb-0">Antenatal Enrollments</h5>
         <div class="d-flex gap-2">
             <button type="button" class="btn btn-sm btn-outline-secondary" wire:click="$refresh">
                 <i class="ti ti-refresh"></i> Refresh
@@ -8,16 +8,53 @@
             <input type="text" wire:model="search" class="form-control form-control-sm" placeholder="Search patient..." style="width: 200px;">
         </div>
     </div>
+
+    <!-- Status Tabs -->
+    <div class="card-body border-bottom">
+        <ul class="nav nav-pills nav-fill" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button type="button" 
+                    class="nav-link {{ $status === 'active' ? 'active' : '' }}" 
+                    wire:click="setStatus('active')"
+                    role="tab">
+                    <i class="ti ti-heart-handshake me-1"></i>
+                    Active Enrollments
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button type="button" 
+                    class="nav-link {{ $status === 'concluded' ? 'active' : '' }}" 
+                    wire:click="setStatus('concluded')"
+                    role="tab">
+                    <i class="ti ti-check-circle me-1"></i>
+                    Concluded Enrollments
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button type="button" 
+                    class="nav-link {{ $status === 'all' ? 'active' : '' }}" 
+                    wire:click="setStatus('all')"
+                    role="tab">
+                    <i class="ti ti-list me-1"></i>
+                    All Enrollments
+                </button>
+            </li>
+        </ul>
+    </div>
+
     <div class="table-responsive text-nowrap">
         <table class="table table-hover">
             <thead>
                 <tr>
                     <th>Date</th>
                     <th>Patient</th>
-                    <th>Visit Type</th>
+                    <th>Status</th>
                     <th>Complaint</th>
                     <th>Treatment Plan</th>
                     <th>Recorded By</th>
+                    @if($status === 'concluded')
+                    <th>Concluded</th>
+                    @endif
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -27,13 +64,25 @@
                     <td>{{ $record->visit_date ? $record->visit_date->format('M d, Y') : $record->created_at->format('M d, Y') }}</td>
                     <td>{{ $record->patient->user->firstname ?? 'N/A' }} {{ $record->patient->user->lastname ?? '' }}</td>
                     <td>
-                        <span class="badge bg-{{ $record->visit_type === 'followup' ? 'info' : 'primary' }}">
-                            {{ $record->visit_type === 'followup' ? 'Follow Up' : 'New Visit' }}
+                        <span class="badge bg-{{ $record->isActive() ? 'success' : 'secondary' }}">
+                            {{ $record->isActive() ? 'Active' : 'Concluded' }}
                         </span>
                     </td>
                     <td class="text-wrap" style="max-width: 200px;">{{ strlen($record->complaint ?? '') > 50 ? substr($record->complaint ?? '—', 0, 50) . '...' : ($record->complaint ?? '—') }}</td>
                     <td class="text-wrap" style="max-width: 200px;">{{ strlen($record->treatment_plan ?? '') > 50 ? substr($record->treatment_plan ?? '—', 0, 50) . '...' : ($record->treatment_plan ?? '—') }}</td>
                     <td>{{ $record->user->firstname ?? 'N/A' }} {{ $record->user->lastname ?? '' }}</td>
+                    @if($status === 'concluded')
+                    <td>
+                        <div class="text-muted small">
+                            @if($record->concluded_at)
+                                {{ $record->concluded_at->format('M d, Y') }}<br>
+                                <small>by {{ $record->concludedBy?->firstname }} {{ $record->concludedBy?->lastname }}</small>
+                            @else
+                                —
+                            @endif
+                        </div>
+                    </td>
+                    @endif
                     <td>
                         <div class="btn-group">
                             <button type="button" class="btn btn-sm btn-icon btn-light waves-effect waves-light"
@@ -54,7 +103,15 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="text-center">No antenatal records found.</td>
+                    <td colspan="{{ $status === 'concluded' ? '8' : '7' }}" class="text-center">
+                        @if($status === 'active')
+                            No active antenatal enrollments found.
+                        @elseif($status === 'concluded')
+                            No concluded antenatal enrollments found.
+                        @else
+                            No antenatal enrollments found.
+                        @endif
+                    </td>
                 </tr>
                 @endforelse
             </tbody>

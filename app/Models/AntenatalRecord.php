@@ -17,6 +17,10 @@ class AntenatalRecord extends Model
         'note',
         'visit_date',
         'visit_type',
+        'status',
+        'concluded_at',
+        'concluded_by',
+        'conclusion_notes',
         'gravida',
         'parity',
         'last_menstrual_period',
@@ -40,6 +44,7 @@ class AntenatalRecord extends Model
     protected $casts = [
         'visit_date'            => 'date',
         'last_menstrual_period' => 'date',
+        'concluded_at'          => 'datetime',
     ];
 
     public function enrolmentPackage()
@@ -60,6 +65,40 @@ class AntenatalRecord extends Model
     public function deliveries()
     {
         return $this->hasMany(Delivery::class);
+    }
+
+    public function concludedBy()
+    {
+        return $this->belongsTo(User::class, 'concluded_by');
+    }
+
+    /**
+     * Check if the enrollment is active
+     */
+    public function isActive()
+    {
+        return $this->status === 'active';
+    }
+
+    /**
+     * Check if the enrollment is concluded
+     */
+    public function isConcluded()
+    {
+        return $this->status === 'concluded';
+    }
+
+    /**
+     * Conclude the antenatal enrollment
+     */
+    public function conclude($notes = null, $userId = null)
+    {
+        $this->update([
+            'status' => 'concluded',
+            'concluded_at' => now(),
+            'concluded_by' => $userId ?? auth()->id(),
+            'conclusion_notes' => $notes,
+        ]);
     }
 
     /**

@@ -47,6 +47,11 @@
                                         <span class="badge bg-primary">{{ $patient->gender }}</span>
                                         <span class="badge bg-primary">{{ $patient->getAge() }}</span>
                                         <span class="badge bg-info">Visit: {{ $record->visit_date ? $record->visit_date->format('M d, Y') : $record->created_at->format('M d, Y') }}</span>
+                                        @if($record->visit_type === 'new')
+                                            <span class="badge bg-{{ $record->isActive() ? 'success' : 'secondary' }}">
+                                                {{ $record->isActive() ? 'Active Enrollment' : 'Concluded Enrollment' }}
+                                            </span>
+                                        @endif
                                     </li>
                                 </ul>
                             </div>
@@ -65,6 +70,15 @@
                                     <li><a class="dropdown-item"
                                             data-request-url="{{ route('app.patient.fund.wallet', $patient->id) }}"
                                             data-target="#global-modal-lg">Fund Wallet</a></li>
+                                    @if($record->visit_type === 'new' && $record->isActive())
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item text-warning" href="#" data-bs-toggle="modal" data-bs-target="#conclude-enrollment-modal">
+                                            <i class="ti ti-check-circle me-1"></i>
+                                            Conclude Enrollment
+                                        </a>
+                                    </li>
+                                    @endif
                                 </ul>
                             </div>
                         </div>
@@ -73,6 +87,33 @@
             </div>
         </div>
     </div>
+
+    @if($record->visit_type === 'new' && $record->isConcluded())
+    <!-- Concluded Enrollment Information -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <div class="d-flex align-items-center">
+                    <i class="ti ti-info-circle me-2"></i>
+                    <div class="flex-grow-1">
+                        <strong>Enrollment Concluded</strong>
+                        <p class="mb-0 mt-1">
+                            This antenatal enrollment was concluded on 
+                            <strong>{{ $record->concluded_at->format('M d, Y \a\t g:i A') }}</strong>
+                            by <strong>{{ $record->concludedBy?->firstname }} {{ $record->concludedBy?->lastname }}</strong>
+                        </p>
+                        @if($record->conclusion_notes)
+                        <div class="mt-2">
+                            <small class="text-muted">Notes:</small>
+                            <p class="mb-0 mt-1">{{ $record->conclusion_notes }}</p>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 
     <!-- Patient balances -->
     <div class="row g-4">
@@ -441,4 +482,8 @@
     @include('_partials._modals.modal-new-delivery', ['patientId' => $patient->id, 'patient' => $patient, 'record' => $record])
     @include('_partials._modals.modal-new-antenatal-vitals', ['patient' => $patient, 'record' => $record])
     @include('_partials._modals.modal-new-followup', ['patientId' => $patient->id, 'patient' => $patient])
+    @include('_partials._modals.modal-new-antenatal-record', ['patientId' => $patient->id, 'patient' => $patient])
+    @if($record->visit_type === 'new')
+        @include('_partials._modals.modal-conclude-enrollment', ['patient' => $patient, 'record' => $record])
+    @endif
 @endsection
