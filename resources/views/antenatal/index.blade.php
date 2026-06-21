@@ -66,7 +66,9 @@
                                 <select name="patient_id" class="form-select select2" required>
                                     <option value="">Select Patient</option>
                                     @foreach(\App\Models\Patient::with('user')->where('patient_type', '!=', 'walkin')->get() as $patient)
-                                        <option value="{{ $patient->id }}">{{ $patient->user->firstname }} {{ $patient->user->lastname }}</option>
+                                        <option value="{{ $patient->id }}" data-hosp-number="{{ $patient->hospital_no }}">
+                                            {{ $patient->user->firstname }} {{ $patient->user->lastname }} ({{ $patient->hospital_no }})
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -141,7 +143,30 @@
             $('.select2').select2({
                 dropdownParent: $('#enroll-antenatal-modal'),
                 placeholder: 'Select Patient',
-                allowClear: true
+                allowClear: true,
+                matcher: function(params, data) {
+                    // If there are no search terms, return all of the data
+                    if ($.trim(params.term) === '') {
+                        return data;
+                    }
+
+                    // Do not display the item if there is no 'text' property
+                    if (typeof data.text === 'undefined') {
+                        return null;
+                    }
+
+                    // Get the hospital number from the option's data attribute
+                    var hospNumber = $(data.element).data('hosp-number') || '';
+                    
+                    // Search in both patient name and hospital number
+                    if (data.text.toLowerCase().indexOf(params.term.toLowerCase()) > -1 || 
+                        hospNumber.toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
+                        return data;
+                    }
+
+                    // Return `null` if the term does not match
+                    return null;
+                }
             });
             $('.flatpickr').flatpickr({
                 dateFormat: 'Y-m-d'
